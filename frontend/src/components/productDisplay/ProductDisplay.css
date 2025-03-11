@@ -29,6 +29,7 @@
   margin-left: 4.4rem;
   display: flex;
   flex-direction: column;
+  gap: 1.2rem;
 }
 
 .product-display-right h1 {
@@ -40,18 +41,18 @@
 .product-display-right-stars {
   display: flex;
   align-items: center;
-  gap: 0.3rem;
-  margin-top: 0.8rem;
+  margin-top: -0.9rem;
+  gap: 0.4rem;
   color: #1c1c1c;
   font-size: 1rem;
 }
 
 .product-display-right-prices {
   display: flex;
-  margin: 2.5rem 0rem;
-  gap: 1.9rem;
+  gap: 2rem;
   font-size: 1.5rem;
   font-weight: 700;
+  margin-top: 0.65rem;
 }
 
 .product-display-right-price-old {
@@ -60,22 +61,22 @@
 }
 
 .product-display-right-price-new {
-  color: #ff4141;
+  color: #ff5a5a;
 }
 
 .product-display-right-description {
-  color: #656565;
-  font-size: 1rem;
-  font-weight: 500;
-  margin-bottom: 1.9rem;
+  margin-top: 0.3rem;
+  font-style: normal;
+  font-weight: 700;
+  color: #585858;
 }
 
 .product-display-right-size {
-  margin-bottom: 1.9rem;
+  margin-top: 2.1rem;
 }
 
 .product-display-right-size h1 {
-  margin-bottom: 0.95rem;
+  margin-top: -1rem;
   color: #656565;
   font-size: 1.25rem;
   font-weight: 600;
@@ -83,11 +84,12 @@
 
 .product-display-right-size-container {
   display: flex;
+  margin-top: 1.9rem;
   gap: 1.25rem;
 }
 
 .product-display-right-size-container div {
-  padding: 1.15rem 1.5rem;
+  padding: 1.05rem 1.3rem;
   background: #fbfbfb;
   border: 1px solid #ebebeb;
   border-radius: 0.2rem;
@@ -95,20 +97,35 @@
 }
 
 .product-display-right button {
-  padding: 1.25rem 2.5rem;
   width: 12.5rem;
+  height: 3.45rem;
+  border-radius: 5px;
+  margin-top: 1.8rem;
   font-size: 1rem;
   font-weight: 600;
   color: white;
-  background: #ff4141;
-  margin-bottom: 2.5rem;
+  background: #ff5a5a;
   border: none;
   outline: none;
   cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.product-display-right button:hover {
+  background-color: #ff4141;
+}
+
+.product-display-right button:active {
+  background-color: #e63535;
+}
+
+.adding-to-cart {
+  background-color: #a9a9a9 !important;
+  cursor: not-allowed !important;
 }
 
 .product-display-right-category {
-  margin-top: 0.65rem;
+  margin-top: 0.6rem;
 }
 
 .product-display-right-category span {

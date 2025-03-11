@@ -53,6 +53,7 @@ const Auth = () => {
                 value={formData.username}
                 onChange={changeHandler}
                 required
+                autoComplete="name"
               />
             )}
             <input
@@ -62,6 +63,7 @@ const Auth = () => {
               value={formData.email}
               onChange={changeHandler}
               required
+              autoComplete="email"
             />
             <input
               type="password"
@@ -70,6 +72,9 @@ const Auth = () => {
               value={formData.password}
               onChange={changeHandler}
               required
+              autoComplete={
+                state === "Login" ? "current-password" : "new-password"
+              }
             />
           </div>
           {error && <p className="auth-error">{error}</p>}

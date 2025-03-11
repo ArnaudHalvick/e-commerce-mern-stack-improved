@@ -2,13 +2,35 @@
 import "./ProductDisplay.css";
 import star_icon from "../assets/star_icon.png";
 import star_dull_icon from "../assets/star_dull_icon.png";
-import { useContext } from "react";
+import { useContext, useState, useCallback } from "react";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../../redux/slices/cartSlice";
+import { AuthContext } from "../../context/AuthContext";
 import { ShopContext } from "../../context/ShopContext";
 
 const ProductDisplay = (props) => {
   const { product } = props;
+  const dispatch = useDispatch();
+  const { isAuthenticated } = useContext(AuthContext);
+  const [isAdding, setIsAdding] = useState(false);
 
-  const { addToCart } = useContext(ShopContext);
+  // Memoize the handler to prevent unnecessary re-renders
+  const handleAddToCart = useCallback(() => {
+    // Prevent multiple clicks
+    if (isAdding) return;
+
+    setIsAdding(true);
+
+    if (isAuthenticated) {
+      dispatch(addToCart({ itemId: product.id, quantity: 1 }));
+      setTimeout(() => {
+        setIsAdding(false);
+      }, 1000); // Prevent multiple clicks for 1 second
+    } else {
+      alert("Please login to add items to cart");
+      setIsAdding(false);
+    }
+  }, [dispatch, product.id, isAuthenticated, isAdding]);
 
   return (
     <div className="product-display">
@@ -63,7 +85,13 @@ const ProductDisplay = (props) => {
             <div>XXL</div>
           </div>
         </div>
-        <button onClick={() => addToCart(product.id)}>Add to Cart</button>
+        <button
+          onClick={handleAddToCart}
+          disabled={isAdding}
+          className={isAdding ? "adding-to-cart" : ""}
+        >
+          {isAdding ? "Adding..." : "Add to Cart"}
+        </button>
         <p className="product-display-right-category">
           <span>Category :</span>Women, T-Shirt, Crop Top
         </p>

@@ -44,10 +44,24 @@ const AuthContextProvider = (props) => {
           localStorage.removeItem("auth-token");
           setIsAuthenticated(false);
           setUser(null);
+          // Don't show error for normal auth flow
+          setError(null);
         }
       } catch (err) {
         console.error("Auth verification error:", err);
-        setError("Authentication verification failed");
+        // If it's a network error or server issue, don't logout user immediately
+        // This prevents logout on temporary network issues
+        if (
+          err.message === "Failed to fetch" ||
+          err.message.includes("Network")
+        ) {
+          console.log("Network issue detected, keeping authentication state");
+        } else {
+          localStorage.removeItem("auth-token");
+          setIsAuthenticated(false);
+          setUser(null);
+          setError("Authentication verification failed");
+        }
       } finally {
         setLoading(false);
       }

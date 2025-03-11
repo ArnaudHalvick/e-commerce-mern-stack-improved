@@ -1,57 +1,88 @@
 // Path: frontend/src/components/cartItems/CartItems.jsx
 import "./CartItems.css";
 import remove_icon from "../assets/cart_cross_icon.png";
-import { useContext, useState } from "react";
-import { ShopContext } from "../../context/ShopContext";
+import { useState, useEffect, useContext } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchCart,
+  removeFromCart,
+  addToCart,
+  updateCartItem,
+} from "../../redux/slices/cartSlice";
+import { AuthContext } from "../../context/AuthContext";
 
 const CartItems = () => {
+  const dispatch = useDispatch();
+  const { isAuthenticated } = useContext(AuthContext);
+
+  // Get cart state from Redux with fallback values
   const {
-    cartItems,
-    all_product,
-    removeFromCart,
-    addToCart,
-    getTotalCartAmount,
-  } = useContext(ShopContext);
+    items = [],
+    totalPrice = 0,
+    loading,
+    error,
+  } = useSelector(
+    (state) => state.cart || { items: [], totalItems: 0, totalPrice: 0 }
+  );
 
   const [editableQuantities, setEditableQuantities] = useState({});
 
+  // Fetch cart data when component mounts or auth status changes
+  useEffect(() => {
+    if (isAuthenticated) {
+      dispatch(fetchCart());
+    }
+  }, [dispatch, isAuthenticated]);
+
+  // Handle item quantity change
   const handleQuantityChange = (id, value) => {
     // Ensure value is a valid number and not less than 1
     const newValue = Math.max(1, parseInt(value) || 1);
     setEditableQuantities({ ...editableQuantities, [id]: newValue });
-
-    // Update cart with the new quantity immediately
-    const currentQuantity = cartItems[id];
-    if (newValue !== currentQuantity) {
-      // If new quantity is greater, add the difference
-      if (newValue > currentQuantity) {
-        for (let i = 0; i < newValue - currentQuantity; i++) {
-          addToCart(id);
-        }
-      }
-      // If new quantity is less, remove the difference
-      else if (newValue < currentQuantity) {
-        for (let i = 0; i < currentQuantity - newValue; i++) {
-          removeFromCart(id);
-        }
-      }
-    }
   };
 
+  // Handle quantity input blur event
   const handleQuantityBlur = (id) => {
-    // Clear the editable state
-    const newEditableQuantities = { ...editableQuantities };
-    delete newEditableQuantities[id];
-    setEditableQuantities(newEditableQuantities);
-  };
+    const newValue = editableQuantities[id];
+    if (newValue !== undefined) {
+      dispatch(updateCartItem({ itemId: id, quantity: newValue }));
 
-  const handleRemoveAll = (id) => {
-    // Remove all items of this product
-    const quantity = cartItems[id];
-    for (let i = 0; i < quantity; i++) {
-      removeFromCart(id);
+      // Clear the editable state
+      const newEditableQuantities = { ...editableQuantities };
+      delete newEditableQuantities[id];
+      setEditableQuantities(newEditableQuantities);
     }
   };
+
+  // Handle removing all items of a product
+  const handleRemoveAll = (id) => {
+    dispatch(removeFromCart({ itemId: id, removeAll: true }));
+  };
+
+  // Handle adding item to cart
+  const handleAddItem = (id) => {
+    dispatch(addToCart({ itemId: id, quantity: 1 }));
+  };
+
+  // Handle removing item from cart
+  const handleRemoveItem = (id) => {
+    dispatch(removeFromCart({ itemId: id, quantity: 1 }));
+  };
+
+  // Display loading message
+  if (loading) {
+    return <div className="cart-loading">Loading cart...</div>;
+  }
+
+  // Display error message if any
+  if (error) {
+    return <div className="cart-error">Error: {error}</div>;
+  }
+
+  // Display empty cart message
+  if (!items || items.length === 0) {
+    return <div className="cart-empty">Your cart is empty</div>;
+  }
 
   return (
     <div className="cart-container">
@@ -68,63 +99,61 @@ const CartItems = () => {
           </tr>
         </thead>
         <tbody>
-          {all_product.map((product) => {
-            const { id, image, name, new_price } = product;
-            if (cartItems[id] > 0) {
-              return (
-                <tr key={id}>
-                  <td>
-                    <img className="cart-product-image" src={image} alt="" />
-                  </td>
-                  <td>{name}</td>
-                  <td>${new_price}</td>
-                  <td>
-                    <div className="cart-quantity-controls">
-                      <button
-                        className="cart-quantity-adjust-btn"
-                        onClick={() => removeFromCart(id)}
-                      >
-                        -
-                      </button>
-                      <input
-                        type="number"
-                        className="cart-quantity-input"
-                        value={
-                          editableQuantities[id] !== undefined
-                            ? editableQuantities[id]
-                            : cartItems[id]
-                        }
-                        onChange={(event) =>
-                          handleQuantityChange(id, event.target.value)
-                        }
-                        onBlur={() => handleQuantityBlur(id)}
-                        min="1"
-                      />
-                      <button
-                        className="cart-quantity-adjust-btn"
-                        onClick={() => addToCart(id)}
-                      >
-                        +
-                      </button>
-                    </div>
-                  </td>
-                  <td>${new_price * cartItems[id]}</td>
-                  <td>
-                    <div className="cart-remove-icon-container">
-                      <img
-                        className="cart-remove-icon"
-                        onClick={() => handleRemoveAll(id)}
-                        src={remove_icon}
-                        alt=""
-                        title="Remove all"
-                      />
-                    </div>
-                  </td>
-                </tr>
-              );
-            }
-            return null;
-          })}
+          {items.map((item) => (
+            <tr key={item.productId}>
+              <td>
+                <img
+                  className="cart-product-image"
+                  src={item.image}
+                  alt={item.name}
+                />
+              </td>
+              <td>{item.name}</td>
+              <td>${item.price}</td>
+              <td>
+                <div className="cart-quantity-controls">
+                  <button
+                    className="cart-quantity-adjust-btn"
+                    onClick={() => handleRemoveItem(item.productId)}
+                  >
+                    -
+                  </button>
+                  <input
+                    type="number"
+                    className="cart-quantity-input"
+                    value={
+                      editableQuantities[item.productId] !== undefined
+                        ? editableQuantities[item.productId]
+                        : item.quantity
+                    }
+                    onChange={(event) =>
+                      handleQuantityChange(item.productId, event.target.value)
+                    }
+                    onBlur={() => handleQuantityBlur(item.productId)}
+                    min="1"
+                  />
+                  <button
+                    className="cart-quantity-adjust-btn"
+                    onClick={() => handleAddItem(item.productId)}
+                  >
+                    +
+                  </button>
+                </div>
+              </td>
+              <td>${(item.price * item.quantity).toFixed(2)}</td>
+              <td>
+                <div className="cart-remove-icon-container">
+                  <img
+                    className="cart-remove-icon"
+                    onClick={() => handleRemoveAll(item.productId)}
+                    src={remove_icon}
+                    alt=""
+                    title="Remove all"
+                  />
+                </div>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
 
@@ -133,7 +162,7 @@ const CartItems = () => {
         <h2 className="cart-totals-title">Cart Totals</h2>
         <div className="cart-totals-item">
           <p className="cart-totals-label">Subtotal</p>
-          <p className="cart-totals-value">${getTotalCartAmount()}</p>
+          <p className="cart-totals-value">${totalPrice.toFixed(2)}</p>
         </div>
         <div className="cart-totals-item">
           <p className="cart-totals-label">Shipping Fee</p>
@@ -143,7 +172,7 @@ const CartItems = () => {
         <div className="cart-totals-item">
           <p className="cart-totals-label">Total</p>
           <p className="cart-totals-value cart-total-amount">
-            ${getTotalCartAmount()}
+            ${totalPrice.toFixed(2)}
           </p>
         </div>
         <button className="checkout-button">PROCEED TO CHECKOUT</button>

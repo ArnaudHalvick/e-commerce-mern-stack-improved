@@ -10,9 +10,9 @@ import { Link } from "react-router-dom";
 
 import { ShopContext } from "../../context/ShopContext";
 import { AuthContext } from "../../context/AuthContext";
+import CartCount from "./CartCount";
 
 const Navbar = () => {
-  const { getTotalCartItems } = useContext(ShopContext);
   const { isAuthenticated, user, logout } = useContext(AuthContext);
   const [activeMenu, setActiveMenu] = useState("shop");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -69,7 +69,7 @@ const Navbar = () => {
         <Link to="/cart">
           <img src={cart_icon} alt="cart" />
         </Link>
-        <div className="shop-nav-cart-count">{getTotalCartItems()}</div>
+        <CartCount />
       </div>
     </div>
   );
