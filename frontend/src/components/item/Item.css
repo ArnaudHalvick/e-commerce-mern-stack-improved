@@ -1,0 +1,32 @@
+.item-container {
+  width: 22rem;
+}
+
+.item-container p {
+  margin: 0.37rem 0;
+  font-size: 1.1rem;
+}
+
+.item-price-container {
+  display: flex;
+  gap: 1.25rem;
+  align-items: center;
+}
+
+.item-price-current {
+  color: #171717;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.item-price-previous {
+  color: #7a7a7a;
+  font-weight: 500;
+  font-size: 0.9rem;
+  text-decoration: line-through;
+}
+
+.item-container:hover {
+  transform: scale(1.05);
+  transition: 0.6s;
+}

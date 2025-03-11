@@ -1,0 +1,38 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 2rem;
+  background: #fff;
+  box-shadow: 0 1px 3px -2px #000;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.nav-logo {
+  width: 13rem;
+  height: auto;
+}
+
+.nav-profile {
+  width: 4rem;
+  height: auto;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .navbar {
+    padding: 0.5rem 1rem;
+  }
+
+  .nav-logo {
+    width: 8rem;
+  }
+
+  .nav-profile {
+    width: 2.5rem;
+  }
+}
+
+/* TODO: Make navbar and sidebar responsive. Make it flex direction row for small screens */

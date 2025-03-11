@@ -1,0 +1,135 @@
+.hero-container {
+  display: flex;
+  background: linear-gradient(180deg, #fce6ff, #e1ffea22 60%);
+  min-height: 80vh;
+  height: auto;
+  flex-direction: row;
+}
+
+.hero-section-left {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  flex: 1;
+  line-height: 1.1;
+  padding-left: 11.25rem;
+  gap: 1.25rem;
+}
+
+.hero-section-left h2 {
+  color: #171717;
+  font-weight: 600;
+  font-size: 1.65rem;
+}
+
+.hero-section-left p {
+  color: #171717;
+  font-weight: 700;
+  font-size: 6.25rem;
+}
+
+.hero-icon-container {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.hero-button-latest {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  width: 20rem;
+  height: 4.5rem;
+  border-radius: 4.7rem;
+  margin-top: 1.9rem;
+  background: #ff6e6e;
+  color: white;
+  font-size: 1.4rem;
+  font-weight: 500;
+}
+
+.hero-section-right {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hero-section-right img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Media Queries */
+@media (max-width: 1199.98px) {
+  .hero-section-left {
+    padding-left: 5rem;
+  }
+
+  .hero-section-left p {
+    font-size: 5rem;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .hero-section-left {
+    padding-left: 3rem;
+  }
+
+  .hero-section-left p {
+    font-size: 4rem;
+  }
+
+  .hero-button-latest {
+    width: 16rem;
+    height: 3.5rem;
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .hero-container {
+    flex-direction: column;
+    padding: 2rem 0;
+  }
+
+  .hero-section-left {
+    padding: 2rem;
+    align-items: center;
+  }
+
+  .hero-section-left p {
+    font-size: 3.5rem;
+  }
+
+  .hero-section-right {
+    margin-top: 2rem;
+  }
+
+  .hero-section-right img {
+    max-width: 80%;
+    height: auto;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .hero-section-left h2 {
+    font-size: 1.2rem;
+  }
+
+  .hero-section-left p {
+    font-size: 2.5rem;
+  }
+
+  .hero-button-latest {
+    width: 14rem;
+    height: 3rem;
+    font-size: 1rem;
+  }
+
+  .hero-section-right img {
+    max-width: 70%;
+    height: auto;
+  }
+}

@@ -1,0 +1,178 @@
+.shop-navbar {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 1.3rem;
+  box-shadow: 0 0 0.625rem 0 rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.shop-nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.shop-nav-logo p {
+  color: #171717;
+  font-size: 2.375rem;
+  font-weight: 500;
+}
+
+.shop-nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 3.125rem;
+  list-style: none;
+  color: #171717;
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+/* Each menu item */
+.shop-nav-menu li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  cursor: pointer;
+}
+
+/* Underline indicator */
+.shop-nav-menu hr {
+  border: none;
+  width: 80%;
+  height: 0.22rem;
+  border-radius: 1rem;
+  background-color: #ff6e6e;
+}
+
+.shop-nav-login-cart {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.shop-nav-login-cart button {
+  outline: none;
+  width: 8rem;
+  height: 2.5rem;
+  border-radius: 2rem;
+  border: 0.0625rem solid #7a7a7a;
+  color: #171717;
+  font-size: 1rem;
+  font-weight: 500;
+  background-color: white;
+  cursor: pointer;
+}
+
+.shop-nav-login-cart button:active {
+  background-color: #e2e2e2;
+}
+
+.shop-nav-cart-count {
+  margin-left: -1.7rem;
+  margin-top: -1.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ff6e6e;
+  color: white;
+  border-radius: 50%;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* Hamburger Icon - hidden on larger screens */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.hamburger span {
+  height: 3px;
+  width: 25px;
+  background: #171717;
+  margin: 4px 0;
+  transition: 0.4s;
+}
+
+/* Responsive styles */
+/* Extra small devices */
+@media (max-width: 576px) {
+  .shop-nav-logo p {
+    font-size: 1.2rem;
+  }
+
+  .shop-nav-cart-count {
+    width: 1.2rem;
+    height: 1.2rem;
+    font-size: 0.75rem;
+  }
+
+  .shop-nav-login-cart button {
+    width: 4.5rem;
+    font-size: 0.85rem;
+  }
+
+  .shop-nav-cart {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .shop-navbar {
+    justify-content: space-between;
+    padding: 1.3rem 1rem;
+  }
+
+  /* Hide default menu on mobile */
+  .shop-nav-menu {
+    position: absolute;
+    top: 70px; /* Adjust based on your navbar height */
+    left: 0;
+    right: 0;
+    background-color: white;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1rem 0;
+    display: none;
+    box-shadow: 0 0 0.625rem 0 rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+  }
+
+  /* Show mobile menu when active */
+  .shop-nav-menu.active {
+    display: flex;
+  }
+
+  /* Keep login and cart visible */
+  .shop-nav-login-cart {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  /* Reorder elements */
+  .shop-nav-logo {
+    order: 1;
+  }
+
+  .hamburger {
+    display: flex;
+    order: 2;
+  }
+
+  .shop-nav-login-cart {
+    order: 3;
+  }
+
+  .shop-nav-login-cart img {
+    margin-left: 1rem;
+  }
+}

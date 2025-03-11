@@ -1,0 +1,53 @@
+/* Base container styles */
+.container {
+  margin-right: auto;
+  margin-left: auto;
+  box-sizing: border-box;
+}
+
+/* Extra small devices (phones, <576px): full width */
+.container {
+  width: 100%;
+}
+
+/* Small devices (≥576px and <768px): fixed width 576px */
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .container {
+    width: 576px;
+  }
+}
+
+/* Medium devices (≥768px and <992px): fixed width 768px */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .container {
+    width: 768px;
+  }
+}
+
+/* Large devices (≥992px and <1200px): fixed width 992px */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  .container {
+    width: 992px;
+  }
+}
+
+/* Extra large devices (≥1200px and <1400px): fixed width 1200px */
+@media (min-width: 1200px) and (max-width: 1399.98px) {
+  .container {
+    width: 1200px;
+  }
+}
+
+/* Extra extra large devices (≥1400px and <1536px): fixed width 1400px */
+@media (min-width: 1400px) and (max-width: 1535.98px) {
+  .container {
+    width: 1400px;
+  }
+}
+
+/* Extra extra extra large devices (≥1536px): fixed width 1536px */
+@media (min-width: 1536px) {
+  .container {
+    width: 1536px;
+  }
+}
