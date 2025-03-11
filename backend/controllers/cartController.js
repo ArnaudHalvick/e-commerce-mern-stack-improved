@@ -101,9 +101,6 @@ const addToCart = async (req, res) => {
       cart,
     });
   } catch (error) {
-    console.error("Add to cart error:", error);
-    console.error("Request body:", req.body);
-    console.error("User ID:", req.user ? req.user.id : "No user ID");
     res.status(500).json({
       success: false,
       message: "Failed to add item to cart",

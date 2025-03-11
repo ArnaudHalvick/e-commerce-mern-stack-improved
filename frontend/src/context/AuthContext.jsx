@@ -69,7 +69,6 @@ const AuthContextProvider = (props) => {
           err.message === "Failed to fetch" ||
           err.message.includes("Network")
         ) {
-          console.log("Network issue detected, keeping authentication state");
         } else {
           localStorage.removeItem("auth-token");
           setIsAuthenticated(false);
