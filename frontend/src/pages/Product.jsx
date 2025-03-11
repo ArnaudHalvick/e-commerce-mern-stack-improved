@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import Breadcrumb from "../components/breadcrumbs/breadcrumb";
 import ProductDisplay from "../components/productDisplay/ProductDisplay";
@@ -10,7 +10,21 @@ import RelatedProducts from "../components/relatedProducts/RelatedProducts";
 const Product = () => {
   const { all_product } = useContext(ShopContext);
   const { productId } = useParams();
-  const product = all_product.find((e) => e.id === Number(productId));
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Find the product when all_product changes or productId changes
+    if (all_product && all_product.length > 0) {
+      const foundProduct = all_product.find((e) => e.id === Number(productId));
+      setProduct(foundProduct);
+      setLoading(false);
+    }
+  }, [all_product, productId]);
+
+  if (loading) {
+    return <div className="loading">Loading product details...</div>;
+  }
 
   return (
     <div>
