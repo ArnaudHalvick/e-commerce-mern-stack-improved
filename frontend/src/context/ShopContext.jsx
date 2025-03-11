@@ -24,14 +24,13 @@ const ShopContextProvider = (props) => {
 
     if (localStorage.getItem("auth-token")) {
       // TODO: Improve this code used to get cart data from the database
-      fetch("http://localhost:4000/api/get-cart-data", {
-        method: "POST",
+      fetch("http://localhost:4000/api/cart", {
+        method: "GET",
         headers: {
-          Accept: "application/form-data",
+          Accept: "application/json",
           "Content-Type": "application/json",
           "auth-token": `${localStorage.getItem("auth-token")}`,
         },
-        body: "",
       })
         .then((res) => res.json())
         .then((data) => {
@@ -45,7 +44,7 @@ const ShopContextProvider = (props) => {
     // TODO: Improve this code used to add item to cart and store it in the database
     // Need to also reset cartItems state to 0 after a while or some other conditions because restarting server doesn't reset it
     if (localStorage.getItem("auth-token")) {
-      fetch("http://localhost:4000/api/add-to-cart", {
+      fetch("http://localhost:4000/api/cart/add", {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -65,7 +64,7 @@ const ShopContextProvider = (props) => {
     // TODO: Improve this code used to remove item from cart and store it in the database.
     // It doesnt work as intended. I have button to do minus 1 item or remove all items and it wont work properly
     if (localStorage.getItem("auth-token")) {
-      fetch("http://localhost:4000/api/remove-from-cart", {
+      fetch("http://localhost:4000/api/cart/remove", {
         method: "POST",
         headers: {
           Accept: "application/json",
