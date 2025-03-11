@@ -134,6 +134,10 @@
   .cart-icon {
     width: 1.5rem; /* Smaller size for extra small devices */
   }
+
+  .welcome-user {
+    font-size: 0.85rem;
+  }
 }
 
 @media (max-width: 768px) {
@@ -169,6 +173,11 @@
     gap: 0.5rem;
   }
 
+  .shop-nav-login-cart button {
+    width: 6rem;
+    font-size: 0.9rem;
+  }
+
   /* Reorder elements */
   .shop-nav-logo {
     order: 1;
@@ -185,5 +194,9 @@
 
   .cart-icon {
     width: 2rem; /* Adjust size for small devices */
+  }
+
+  .welcome-user {
+    font-size: 0.9rem;
   }
 }
