@@ -67,17 +67,19 @@ const Navbar = () => {
 
       <div className="shop-nav-login-cart">
         {isAuthenticated ? (
-          <div className="user-controls">
+          <>
             <span className="welcome-user">Hi, {displayName}</span>
-            <button onClick={logout}>Logout</button>
-          </div>
+            <div className="user-controls">
+              <button onClick={logout}>Logout</button>
+            </div>
+          </>
         ) : (
           <Link to="/login">
             <button>Login</button>
           </Link>
         )}
         <Link to="/cart">
-          <img src={cart_icon} alt="cart" />
+          <img className="cart-icon" src={cart_icon} alt="cart" />
         </Link>
         <CartCount />
       </div>

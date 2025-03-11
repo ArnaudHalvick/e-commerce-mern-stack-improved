@@ -102,6 +102,12 @@
   transition: 0.4s;
 }
 
+/* Add this new class for responsive cart icon */
+.cart-icon {
+  width: 2rem; /* Set a default width */
+  height: auto; /* Maintain aspect ratio */
+}
+
 /* Responsive styles */
 /* Extra small devices */
 @media (max-width: 576px) {
@@ -123,6 +129,10 @@
   .shop-nav-cart {
     width: 1.5rem;
     height: 1.5rem;
+  }
+
+  .cart-icon {
+    width: 1.5rem; /* Smaller size for extra small devices */
   }
 }
 
@@ -173,7 +183,7 @@
     order: 3;
   }
 
-  .shop-nav-login-cart img {
-    margin-left: 1rem;
+  .cart-icon {
+    width: 2rem; /* Adjust size for small devices */
   }
 }
