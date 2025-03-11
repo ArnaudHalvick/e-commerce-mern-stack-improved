@@ -6,7 +6,6 @@ import { useContext, useState, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../redux/slices/cartSlice";
 import { AuthContext } from "../../context/AuthContext";
-import { ShopContext } from "../../context/ShopContext";
 
 const ProductDisplay = (props) => {
   const { product } = props;
