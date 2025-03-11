@@ -1,3 +1,4 @@
+// Path: admin/src/components/listProduct/ListProduct.jsx
 import { useState, useEffect } from "react";
 import "./ListProduct.css";
 

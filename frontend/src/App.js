@@ -1,3 +1,5 @@
+// Path: frontend/src/App.js
+
 import { BrowserRouter, Routes, Route } from "react-router-dom"; // TODO: => switch to createBrowserRouter ? Not necessary but good for practice
 
 import Container from "./components/container/Container";

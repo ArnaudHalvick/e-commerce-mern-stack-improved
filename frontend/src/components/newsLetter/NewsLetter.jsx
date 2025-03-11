@@ -1,3 +1,4 @@
+// Path: frontend/src/components/newsLetter/NewsLetter.jsx
 import "./NewsLetter.css";
 
 const Newsletter = () => {

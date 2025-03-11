@@ -1,3 +1,5 @@
+// backend/controllers/cartController.js
+
 const User = require("../models/User");
 
 // Add item to cart

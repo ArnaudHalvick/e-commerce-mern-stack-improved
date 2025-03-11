@@ -1,3 +1,4 @@
+// Path: frontend/src/pages/ShopCategory.jsx
 import { useContext } from "react";
 import { ShopContext } from "../context/ShopContext";
 import dropdown_icon from "../components/assets/dropdown_icon.png";

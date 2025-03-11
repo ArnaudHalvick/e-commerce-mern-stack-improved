@@ -1,3 +1,4 @@
+// Path: frontend/src/components/cartItems/CartItems.jsx
 import "./CartItems.css";
 import remove_icon from "../assets/cart_cross_icon.png";
 import { useContext, useState } from "react";

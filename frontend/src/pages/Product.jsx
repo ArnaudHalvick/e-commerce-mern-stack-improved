@@ -1,3 +1,4 @@
+// Path: frontend/src/pages/Product.jsx
 import { useParams } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 import { useContext, useEffect, useState } from "react";

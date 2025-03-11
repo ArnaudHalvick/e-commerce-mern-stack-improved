@@ -1,3 +1,4 @@
+// Path: frontend/src/pages/Auth.jsx
 import "./CSS/Auth.css";
 
 import { Link } from "react-router-dom";

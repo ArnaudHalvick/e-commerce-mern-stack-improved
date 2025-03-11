@@ -1,3 +1,4 @@
+// Path: frontend/src/components/productDisplay/ProductDisplay.jsx
 import "./ProductDisplay.css";
 import star_icon from "../assets/star_icon.png";
 import star_dull_icon from "../assets/star_dull_icon.png";

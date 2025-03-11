@@ -1,3 +1,4 @@
+// Path: frontend/src/context/ShopContext.jsx
 import { createContext, useState, useEffect } from "react";
 
 // TODO: review this code because I doubt that it's best practice. Check other file for the 300 item cart initialization

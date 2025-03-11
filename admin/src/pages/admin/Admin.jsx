@@ -1,3 +1,4 @@
+// Path: admin/src/pages/admin/Admin.jsx
 import "./Admin.css";
 import Sidebar from "../../components/sidebar/Sidebar";
 import { Routes, Route } from "react-router-dom";

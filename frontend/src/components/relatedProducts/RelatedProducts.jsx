@@ -1,3 +1,4 @@
+// Path: frontend/src/components/relatedProducts/RelatedProducts.jsx
 import React from "react"; // 6.9k (gzipped: 2.7k)
 import "./RelatedProducts.css";
 import data_product from "../assets/data";

@@ -1,3 +1,4 @@
+// Path: frontend/src/components/popular/Popular.jsx
 import "./Popular.css";
 import Item from "../item/Item";
 import { useState, useEffect } from "react";

@@ -1,3 +1,4 @@
+// Path: admin/src/components/navbar/Navbar.jsx
 import "./Navbar.css";
 import navlogo from "../../assets/admin_assets/nav-logo.svg";
 import navProfile from "../../assets/admin_assets/nav-profile.svg";

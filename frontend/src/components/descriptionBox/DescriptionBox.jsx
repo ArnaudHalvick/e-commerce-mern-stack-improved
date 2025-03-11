@@ -1,3 +1,4 @@
+// Path: frontend/src/components/descriptionBox/DescriptionBox.jsx
 import "./DescriptionBox.css";
 
 const DescriptionBox = () => {

@@ -1,3 +1,5 @@
+// Path: frontend/src/components/offers/Offers.jsx
+
 import React from "react";
 import "./Offers.css";
 import exclusive_image from "../assets/exclusive_image.png";

@@ -1,3 +1,4 @@
+// Path: frontend/src/components/item/Item.jsx
 import "./Item.css";
 import { Link } from "react-router-dom";
 

@@ -1,3 +1,5 @@
+// Path: frontend/src/components/navbar/Navbar.jsx
+
 import "./Navbar.css";
 
 import logo from "../assets/logo.png";

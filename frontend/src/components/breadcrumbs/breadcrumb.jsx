@@ -1,3 +1,4 @@
+// Path: frontend/src/components/breadcrumbs/breadcrumb.jsx
 import "./breadcrumb.css";
 import arrow_icon from "../assets/breadcrum_arrow.png";
 

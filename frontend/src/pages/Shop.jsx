@@ -1,3 +1,4 @@
+// Path: frontend/src/pages/Shop.jsx
 import Hero from "../components/hero/Hero";
 import Popular from "../components/popular/Popular";
 import Offers from "../components/offers/Offers";

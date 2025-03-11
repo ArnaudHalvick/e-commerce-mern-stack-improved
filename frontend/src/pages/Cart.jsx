@@ -1,3 +1,4 @@
+// Path: frontend/src/pages/Cart.jsx
 import CartItems from "../components/cartItems/CartItems";
 
 const Cart = () => {

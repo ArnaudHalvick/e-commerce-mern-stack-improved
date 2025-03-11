@@ -1,3 +1,4 @@
+// Path: admin/src/components/addProduct/AddProduct.jsx
 import "./AddProduct.css";
 import axios from "axios";
 import upload_area from "../../assets/admin_assets/upload_area.svg";

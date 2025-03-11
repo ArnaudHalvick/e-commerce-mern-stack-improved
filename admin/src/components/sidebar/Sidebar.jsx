@@ -1,3 +1,4 @@
+// Path: admin/src/components/sidebar/Sidebar.jsx
 import "./Sidebar.css";
 import { Link } from "react-router-dom";
 import add_product_icon from "../../assets//admin_assets/Product_Cart.svg";

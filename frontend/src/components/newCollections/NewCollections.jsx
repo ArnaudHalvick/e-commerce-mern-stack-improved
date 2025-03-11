@@ -1,3 +1,4 @@
+// Path: frontend/src/components/newCollections/NewCollections.jsx
 import "./NewCollections.css";
 import Item from "../item/Item";
 import { useState, useEffect } from "react";

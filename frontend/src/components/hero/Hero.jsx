@@ -1,3 +1,4 @@
+// Path: frontend/src/components/hero/Hero.jsx
 import "./Hero.css";
 import arrow_icon from "../assets/arrow.png";
 import hero_image from "../assets/hero_image.png";

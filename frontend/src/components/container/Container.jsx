@@ -1,3 +1,4 @@
+// Path: frontend/src/components/container/Container.jsx
 import React from "react";
 import "./Container.css";
 
