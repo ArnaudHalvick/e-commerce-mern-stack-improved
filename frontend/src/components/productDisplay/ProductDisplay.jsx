@@ -21,7 +21,7 @@ const ProductDisplay = (props) => {
     setIsAdding(true);
 
     if (isAuthenticated) {
-      dispatch(addToCart({ itemId: product.id, quantity: 1 }));
+      dispatch(addToCart({ itemId: product._id, quantity: 1 }));
       setTimeout(() => {
         setIsAdding(false);
       }, 1000); // Prevent multiple clicks for 1 second
@@ -29,7 +29,7 @@ const ProductDisplay = (props) => {
       alert("Please login to add items to cart");
       setIsAdding(false);
     }
-  }, [dispatch, product.id, isAuthenticated, isAdding]);
+  }, [dispatch, product._id, isAuthenticated, isAdding]);
 
   return (
     <div className="product-display">

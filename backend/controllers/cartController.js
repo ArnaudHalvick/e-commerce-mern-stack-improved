@@ -46,8 +46,14 @@ const addToCart = async (req, res) => {
       });
     }
 
-    // Find product
-    const product = await Product.findById(itemId);
+    // First try to find product by MongoDB _id
+    let product = await Product.findById(itemId).catch(() => null);
+
+    // If not found, try using the numeric id field
+    if (!product) {
+      product = await Product.findOne({ id: itemId });
+    }
+
     if (!product) {
       return res.status(404).json({
         success: false,
@@ -68,7 +74,7 @@ const addToCart = async (req, res) => {
 
     // Check if product already in cart
     const itemIndex = cart.items.findIndex(
-      (item) => item.productId.toString() === itemId
+      (item) => item.productId.toString() === product._id.toString()
     );
 
     // If product exists in cart, update quantity
@@ -77,7 +83,7 @@ const addToCart = async (req, res) => {
     } else {
       // Add new item to cart
       cart.items.push({
-        productId: itemId,
+        productId: product._id,
         quantity,
         price: product.new_price,
         name: product.name,
@@ -96,6 +102,8 @@ const addToCart = async (req, res) => {
     });
   } catch (error) {
     console.error("Add to cart error:", error);
+    console.error("Request body:", req.body);
+    console.error("User ID:", req.user ? req.user.id : "No user ID");
     res.status(500).json({
       success: false,
       message: "Failed to add item to cart",
