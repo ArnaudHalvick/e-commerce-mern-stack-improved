@@ -1,5 +1,7 @@
 import { createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { resetCart } from "../redux/slices/cartSlice";
 
 export const AuthContext = createContext(null);
 
@@ -10,6 +12,7 @@ const AuthContextProvider = (props) => {
   const [error, setError] = useState(null);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   // Check if user is authenticated on load
   useEffect(() => {
@@ -145,6 +148,8 @@ const AuthContextProvider = (props) => {
     localStorage.removeItem("auth-token");
     setUser(null);
     setIsAuthenticated(false);
+    // Reset cart state when user logs out
+    dispatch(resetCart());
     navigate("/");
   };
 

@@ -17,7 +17,10 @@ const CartCount = () => {
     }
   }, [dispatch, isAuthenticated]);
 
-  return <div className="nav-cart-count">{totalItems}</div>;
+  // Only show cart count if user is authenticated
+  return (
+    <div className="nav-cart-count">{isAuthenticated ? totalItems : 0}</div>
+  );
 };
 
 export default CartCount;
