@@ -59,7 +59,7 @@ const AddProduct = () => {
 
       // Upload image first
       const uploadResponse = await axios.post(
-        "http://localhost:4000/upload",
+        "http://localhost:4000/api/upload",
         formData,
         {
           headers: {
@@ -77,7 +77,7 @@ const AddProduct = () => {
 
         // Add product to database
         const addResponse = await axios.post(
-          "http://localhost:4000/add-product",
+          "http://localhost:4000/api/add-product",
           productData,
           {
             headers: {

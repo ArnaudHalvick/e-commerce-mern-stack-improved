@@ -13,7 +13,7 @@ const ListProduct = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch("http://localhost:4000/all-products");
+        const response = await fetch("http://localhost:4000/api/all-products");
         const data = await response.json();
         setProducts(data);
         setLoading(false);
@@ -29,13 +29,16 @@ const ListProduct = () => {
   const handleDelete = async (id, name) => {
     if (window.confirm(`Are you sure you want to delete ${name}?`)) {
       try {
-        const response = await fetch("http://localhost:4000/remove-product", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ id }),
-        });
+        const response = await fetch(
+          "http://localhost:4000/api/remove-product",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ id }),
+          }
+        );
         const data = await response.json();
 
         if (data.success) {

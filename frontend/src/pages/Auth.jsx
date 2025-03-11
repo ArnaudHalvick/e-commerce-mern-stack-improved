@@ -23,7 +23,7 @@ const Auth = () => {
 
   const login = async () => {
     let responseData;
-    await fetch("http://localhost:4000/login", {
+    await fetch("http://localhost:4000/api/login", {
       method: "POST",
       body: JSON.stringify({
         email: formData.email,
@@ -49,7 +49,7 @@ const Auth = () => {
 
   const signup = async () => {
     let responseData;
-    await fetch("http://localhost:4000/signup", {
+    await fetch("http://localhost:4000/api/signup", {
       method: "POST",
       body: JSON.stringify(formData),
       headers: {
