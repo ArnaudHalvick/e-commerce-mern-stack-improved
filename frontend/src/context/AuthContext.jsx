@@ -14,6 +14,17 @@ const AuthContextProvider = (props) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  // Helper function to normalize user data
+  const normalizeUserData = (userData) => {
+    if (!userData) return null;
+
+    // Ensure we have a username property (backend uses 'name')
+    return {
+      ...userData,
+      username: userData.name || userData.username,
+    };
+  };
+
   // Check if user is authenticated on load
   useEffect(() => {
     const checkAuthStatus = async () => {
@@ -40,7 +51,7 @@ const AuthContextProvider = (props) => {
         const data = await response.json();
 
         if (response.ok && data.valid) {
-          setUser(data.user);
+          setUser(normalizeUserData(data.user));
           setIsAuthenticated(true);
         } else {
           // Token is invalid
@@ -91,7 +102,7 @@ const AuthContextProvider = (props) => {
 
       if (response.ok && data.success) {
         localStorage.setItem("auth-token", data.accessToken);
-        setUser(data.user);
+        setUser(normalizeUserData(data.user));
         setIsAuthenticated(true);
         navigate("/");
         return { success: true };
@@ -126,7 +137,7 @@ const AuthContextProvider = (props) => {
 
       if (response.ok && data.success) {
         localStorage.setItem("auth-token", data.accessToken);
-        setUser(data.user);
+        setUser(normalizeUserData(data.user));
         setIsAuthenticated(true);
         navigate("/");
         return { success: true };

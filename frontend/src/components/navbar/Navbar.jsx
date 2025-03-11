@@ -5,7 +5,7 @@ import "./Navbar.css";
 import logo from "../assets/logo.png";
 import cart_icon from "../assets/cart_icon.png";
 
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 import { AuthContext } from "../../context/AuthContext";
@@ -15,6 +15,17 @@ const Navbar = () => {
   const { isAuthenticated, user, logout } = useContext(AuthContext);
   const [activeMenu, setActiveMenu] = useState("shop");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [displayName, setDisplayName] = useState("User");
+
+  // Update displayName whenever user changes
+  useEffect(() => {
+    if (user) {
+      // Check for both name and username properties since backend uses 'name'
+      setDisplayName(user.name || user.username || "User");
+    } else {
+      setDisplayName("User");
+    }
+  }, [user]);
 
   const handleMenuClick = (menuItem) => {
     setActiveMenu(menuItem);
@@ -57,7 +68,7 @@ const Navbar = () => {
       <div className="shop-nav-login-cart">
         {isAuthenticated ? (
           <div className="user-controls">
-            <span className="welcome-user">Hi, {user?.username || "User"}</span>
+            <span className="welcome-user">Hi, {displayName}</span>
             <button onClick={logout}>Logout</button>
           </div>
         ) : (
