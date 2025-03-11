@@ -6,13 +6,19 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import ShopContextProvider from "./context/ShopContext";
+import { BrowserRouter } from "react-router-dom";
+import AuthContextProvider from "./context/AuthContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <ShopContextProvider>
-      <App />
-    </ShopContextProvider>
+    <BrowserRouter>
+      <AuthContextProvider>
+        <ShopContextProvider>
+          <App />
+        </ShopContextProvider>
+      </AuthContextProvider>
+    </BrowserRouter>
   </React.StrictMode>
 );
 

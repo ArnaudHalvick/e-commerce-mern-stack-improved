@@ -1,6 +1,6 @@
 // Path: frontend/src/App.js
 
-import { BrowserRouter, Routes, Route } from "react-router-dom"; // TODO: => switch to createBrowserRouter ? Not necessary but good for practice
+import { Routes, Route } from "react-router-dom"; // Removed BrowserRouter
 
 import Container from "./components/container/Container";
 import Navbar from "./components/navbar/Navbar";
@@ -18,7 +18,7 @@ import kids_banner from "./components/assets/banner_kids.png";
 
 function App() {
   return (
-    <BrowserRouter>
+    <>
       <Container fluid={true}>
         <Navbar />
       </Container>
@@ -49,7 +49,7 @@ function App() {
       <Container fluid={true}>
         <Footer />
       </Container>
-    </BrowserRouter>
+    </>
   );
 }
 

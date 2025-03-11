@@ -175,10 +175,34 @@ const getUserProfile = async (req, res) => {
   }
 };
 
+// Verify token and return user info
+const verifyToken = async (req, res) => {
+  try {
+    // The isAuthenticated middleware would have already verified the token
+    // and attached the user to the request
+    const user = req.user;
+
+    return res.status(200).json({
+      valid: true,
+      user: {
+        id: user._id,
+        username: user.name,
+        email: user.email,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      valid: false,
+      message: "Internal server error",
+    });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
   logoutUser,
   refreshToken,
   getUserProfile,
+  verifyToken,
 };

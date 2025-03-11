@@ -1,5 +1,6 @@
 // Path: frontend/src/context/ShopContext.jsx
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useContext } from "react";
+import { AuthContext } from "./AuthContext";
 
 // TODO: review this code because I doubt that it's best practice. Check other file for the 300 item cart initialization
 
@@ -16,43 +17,65 @@ const getDefaultCart = () => {
 const ShopContextProvider = (props) => {
   const [all_product, setAll_Product] = useState([]);
   const [cartItems, setCartItems] = useState(getDefaultCart());
+  const { isAuthenticated } = useContext(AuthContext);
 
+  // Load products and cart data
   useEffect(() => {
+    // Fetch all products
     fetch("http://localhost:4000/api/all-products")
       .then((res) => res.json())
-      .then((data) => setAll_Product(data));
+      .then((data) => setAll_Product(data))
+      .catch((err) => console.error("Error fetching products:", err));
 
-    if (localStorage.getItem("auth-token")) {
-      // TODO: Improve this code used to get cart data from the database
-      fetch("http://localhost:4000/api/cart", {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          "auth-token": `${localStorage.getItem("auth-token")}`,
-        },
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          setCartItems(data);
-        });
+    // Fetch cart data if authenticated
+    if (isAuthenticated) {
+      fetchCartData();
+    } else {
+      // Reset cart to default if not authenticated
+      setCartItems(getDefaultCart());
     }
-  }, []);
+  }, [isAuthenticated]);
+
+  // Function to fetch cart data
+  const fetchCartData = () => {
+    const token = localStorage.getItem("auth-token");
+    if (!token) return;
+
+    fetch("http://localhost:4000/api/cart", {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "auth-token": token,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data) {
+          setCartItems(data);
+        }
+      })
+      .catch((err) => console.error("Error fetching cart:", err));
+  };
 
   const addToCart = (itemId) => {
     setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] + 1 }));
-    // TODO: Improve this code used to add item to cart and store it in the database
-    // Need to also reset cartItems state to 0 after a while or some other conditions because restarting server doesn't reset it
-    if (localStorage.getItem("auth-token")) {
+
+    if (isAuthenticated) {
+      const token = localStorage.getItem("auth-token");
+      if (!token) return;
+
       fetch("http://localhost:4000/api/cart/add", {
         method: "POST",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          "auth-token": `${localStorage.getItem("auth-token")}`,
+          "auth-token": token,
         },
         body: JSON.stringify({ itemId }),
-      }).then((res) => res.json());
+      })
+        .then((res) => res.json())
+        .catch((err) => console.error("Error adding to cart:", err));
     }
   };
 
@@ -61,18 +84,22 @@ const ShopContextProvider = (props) => {
       const newQuantity = Math.max(0, prev[itemId] - 1);
       return { ...prev, [itemId]: newQuantity };
     });
-    // TODO: Improve this code used to remove item from cart and store it in the database.
-    // It doesnt work as intended. I have button to do minus 1 item or remove all items and it wont work properly
-    if (localStorage.getItem("auth-token")) {
+
+    if (isAuthenticated) {
+      const token = localStorage.getItem("auth-token");
+      if (!token) return;
+
       fetch("http://localhost:4000/api/cart/remove", {
         method: "POST",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          "auth-token": `${localStorage.getItem("auth-token")}`,
+          "auth-token": token,
         },
         body: JSON.stringify({ itemId }),
-      }).then((res) => res.json());
+      })
+        .then((res) => res.json())
+        .catch((err) => console.error("Error removing from cart:", err));
     }
   };
 
@@ -109,6 +136,7 @@ const ShopContextProvider = (props) => {
     removeFromCart,
     getTotalCartAmount,
     getTotalCartItems,
+    fetchCartData,
   };
 
   return (

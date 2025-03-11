@@ -9,9 +9,11 @@ import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { ShopContext } from "../../context/ShopContext";
+import { AuthContext } from "../../context/AuthContext";
 
 const Navbar = () => {
   const { getTotalCartItems } = useContext(ShopContext);
+  const { isAuthenticated, user, logout } = useContext(AuthContext);
   const [activeMenu, setActiveMenu] = useState("shop");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -54,15 +56,11 @@ const Navbar = () => {
       </ul>
 
       <div className="shop-nav-login-cart">
-        {localStorage.getItem("auth-token") ? (
-          <button
-            onClick={() => {
-              localStorage.removeItem("auth-token");
-              window.location.reload();
-            }}
-          >
-            Logout
-          </button>
+        {isAuthenticated ? (
+          <div className="user-controls">
+            <span className="welcome-user">Hi, {user?.username || "User"}</span>
+            <button onClick={logout}>Logout</button>
+          </div>
         ) : (
           <Link to="/login">
             <button>Login</button>

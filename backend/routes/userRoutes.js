@@ -13,5 +13,6 @@ router.post("/refresh-token", verifyRefreshToken, userController.refreshToken);
 // Protected routes
 router.get("/logout", isAuthenticated, userController.logoutUser);
 router.get("/me", isAuthenticated, userController.getUserProfile);
+router.get("/verify-token", isAuthenticated, userController.verifyToken);
 
 module.exports = router;

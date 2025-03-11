@@ -5,16 +5,20 @@ const User = require("../models/User");
 
 const isAuthenticated = async (req, res, next) => {
   try {
-    const authHeader = req.headers.authorization;
+    // Check for token in auth-token header (for backward compatibility)
+    let token = req.headers["auth-token"];
 
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return res.status(401).json({
-        success: false,
-        message: "Please login to access this resource",
-      });
+    // If not found, check Authorization header
+    if (!token) {
+      const authHeader = req.headers.authorization;
+      if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        return res.status(401).json({
+          success: false,
+          message: "Please login to access this resource",
+        });
+      }
+      token = authHeader.split(" ")[1];
     }
-
-    const token = authHeader.split(" ")[1];
 
     const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
 
