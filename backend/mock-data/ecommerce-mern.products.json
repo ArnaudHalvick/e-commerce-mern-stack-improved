@@ -1,5 +1,8 @@
 [
   {
+    "_id": {
+      "$oid": "67d1b7831176db6eaec6e4be"
+    },
     "id": 1,
     "images": ["http://localhost:4000/images/product_1.png"],
     "mainImageIndex": 0,
@@ -14,12 +17,24 @@
     "types": ["Jacket"],
     "reviews": [],
     "rating": 4.7,
-    "date": { "$date": "2025-03-10T19:34:21.154Z" },
-    "available": true
+    "date": {
+      "$date": "2025-03-10T19:34:21.154Z"
+    },
+    "available": true,
+    "__v": 0
   },
   {
+    "_id": {
+      "$oid": "67d1b7831176db6eaec6e4bf"
+    },
     "id": 2,
-    "images": ["http://localhost:4000/images/product_2.png"],
+    "images": [
+      "http://localhost:4000/images/product_2.png",
+      "http://localhost:4000/images/p1_product_i1.png",
+      "http://localhost:4000/images/p1_product_i2.png",
+      "http://localhost:4000/images/p1_product_i3.png",
+      "http://localhost:4000/images/p1_product_i4.png"
+    ],
     "mainImageIndex": 0,
     "name": "Pink Ribbed Square-Neck Fitted T-Shirt",
     "shortDescription": "A stylish pink ribbed t-shirt with a flattering square neckline.",
@@ -32,10 +47,16 @@
     "types": ["T-Shirt"],
     "reviews": [],
     "rating": 4.5,
-    "date": { "$date": "2025-03-10T19:34:21.155Z" },
-    "available": true
+    "date": {
+      "$date": "2025-03-10T19:34:21.155Z"
+    },
+    "available": true,
+    "__v": 0
   },
   {
+    "_id": {
+      "$oid": "67d1b7831176db6eaec6e4c0"
+    },
     "id": 3,
     "images": ["http://localhost:4000/images/product_3.png"],
     "mainImageIndex": 0,
@@ -50,10 +71,16 @@
     "types": ["Tank Top"],
     "reviews": [],
     "rating": 4.6,
-    "date": { "$date": "2025-03-10T19:34:21.155Z" },
-    "available": true
+    "date": {
+      "$date": "2025-03-10T19:34:21.155Z"
+    },
+    "available": true,
+    "__v": 0
   },
   {
+    "_id": {
+      "$oid": "67d1b7831176db6eaec6e4c1"
+    },
     "id": 4,
     "images": ["http://localhost:4000/images/product_4.png"],
     "mainImageIndex": 0,
@@ -68,10 +95,16 @@
     "types": ["Dress"],
     "reviews": [],
     "rating": 4.8,
-    "date": { "$date": "2025-03-10T19:34:21.155Z" },
-    "available": true
+    "date": {
+      "$date": "2025-03-10T19:34:21.155Z"
+    },
+    "available": true,
+    "__v": 0
   },
   {
+    "_id": {
+      "$oid": "67d1b7831176db6eaec6e4c2"
+    },
     "id": 5,
     "images": ["http://localhost:4000/images/product_5.png"],
     "mainImageIndex": 0,
@@ -86,10 +119,16 @@
     "types": ["Crop Top"],
     "reviews": [],
     "rating": 4.5,
-    "date": { "$date": "2025-03-10T19:34:21.155Z" },
-    "available": true
+    "date": {
+      "$date": "2025-03-10T19:34:21.155Z"
+    },
+    "available": true,
+    "__v": 0
   },
   {
+    "_id": {
+      "$oid": "67d1b7831176db6eaec6e4c3"
+    },
     "id": 6,
     "images": ["http://localhost:4000/images/product_6.png"],
     "mainImageIndex": 0,
@@ -104,10 +143,16 @@
     "types": [],
     "reviews": [],
     "rating": 4.6,
-    "date": { "$date": "2025-03-10T19:34:21.155Z" },
-    "available": true
+    "date": {
+      "$date": "2025-03-10T19:34:21.155Z"
+    },
+    "available": true,
+    "__v": 0
   },
   {
+    "_id": {
+      "$oid": "67d1b7831176db6eaec6e4c4"
+    },
     "id": 7,
     "images": ["http://localhost:4000/images/product_7.png"],
     "mainImageIndex": 0,
@@ -122,10 +167,16 @@
     "types": ["Sweater"],
     "reviews": [],
     "rating": 4.7,
-    "date": { "$date": "2025-03-10T19:34:21.155Z" },
-    "available": true
+    "date": {
+      "$date": "2025-03-10T19:34:21.155Z"
+    },
+    "available": true,
+    "__v": 0
   },
   {
+    "_id": {
+      "$oid": "67d1b7831176db6eaec6e4c5"
+    },
     "id": 8,
     "images": ["http://localhost:4000/images/product_8.png"],
     "mainImageIndex": 0,
@@ -140,10 +191,16 @@
     "types": ["Shirt"],
     "reviews": [],
     "rating": 4.5,
-    "date": { "$date": "2025-03-10T19:34:21.155Z" },
-    "available": true
+    "date": {
+      "$date": "2025-03-10T19:34:21.155Z"
+    },
+    "available": true,
+    "__v": 0
   },
   {
+    "_id": {
+      "$oid": "67d1b7831176db6eaec6e4c6"
+    },
     "id": 9,
     "images": ["http://localhost:4000/images/product_9.png"],
     "mainImageIndex": 0,
@@ -158,10 +215,16 @@
     "types": ["Dress"],
     "reviews": [],
     "rating": 4.6,
-    "date": { "$date": "2025-03-10T19:34:21.155Z" },
-    "available": true
+    "date": {
+      "$date": "2025-03-10T19:34:21.155Z"
+    },
+    "available": true,
+    "__v": 0
   },
   {
+    "_id": {
+      "$oid": "67d1b7831176db6eaec6e4c7"
+    },
     "id": 10,
     "images": ["http://localhost:4000/images/product_10.png"],
     "mainImageIndex": 0,
@@ -176,10 +239,16 @@
     "types": ["Hoodie"],
     "reviews": [],
     "rating": 4.5,
-    "date": { "$date": "2025-03-10T19:34:21.155Z" },
-    "available": true
+    "date": {
+      "$date": "2025-03-10T19:34:21.155Z"
+    },
+    "available": true,
+    "__v": 0
   },
   {
+    "_id": {
+      "$oid": "67d1b7831176db6eaec6e4c8"
+    },
     "id": 11,
     "images": ["http://localhost:4000/images/product_11.png"],
     "mainImageIndex": 0,
@@ -194,10 +263,16 @@
     "types": ["Tank Top"],
     "reviews": [],
     "rating": 4.5,
-    "date": { "$date": "2025-03-10T19:34:21.155Z" },
-    "available": true
+    "date": {
+      "$date": "2025-03-10T19:34:21.155Z"
+    },
+    "available": true,
+    "__v": 0
   },
   {
+    "_id": {
+      "$oid": "67d1b7831176db6eaec6e4c9"
+    },
     "id": 12,
     "images": ["http://localhost:4000/images/product_12.png"],
     "mainImageIndex": 0,
@@ -212,10 +287,16 @@
     "types": ["Shirt"],
     "reviews": [],
     "rating": 4.6,
-    "date": { "$date": "2025-03-10T19:34:21.155Z" },
-    "available": true
+    "date": {
+      "$date": "2025-03-10T19:34:21.155Z"
+    },
+    "available": true,
+    "__v": 0
   },
   {
+    "_id": {
+      "$oid": "67d1b7831176db6eaec6e4ca"
+    },
     "id": 13,
     "images": ["http://localhost:4000/images/product_13.png"],
     "mainImageIndex": 0,
@@ -230,10 +311,16 @@
     "types": ["Hoodie"],
     "reviews": [],
     "rating": 4.7,
-    "date": { "$date": "2025-03-10T19:34:21.155Z" },
-    "available": true
+    "date": {
+      "$date": "2025-03-10T19:34:21.155Z"
+    },
+    "available": true,
+    "__v": 0
   },
   {
+    "_id": {
+      "$oid": "67d1b7831176db6eaec6e4cb"
+    },
     "id": 14,
     "images": ["http://localhost:4000/images/product_14.png"],
     "mainImageIndex": 0,
@@ -248,10 +335,16 @@
     "types": ["Jacket"],
     "reviews": [],
     "rating": 4.6,
-    "date": { "$date": "2025-03-10T19:34:21.155Z" },
-    "available": true
+    "date": {
+      "$date": "2025-03-10T19:34:21.155Z"
+    },
+    "available": true,
+    "__v": 0
   },
   {
+    "_id": {
+      "$oid": "67d1b7831176db6eaec6e4cc"
+    },
     "id": 15,
     "images": ["http://localhost:4000/images/product_15.png"],
     "mainImageIndex": 0,
@@ -266,10 +359,16 @@
     "types": ["Jacket"],
     "reviews": [],
     "rating": 4.7,
-    "date": { "$date": "2025-03-10T19:34:21.155Z" },
-    "available": true
+    "date": {
+      "$date": "2025-03-10T19:34:21.155Z"
+    },
+    "available": true,
+    "__v": 0
   },
   {
+    "_id": {
+      "$oid": "67d1b7831176db6eaec6e4cd"
+    },
     "id": 16,
     "images": ["http://localhost:4000/images/product_16.png"],
     "mainImageIndex": 0,
@@ -284,10 +383,16 @@
     "types": ["Jacket"],
     "reviews": [],
     "rating": 4.6,
-    "date": { "$date": "2025-03-10T19:34:21.155Z" },
-    "available": true
+    "date": {
+      "$date": "2025-03-10T19:34:21.155Z"
+    },
+    "available": true,
+    "__v": 0
   },
   {
+    "_id": {
+      "$oid": "67d1b7831176db6eaec6e4ce"
+    },
     "id": 17,
     "images": ["http://localhost:4000/images/product_17.png"],
     "mainImageIndex": 0,
@@ -302,10 +407,16 @@
     "types": ["Jacket"],
     "reviews": [],
     "rating": 4.7,
-    "date": { "$date": "2025-03-10T19:34:21.155Z" },
-    "available": true
+    "date": {
+      "$date": "2025-03-10T19:34:21.155Z"
+    },
+    "available": true,
+    "__v": 0
   },
   {
+    "_id": {
+      "$oid": "67d1b7831176db6eaec6e4cf"
+    },
     "id": 18,
     "images": ["http://localhost:4000/images/product_18.png"],
     "mainImageIndex": 0,
@@ -320,10 +431,16 @@
     "types": ["Jacket"],
     "reviews": [],
     "rating": 4.5,
-    "date": { "$date": "2025-03-10T19:34:21.155Z" },
-    "available": true
+    "date": {
+      "$date": "2025-03-10T19:34:21.155Z"
+    },
+    "available": true,
+    "__v": 0
   },
   {
+    "_id": {
+      "$oid": "67d1b7831176db6eaec6e4d0"
+    },
     "id": 19,
     "images": ["http://localhost:4000/images/product_19.png"],
     "mainImageIndex": 0,
@@ -338,10 +455,16 @@
     "types": ["Jacket"],
     "reviews": [],
     "rating": 4.6,
-    "date": { "$date": "2025-03-10T19:34:21.155Z" },
-    "available": true
+    "date": {
+      "$date": "2025-03-10T19:34:21.155Z"
+    },
+    "available": true,
+    "__v": 0
   },
   {
+    "_id": {
+      "$oid": "67d1b7831176db6eaec6e4d1"
+    },
     "id": 20,
     "images": ["http://localhost:4000/images/product_20.png"],
     "mainImageIndex": 0,
@@ -356,10 +479,16 @@
     "types": ["Jacket"],
     "reviews": [],
     "rating": 4.4,
-    "date": { "$date": "2025-03-10T19:34:21.155Z" },
-    "available": true
+    "date": {
+      "$date": "2025-03-10T19:34:21.155Z"
+    },
+    "available": true,
+    "__v": 0
   },
   {
+    "_id": {
+      "$oid": "67d1b7831176db6eaec6e4d2"
+    },
     "id": 21,
     "images": ["http://localhost:4000/images/product_21.png"],
     "mainImageIndex": 0,
@@ -374,10 +503,16 @@
     "types": ["Jacket"],
     "reviews": [],
     "rating": 4.7,
-    "date": { "$date": "2025-03-10T19:34:21.155Z" },
-    "available": true
+    "date": {
+      "$date": "2025-03-10T19:34:21.155Z"
+    },
+    "available": true,
+    "__v": 0
   },
   {
+    "_id": {
+      "$oid": "67d1b7831176db6eaec6e4d3"
+    },
     "id": 22,
     "images": ["http://localhost:4000/images/product_22.png"],
     "mainImageIndex": 0,
@@ -392,10 +527,16 @@
     "types": ["Jacket"],
     "reviews": [],
     "rating": 4.8,
-    "date": { "$date": "2025-03-10T19:34:21.155Z" },
-    "available": true
+    "date": {
+      "$date": "2025-03-10T19:34:21.155Z"
+    },
+    "available": true,
+    "__v": 0
   },
   {
+    "_id": {
+      "$oid": "67d1b7831176db6eaec6e4d4"
+    },
     "id": 23,
     "images": ["http://localhost:4000/images/product_23.png"],
     "mainImageIndex": 0,
@@ -410,10 +551,16 @@
     "types": ["Jacket"],
     "reviews": [],
     "rating": 4.6,
-    "date": { "$date": "2025-03-10T19:34:21.155Z" },
-    "available": true
+    "date": {
+      "$date": "2025-03-10T19:34:21.155Z"
+    },
+    "available": true,
+    "__v": 0
   },
   {
+    "_id": {
+      "$oid": "67d1b7831176db6eaec6e4d5"
+    },
     "id": 24,
     "images": ["http://localhost:4000/images/product_24.png"],
     "mainImageIndex": 0,
@@ -428,10 +575,16 @@
     "types": ["Jacket"],
     "reviews": [],
     "rating": 4.9,
-    "date": { "$date": "2025-03-10T19:34:21.155Z" },
-    "available": true
+    "date": {
+      "$date": "2025-03-10T19:34:21.155Z"
+    },
+    "available": true,
+    "__v": 0
   },
   {
+    "_id": {
+      "$oid": "67d1b7831176db6eaec6e4d6"
+    },
     "id": 25,
     "images": ["http://localhost:4000/images/product_25.png"],
     "mainImageIndex": 0,
@@ -446,10 +599,16 @@
     "types": ["Hoodie"],
     "reviews": [],
     "rating": 4.7,
-    "date": { "$date": "2025-03-10T19:34:21.155Z" },
-    "available": true
+    "date": {
+      "$date": "2025-03-10T19:34:21.155Z"
+    },
+    "available": true,
+    "__v": 0
   },
   {
+    "_id": {
+      "$oid": "67d1b7831176db6eaec6e4d7"
+    },
     "id": 26,
     "images": ["http://localhost:4000/images/product_26.png"],
     "mainImageIndex": 0,
@@ -464,10 +623,16 @@
     "types": ["Hoodie"],
     "reviews": [],
     "rating": 4.6,
-    "date": { "$date": "2025-03-10T19:34:21.155Z" },
-    "available": true
+    "date": {
+      "$date": "2025-03-10T19:34:21.155Z"
+    },
+    "available": true,
+    "__v": 0
   },
   {
+    "_id": {
+      "$oid": "67d1b7831176db6eaec6e4d8"
+    },
     "id": 27,
     "images": ["http://localhost:4000/images/product_27.png"],
     "mainImageIndex": 0,
@@ -482,10 +647,16 @@
     "types": ["Hoodie"],
     "reviews": [],
     "rating": 4.7,
-    "date": { "$date": "2025-03-10T19:34:21.155Z" },
-    "available": true
+    "date": {
+      "$date": "2025-03-10T19:34:21.155Z"
+    },
+    "available": true,
+    "__v": 0
   },
   {
+    "_id": {
+      "$oid": "67d1b7831176db6eaec6e4d9"
+    },
     "id": 28,
     "images": ["http://localhost:4000/images/product_28.png"],
     "mainImageIndex": 0,
@@ -500,10 +671,16 @@
     "types": ["Sweater"],
     "reviews": [],
     "rating": 4.5,
-    "date": { "$date": "2025-03-10T19:34:21.155Z" },
-    "available": true
+    "date": {
+      "$date": "2025-03-10T19:34:21.155Z"
+    },
+    "available": true,
+    "__v": 0
   },
   {
+    "_id": {
+      "$oid": "67d1b7831176db6eaec6e4da"
+    },
     "id": 29,
     "images": ["http://localhost:4000/images/product_29.png"],
     "mainImageIndex": 0,
@@ -518,10 +695,16 @@
     "types": ["Jacket"],
     "reviews": [],
     "rating": 4.6,
-    "date": { "$date": "2025-03-10T19:34:21.155Z" },
-    "available": true
+    "date": {
+      "$date": "2025-03-10T19:34:21.155Z"
+    },
+    "available": true,
+    "__v": 0
   },
   {
+    "_id": {
+      "$oid": "67d1b7831176db6eaec6e4db"
+    },
     "id": 30,
     "images": ["http://localhost:4000/images/product_30.png"],
     "mainImageIndex": 0,
@@ -536,10 +719,16 @@
     "types": ["Jacket"],
     "reviews": [],
     "rating": 4.7,
-    "date": { "$date": "2025-03-10T19:34:21.155Z" },
-    "available": true
+    "date": {
+      "$date": "2025-03-10T19:34:21.155Z"
+    },
+    "available": true,
+    "__v": 0
   },
   {
+    "_id": {
+      "$oid": "67d1b7831176db6eaec6e4dc"
+    },
     "id": 31,
     "images": ["http://localhost:4000/images/product_31.png"],
     "mainImageIndex": 0,
@@ -554,10 +743,16 @@
     "types": ["Jacket"],
     "reviews": [],
     "rating": 4.6,
-    "date": { "$date": "2025-03-10T19:34:21.155Z" },
-    "available": true
+    "date": {
+      "$date": "2025-03-10T19:34:21.155Z"
+    },
+    "available": true,
+    "__v": 0
   },
   {
+    "_id": {
+      "$oid": "67d1b7831176db6eaec6e4dd"
+    },
     "id": 32,
     "images": ["http://localhost:4000/images/product_32.png"],
     "mainImageIndex": 0,
@@ -572,10 +767,16 @@
     "types": ["Sweater"],
     "reviews": [],
     "rating": 4.5,
-    "date": { "$date": "2025-03-10T19:34:21.155Z" },
-    "available": true
+    "date": {
+      "$date": "2025-03-10T19:34:21.155Z"
+    },
+    "available": true,
+    "__v": 0
   },
   {
+    "_id": {
+      "$oid": "67d1b7831176db6eaec6e4de"
+    },
     "id": 33,
     "images": ["http://localhost:4000/images/product_33.png"],
     "mainImageIndex": 0,
@@ -590,10 +791,16 @@
     "types": ["Sweater"],
     "reviews": [],
     "rating": 4.6,
-    "date": { "$date": "2025-03-10T19:34:21.155Z" },
-    "available": true
+    "date": {
+      "$date": "2025-03-10T19:34:21.155Z"
+    },
+    "available": true,
+    "__v": 0
   },
   {
+    "_id": {
+      "$oid": "67d1b7831176db6eaec6e4df"
+    },
     "id": 34,
     "images": ["http://localhost:4000/images/product_34.png"],
     "mainImageIndex": 0,
@@ -608,10 +815,16 @@
     "types": ["Jacket"],
     "reviews": [],
     "rating": 4.5,
-    "date": { "$date": "2025-03-10T19:34:21.155Z" },
-    "available": true
+    "date": {
+      "$date": "2025-03-10T19:34:21.155Z"
+    },
+    "available": true,
+    "__v": 0
   },
   {
+    "_id": {
+      "$oid": "67d1b7831176db6eaec6e4e0"
+    },
     "id": 35,
     "images": ["http://localhost:4000/images/product_35.png"],
     "mainImageIndex": 0,
@@ -626,10 +839,16 @@
     "types": ["Jacket"],
     "reviews": [],
     "rating": 4.7,
-    "date": { "$date": "2025-03-10T19:34:21.155Z" },
-    "available": true
+    "date": {
+      "$date": "2025-03-10T19:34:21.155Z"
+    },
+    "available": true,
+    "__v": 0
   },
   {
+    "_id": {
+      "$oid": "67d1b7831176db6eaec6e4e1"
+    },
     "id": 36,
     "images": ["http://localhost:4000/images/product_36.png"],
     "mainImageIndex": 0,
@@ -644,7 +863,10 @@
     "types": ["Jacket"],
     "reviews": [],
     "rating": 4.6,
-    "date": { "$date": "2025-03-10T19:34:21.155Z" },
-    "available": true
+    "date": {
+      "$date": "2025-03-10T19:34:21.155Z"
+    },
+    "available": true,
+    "__v": 0
   }
 ]

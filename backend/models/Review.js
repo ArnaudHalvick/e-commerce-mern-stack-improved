@@ -18,14 +18,10 @@ const ReviewSchema = new mongoose.Schema({
     min: 1,
     max: 5,
   },
-  title: {
-    type: String,
-    required: true,
-    maxlength: 100,
-  },
   content: {
     type: String,
     required: true,
+    minlength: 10,
     maxlength: 1000,
   },
   verifiedPurchase: {
@@ -35,18 +31,6 @@ const ReviewSchema = new mongoose.Schema({
   date: {
     type: Date,
     default: Date.now,
-  },
-  helpful: {
-    count: {
-      type: Number,
-      default: 0,
-    },
-    users: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "User",
-      },
-    ],
   },
 });
 
