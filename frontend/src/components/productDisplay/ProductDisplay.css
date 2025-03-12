@@ -189,25 +189,30 @@
 .product-display-right-quantity-container {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+  height: 36px;
 }
 
 .quantity-btn {
-  width: 40px;
-  height: 40px;
-  border: 1px solid #ccc;
-  background: #fbfbfb;
-  border-radius: 3px;
+  width: 36px;
+  height: 36px;
+  border: 1px solid #ddd;
+  background: #f8f8f8;
+  border-radius: 4px;
   cursor: pointer;
-  font-size: 18px;
+  font-size: 16px;
+  font-weight: 600;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
+  padding: 0;
+  line-height: 1;
 }
 
 .quantity-btn:hover:not(:disabled) {
   background: #f0f0f0;
+  border-color: #ccc;
 }
 
 .quantity-btn:disabled {
@@ -216,16 +221,25 @@
 }
 
 .quantity-input {
-  width: 60px;
-  height: 40px;
-  border: 1px solid #ccc;
-  border-radius: 3px;
+  width: 50px;
+  height: 36px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
   text-align: center;
   font-size: 16px;
+  padding: 0 5px;
+  -moz-appearance: textfield; /* Remove spinner for Firefox */
+}
+
+/* Remove spinner for Chrome, Safari, Edge, Opera */
+.quantity-input::-webkit-outer-spin-button,
+.quantity-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 /* Add to cart button */
-.product-display-right button {
+.add-to-cart-btn {
   margin-top: 30px;
   width: 200px;
   height: 50px;
@@ -239,11 +253,11 @@
   transition: all 0.3s ease;
 }
 
-.product-display-right button:hover:not(:disabled) {
+.add-to-cart-btn:hover:not(:disabled) {
   background: #e63b3b;
 }
 
-.product-display-right button:disabled {
+.add-to-cart-btn:disabled {
   opacity: 0.7;
   cursor: not-allowed;
 }
@@ -293,5 +307,40 @@
 
   .product-display-right h1 {
     font-size: 2rem;
+  }
+
+  .product-display-right-quantity-container {
+    height: 32px;
+  }
+
+  .quantity-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+
+  .quantity-input {
+    width: 45px;
+    height: 32px;
+    font-size: 14px;
+  }
+}
+
+/* Small mobile adjustments */
+@media screen and (max-width: 480px) {
+  .product-display-right-quantity-container {
+    height: 30px;
+  }
+
+  .quantity-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
+  }
+
+  .quantity-input {
+    width: 40px;
+    height: 30px;
+    font-size: 14px;
   }
 }

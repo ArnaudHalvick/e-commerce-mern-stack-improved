@@ -231,6 +231,7 @@ const ProductDisplay = ({ product }) => {
               className="quantity-btn"
               onClick={() => handleQuantityChange(quantity - 1)}
               disabled={quantity <= 1}
+              aria-label="Decrease quantity"
             >
               -
             </button>
@@ -240,10 +241,12 @@ const ProductDisplay = ({ product }) => {
               value={quantity}
               onChange={(e) => handleQuantityChange(e.target.value)}
               className="quantity-input"
+              aria-label="Quantity"
             />
             <button
               className="quantity-btn"
               onClick={() => handleQuantityChange(quantity + 1)}
+              aria-label="Increase quantity"
             >
               +
             </button>
@@ -252,7 +255,9 @@ const ProductDisplay = ({ product }) => {
         <button
           onClick={handleAddToCart}
           disabled={isAdding}
-          className={isAdding ? "adding-to-cart" : ""}
+          className={
+            isAdding ? "add-to-cart-btn adding-to-cart" : "add-to-cart-btn"
+          }
         >
           {isAdding ? "Adding..." : "Add to Cart"}
         </button>
