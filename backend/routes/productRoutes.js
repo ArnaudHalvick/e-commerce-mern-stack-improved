@@ -10,5 +10,7 @@ router.post("/remove-product", productController.removeProduct);
 router.get("/all-products", productController.getAllProducts);
 router.get("/newcollection", productController.getNewCollection);
 router.get("/featured-women", productController.getFeaturedWomen);
+router.get("/products/tag/:tag", productController.getProductsByTag);
+router.get("/products/type/:type", productController.getProductsByType);
 
 module.exports = router;
