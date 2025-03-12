@@ -19,6 +19,11 @@
 .product-display-img-list img {
   height: 10.2rem;
   width: 10.2rem;
+  object-fit: cover;
+}
+
+.selected-thumbnail {
+  border: 2px solid #ff5a5a; /* Example highlight color */
 }
 
 .product-display-main-img {
