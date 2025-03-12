@@ -91,7 +91,10 @@ const addToCart = async (req, res) => {
         quantity,
         price: priceToUse,
         name: product.name,
-        image: product.image,
+        image:
+          product.images && product.images.length > 0
+            ? product.images[product.mainImageIndex || 0]
+            : "",
         isDiscounted: hasDiscount,
       });
     }

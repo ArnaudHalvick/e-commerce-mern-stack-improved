@@ -61,7 +61,14 @@ const ListProduct = () => {
         {products.map((product) => (
           <div key={product.id} className="product-card">
             <div className="product-image">
-              <img src={product.image} alt={product.name} />
+              <img
+                src={
+                  product.images && product.images.length > 0
+                    ? product.images[product.mainImageIndex || 0]
+                    : ""
+                }
+                alt={product.name}
+              />
             </div>
             <div className="product-info">
               <h3>{product.name}</h3>
