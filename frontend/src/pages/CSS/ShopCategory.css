@@ -9,7 +9,7 @@
 
 .category-banner {
   display: block;
-  margin: 1.9rem auto;
+  margin: 1rem auto;
   width: 100%;
   max-width: 1200px;
   height: auto;
@@ -76,7 +76,7 @@
   }
 
   .category-banner {
-    margin: 1.5rem auto;
+    margin: 1rem auto;
   }
 }
 
@@ -91,10 +91,6 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-  }
-
-  .category-banner {
-    margin: 1rem auto;
   }
 
   .load-more-button {
