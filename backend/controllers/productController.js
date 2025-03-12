@@ -14,6 +14,9 @@ const addProduct = async (req, res) => {
       id = 1;
     }
 
+    // Set new_price to 0 if not provided or is 0
+    const new_price = req.body.new_price || 0;
+
     const product = new Product({
       id: id,
       images: req.body.images,
@@ -22,7 +25,7 @@ const addProduct = async (req, res) => {
       shortDescription: req.body.shortDescription,
       longDescription: req.body.longDescription,
       category: req.body.category,
-      new_price: req.body.new_price,
+      new_price: new_price,
       old_price: req.body.old_price,
       sizes: req.body.sizes || ["S", "M", "L", "XL", "XXL"],
       tags: req.body.tags || [],

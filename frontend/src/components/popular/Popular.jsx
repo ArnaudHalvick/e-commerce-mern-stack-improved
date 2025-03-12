@@ -26,8 +26,8 @@ const Popular = () => {
               images={item.images}
               mainImageIndex={item.mainImageIndex}
               name={item.name}
-              new_price={`$${item.new_price}`}
-              old_price={`$${item.old_price}`}
+              new_price={item.new_price}
+              old_price={item.old_price}
             />
           ))}
       </div>

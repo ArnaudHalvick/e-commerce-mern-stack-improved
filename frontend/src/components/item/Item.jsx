@@ -24,6 +24,9 @@ const Item = (props) => {
       ? props.images[props.mainImageIndex || 0]
       : `${getBaseUrl}/images/pink-placeholder.png`;
 
+  // Check if the item has a discount (new_price > 0)
+  const hasDiscount = props.new_price && props.new_price > 0;
+
   return (
     <div className="item-container">
       <Link to={`/product/${props.id}`}>
@@ -31,8 +34,16 @@ const Item = (props) => {
       </Link>
       <p>{props.name}</p>
       <div className="item-price-container">
-        <div className="item-price-current">${props.new_price}</div>
-        <div className="item-price-previous">${props.old_price}</div>
+        {hasDiscount ? (
+          <>
+            <div className="item-price-current item-price-discounted">
+              ${props.new_price}
+            </div>
+            <div className="item-price-previous">${props.old_price}</div>
+          </>
+        ) : (
+          <div className="item-price-current">${props.old_price}</div>
+        )}
       </div>
     </div>
   );

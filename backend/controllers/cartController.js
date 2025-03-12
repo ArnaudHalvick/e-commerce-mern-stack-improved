@@ -61,6 +61,10 @@ const addToCart = async (req, res) => {
       });
     }
 
+    // Determine the price to use based on whether new_price exists and is greater than 0
+    const hasDiscount = product.new_price && product.new_price > 0;
+    const priceToUse = hasDiscount ? product.new_price : product.old_price;
+
     // Find cart or create new one
     let cart = await Cart.findOne({ user: req.user.id });
     if (!cart) {
@@ -85,9 +89,10 @@ const addToCart = async (req, res) => {
       cart.items.push({
         productId: product._id,
         quantity,
-        price: product.new_price,
+        price: priceToUse,
         name: product.name,
         image: product.image,
+        isDiscounted: hasDiscount,
       });
     }
 

@@ -185,6 +185,12 @@
   background-color: #333;
 }
 
+/* Add a new class for discounted prices */
+.cart-price-discounted {
+  color: #ff5a5a; /* Same color as in ProductDisplay */
+  font-weight: 600;
+}
+
 /* ----- RESPONSIVE BREAKPOINTS ----- */
 /* Allow horizontal scrolling on narrower screens */
 @media (max-width: 991.98px) {

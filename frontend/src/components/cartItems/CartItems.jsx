@@ -109,7 +109,13 @@ const CartItems = () => {
                 />
               </td>
               <td>{item.name}</td>
-              <td>${item.price}</td>
+              <td>
+                <span
+                  className={item.isDiscounted ? "cart-price-discounted" : ""}
+                >
+                  ${item.price}
+                </span>
+              </td>
               <td>
                 <div className="cart-quantity-controls">
                   <button
@@ -140,7 +146,13 @@ const CartItems = () => {
                   </button>
                 </div>
               </td>
-              <td>${(item.price * item.quantity).toFixed(2)}</td>
+              <td>
+                <span
+                  className={item.isDiscounted ? "cart-price-discounted" : ""}
+                >
+                  ${(item.price * item.quantity).toFixed(2)}
+                </span>
+              </td>
               <td>
                 <div className="cart-remove-icon-container">
                   <img
@@ -162,7 +174,9 @@ const CartItems = () => {
         <h2 className="cart-totals-title">Cart Totals</h2>
         <div className="cart-totals-item">
           <p className="cart-totals-label">Subtotal</p>
-          <p className="cart-totals-value">${totalPrice.toFixed(2)}</p>
+          <p className="cart-totals-value cart-price-discounted">
+            ${totalPrice.toFixed(2)}
+          </p>
         </div>
         <div className="cart-totals-item">
           <p className="cart-totals-label">Shipping Fee</p>
@@ -171,7 +185,7 @@ const CartItems = () => {
         <hr className="cart-divider" />
         <div className="cart-totals-item">
           <p className="cart-totals-label">Total</p>
-          <p className="cart-totals-value cart-total-amount">
+          <p className="cart-totals-value cart-total-amount cart-price-discounted">
             ${totalPrice.toFixed(2)}
           </p>
         </div>

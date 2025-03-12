@@ -36,6 +36,11 @@
   font-weight: 600;
 }
 
+/* Add a new class for discounted prices */
+.item-price-discounted {
+  color: #ff5a5a; /* Same color as in ProductDisplay */
+}
+
 .item-price-previous {
   color: #8c8c8c;
   font-size: 18px;

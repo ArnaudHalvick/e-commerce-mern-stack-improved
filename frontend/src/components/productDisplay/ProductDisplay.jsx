@@ -17,6 +17,9 @@ const ProductDisplay = ({ product }) => {
     product.mainImageIndex || 0
   );
 
+  // Check if the product has a discount (new_price > 0)
+  const hasDiscount = product.new_price && product.new_price > 0;
+
   // Utility to get the base URL from any product image.
   const getBaseUrl = useMemo(() => {
     if (product.images && product.images.length > 0) {
@@ -150,18 +153,18 @@ const ProductDisplay = ({ product }) => {
           <p>({reviewCount})</p>
         </div>
         <div className="product-display-right-prices">
-          <div
-            className={
-              product.new_price
-                ? "product-display-right-price-old"
-                : "product-display-right-price-single"
-            }
-          >
-            ${product.old_price}
-          </div>
-          {product.new_price && (
-            <div className="product-display-right-price-new">
-              ${product.new_price}
+          {hasDiscount ? (
+            <>
+              <div className="product-display-right-price-old">
+                ${product.old_price}
+              </div>
+              <div className="product-display-right-price-new">
+                ${product.new_price}
+              </div>
+            </>
+          ) : (
+            <div className="product-display-right-price-single">
+              ${product.old_price}
             </div>
           )}
         </div>

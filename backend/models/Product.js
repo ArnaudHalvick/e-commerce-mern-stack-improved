@@ -40,7 +40,7 @@ const ProductSchema = new mongoose.Schema({
   },
   new_price: {
     type: Number,
-    required: true,
+    default: 0,
   },
   old_price: {
     type: Number,
