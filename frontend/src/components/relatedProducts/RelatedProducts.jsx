@@ -31,11 +31,6 @@ const RelatedProducts = () => {
           console.warn("API didn't return an array for related products", data);
           setRelatedProducts([]);
         } else {
-          console.log(`Loaded ${data.length} related products`);
-          if (data.length > 0) {
-            console.log("Sample related product:", data[0]);
-          }
-
           // If we have a current product ID or slug, filter it out of the related products
           let filteredProducts = data;
           if (productId) {

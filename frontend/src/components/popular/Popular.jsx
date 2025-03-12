@@ -27,10 +27,6 @@ const Popular = () => {
           console.warn("API didn't return an array for popular products", data);
           setPopular([]);
         } else {
-          console.log(`Loaded ${data.length} popular products`);
-          if (data.length > 0) {
-            console.log("Sample popular product:", data[0]);
-          }
           setPopular(data);
         }
         setLoading(false);

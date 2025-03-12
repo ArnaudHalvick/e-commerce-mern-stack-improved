@@ -28,9 +28,6 @@ const NewCollection = () => {
           setNewCollection([]);
         } else {
           console.log(`Loaded ${data.length} new collection items`);
-          if (data.length > 0) {
-            console.log("Sample new collection item:", data[0]);
-          }
           setNewCollection(data);
         }
         setLoading(false);

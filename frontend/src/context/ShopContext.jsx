@@ -30,24 +30,6 @@ const ShopContextProvider = (props) => {
           console.warn("API didn't return an array for products", data);
           setAll_Product([]);
         } else {
-          // Log info about the products received
-          console.log(`Loaded ${data.length} products`);
-          if (data.length > 0) {
-            // Detailed logging to debug product structure
-            const sampleProduct = data[0];
-            console.log("Sample product:", sampleProduct);
-            console.log("Sample product ID:", sampleProduct.id);
-            console.log("Sample product _id:", sampleProduct._id);
-            console.log("Sample product slug:", sampleProduct.slug);
-
-            // Check how many products have slugs
-            const withSlug = data.filter((p) => p.slug).length;
-            const with_id = data.filter((p) => p._id).length;
-            const withId = data.filter((p) => p.id).length;
-            console.log(`Products with slug: ${withSlug}/${data.length}`);
-            console.log(`Products with _id: ${with_id}/${data.length}`);
-            console.log(`Products with id: ${withId}/${data.length}`);
-          }
           setAll_Product(data);
         }
         setLoading(false);
