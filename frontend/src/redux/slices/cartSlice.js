@@ -1,6 +1,7 @@
 // frontend/src/redux/slices/cartSlice.js
 
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { cartApi } from "../../services/api";
 
 // API endpoints
 const API_URL = "http://localhost:4000/api";
@@ -13,23 +14,14 @@ export const fetchCart = createAsyncThunk(
       const token = localStorage.getItem("auth-token");
       if (!token) return { items: [], totalItems: 0, totalPrice: 0 };
 
-      const response = await fetch(`${API_URL}/cart`, {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          "auth-token": token,
-        },
-      });
-
-      const data = await response.json();
-      if (!data.success) {
-        return rejectWithValue(data.message || "Failed to fetch cart");
-      }
+      // Use API service
+      const data = await cartApi.getCart();
 
       return data.cart || { items: [], totalItems: 0, totalPrice: 0 };
     } catch (error) {
-      return rejectWithValue(error.message || "Failed to fetch cart");
+      return rejectWithValue(
+        typeof error === "string" ? error : "Failed to fetch cart"
+      );
     }
   }
 );
@@ -43,24 +35,14 @@ export const addToCart = createAsyncThunk(
         return rejectWithValue("Authentication required");
       }
 
-      const response = await fetch(`${API_URL}/cart/add`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          "auth-token": token,
-        },
-        body: JSON.stringify({ itemId, quantity }),
-      });
+      // Use API service
+      const data = await cartApi.addToCart({ itemId, quantity });
 
-      const data = await response.json();
-      if (!data.success) {
-        return rejectWithValue(data.message || "Failed to add item to cart");
-      }
-
-      return data.cart || { items: [], totalItems: 0, totalPrice: 0 };
+      return data.cart;
     } catch (error) {
-      return rejectWithValue(error.message || "Failed to add item to cart");
+      return rejectWithValue(
+        typeof error === "string" ? error : "Failed to add item to cart"
+      );
     }
   }
 );

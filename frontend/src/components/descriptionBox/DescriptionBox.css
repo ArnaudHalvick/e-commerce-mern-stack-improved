@@ -17,6 +17,12 @@
   width: 10.7rem;
   height: 4.375rem;
   border: 1px solid #e0e0e0;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.custom-nav-item:hover:not(.custom-fade) {
+  background-color: #f9f9f9;
 }
 
 .custom-nav-item.custom-fade {
@@ -24,11 +30,262 @@
   color: #555;
 }
 
+.custom-description-content,
+.custom-reviews-content {
+  border: 1px solid #e0e0e0;
+  padding: 3rem;
+  padding-bottom: 4.375rem;
+}
+
 .custom-description-content {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  border: 1px solid #e0e0e0;
-  padding: 3rem;
-  padding-bottom: 4.375rem;
+  line-height: 1.6;
+  color: #585858;
+}
+
+/* Reviews styling */
+.custom-reviews-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.reviews-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.reviews-header h2 {
+  font-size: 1.5rem;
+  color: #333;
+  margin: 0;
+}
+
+.reviews-sort {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.reviews-sort label {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.reviews-sort select {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 0.25rem;
+  background-color: white;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.reviews-loading,
+.reviews-error,
+.no-reviews {
+  text-align: center;
+  padding: 2rem 0;
+  color: #666;
+  font-style: italic;
+}
+
+.reviews-error {
+  color: #e74c3c;
+}
+
+/* Review Item */
+.reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.review-item {
+  background-color: white;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  border: 1px solid #eee;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.review-user-info {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.review-avatar {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.review-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.default-avatar {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #666;
+}
+
+.review-user-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.review-user-name {
+  font-weight: 600;
+  font-size: 1rem;
+  margin: 0;
+  color: #333;
+}
+
+.review-date {
+  font-size: 0.85rem;
+  color: #888;
+  margin: 0;
+}
+
+.review-rating {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.review-star {
+  width: 1rem;
+  height: 1rem;
+}
+
+.review-title {
+  font-size: 1.1rem;
+  margin: 0 0 0.75rem 0;
+  color: #333;
+}
+
+.review-content {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #555;
+  margin-bottom: 1rem;
+}
+
+.verified-badge {
+  display: inline-flex;
+  align-items: center;
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  font-size: 0.8rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 1rem;
+  gap: 0.25rem;
+}
+
+.verified-badge span {
+  font-weight: bold;
+}
+
+/* Pagination */
+.reviews-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2rem;
+  gap: 1rem;
+}
+
+.pagination-btn {
+  padding: 0.5rem 1rem;
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.pagination-btn:hover:not([disabled]) {
+  background-color: #e0e0e0;
+}
+
+.pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-pages {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.pagination-page {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid #ddd;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pagination-page:hover:not([disabled]) {
+  background-color: #f0f0f0;
+}
+
+.pagination-page.active {
+  background-color: #ff5a5a;
+  color: white;
+  border-color: #ff5a5a;
+}
+
+/* Responsive styles */
+@media screen and (max-width: 768px) {
+  .custom-description-box {
+    width: 90%;
+  }
+
+  .reviews-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .reviews-sort {
+    width: 100%;
+  }
+
+  .reviews-sort select {
+    flex-grow: 1;
+  }
+
+  .custom-description-content,
+  .custom-reviews-content {
+    padding: 1.5rem;
+  }
 }

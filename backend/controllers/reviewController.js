@@ -1,11 +1,12 @@
 const Review = require("../models/Review");
 const Product = require("../models/Product");
 const Cart = require("../models/Cart");
+const User = require("../models/User");
 
 // Add a new review (only if user has purchased the product)
 const addReview = async (req, res) => {
   try {
-    const { userId, productId, rating, title, content } = req.body;
+    const { userId, productId, rating, content } = req.body;
 
     // Check if user has purchased the product
     const cart = await Cart.findOne({
@@ -21,7 +22,6 @@ const addReview = async (req, res) => {
       user: userId,
       product: productId,
       rating,
-      title,
       content,
       verifiedPurchase,
     });
@@ -42,25 +42,77 @@ const addReview = async (req, res) => {
   }
 };
 
-// Get all reviews for a product
+// Get all reviews for a product with pagination and sorting
 const getProductReviews = async (req, res) => {
   try {
     const { productId } = req.params;
+    const { page = 1, limit = 5, sort = "date-desc" } = req.query;
 
+    console.log(`Fetching reviews for product: ${productId}`);
+    console.log(`Query params: page=${page}, limit=${limit}, sort=${sort}`);
+
+    // Calculate skip amount for pagination
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+
+    // Determine sort order
+    let sortOption = {};
+    switch (sort) {
+      case "date-desc":
+        sortOption = { date: -1 };
+        break;
+      case "date-asc":
+        sortOption = { date: 1 };
+        break;
+      case "rating-desc":
+        sortOption = { rating: -1 };
+        break;
+      case "rating-asc":
+        sortOption = { rating: 1 };
+        break;
+      default:
+        sortOption = { date: -1 }; // Default to most recent first
+    }
+
+    // Check if product exists
+    const productExists = await Product.findById(productId);
+
+    if (!productExists) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    // Count total reviews for this product
+    const totalReviews = await Review.countDocuments({ product: productId });
+    console.log(`Total reviews found: ${totalReviews}`);
+
+    // Get paginated and sorted reviews
     const reviews = await Review.find({ product: productId })
-      .populate("user", "name avatar") // Only get required user fields
-      .sort({ date: -1 }); // Most recent first
+      .populate("user", "name") // Only get required user fields, no avatar
+      .sort(sortOption)
+      .skip(skip)
+      .limit(parseInt(limit));
+
+    console.log(`Reviews fetched: ${reviews.length}`);
+
+    // Calculate total pages
+    const totalPages = Math.ceil(totalReviews / parseInt(limit));
 
     res.json({
       success: true,
-      count: reviews.length,
+      count: totalReviews,
+      totalPages,
+      currentPage: parseInt(page),
       reviews,
     });
   } catch (error) {
+    console.error("Error fetching reviews:", error);
     res.status(500).json({
       success: false,
       message: "Server error",
       error: error.message,
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
     });
   }
 };
@@ -71,7 +123,7 @@ const getReview = async (req, res) => {
     const { reviewId } = req.params;
 
     const review = await Review.findById(reviewId)
-      .populate("user", "name avatar")
+      .populate("user", "name")
       .populate("product", "name images id");
 
     if (!review) {
@@ -98,7 +150,7 @@ const getReview = async (req, res) => {
 const updateReview = async (req, res) => {
   try {
     const { reviewId } = req.params;
-    const { rating, title, content } = req.body;
+    const { rating, content } = req.body;
 
     const review = await Review.findById(reviewId);
 
@@ -119,7 +171,6 @@ const updateReview = async (req, res) => {
 
     // Update the review
     review.rating = rating || review.rating;
-    review.title = title || review.title;
     review.content = content || review.content;
 
     await review.save();
@@ -175,44 +226,12 @@ const deleteReview = async (req, res) => {
   }
 };
 
-// Mark a review as helpful
+// Mark a review as helpful - let's keep it simple since we don't have this field
 const markReviewHelpful = async (req, res) => {
   try {
-    const { reviewId } = req.params;
-    const { userId } = req.body;
-
-    const review = await Review.findById(reviewId);
-
-    if (!review) {
-      return res.status(404).json({
-        success: false,
-        message: "Review not found",
-      });
-    }
-
-    // Check if user has already marked this review as helpful
-    const alreadyMarked = review.helpful.users.includes(userId);
-
-    if (alreadyMarked) {
-      // Remove the user's helpful mark
-      review.helpful.users = review.helpful.users.filter(
-        (id) => id.toString() !== userId.toString()
-      );
-      review.helpful.count -= 1;
-    } else {
-      // Add the user's helpful mark
-      review.helpful.users.push(userId);
-      review.helpful.count += 1;
-    }
-
-    await review.save();
-
-    res.json({
-      success: true,
-      helpful: review.helpful,
-      message: alreadyMarked
-        ? "Helpful mark removed successfully"
-        : "Review marked as helpful successfully",
+    return res.status(501).json({
+      success: false,
+      message: "Marking reviews as helpful is not yet implemented",
     });
   } catch (error) {
     res.status(500).json({

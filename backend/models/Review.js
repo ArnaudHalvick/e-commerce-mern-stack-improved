@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 const ReviewSchema = new mongoose.Schema({
   user: {
     type: Schema.Types.ObjectId,
-    ref: "User",
+    ref: "Users",
     required: true,
   },
   product: {
@@ -38,6 +38,8 @@ const ReviewSchema = new mongoose.Schema({
 ReviewSchema.post("save", async function () {
   const Product = mongoose.model("Product");
   const product = await Product.findById(this.product);
+
+  if (!product) return; // Add check to ensure product exists
 
   // Find all reviews for this product
   const Review = mongoose.model("Review");
