@@ -17,12 +17,12 @@ const CartItem = ({
     // Ensure value is a valid number and not less than 1
     const newValue = Math.max(1, parseInt(value) || 1);
     setLocalQuantity(newValue);
-    onQuantityChange(item.productId, newValue);
+    onQuantityChange(item.productId, newValue, item.size);
   };
 
   // Handle quantity blur
   const handleBlur = () => {
-    onQuantityBlur(item.productId);
+    onQuantityBlur(item.productId, item.size);
     // Reset local state to match item quantity
     setLocalQuantity(item.quantity);
   };
@@ -31,7 +31,7 @@ const CartItem = ({
   const handleAddItemClick = () => {
     // Update local state immediately for better UX
     setLocalQuantity((prev) => prev + 1);
-    onAddItem(item.productId);
+    onAddItem(item.productId, item.size);
   };
 
   const handleRemoveItemClick = () => {
@@ -39,7 +39,7 @@ const CartItem = ({
     if (localQuantity > 1) {
       setLocalQuantity((prev) => prev - 1);
     }
-    onRemoveItem(item.productId);
+    onRemoveItem(item.productId, item.size);
   };
 
   return (
@@ -52,6 +52,9 @@ const CartItem = ({
         <span className={item.isDiscounted ? "cart-price-discounted" : ""}>
           ${item.price}
         </span>
+      </td>
+      <td>
+        <span className="cart-item-size">{item.size}</span>
       </td>
       <td>
         <div className="cart-quantity-controls">
@@ -86,7 +89,7 @@ const CartItem = ({
         <div className="cart-remove-icon-container">
           <img
             className="cart-remove-icon"
-            onClick={() => onRemoveAll(item.productId)}
+            onClick={() => onRemoveAll(item.productId, item.size)}
             src={remove_icon}
             alt=""
             title="Remove all"
@@ -103,6 +106,7 @@ export default memo(CartItem, (prevProps, nextProps) => {
   return (
     prevProps.item.productId === nextProps.item.productId &&
     prevProps.item.quantity === nextProps.item.quantity &&
-    prevProps.item.price === nextProps.item.price
+    prevProps.item.price === nextProps.item.price &&
+    prevProps.item.size === nextProps.item.size
   );
 });

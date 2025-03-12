@@ -38,7 +38,7 @@ export const fetchCart = createAsyncThunk(
 
 export const addToCart = createAsyncThunk(
   "cart/addItem",
-  async ({ itemId, quantity = 1 }, { rejectWithValue }) => {
+  async ({ itemId, quantity = 1, size }, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem("auth-token");
       if (!token) {
@@ -46,7 +46,7 @@ export const addToCart = createAsyncThunk(
       }
 
       // Use API service
-      const data = await cartApi.addToCart({ itemId, quantity });
+      const data = await cartApi.addToCart({ itemId, quantity, size });
 
       return data.cart;
     } catch (error) {
@@ -59,7 +59,10 @@ export const addToCart = createAsyncThunk(
 
 export const removeFromCart = createAsyncThunk(
   "cart/removeItem",
-  async ({ itemId, quantity = 1, removeAll = false }, { rejectWithValue }) => {
+  async (
+    { itemId, quantity = 1, removeAll = false, size },
+    { rejectWithValue }
+  ) => {
     try {
       const token = localStorage.getItem("auth-token");
       if (!token) {
@@ -71,6 +74,7 @@ export const removeFromCart = createAsyncThunk(
         itemId,
         quantity,
         removeAll,
+        size,
       });
 
       return data.cart || { items: [], totalItems: 0, totalPrice: 0 };
@@ -84,7 +88,7 @@ export const removeFromCart = createAsyncThunk(
 
 export const updateCartItem = createAsyncThunk(
   "cart/updateItem",
-  async ({ itemId, quantity }, { rejectWithValue }) => {
+  async ({ itemId, quantity, size }, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem("auth-token");
       if (!token) {
@@ -92,7 +96,7 @@ export const updateCartItem = createAsyncThunk(
       }
 
       // Use API service
-      const data = await cartApi.updateCartItem({ itemId, quantity });
+      const data = await cartApi.updateCartItem({ itemId, quantity, size });
 
       return data.cart || { items: [], totalItems: 0, totalPrice: 0 };
     } catch (error) {
@@ -168,9 +172,9 @@ const cartSlice = createSlice({
       // addToCart
       .addCase(addToCart.pending, (state, action) => {
         // Optimistic update - find the item and increment its quantity
-        const { itemId, quantity } = action.meta.arg;
+        const { itemId, quantity, size } = action.meta.arg;
         const existingItem = state.items.find(
-          (item) => item.productId === itemId
+          (item) => item.productId === itemId && item.size === size
         );
 
         if (existingItem) {
@@ -209,15 +213,17 @@ const cartSlice = createSlice({
       // removeFromCart
       .addCase(removeFromCart.pending, (state, action) => {
         // Optimistic update
-        const { itemId, quantity, removeAll } = action.meta.arg;
+        const { itemId, quantity, removeAll, size } = action.meta.arg;
 
         if (removeAll) {
           // Remove the item completely
-          state.items = state.items.filter((item) => item.productId !== itemId);
+          state.items = state.items.filter(
+            (item) => !(item.productId === itemId && item.size === size)
+          );
         } else {
           // Find the item and decrement its quantity
           const existingItem = state.items.find(
-            (item) => item.productId === itemId
+            (item) => item.productId === itemId && item.size === size
           );
 
           if (existingItem) {
@@ -229,7 +235,7 @@ const cartSlice = createSlice({
             // If quantity is 0, remove the item
             if (existingItem.quantity === 0) {
               state.items = state.items.filter(
-                (item) => item.productId !== itemId
+                (item) => !(item.productId === itemId && item.size === size)
               );
             }
           }
@@ -265,9 +271,9 @@ const cartSlice = createSlice({
       // updateCartItem
       .addCase(updateCartItem.pending, (state, action) => {
         // Optimistic update
-        const { itemId, quantity } = action.meta.arg;
+        const { itemId, quantity, size } = action.meta.arg;
         const existingItem = state.items.find(
-          (item) => item.productId === itemId
+          (item) => item.productId === itemId && item.size === size
         );
 
         if (existingItem) {

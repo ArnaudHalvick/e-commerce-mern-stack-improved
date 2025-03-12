@@ -37,12 +37,19 @@ const getCartData = async (req, res) => {
 // Add item to cart
 const addToCart = async (req, res) => {
   try {
-    const { itemId, quantity = 1 } = req.body;
+    const { itemId, quantity = 1, size } = req.body;
 
     if (!itemId) {
       return res.status(400).json({
         success: false,
         message: "Item ID is required",
+      });
+    }
+
+    if (!size) {
+      return res.status(400).json({
+        success: false,
+        message: "Size is required",
       });
     }
 
@@ -76,18 +83,21 @@ const addToCart = async (req, res) => {
       });
     }
 
-    // Check if product already in cart
+    // Check if product already in cart with the same size
     const itemIndex = cart.items.findIndex(
-      (item) => item.productId.toString() === product._id.toString()
+      (item) =>
+        item.productId.toString() === product._id.toString() &&
+        item.size === size
     );
 
-    // If product exists in cart, update quantity
+    // If product exists in cart with the same size, update quantity
     if (itemIndex > -1) {
       cart.items[itemIndex].quantity += quantity;
     } else {
       // Add new item to cart
       cart.items.push({
         productId: product._id,
+        size,
         quantity,
         price: priceToUse,
         name: product.name,
@@ -120,7 +130,7 @@ const addToCart = async (req, res) => {
 // Remove item from cart
 const removeFromCart = async (req, res) => {
   try {
-    const { itemId, quantity = 1, removeAll = false } = req.body;
+    const { itemId, quantity = 1, removeAll = false, size } = req.body;
 
     if (!itemId) {
       return res.status(400).json({
@@ -129,8 +139,15 @@ const removeFromCart = async (req, res) => {
       });
     }
 
+    if (!size) {
+      return res.status(400).json({
+        success: false,
+        message: "Size is required",
+      });
+    }
+
     // Find cart
-    const cart = await Cart.findOne({ user: req.user.id });
+    let cart = await Cart.findOne({ user: req.user.id });
     if (!cart) {
       return res.status(404).json({
         success: false,
@@ -138,24 +155,24 @@ const removeFromCart = async (req, res) => {
       });
     }
 
-    // Find the item in the cart
+    // Find item in cart
     const itemIndex = cart.items.findIndex(
-      (item) => item.productId.toString() === itemId
+      (item) =>
+        item.productId.toString() === itemId.toString() && item.size === size
     );
 
-    // If item not in cart
     if (itemIndex === -1) {
-      return res.status(400).json({
+      return res.status(404).json({
         success: false,
-        message: "Item not in cart",
+        message: "Item not found in cart",
       });
     }
 
-    // If removeAll flag is true or quantity is greater than current quantity
+    // If removeAll flag is true or quantity is greater than or equal to item quantity, remove item
     if (removeAll || cart.items[itemIndex].quantity <= quantity) {
       cart.items.splice(itemIndex, 1);
     } else {
-      // Decrease the quantity
+      // Otherwise, decrease quantity
       cart.items[itemIndex].quantity -= quantity;
     }
 
@@ -214,16 +231,23 @@ const clearCart = async (req, res) => {
 // Update cart item quantity
 const updateCartItem = async (req, res) => {
   try {
-    const { itemId, quantity } = req.body;
+    const { itemId, quantity, size } = req.body;
 
-    if (!itemId || !quantity) {
+    if (!itemId) {
       return res.status(400).json({
         success: false,
-        message: "Item ID and quantity are required",
+        message: "Item ID is required",
       });
     }
 
-    if (quantity < 1) {
+    if (!size) {
+      return res.status(400).json({
+        success: false,
+        message: "Size is required",
+      });
+    }
+
+    if (!quantity || quantity < 1) {
       return res.status(400).json({
         success: false,
         message: "Quantity must be at least 1",
@@ -231,7 +255,7 @@ const updateCartItem = async (req, res) => {
     }
 
     // Find cart
-    const cart = await Cart.findOne({ user: req.user.id });
+    let cart = await Cart.findOne({ user: req.user.id });
     if (!cart) {
       return res.status(404).json({
         success: false,
@@ -239,16 +263,16 @@ const updateCartItem = async (req, res) => {
       });
     }
 
-    // Find the item in the cart
+    // Find item in cart
     const itemIndex = cart.items.findIndex(
-      (item) => item.productId.toString() === itemId
+      (item) =>
+        item.productId.toString() === itemId.toString() && item.size === size
     );
 
-    // If item not in cart
     if (itemIndex === -1) {
-      return res.status(400).json({
+      return res.status(404).json({
         success: false,
-        message: "Item not in cart",
+        message: "Item not found in cart",
       });
     }
 

@@ -42,22 +42,24 @@ const CartItems = () => {
   }, [dispatch, isAuthenticated]);
 
   // Memoized handlers to prevent unnecessary re-renders
-  const handleQuantityChange = useCallback((id, value) => {
+  const handleQuantityChange = useCallback((id, value, size) => {
     // Ensure value is a valid number and not less than 1
     const newValue = Math.max(1, parseInt(value) || 1);
-    setEditableQuantities((prev) => ({ ...prev, [id]: newValue }));
+    const key = `${id}-${size}`;
+    setEditableQuantities((prev) => ({ ...prev, [key]: newValue }));
   }, []);
 
   const handleQuantityBlur = useCallback(
-    (id) => {
-      const newValue = editableQuantities[id];
+    (id, size) => {
+      const key = `${id}-${size}`;
+      const newValue = editableQuantities[key];
       if (newValue !== undefined) {
-        dispatch(updateCartItem({ itemId: id, quantity: newValue }));
+        dispatch(updateCartItem({ itemId: id, quantity: newValue, size }));
 
         // Clear the editable state
         setEditableQuantities((prev) => {
           const newState = { ...prev };
-          delete newState[id];
+          delete newState[key];
           return newState;
         });
       }
@@ -66,40 +68,46 @@ const CartItems = () => {
   );
 
   const handleRemoveAll = useCallback(
-    (id) => {
+    (id, size) => {
       // Find the item to calculate price impact
-      const item = items.find((item) => item.productId === id);
+      const item = items.find(
+        (item) => item.productId === id && item.size === size
+      );
       if (item) {
         // Update local total price immediately for better UX
         setLocalTotalPrice((prev) => prev - item.price * item.quantity);
       }
-      dispatch(removeFromCart({ itemId: id, removeAll: true }));
+      dispatch(removeFromCart({ itemId: id, removeAll: true, size }));
     },
     [dispatch, items]
   );
 
   const handleAddItem = useCallback(
-    (id) => {
+    (id, size) => {
       // Find the item to calculate price impact
-      const item = items.find((item) => item.productId === id);
+      const item = items.find(
+        (item) => item.productId === id && item.size === size
+      );
       if (item) {
         // Update local total price immediately for better UX
         setLocalTotalPrice((prev) => prev + item.price);
       }
-      dispatch(addToCart({ itemId: id, quantity: 1 }));
+      dispatch(addToCart({ itemId: id, quantity: 1, size }));
     },
     [dispatch, items]
   );
 
   const handleRemoveItem = useCallback(
-    (id) => {
+    (id, size) => {
       // Find the item to calculate price impact
-      const item = items.find((item) => item.productId === id);
+      const item = items.find(
+        (item) => item.productId === id && item.size === size
+      );
       if (item) {
         // Update local total price immediately for better UX
         setLocalTotalPrice((prev) => prev - item.price);
       }
-      dispatch(removeFromCart({ itemId: id, quantity: 1 }));
+      dispatch(removeFromCart({ itemId: id, quantity: 1, size }));
     },
     [dispatch, items]
   );
@@ -128,6 +136,7 @@ const CartItems = () => {
             <th>Product</th>
             <th>Title</th>
             <th>Price</th>
+            <th>Size</th>
             <th>Quantity</th>
             <th>Total</th>
             <th>Remove</th>

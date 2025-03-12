@@ -12,6 +12,11 @@ const ProductDisplay = ({ product }) => {
   const [isAdding, setIsAdding] = useState(false);
   const thumbnailsContainerRef = useRef(null);
 
+  // State for selected size and quantity
+  const [selectedSize, setSelectedSize] = useState("");
+  const [quantity, setQuantity] = useState(1);
+  const [sizeError, setSizeError] = useState(false);
+
   // Set up state for the currently selected image index.
   const [selectedImageIndex, setSelectedImageIndex] = useState(
     product.mainImageIndex || 0
@@ -101,18 +106,50 @@ const ProductDisplay = ({ product }) => {
     [product.reviews]
   );
 
-  // Handle Add to Cart (same as before).
+  // Handle size selection
+  const handleSizeSelect = useCallback((size) => {
+    setSelectedSize(size);
+    setSizeError(false);
+  }, []);
+
+  // Handle quantity change
+  const handleQuantityChange = useCallback((value) => {
+    const newValue = Math.max(1, parseInt(value) || 1);
+    setQuantity(newValue);
+  }, []);
+
+  // Handle Add to Cart
   const handleAddToCart = useCallback(() => {
     if (isAdding) return;
+
+    // Validate size selection
+    if (!selectedSize) {
+      setSizeError(true);
+      return;
+    }
+
     setIsAdding(true);
     if (isAuthenticated) {
-      dispatch(addToCart({ itemId: product._id, quantity: 1 }));
+      dispatch(
+        addToCart({
+          itemId: product._id,
+          quantity: quantity,
+          size: selectedSize,
+        })
+      );
       setTimeout(() => setIsAdding(false), 1000);
     } else {
       alert("Please login to add items to cart");
       setIsAdding(false);
     }
-  }, [dispatch, product._id, isAuthenticated, isAdding]);
+  }, [
+    dispatch,
+    product._id,
+    isAuthenticated,
+    isAdding,
+    quantity,
+    selectedSize,
+  ]);
 
   return (
     <div className="product-display">
@@ -173,9 +210,43 @@ const ProductDisplay = ({ product }) => {
         </div>
         <div className="product-display-right-size">
           <h1>Select Size</h1>
+          {sizeError && <p className="size-error">Please select a size</p>}
           <div className="product-display-right-size-container">
             {product.sizes &&
-              product.sizes.map((size, index) => <div key={index}>{size}</div>)}
+              product.sizes.map((size, index) => (
+                <div
+                  key={index}
+                  className={selectedSize === size ? "size-selected" : ""}
+                  onClick={() => handleSizeSelect(size)}
+                >
+                  {size}
+                </div>
+              ))}
+          </div>
+        </div>
+        <div className="product-display-right-quantity">
+          <h1>Quantity</h1>
+          <div className="product-display-right-quantity-container">
+            <button
+              className="quantity-btn"
+              onClick={() => handleQuantityChange(quantity - 1)}
+              disabled={quantity <= 1}
+            >
+              -
+            </button>
+            <input
+              type="number"
+              min="1"
+              value={quantity}
+              onChange={(e) => handleQuantityChange(e.target.value)}
+              className="quantity-input"
+            />
+            <button
+              className="quantity-btn"
+              onClick={() => handleQuantityChange(quantity + 1)}
+            >
+              +
+            </button>
           </div>
         </div>
         <button

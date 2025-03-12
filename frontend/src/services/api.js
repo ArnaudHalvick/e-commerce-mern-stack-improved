@@ -131,7 +131,7 @@ export const cartApi = {
 
   /**
    * Add an item to the cart
-   * @param {object} cartItem - Item to add to cart (itemId, quantity)
+   * @param {object} cartItem - Item to add to cart (itemId, quantity, size)
    * @returns {Promise} - Promise that resolves to updated cart
    */
   addToCart: async (cartItem) => {
@@ -147,15 +147,16 @@ export const cartApi = {
 
   /**
    * Remove an item from the cart
-   * @param {object} params - Parameters (itemId, quantity, removeAll)
+   * @param {object} params - Parameters (itemId, quantity, removeAll, size)
    * @returns {Promise} - Promise that resolves to updated cart
    */
-  removeFromCart: async ({ itemId, quantity = 1, removeAll = false }) => {
+  removeFromCart: async ({ itemId, quantity = 1, removeAll = false, size }) => {
     try {
       const response = await apiClient.post("/api/cart/remove", {
         itemId,
         quantity,
         removeAll,
+        size,
       });
       return response.data;
     } catch (error) {
@@ -168,15 +169,16 @@ export const cartApi = {
   },
 
   /**
-   * Update a cart item's quantity
-   * @param {object} params - Parameters (itemId, quantity)
+   * Update cart item quantity
+   * @param {object} params - Parameters (itemId, quantity, size)
    * @returns {Promise} - Promise that resolves to updated cart
    */
-  updateCartItem: async ({ itemId, quantity }) => {
+  updateCartItem: async ({ itemId, quantity, size }) => {
     try {
-      const response = await apiClient.put("/api/cart/update", {
+      const response = await apiClient.post("/api/cart/update", {
         itemId,
         quantity,
+        size,
       });
       return response.data;
     } catch (error) {
