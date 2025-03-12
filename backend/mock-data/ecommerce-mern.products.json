@@ -15,13 +15,53 @@
     "sizes": ["S", "M", "L", "XL"],
     "tags": ["Winter", "Elegant"],
     "types": ["Jacket"],
-    "reviews": [],
-    "rating": 4.7,
+    "reviews": [
+      {
+        "$oid": "67d1cda7156ce8598948e727"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e72b"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e731"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e777"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e781"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e78c"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7d6"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7ea"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e81e"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e83d"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e85d"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e86e"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e8b9"
+      }
+    ],
+    "rating": 2.6,
     "date": {
       "$date": "2025-03-10T19:34:21.154Z"
     },
     "available": true,
-    "__v": 0
+    "__v": 1
   },
   {
     "_id": {
@@ -45,13 +85,41 @@
     "sizes": ["S", "M", "L"],
     "tags": ["Casual", "Trendy"],
     "types": ["T-Shirt"],
-    "reviews": [],
-    "rating": 4.5,
+    "reviews": [
+      {
+        "$oid": "67d1cda7156ce8598948e7d9"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7e6"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e806"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e833"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e849"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e86a"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e881"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e8a3"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e8ac"
+      }
+    ],
+    "rating": 3.9,
     "date": {
       "$date": "2025-03-10T19:34:21.155Z"
     },
     "available": true,
-    "__v": 0
+    "__v": 1
   },
   {
     "_id": {
@@ -69,13 +137,44 @@
     "sizes": ["S", "M", "L"],
     "tags": ["Athleisure", "Trendy"],
     "types": ["Tank Top"],
-    "reviews": [],
-    "rating": 4.6,
+    "reviews": [
+      {
+        "$oid": "67d1cda7156ce8598948e734"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e748"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e75d"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7a0"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7aa"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7c2"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e836"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e853"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e87c"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e8ba"
+      }
+    ],
+    "rating": 2.8,
     "date": {
       "$date": "2025-03-10T19:34:21.155Z"
     },
     "available": true,
-    "__v": 0
+    "__v": 1
   },
   {
     "_id": {
@@ -93,13 +192,32 @@
     "sizes": ["S", "M", "L", "XL"],
     "tags": ["Elegant", "Chic"],
     "types": ["Dress"],
-    "reviews": [],
-    "rating": 4.8,
+    "reviews": [
+      {
+        "$oid": "67d1cda7156ce8598948e797"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7f4"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e80d"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e864"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e876"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e893"
+      }
+    ],
+    "rating": 2.8,
     "date": {
       "$date": "2025-03-10T19:34:21.155Z"
     },
     "available": true,
-    "__v": 0
+    "__v": 1
   },
   {
     "_id": {
@@ -117,13 +235,53 @@
     "sizes": ["S", "M", "L"],
     "tags": ["Party", "Trendy"],
     "types": ["Crop Top"],
-    "reviews": [],
-    "rating": 4.5,
+    "reviews": [
+      {
+        "$oid": "67d1cda7156ce8598948e76c"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e791"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e79a"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e79c"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e79e"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7ae"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7ce"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e816"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e847"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e85f"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e895"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e896"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e8b6"
+      }
+    ],
+    "rating": 3.8,
     "date": {
       "$date": "2025-03-10T19:34:21.155Z"
     },
     "available": true,
-    "__v": 0
+    "__v": 1
   },
   {
     "_id": {
@@ -141,13 +299,53 @@
     "sizes": ["One Size"],
     "tags": ["Minimalist", "Trendy"],
     "types": [],
-    "reviews": [],
-    "rating": 4.6,
+    "reviews": [
+      {
+        "$oid": "67d1cda7156ce8598948e73f"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e745"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e774"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e780"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7ac"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7ad"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7cd"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e808"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e811"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e81d"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e83e"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e891"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e892"
+      }
+    ],
+    "rating": 3.1,
     "date": {
       "$date": "2025-03-10T19:34:21.155Z"
     },
     "available": true,
-    "__v": 0
+    "__v": 1
   },
   {
     "_id": {
@@ -165,13 +363,59 @@
     "sizes": ["S", "M", "L", "XL"],
     "tags": ["Winter", "Elegant"],
     "types": ["Sweater"],
-    "reviews": [],
-    "rating": 4.7,
+    "reviews": [
+      {
+        "$oid": "67d1cda7156ce8598948e729"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e72a"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e732"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e76f"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e775"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7d1"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7d4"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7ee"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7fa"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e810"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e82e"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e863"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e874"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e884"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e8ad"
+      }
+    ],
+    "rating": 2.7,
     "date": {
       "$date": "2025-03-10T19:34:21.155Z"
     },
     "available": true,
-    "__v": 0
+    "__v": 1
   },
   {
     "_id": {
@@ -189,13 +433,23 @@
     "sizes": ["S", "M", "L", "XL"],
     "tags": ["Casual", "Trendy"],
     "types": ["Shirt"],
-    "reviews": [],
-    "rating": 4.5,
+    "reviews": [
+      {
+        "$oid": "67d1cda7156ce8598948e761"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e798"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e80b"
+      }
+    ],
+    "rating": 2.3,
     "date": {
       "$date": "2025-03-10T19:34:21.155Z"
     },
     "available": true,
-    "__v": 0
+    "__v": 1
   },
   {
     "_id": {
@@ -213,13 +467,50 @@
     "sizes": ["S", "M", "L", "XL"],
     "tags": ["Boho", "Chic"],
     "types": ["Dress"],
-    "reviews": [],
-    "rating": 4.6,
+    "reviews": [
+      {
+        "$oid": "67d1cda7156ce8598948e753"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e757"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e794"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e795"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7a4"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7b3"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7c1"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7f9"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e81f"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e851"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e86b"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e897"
+      }
+    ],
+    "rating": 3.6,
     "date": {
       "$date": "2025-03-10T19:34:21.155Z"
     },
     "available": true,
-    "__v": 0
+    "__v": 1
   },
   {
     "_id": {
@@ -237,13 +528,53 @@
     "sizes": ["S", "M", "L", "XL"],
     "tags": ["Casual", "Trendy"],
     "types": ["Hoodie"],
-    "reviews": [],
-    "rating": 4.5,
+    "reviews": [
+      {
+        "$oid": "67d1cda7156ce8598948e7b6"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7e1"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7e3"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7f5"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e822"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e82a"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e832"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e844"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e84f"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e85b"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e868"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e873"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e8ae"
+      }
+    ],
+    "rating": 3,
     "date": {
       "$date": "2025-03-10T19:34:21.155Z"
     },
     "available": true,
-    "__v": 0
+    "__v": 1
   },
   {
     "_id": {
@@ -261,13 +592,47 @@
     "sizes": ["S", "M", "L"],
     "tags": ["Casual", "Trendy"],
     "types": ["Tank Top"],
-    "reviews": [],
-    "rating": 4.5,
+    "reviews": [
+      {
+        "$oid": "67d1cda7156ce8598948e72e"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e756"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e77d"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7b5"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7d7"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7e5"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7f6"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7fb"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e842"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e883"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e8b3"
+      }
+    ],
+    "rating": 3.5,
     "date": {
       "$date": "2025-03-10T19:34:21.155Z"
     },
     "available": true,
-    "__v": 0
+    "__v": 1
   },
   {
     "_id": {
@@ -285,13 +650,44 @@
     "sizes": ["S", "M", "L", "XL"],
     "tags": ["Elegant", "Chic"],
     "types": ["Shirt"],
-    "reviews": [],
-    "rating": 4.6,
+    "reviews": [
+      {
+        "$oid": "67d1cda7156ce8598948e740"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e759"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e79f"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7e9"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7f0"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7f8"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e84b"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e87d"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e87f"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e882"
+      }
+    ],
+    "rating": 3.1,
     "date": {
       "$date": "2025-03-10T19:34:21.155Z"
     },
     "available": true,
-    "__v": 0
+    "__v": 1
   },
   {
     "_id": {
@@ -309,13 +705,35 @@
     "sizes": ["M", "L", "XL"],
     "tags": ["Athleisure", "Trendy"],
     "types": ["Hoodie"],
-    "reviews": [],
-    "rating": 4.7,
+    "reviews": [
+      {
+        "$oid": "67d1cda7156ce8598948e77a"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e835"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e83a"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e848"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e84c"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e879"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e8b7"
+      }
+    ],
+    "rating": 3.1,
     "date": {
       "$date": "2025-03-10T19:34:21.155Z"
     },
     "available": true,
-    "__v": 0
+    "__v": 1
   },
   {
     "_id": {
@@ -333,13 +751,32 @@
     "sizes": ["M", "L", "XL"],
     "tags": ["Winter", "Trendy"],
     "types": ["Jacket"],
-    "reviews": [],
-    "rating": 4.6,
+    "reviews": [
+      {
+        "$oid": "67d1cda7156ce8598948e75b"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e782"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7cc"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e840"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e84e"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e88a"
+      }
+    ],
+    "rating": 2,
     "date": {
       "$date": "2025-03-10T19:34:21.155Z"
     },
     "available": true,
-    "__v": 0
+    "__v": 1
   },
   {
     "_id": {
@@ -357,13 +794,47 @@
     "sizes": ["M", "L", "XL"],
     "tags": ["Trendy"],
     "types": ["Jacket"],
-    "reviews": [],
-    "rating": 4.7,
+    "reviews": [
+      {
+        "$oid": "67d1cda7156ce8598948e743"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e783"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e78d"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7dd"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7fd"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e802"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e813"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e831"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e867"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e89e"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e8ab"
+      }
+    ],
+    "rating": 3.5,
     "date": {
       "$date": "2025-03-10T19:34:21.155Z"
     },
     "available": true,
-    "__v": 0
+    "__v": 1
   },
   {
     "_id": {
@@ -381,13 +852,47 @@
     "sizes": ["M", "L", "XL"],
     "tags": ["Trendy"],
     "types": ["Jacket"],
-    "reviews": [],
-    "rating": 4.6,
+    "reviews": [
+      {
+        "$oid": "67d1cda7156ce8598948e730"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e73c"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e747"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e75c"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e76e"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e78f"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7df"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e84d"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e865"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e89a"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e8bb"
+      }
+    ],
+    "rating": 3.2,
     "date": {
       "$date": "2025-03-10T19:34:21.155Z"
     },
     "available": true,
-    "__v": 0
+    "__v": 1
   },
   {
     "_id": {
@@ -405,13 +910,44 @@
     "sizes": ["M", "L", "XL"],
     "tags": ["Casual"],
     "types": ["Jacket"],
-    "reviews": [],
-    "rating": 4.7,
+    "reviews": [
+      {
+        "$oid": "67d1cda7156ce8598948e74d"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e75e"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e772"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e792"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7ab"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7ba"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e82c"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e866"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e877"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e89b"
+      }
+    ],
+    "rating": 3.6,
     "date": {
       "$date": "2025-03-10T19:34:21.155Z"
     },
     "available": true,
-    "__v": 0
+    "__v": 1
   },
   {
     "_id": {
@@ -429,13 +965,41 @@
     "sizes": ["M", "L", "XL"],
     "tags": ["Athleisure"],
     "types": ["Jacket"],
-    "reviews": [],
-    "rating": 4.5,
+    "reviews": [
+      {
+        "$oid": "67d1cda7156ce8598948e738"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7a9"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7d8"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e80a"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e81c"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e856"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e862"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e86c"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e8a6"
+      }
+    ],
+    "rating": 2,
     "date": {
       "$date": "2025-03-10T19:34:21.155Z"
     },
     "available": true,
-    "__v": 0
+    "__v": 1
   },
   {
     "_id": {
@@ -453,13 +1017,68 @@
     "sizes": ["M", "L", "XL"],
     "tags": ["Athleisure", "Casual"],
     "types": ["Jacket"],
-    "reviews": [],
-    "rating": 4.6,
+    "reviews": [
+      {
+        "$oid": "67d1cda7156ce8598948e726"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e728"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e73d"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e741"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e755"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e799"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7a1"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7d5"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e801"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e807"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e827"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e850"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e85a"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e887"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e88d"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e89f"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e8a5"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e8af"
+      }
+    ],
+    "rating": 3.1,
     "date": {
       "$date": "2025-03-10T19:34:21.155Z"
     },
     "available": true,
-    "__v": 0
+    "__v": 1
   },
   {
     "_id": {
@@ -477,13 +1096,50 @@
     "sizes": ["M", "L", "XL"],
     "tags": ["Casual"],
     "types": ["Jacket"],
-    "reviews": [],
-    "rating": 4.4,
+    "reviews": [
+      {
+        "$oid": "67d1cda7156ce8598948e72f"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e76a"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e773"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e77e"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e77f"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7a2"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7a3"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7c3"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7c8"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7ca"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7d2"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e830"
+      }
+    ],
+    "rating": 2.6,
     "date": {
       "$date": "2025-03-10T19:34:21.155Z"
     },
     "available": true,
-    "__v": 0
+    "__v": 1
   },
   {
     "_id": {
@@ -501,13 +1157,38 @@
     "sizes": ["M", "L", "XL"],
     "tags": ["Winter", "Trendy"],
     "types": ["Jacket"],
-    "reviews": [],
-    "rating": 4.7,
+    "reviews": [
+      {
+        "$oid": "67d1cda7156ce8598948e746"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e752"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e769"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e784"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e793"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7d3"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7e0"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7ef"
+      }
+    ],
+    "rating": 4,
     "date": {
       "$date": "2025-03-10T19:34:21.155Z"
     },
     "available": true,
-    "__v": 0
+    "__v": 1
   },
   {
     "_id": {
@@ -525,13 +1206,56 @@
     "sizes": ["M", "L", "XL"],
     "tags": ["Winter", "Trendy"],
     "types": ["Jacket"],
-    "reviews": [],
-    "rating": 4.8,
+    "reviews": [
+      {
+        "$oid": "67d1cda7156ce8598948e763"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e767"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e77c"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7bc"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7c5"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7cf"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e80f"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e818"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e823"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e82d"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e846"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e861"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e890"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e8bd"
+      }
+    ],
+    "rating": 2.9,
     "date": {
       "$date": "2025-03-10T19:34:21.155Z"
     },
     "available": true,
-    "__v": 0
+    "__v": 1
   },
   {
     "_id": {
@@ -549,13 +1273,41 @@
     "sizes": ["M", "L", "XL"],
     "tags": ["Casual"],
     "types": ["Jacket"],
-    "reviews": [],
-    "rating": 4.6,
+    "reviews": [
+      {
+        "$oid": "67d1cda7156ce8598948e72c"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e73e"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e776"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7eb"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e821"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e854"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e880"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e885"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e8a1"
+      }
+    ],
+    "rating": 3.2,
     "date": {
       "$date": "2025-03-10T19:34:21.155Z"
     },
     "available": true,
-    "__v": 0
+    "__v": 1
   },
   {
     "_id": {
@@ -573,13 +1325,56 @@
     "sizes": ["M", "L", "XL"],
     "tags": ["Trendy"],
     "types": ["Jacket"],
-    "reviews": [],
-    "rating": 4.9,
+    "reviews": [
+      {
+        "$oid": "67d1cda7156ce8598948e736"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e74a"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e770"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e78e"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e796"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7bd"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7bf"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e804"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e809"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e828"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e843"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e852"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e85e"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e8a4"
+      }
+    ],
+    "rating": 2.9,
     "date": {
       "$date": "2025-03-10T19:34:21.155Z"
     },
     "available": true,
-    "__v": 0
+    "__v": 1
   },
   {
     "_id": {
@@ -597,13 +1392,62 @@
     "sizes": ["S", "M", "L"],
     "tags": ["Casual", "Trendy"],
     "types": ["Hoodie"],
-    "reviews": [],
-    "rating": 4.7,
+    "reviews": [
+      {
+        "$oid": "67d1cda7156ce8598948e779"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e785"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e787"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7af"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7de"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7f3"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e805"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e82f"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e83b"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e859"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e870"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e87a"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e886"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e888"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e889"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e89c"
+      }
+    ],
+    "rating": 3.1,
     "date": {
       "$date": "2025-03-10T19:34:21.155Z"
     },
     "available": true,
-    "__v": 0
+    "__v": 1
   },
   {
     "_id": {
@@ -621,13 +1465,47 @@
     "sizes": ["S", "M", "L"],
     "tags": ["Athleisure", "Casual"],
     "types": ["Hoodie"],
-    "reviews": [],
-    "rating": 4.6,
+    "reviews": [
+      {
+        "$oid": "67d1cda7156ce8598948e73b"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e78a"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7a8"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7b2"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7c7"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7ed"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e814"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e857"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e869"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e872"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e87e"
+      }
+    ],
+    "rating": 2.5,
     "date": {
       "$date": "2025-03-10T19:34:21.155Z"
     },
     "available": true,
-    "__v": 0
+    "__v": 1
   },
   {
     "_id": {
@@ -645,13 +1523,50 @@
     "sizes": ["S", "M", "L"],
     "tags": ["Casual", "Trendy"],
     "types": ["Hoodie"],
-    "reviews": [],
-    "rating": 4.7,
+    "reviews": [
+      {
+        "$oid": "67d1cda7156ce8598948e72d"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e737"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e73a"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e749"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e750"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7a7"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7c9"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7e2"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e829"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e860"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e88c"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e8a7"
+      }
+    ],
+    "rating": 2.8,
     "date": {
       "$date": "2025-03-10T19:34:21.155Z"
     },
     "available": true,
-    "__v": 0
+    "__v": 1
   },
   {
     "_id": {
@@ -669,13 +1584,50 @@
     "sizes": ["S", "M", "L"],
     "tags": ["Casual"],
     "types": ["Sweater"],
-    "reviews": [],
-    "rating": 4.5,
+    "reviews": [
+      {
+        "$oid": "67d1cda7156ce8598948e74b"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e75f"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e790"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7b8"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7bb"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e855"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e871"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e89d"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e8a2"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e8a9"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e8aa"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e8b8"
+      }
+    ],
+    "rating": 2.5,
     "date": {
       "$date": "2025-03-10T19:34:21.155Z"
     },
     "available": true,
-    "__v": 0
+    "__v": 1
   },
   {
     "_id": {
@@ -693,13 +1645,53 @@
     "sizes": ["S", "M", "L"],
     "tags": ["Athleisure", "Trendy"],
     "types": ["Jacket"],
-    "reviews": [],
-    "rating": 4.6,
+    "reviews": [
+      {
+        "$oid": "67d1cda7156ce8598948e75a"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e764"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e76d"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e79b"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7d0"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e800"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e819"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e820"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e86d"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e875"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e8b0"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e8b1"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e8b2"
+      }
+    ],
+    "rating": 3.1,
     "date": {
       "$date": "2025-03-10T19:34:21.155Z"
     },
     "available": true,
-    "__v": 0
+    "__v": 1
   },
   {
     "_id": {
@@ -717,13 +1709,47 @@
     "sizes": ["S", "M", "L"],
     "tags": ["Winter"],
     "types": ["Jacket"],
-    "reviews": [],
-    "rating": 4.7,
+    "reviews": [
+      {
+        "$oid": "67d1cda7156ce8598948e76b"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e788"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7b7"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7c0"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7c4"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e80e"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e815"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e824"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e826"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e84a"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e8bc"
+      }
+    ],
+    "rating": 2.9,
     "date": {
       "$date": "2025-03-10T19:34:21.155Z"
     },
     "available": true,
-    "__v": 0
+    "__v": 1
   },
   {
     "_id": {
@@ -741,13 +1767,47 @@
     "sizes": ["S", "M", "L"],
     "tags": ["Casual", "Trendy"],
     "types": ["Jacket"],
-    "reviews": [],
-    "rating": 4.6,
+    "reviews": [
+      {
+        "$oid": "67d1cda7156ce8598948e74e"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e751"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e778"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e79d"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7cb"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7e4"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e81b"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e82b"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e88e"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e88f"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e8b4"
+      }
+    ],
+    "rating": 3.6,
     "date": {
       "$date": "2025-03-10T19:34:21.155Z"
     },
     "available": true,
-    "__v": 0
+    "__v": 1
   },
   {
     "_id": {
@@ -765,13 +1825,59 @@
     "sizes": ["S", "M", "L"],
     "tags": ["Casual", "Trendy"],
     "types": ["Sweater"],
-    "reviews": [],
-    "rating": 4.5,
+    "reviews": [
+      {
+        "$oid": "67d1cda7156ce8598948e733"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e744"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e74c"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e74f"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e760"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e766"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e789"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7ec"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7f7"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e838"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e841"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e87b"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e899"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e8a0"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e8b5"
+      }
+    ],
+    "rating": 2.5,
     "date": {
       "$date": "2025-03-10T19:34:21.155Z"
     },
     "available": true,
-    "__v": 0
+    "__v": 1
   },
   {
     "_id": {
@@ -789,13 +1895,44 @@
     "sizes": ["S", "M", "L"],
     "tags": ["Casual", "Minimalist"],
     "types": ["Sweater"],
-    "reviews": [],
-    "rating": 4.6,
+    "reviews": [
+      {
+        "$oid": "67d1cda7156ce8598948e765"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e771"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7b1"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7da"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7e7"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e839"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e83c"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e845"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e898"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e8a8"
+      }
+    ],
+    "rating": 3.7,
     "date": {
       "$date": "2025-03-10T19:34:21.155Z"
     },
     "available": true,
-    "__v": 0
+    "__v": 1
   },
   {
     "_id": {
@@ -813,13 +1950,53 @@
     "sizes": ["S", "M", "L"],
     "tags": ["Casual"],
     "types": ["Jacket"],
-    "reviews": [],
-    "rating": 4.5,
+    "reviews": [
+      {
+        "$oid": "67d1cda7156ce8598948e762"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e786"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7b4"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7dc"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7fe"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e803"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e812"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e817"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e837"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e83f"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e86f"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e878"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e894"
+      }
+    ],
+    "rating": 2.4,
     "date": {
       "$date": "2025-03-10T19:34:21.155Z"
     },
     "available": true,
-    "__v": 0
+    "__v": 1
   },
   {
     "_id": {
@@ -837,13 +2014,44 @@
     "sizes": ["S", "M", "L"],
     "tags": ["Athleisure", "Trendy"],
     "types": ["Jacket"],
-    "reviews": [],
-    "rating": 4.7,
+    "reviews": [
+      {
+        "$oid": "67d1cda7156ce8598948e735"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e742"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7a5"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7b9"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7c6"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7e8"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7fc"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7ff"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e81a"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e85c"
+      }
+    ],
+    "rating": 2.9,
     "date": {
       "$date": "2025-03-10T19:34:21.155Z"
     },
     "available": true,
-    "__v": 0
+    "__v": 1
   },
   {
     "_id": {
@@ -861,12 +2069,40 @@
     "sizes": ["S", "M", "L"],
     "tags": ["Casual", "Trendy"],
     "types": ["Jacket"],
-    "reviews": [],
-    "rating": 4.6,
+    "reviews": [
+      {
+        "$oid": "67d1cda7156ce8598948e739"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e754"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e768"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e77b"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7a6"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7b0"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e7db"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e80c"
+      },
+      {
+        "$oid": "67d1cda7156ce8598948e834"
+      }
+    ],
+    "rating": 3.3,
     "date": {
       "$date": "2025-03-10T19:34:21.155Z"
     },
     "available": true,
-    "__v": 0
+    "__v": 1
   }
 ]

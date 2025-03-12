@@ -65,7 +65,10 @@ const removeProduct = async (req, res) => {
 // Get all products
 const getAllProducts = async (req, res) => {
   try {
-    let products = await Product.find();
+    let products = await Product.find().populate({
+      path: "reviews",
+      populate: { path: "user", select: "name" },
+    });
     res.send(products);
   } catch (error) {
     res.status(500).json({
@@ -79,7 +82,10 @@ const getAllProducts = async (req, res) => {
 // Get new collection
 const getNewCollection = async (req, res) => {
   try {
-    let products = await Product.find();
+    let products = await Product.find().populate({
+      path: "reviews",
+      populate: { path: "user", select: "name" },
+    });
     let newcollection = products.slice(-8);
     res.send(newcollection);
   } catch (error) {
@@ -94,9 +100,14 @@ const getNewCollection = async (req, res) => {
 // Get featured women's products
 const getFeaturedWomen = async (req, res) => {
   try {
-    let products = await Product.find({ category: "women" });
-    let featuredWomen = products.slice(-8);
-    res.send(featuredWomen);
+    let products = await Product.find({
+      category: "women",
+    }).populate({
+      path: "reviews",
+      populate: { path: "user", select: "name" },
+    });
+    let featured_product = products.slice(0, 4);
+    res.send(featured_product);
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -110,7 +121,10 @@ const getFeaturedWomen = async (req, res) => {
 const getProductsByTag = async (req, res) => {
   try {
     const { tag } = req.params;
-    const products = await Product.find({ tags: tag });
+    let products = await Product.find({ tags: tag }).populate({
+      path: "reviews",
+      populate: { path: "user", select: "name" },
+    });
     res.send(products);
   } catch (error) {
     res.status(500).json({
@@ -125,8 +139,37 @@ const getProductsByTag = async (req, res) => {
 const getProductsByType = async (req, res) => {
   try {
     const { type } = req.params;
-    const products = await Product.find({ types: type });
+    let products = await Product.find({ types: type }).populate({
+      path: "reviews",
+      populate: { path: "user", select: "name" },
+    });
     res.send(products);
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
+    });
+  }
+};
+
+// Add a new route to get a single product by ID
+const getProductById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    let product = await Product.findById(id).populate({
+      path: "reviews",
+      populate: { path: "user", select: "name" },
+    });
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    res.send(product);
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -144,4 +187,5 @@ module.exports = {
   getFeaturedWomen,
   getProductsByTag,
   getProductsByType,
+  getProductById,
 };
