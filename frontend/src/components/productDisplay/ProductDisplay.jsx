@@ -61,13 +61,27 @@ const ProductDisplay = (props) => {
     return result.slice(0, 4);
   }, [product.images, product.mainImageIndex, getBaseUrl]);
 
-  // Generate star rating elements based on product rating
+  // Generate star rating elements based on product rating with rounding
   const renderStarRating = useMemo(() => {
     const rating = product.rating || 0;
     const stars = [];
 
+    // Calculate the number of full stars to show
+    // Round up if decimal part is >= 0.7
+    let fullStars = Math.floor(rating);
+    const decimalPart = rating - fullStars;
+
+    // Round up if decimal part is 0.7 or higher
+    if (decimalPart >= 0.7) {
+      fullStars += 1;
+    }
+
+    // Ensure we don't exceed 5 stars
+    fullStars = Math.min(fullStars, 5);
+
+    // Create star elements
     for (let i = 1; i <= 5; i++) {
-      if (i <= rating) {
+      if (i <= fullStars) {
         stars.push(<img key={i} src={star_icon} alt="star" />);
       } else {
         stars.push(<img key={i} src={star_dull_icon} alt="star" />);
