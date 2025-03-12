@@ -162,7 +162,7 @@ const AddProduct = () => {
         >
           <option value="women">Women</option>
           <option value="men">Men</option>
-          <option value="kid">Kids</option>
+          <option value="kids">Kids</option>
         </select>
       </div>
       <div className="product-form__field">
