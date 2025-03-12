@@ -48,9 +48,6 @@ const getProductReviews = async (req, res) => {
     const { productId } = req.params;
     const { page = 1, limit = 5, sort = "date-desc" } = req.query;
 
-    console.log(`Fetching reviews for product: ${productId}`);
-    console.log(`Query params: page=${page}, limit=${limit}, sort=${sort}`);
-
     // Calculate skip amount for pagination
     const skip = (parseInt(page) - 1) * parseInt(limit);
 
@@ -85,7 +82,6 @@ const getProductReviews = async (req, res) => {
 
     // Count total reviews for this product
     const totalReviews = await Review.countDocuments({ product: productId });
-    console.log(`Total reviews found: ${totalReviews}`);
 
     // Get paginated and sorted reviews
     const reviews = await Review.find({ product: productId })
@@ -93,8 +89,6 @@ const getProductReviews = async (req, res) => {
       .sort(sortOption)
       .skip(skip)
       .limit(parseInt(limit));
-
-    console.log(`Reviews fetched: ${reviews.length}`);
 
     // Calculate total pages
     const totalPages = Math.ceil(totalReviews / parseInt(limit));
