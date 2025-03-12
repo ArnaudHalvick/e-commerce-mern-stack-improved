@@ -2,7 +2,7 @@
 .product-display {
   display: flex;
   width: 80%;
-  margin: 0 auto 3rem;
+  margin: 1rem auto 3rem;
 }
 
 .product-display-left {
