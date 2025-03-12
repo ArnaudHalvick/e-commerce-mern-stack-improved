@@ -65,6 +65,11 @@
   color: #ff5a5a;
 }
 
+.product-display-right-price-single {
+  color: #ff5a5a;
+  font-size: 1.8rem;
+}
+
 .product-display-right-description {
   margin-top: 0.3rem;
   font-style: normal;

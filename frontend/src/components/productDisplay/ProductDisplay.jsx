@@ -61,6 +61,43 @@ const ProductDisplay = (props) => {
     return result.slice(0, 4);
   }, [product.images, product.mainImageIndex, getBaseUrl]);
 
+  // Generate star rating elements based on product rating
+  const renderStarRating = useMemo(() => {
+    const rating = product.rating || 0;
+    const stars = [];
+
+    for (let i = 1; i <= 5; i++) {
+      if (i <= rating) {
+        stars.push(<img key={i} src={star_icon} alt="star" />);
+      } else {
+        stars.push(<img key={i} src={star_dull_icon} alt="star" />);
+      }
+    }
+
+    return stars;
+  }, [product.rating]);
+
+  // Format product types for display
+  const productTypes = useMemo(() => {
+    if (product.types && product.types.length > 0) {
+      return product.types.join(", ");
+    }
+    return "N/A";
+  }, [product.types]);
+
+  // Format product tags for display
+  const productTags = useMemo(() => {
+    if (product.tags && product.tags.length > 0) {
+      return product.tags.join(", ");
+    }
+    return "N/A";
+  }, [product.tags]);
+
+  // Get the review count
+  const reviewCount = useMemo(() => {
+    return product.reviews ? product.reviews.length : 0;
+  }, [product.reviews]);
+
   // Memoize the handler to prevent unnecessary re-renders
   const handleAddToCart = useCallback(() => {
     // Prevent multiple clicks
@@ -94,37 +131,33 @@ const ProductDisplay = (props) => {
       <div className="product-display-right">
         <h1>{product.name}</h1>
         <div className="product-display-right-stars">
-          <img src={star_icon} alt="" />
-          <img src={star_icon} alt="" />
-          <img src={star_icon} alt="" />
-          <img src={star_icon} alt="" />
-          <img src={star_dull_icon} alt="" />
-          <p>(120)</p>
+          {renderStarRating.map((star) => star)}
+          <p>({reviewCount})</p>
         </div>
         <div className="product-display-right-prices">
-          <div className="product-display-right-price-old">
+          <div
+            className={
+              product.new_price
+                ? "product-display-right-price-old"
+                : "product-display-right-price-single"
+            }
+          >
             ${product.old_price}
           </div>
-          <div className="product-display-right-price-new">
-            ${product.new_price}
-          </div>
+          {product.new_price && (
+            <div className="product-display-right-price-new">
+              ${product.new_price}
+            </div>
+          )}
         </div>
         <div className="product-display-right-description">
-          <p>
-            This stylish and comfortable clothing item is perfect for any
-            occasion. Made from high-quality materials, it offers both
-            durability and a great fit. Available in various sizes and colors to
-            suit your personal style.
-          </p>
+          <p>{product.shortDescription}</p>
         </div>
         <div className="product-display-right-size">
           <h1>Select Size</h1>
           <div className="product-display-right-size-container">
-            <div>S</div>
-            <div>M</div>
-            <div>L</div>
-            <div>XL</div>
-            <div>XXL</div>
+            {product.sizes &&
+              product.sizes.map((size, index) => <div key={index}>{size}</div>)}
           </div>
         </div>
         <button
@@ -135,10 +168,12 @@ const ProductDisplay = (props) => {
           {isAdding ? "Adding..." : "Add to Cart"}
         </button>
         <p className="product-display-right-category">
-          <span>Category :</span>Women, T-Shirt, Crop Top
+          <span>Category: </span>
+          {product.types && product.types.length > 0 ? `${productTypes}` : ""}
         </p>
         <p className="product-display-right-category">
-          <span>Tags :</span>Modern, Latest, Trending
+          <span>Tags: </span>
+          {productTags}
         </p>
       </div>
     </div>

@@ -31,7 +31,7 @@ const Product = () => {
     <div>
       <Breadcrumb product={product} />
       <ProductDisplay product={product} />
-      <DescriptionBox />
+      <DescriptionBox product={product} />
       <RelatedProducts />
     </div>
   );
