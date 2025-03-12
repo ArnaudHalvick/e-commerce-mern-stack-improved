@@ -1,7 +1,7 @@
 import "./ProductDisplay.css";
 import star_icon from "../assets/star_icon.png";
 import star_dull_icon from "../assets/star_dull_icon.png";
-import { useContext, useState, useMemo, useCallback } from "react";
+import { useContext, useState, useMemo, useCallback, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../redux/slices/cartSlice";
 import { AuthContext } from "../../context/AuthContext";
@@ -10,6 +10,7 @@ const ProductDisplay = ({ product }) => {
   const dispatch = useDispatch();
   const { isAuthenticated } = useContext(AuthContext);
   const [isAdding, setIsAdding] = useState(false);
+  const thumbnailsContainerRef = useRef(null);
 
   // Set up state for the currently selected image index.
   const [selectedImageIndex, setSelectedImageIndex] = useState(
@@ -35,6 +36,33 @@ const ProductDisplay = ({ product }) => {
     }
     return `${getBaseUrl}/images/pink-placeholder.png`;
   }, [product.images, selectedImageIndex, getBaseUrl]);
+
+  // Scroll thumbnails to center the selected one
+  const scrollToSelectedThumbnail = useCallback(() => {
+    if (
+      thumbnailsContainerRef.current &&
+      product.images &&
+      product.images.length > 0
+    ) {
+      const container = thumbnailsContainerRef.current;
+      const thumbnailWidth = 80; // Approximate width of thumbnail + gap
+      const scrollPosition =
+        selectedImageIndex * thumbnailWidth -
+        container.clientWidth / 2 +
+        thumbnailWidth / 2;
+      container.scrollTo({ left: scrollPosition, behavior: "smooth" });
+    }
+  }, [selectedImageIndex, product.images]);
+
+  // Handle thumbnail click
+  const handleThumbnailClick = useCallback(
+    (index) => {
+      setSelectedImageIndex(index);
+      // We'll scroll to the selected thumbnail after the state update
+      setTimeout(scrollToSelectedThumbnail, 0);
+    },
+    [scrollToSelectedThumbnail]
+  );
 
   // Render star rating (same as before).
   const renderStarRating = useMemo(() => {
@@ -86,27 +114,33 @@ const ProductDisplay = ({ product }) => {
   return (
     <div className="product-display">
       <div className="product-display-left">
-        {/* Thumbnail list: render all images */}
-        <div className="product-display-img-list">
-          {product.images && product.images.length > 0 ? (
-            product.images.map((img, index) => (
-              <img
-                key={index}
-                src={img}
-                alt=""
-                onClick={() => setSelectedImageIndex(index)}
-                className={
-                  selectedImageIndex === index ? "selected-thumbnail" : ""
-                }
-              />
-            ))
-          ) : (
-            <img src={`${getBaseUrl}/images/pink-placeholder.png`} alt="" />
-          )}
-        </div>
         {/* Main image display */}
         <div className="product-display-img">
           <img src={mainImage} alt="" className="product-display-main-img" />
+        </div>
+
+        {/* Horizontal thumbnail gallery */}
+        <div className="product-display-thumbnails-container">
+          <div
+            className="product-display-thumbnails"
+            ref={thumbnailsContainerRef}
+          >
+            {product.images && product.images.length > 0 ? (
+              product.images.map((img, index) => (
+                <img
+                  key={index}
+                  src={img}
+                  alt=""
+                  onClick={() => handleThumbnailClick(index)}
+                  className={
+                    selectedImageIndex === index ? "selected-thumbnail" : ""
+                  }
+                />
+              ))
+            ) : (
+              <img src={`${getBaseUrl}/images/pink-placeholder.png`} alt="" />
+            )}
+          </div>
         </div>
       </div>
       <div className="product-display-right">
