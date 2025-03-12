@@ -5,12 +5,50 @@ import { useState, useEffect } from "react";
 
 const NewCollection = () => {
   const [newCollection, setNewCollection] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
+    setLoading(true);
+    setError(null);
+
     fetch("http://localhost:4000/api/newcollection")
-      .then((res) => res.json())
-      .then((data) => setNewCollection(data));
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(
+            `Failed to fetch new collection: ${res.status} ${res.statusText}`
+          );
+        }
+        return res.json();
+      })
+      .then((data) => {
+        // Validate and log data for debugging
+        if (!Array.isArray(data)) {
+          console.warn("API didn't return an array for new collection", data);
+          setNewCollection([]);
+        } else {
+          console.log(`Loaded ${data.length} new collection items`);
+          if (data.length > 0) {
+            console.log("Sample new collection item:", data[0]);
+          }
+          setNewCollection(data);
+        }
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error fetching new collection:", err);
+        setError(err.message);
+        setLoading(false);
+      });
   }, []);
+
+  if (loading) {
+    return <div className="loading">Loading new collection...</div>;
+  }
+
+  if (error) {
+    return <div className="error">Error loading new collection: {error}</div>;
+  }
 
   return (
     <div className="new-collections">
@@ -21,6 +59,8 @@ const NewCollection = () => {
           <Item
             key={index}
             id={item.id}
+            _id={item._id}
+            slug={item.slug}
             name={item.name}
             images={item.images}
             mainImageIndex={item.mainImageIndex}

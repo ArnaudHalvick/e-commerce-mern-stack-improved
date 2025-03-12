@@ -27,9 +27,30 @@ const Item = (props) => {
   // Check if the item has a discount (new_price > 0)
   const hasDiscount = props.new_price && props.new_price > 0;
 
+  // Generate the product link using slug if available, fallback to _id if available, or just use a generic link
+  const productLink = useMemo(() => {
+    // MongoDB objects often have _id as a nested property inside the $oid field
+    const mongoId =
+      props._id && typeof props._id === "object" && props._id.$oid
+        ? props._id.$oid
+        : props._id;
+
+    if (props.slug) {
+      return `/products/${props.slug}`;
+    } else if (mongoId) {
+      return `/product/${mongoId}`;
+    } else if (props.id) {
+      return `/product/${props.id}`;
+    } else {
+      // This should rarely happen, but have a safe fallback
+      console.warn("Product without slug or id:", props);
+      return `/`;
+    }
+  }, [props.slug, props._id, props.id]);
+
   return (
     <div className="item-container">
-      <Link to={`/product/${props.id}`}>
+      <Link to={productLink}>
         <img onClick={() => window.scrollTo(0, 0)} src={mainImage} alt="" />
       </Link>
       <p>{props.name}</p>

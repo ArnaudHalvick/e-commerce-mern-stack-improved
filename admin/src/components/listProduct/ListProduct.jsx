@@ -26,7 +26,7 @@ const ListProduct = () => {
     fetchProducts();
   }, []);
 
-  const handleDelete = async (id, name) => {
+  const handleDelete = async (productId, name) => {
     if (window.confirm(`Are you sure you want to delete ${name}?`)) {
       try {
         const response = await fetch(
@@ -36,13 +36,13 @@ const ListProduct = () => {
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ id }),
+            body: JSON.stringify({ id: productId }),
           }
         );
         const data = await response.json();
 
         if (data.success) {
-          setProducts(products.filter((product) => product.id !== id));
+          setProducts(products.filter((product) => product._id !== productId));
           alert("Product deleted successfully!");
         }
       } catch (err) {
@@ -59,7 +59,7 @@ const ListProduct = () => {
       <h2>Product List</h2>
       <div className="products-grid">
         {products.map((product) => (
-          <div key={product.id} className="product-card">
+          <div key={product._id || product.id} className="product-card">
             <div className="product-image">
               <img
                 src={
@@ -72,6 +72,7 @@ const ListProduct = () => {
             </div>
             <div className="product-info">
               <h3>{product.name}</h3>
+              {product.slug && <p className="slug">Slug: {product.slug}</p>}
               <p className="price">
                 <span className="old-price">${product.old_price}</span>
                 <span className="new-price">${product.new_price}</span>
@@ -85,7 +86,9 @@ const ListProduct = () => {
               <button className="edit-btn">Edit</button>
               <button
                 className="delete-btn"
-                onClick={() => handleDelete(product.id, product.name)}
+                onClick={() =>
+                  handleDelete(product._id || product.id, product.name)
+                }
               >
                 Delete
               </button>

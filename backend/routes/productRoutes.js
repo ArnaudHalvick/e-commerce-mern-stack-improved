@@ -13,5 +13,6 @@ router.get("/featured-women", productController.getFeaturedWomen);
 router.get("/products/tag/:tag", productController.getProductsByTag);
 router.get("/products/type/:type", productController.getProductsByType);
 router.get("/product/:id", productController.getProductById);
+router.get("/product/slug/:slug", productController.getProductBySlug);
 
 module.exports = router;

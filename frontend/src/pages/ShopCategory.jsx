@@ -27,7 +27,7 @@ const CategoryBreadcrumb = ({ category }) => {
 
 const ShopCategory = (props) => {
   const context = useContext(ShopContext);
-  const { all_product } = context || {};
+  const { all_product, loading, error } = context || {};
 
   // Filter products by category
   const filteredProducts = useMemo(() => {
@@ -42,6 +42,14 @@ const ShopCategory = (props) => {
   // For now we'll show a fixed range (1-12), but this could be expanded with pagination
   const displayRange = `1-${Math.min(12, productCount)}`;
 
+  if (loading) {
+    return <div className="loading">Loading products...</div>;
+  }
+
+  if (error) {
+    return <div className="error">Error loading products: {error}</div>;
+  }
+
   return (
     <div className="product-category-container">
       <CategoryBreadcrumb category={props.category} />
@@ -55,29 +63,27 @@ const ShopCategory = (props) => {
         </div>
       </div>
       <div className="product-grid">
-        {all_product && all_product.length > 0 ? (
-          all_product.map((item, index) => {
-            if (item.category === props.category) {
-              return (
-                <Item
-                  key={index}
-                  id={item.id}
-                  name={item.name}
-                  images={item.images}
-                  mainImageIndex={item.mainImageIndex}
-                  new_price={item.new_price}
-                  old_price={item.old_price}
-                />
-              );
-            } else {
-              return null;
-            }
-          })
+        {filteredProducts.length > 0 ? (
+          filteredProducts.map((item, index) => (
+            <Item
+              key={item._id || item.id || index}
+              id={item.id}
+              _id={item._id}
+              slug={item.slug}
+              name={item.name}
+              images={item.images}
+              mainImageIndex={item.mainImageIndex}
+              new_price={item.new_price}
+              old_price={item.old_price}
+            />
+          ))
         ) : (
-          <p>No products available.</p>
+          <p>No products available in this category.</p>
         )}
       </div>
-      <div className="load-more-button">Explore more</div>
+      {filteredProducts.length > 0 && (
+        <div className="load-more-button">Explore more</div>
+      )}
     </div>
   );
 };

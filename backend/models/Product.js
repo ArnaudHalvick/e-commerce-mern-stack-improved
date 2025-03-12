@@ -3,11 +3,65 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
+// Helper function to generate a slug from a product name
+const generateSlug = (name) => {
+  return name
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, "") // Remove special characters
+    .replace(/\s+/g, "-") // Replace spaces with hyphens
+    .replace(/-+/g, "-") // Replace multiple hyphens with a single one
+    .trim(); // Trim leading/trailing whitespace
+};
+
+// Function to ensure slug uniqueness (will be used in pre-save hook)
+const ensureUniqueSlug = async function (baseSlug, productId) {
+  const Product = this.constructor;
+
+  // Check if slug already exists (excluding the current product if updating)
+  const query = productId
+    ? { slug: baseSlug, _id: { $ne: productId } }
+    : { slug: baseSlug };
+
+  const existingProduct = await Product.findOne(query);
+
+  if (!existingProduct) return baseSlug;
+
+  // If slug exists, add a numeric suffix
+  let counter = 1;
+  let newSlug = `${baseSlug}-${counter.toString().padStart(3, "0")}`;
+
+  while (true) {
+    const duplicateQuery = productId
+      ? { slug: newSlug, _id: { $ne: productId } }
+      : { slug: newSlug };
+
+    const duplicate = await Product.findOne(duplicateQuery);
+
+    if (!duplicate) break;
+
+    counter++;
+    newSlug = `${baseSlug}-${counter.toString().padStart(3, "0")}`;
+
+    // Safety check to prevent infinite loops
+    if (counter > 1000) {
+      throw new Error("Could not generate a unique slug after 1000 attempts");
+    }
+  }
+
+  return newSlug;
+};
+
 const ProductSchema = new mongoose.Schema({
   id: {
     type: Number,
-    required: true,
+    required: false,
+    unique: false,
+  },
+  slug: {
+    type: String,
+    required: false, // Changed to false to allow auto-generation during save
     unique: true,
+    index: true,
   },
   images: {
     type: [String],
@@ -124,6 +178,38 @@ const ProductSchema = new mongoose.Schema({
 function arrayLimit(val) {
   return val.length >= 1 && val.length <= 5;
 }
+
+// Pre-validate hook to ensure slug exists before validation
+ProductSchema.pre("validate", async function (next) {
+  if (!this.slug) {
+    try {
+      // Generate a base slug from the name
+      const baseSlug = generateSlug(this.name);
+
+      // Ensure the slug is unique
+      this.slug = await ensureUniqueSlug.call(this, baseSlug, this._id);
+    } catch (error) {
+      return next(error);
+    }
+  }
+  next();
+});
+
+// Pre-save hook to update slug if name changes
+ProductSchema.pre("save", async function (next) {
+  if (this.isModified("name") && !this.isModified("slug")) {
+    try {
+      // Generate a base slug from the name
+      const baseSlug = generateSlug(this.name);
+
+      // Ensure the slug is unique
+      this.slug = await ensureUniqueSlug.call(this, baseSlug, this._id);
+    } catch (error) {
+      return next(error);
+    }
+  }
+  next();
+});
 
 // Create a virtual property for the main image
 ProductSchema.virtual("mainImage").get(function () {

@@ -25,6 +25,7 @@ function App() {
 
       <Container>
         <Routes>
+          {/* Main routes */}
           <Route path="/" element={<Shop />} />
           <Route
             path="/men"
@@ -38,9 +39,17 @@ function App() {
             path="/kids"
             element={<ShopCategory category="kids" banner={kids_banner} />}
           />
+
+          {/* Product routes */}
+          {/* Legacy ID-based routes (for backward compatibility) */}
           <Route path="/product" element={<Product />}>
             <Route path=":productId" element={<Product />} />
           </Route>
+
+          {/* New slug-based routes (preferred) */}
+          <Route path="/products/:productSlug" element={<Product />} />
+
+          {/* Other routes */}
           <Route path="/cart" element={<Cart />} />
           <Route path="/login" element={<Auth />} />
         </Routes>
