@@ -1,0 +1,3202 @@
+[
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527a59" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527a5a" },
+    "rating": 4,
+    "verifiedPurchase": true,
+    "date": "4/5/2024",
+    "helpful": { "count": 41, "users": { "$oid": "67d1c82ffc13ae72d0527a5b" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527a5c" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527a5d" },
+    "rating": 3,
+    "verifiedPurchase": true,
+    "date": "2/16/2025",
+    "helpful": { "count": 90, "users": { "$oid": "67d1c82ffc13ae72d0527a5e" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527a5f" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527a60" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "4/23/2024",
+    "helpful": { "count": 51, "users": { "$oid": "67d1c82ffc13ae72d0527a61" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527a62" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527a63" },
+    "rating": 3,
+    "verifiedPurchase": true,
+    "date": "10/19/2024",
+    "helpful": { "count": 41, "users": { "$oid": "67d1c82ffc13ae72d0527a64" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527a65" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527a66" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "9/11/2024",
+    "helpful": { "count": 91, "users": { "$oid": "67d1c82ffc13ae72d0527a67" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527a68" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527a69" },
+    "rating": 5,
+    "verifiedPurchase": true,
+    "date": "9/3/2024",
+    "helpful": { "count": 42, "users": { "$oid": "67d1c82ffc13ae72d0527a6a" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527a6b" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527a6c" },
+    "rating": 3,
+    "verifiedPurchase": true,
+    "date": "7/17/2024",
+    "helpful": { "count": 22, "users": { "$oid": "67d1c82ffc13ae72d0527a6d" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527a6e" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527a6f" },
+    "rating": 1,
+    "verifiedPurchase": true,
+    "date": "2/19/2025",
+    "helpful": { "count": 65, "users": { "$oid": "67d1c82ffc13ae72d0527a70" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527a71" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527a72" },
+    "rating": 3,
+    "verifiedPurchase": false,
+    "date": "9/20/2024",
+    "helpful": { "count": 4, "users": { "$oid": "67d1c82ffc13ae72d0527a73" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527a74" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527a75" },
+    "rating": 3,
+    "verifiedPurchase": true,
+    "date": "8/24/2024",
+    "helpful": { "count": 65, "users": { "$oid": "67d1c82ffc13ae72d0527a76" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527a77" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527a78" },
+    "rating": 5,
+    "verifiedPurchase": false,
+    "date": "8/4/2024",
+    "helpful": { "count": 90, "users": { "$oid": "67d1c82ffc13ae72d0527a79" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527a7a" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527a7b" },
+    "rating": 5,
+    "verifiedPurchase": true,
+    "date": "2/11/2025",
+    "helpful": { "count": 47, "users": { "$oid": "67d1c82ffc13ae72d0527a7c" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527a7d" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527a7e" },
+    "rating": 4,
+    "verifiedPurchase": false,
+    "date": "12/3/2024",
+    "helpful": { "count": 91, "users": { "$oid": "67d1c82ffc13ae72d0527a7f" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527a80" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527a81" },
+    "rating": 1,
+    "verifiedPurchase": true,
+    "date": "9/17/2024",
+    "helpful": { "count": 93, "users": { "$oid": "67d1c82ffc13ae72d0527a82" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527a83" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527a84" },
+    "rating": 2,
+    "verifiedPurchase": true,
+    "date": "1/26/2025",
+    "helpful": { "count": 77, "users": { "$oid": "67d1c82ffc13ae72d0527a85" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527a86" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527a87" },
+    "rating": 2,
+    "verifiedPurchase": true,
+    "date": "11/5/2024",
+    "helpful": { "count": 38, "users": { "$oid": "67d1c82ffc13ae72d0527a88" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527a89" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527a8a" },
+    "rating": 3,
+    "verifiedPurchase": false,
+    "date": "5/3/2024",
+    "helpful": { "count": 46, "users": { "$oid": "67d1c82ffc13ae72d0527a8b" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527a8c" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527a8d" },
+    "rating": 5,
+    "verifiedPurchase": false,
+    "date": "6/24/2024",
+    "helpful": { "count": 58, "users": { "$oid": "67d1c82ffc13ae72d0527a8e" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527a8f" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527a90" },
+    "rating": 5,
+    "verifiedPurchase": false,
+    "date": "8/18/2024",
+    "helpful": { "count": 11, "users": { "$oid": "67d1c82ffc13ae72d0527a91" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527a92" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527a93" },
+    "rating": 3,
+    "verifiedPurchase": true,
+    "date": "1/30/2025",
+    "helpful": { "count": 82, "users": { "$oid": "67d1c82ffc13ae72d0527a94" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527a95" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527a96" },
+    "rating": 5,
+    "verifiedPurchase": false,
+    "date": "1/20/2025",
+    "helpful": { "count": 38, "users": { "$oid": "67d1c82ffc13ae72d0527a97" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527a98" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527a99" },
+    "rating": 4,
+    "verifiedPurchase": false,
+    "date": "9/17/2024",
+    "helpful": { "count": 5, "users": { "$oid": "67d1c82ffc13ae72d0527a9a" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527a9b" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527a9c" },
+    "rating": 2,
+    "verifiedPurchase": true,
+    "date": "5/5/2024",
+    "helpful": { "count": 51, "users": { "$oid": "67d1c82ffc13ae72d0527a9d" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527a9e" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527a9f" },
+    "rating": 1,
+    "verifiedPurchase": false,
+    "date": "8/23/2024",
+    "helpful": { "count": 89, "users": { "$oid": "67d1c82ffc13ae72d0527aa0" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527aa1" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527aa2" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "9/30/2024",
+    "helpful": { "count": 70, "users": { "$oid": "67d1c82ffc13ae72d0527aa3" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527aa4" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527aa5" },
+    "rating": 3,
+    "verifiedPurchase": true,
+    "date": "10/1/2024",
+    "helpful": { "count": 16, "users": { "$oid": "67d1c82ffc13ae72d0527aa6" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527aa7" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527aa8" },
+    "rating": 1,
+    "verifiedPurchase": true,
+    "date": "7/2/2024",
+    "helpful": { "count": 89, "users": { "$oid": "67d1c82ffc13ae72d0527aa9" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527aaa" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527aab" },
+    "rating": 4,
+    "verifiedPurchase": true,
+    "date": "4/16/2024",
+    "helpful": { "count": 42, "users": { "$oid": "67d1c82ffc13ae72d0527aac" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527aad" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527aae" },
+    "rating": 3,
+    "verifiedPurchase": false,
+    "date": "10/16/2024",
+    "helpful": { "count": 16, "users": { "$oid": "67d1c82ffc13ae72d0527aaf" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ab0" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ab1" },
+    "rating": 5,
+    "verifiedPurchase": false,
+    "date": "4/23/2024",
+    "helpful": { "count": 13, "users": { "$oid": "67d1c82ffc13ae72d0527ab2" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ab3" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ab4" },
+    "rating": 4,
+    "verifiedPurchase": true,
+    "date": "10/16/2024",
+    "helpful": { "count": 79, "users": { "$oid": "67d1c82ffc13ae72d0527ab5" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ab6" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ab7" },
+    "rating": 4,
+    "verifiedPurchase": false,
+    "date": "9/8/2024",
+    "helpful": { "count": 52, "users": { "$oid": "67d1c82ffc13ae72d0527ab8" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ab9" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527aba" },
+    "rating": 4,
+    "verifiedPurchase": false,
+    "date": "3/6/2025",
+    "helpful": { "count": 42, "users": { "$oid": "67d1c82ffc13ae72d0527abb" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527abc" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527abd" },
+    "rating": 4,
+    "verifiedPurchase": true,
+    "date": "10/19/2024",
+    "helpful": { "count": 3, "users": { "$oid": "67d1c82ffc13ae72d0527abe" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527abf" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ac0" },
+    "rating": 3,
+    "verifiedPurchase": false,
+    "date": "11/25/2024",
+    "helpful": { "count": 10, "users": { "$oid": "67d1c82ffc13ae72d0527ac1" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ac2" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ac3" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "1/12/2025",
+    "helpful": { "count": 56, "users": { "$oid": "67d1c82ffc13ae72d0527ac4" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ac5" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ac6" },
+    "rating": 4,
+    "verifiedPurchase": true,
+    "date": "4/22/2024",
+    "helpful": { "count": 13, "users": { "$oid": "67d1c82ffc13ae72d0527ac7" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ac8" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ac9" },
+    "rating": 1,
+    "verifiedPurchase": false,
+    "date": "11/26/2024",
+    "helpful": { "count": 42, "users": { "$oid": "67d1c82ffc13ae72d0527aca" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527acb" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527acc" },
+    "rating": 1,
+    "verifiedPurchase": true,
+    "date": "9/6/2024",
+    "helpful": { "count": 21, "users": { "$oid": "67d1c82ffc13ae72d0527acd" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ace" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527acf" },
+    "rating": 2,
+    "verifiedPurchase": true,
+    "date": "10/25/2024",
+    "helpful": { "count": 18, "users": { "$oid": "67d1c82ffc13ae72d0527ad0" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ad1" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ad2" },
+    "rating": 1,
+    "verifiedPurchase": false,
+    "date": "5/16/2024",
+    "helpful": { "count": 12, "users": { "$oid": "67d1c82ffc13ae72d0527ad3" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ad4" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ad5" },
+    "rating": 1,
+    "verifiedPurchase": false,
+    "date": "3/16/2024",
+    "helpful": { "count": 44, "users": { "$oid": "67d1c82ffc13ae72d0527ad6" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ad7" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ad8" },
+    "rating": 2,
+    "verifiedPurchase": true,
+    "date": "5/5/2024",
+    "helpful": { "count": 87, "users": { "$oid": "67d1c82ffc13ae72d0527ad9" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ada" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527adb" },
+    "rating": 5,
+    "verifiedPurchase": false,
+    "date": "1/2/2025",
+    "helpful": { "count": 63, "users": { "$oid": "67d1c82ffc13ae72d0527adc" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527add" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ade" },
+    "rating": 2,
+    "verifiedPurchase": true,
+    "date": "8/17/2024",
+    "helpful": { "count": 38, "users": { "$oid": "67d1c82ffc13ae72d0527adf" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ae0" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ae1" },
+    "rating": 1,
+    "verifiedPurchase": false,
+    "date": "1/24/2025",
+    "helpful": { "count": 74, "users": { "$oid": "67d1c82ffc13ae72d0527ae2" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ae3" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ae4" },
+    "rating": 4,
+    "verifiedPurchase": false,
+    "date": "3/7/2025",
+    "helpful": { "count": 81, "users": { "$oid": "67d1c82ffc13ae72d0527ae5" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ae6" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ae7" },
+    "rating": 5,
+    "verifiedPurchase": false,
+    "date": "9/30/2024",
+    "helpful": { "count": 80, "users": { "$oid": "67d1c82ffc13ae72d0527ae8" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ae9" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527aea" },
+    "rating": 4,
+    "verifiedPurchase": true,
+    "date": "1/9/2025",
+    "helpful": { "count": 57, "users": { "$oid": "67d1c82ffc13ae72d0527aeb" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527aec" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527aed" },
+    "rating": 1,
+    "verifiedPurchase": true,
+    "date": "3/5/2025",
+    "helpful": { "count": 72, "users": { "$oid": "67d1c82ffc13ae72d0527aee" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527aef" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527af0" },
+    "rating": 5,
+    "verifiedPurchase": false,
+    "date": "8/20/2024",
+    "helpful": { "count": 86, "users": { "$oid": "67d1c82ffc13ae72d0527af1" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527af2" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527af3" },
+    "rating": 1,
+    "verifiedPurchase": false,
+    "date": "1/5/2025",
+    "helpful": { "count": 26, "users": { "$oid": "67d1c82ffc13ae72d0527af4" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527af5" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527af6" },
+    "rating": 3,
+    "verifiedPurchase": false,
+    "date": "8/14/2024",
+    "helpful": { "count": 41, "users": { "$oid": "67d1c82ffc13ae72d0527af7" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527af8" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527af9" },
+    "rating": 4,
+    "verifiedPurchase": true,
+    "date": "9/25/2024",
+    "helpful": { "count": 50, "users": { "$oid": "67d1c82ffc13ae72d0527afa" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527afb" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527afc" },
+    "rating": 5,
+    "verifiedPurchase": false,
+    "date": "4/21/2024",
+    "helpful": { "count": 60, "users": { "$oid": "67d1c82ffc13ae72d0527afd" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527afe" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527aff" },
+    "rating": 1,
+    "verifiedPurchase": false,
+    "date": "6/21/2024",
+    "helpful": { "count": 86, "users": { "$oid": "67d1c82ffc13ae72d0527b00" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b01" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b02" },
+    "rating": 2,
+    "verifiedPurchase": true,
+    "date": "4/26/2024",
+    "helpful": { "count": 78, "users": { "$oid": "67d1c82ffc13ae72d0527b03" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b04" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b05" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "2/14/2025",
+    "helpful": { "count": 91, "users": { "$oid": "67d1c82ffc13ae72d0527b06" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b07" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b08" },
+    "rating": 4,
+    "verifiedPurchase": true,
+    "date": "5/11/2024",
+    "helpful": { "count": 7, "users": { "$oid": "67d1c82ffc13ae72d0527b09" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b0a" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b0b" },
+    "rating": 4,
+    "verifiedPurchase": false,
+    "date": "1/16/2025",
+    "helpful": { "count": 38, "users": { "$oid": "67d1c82ffc13ae72d0527b0c" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b0d" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b0e" },
+    "rating": 5,
+    "verifiedPurchase": true,
+    "date": "5/23/2024",
+    "helpful": { "count": 47, "users": { "$oid": "67d1c82ffc13ae72d0527b0f" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b10" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b11" },
+    "rating": 1,
+    "verifiedPurchase": false,
+    "date": "4/13/2024",
+    "helpful": { "count": 45, "users": { "$oid": "67d1c82ffc13ae72d0527b12" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b13" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b14" },
+    "rating": 3,
+    "verifiedPurchase": false,
+    "date": "6/26/2024",
+    "helpful": { "count": 91, "users": { "$oid": "67d1c82ffc13ae72d0527b15" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b16" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b17" },
+    "rating": 3,
+    "verifiedPurchase": true,
+    "date": "5/8/2024",
+    "helpful": { "count": 28, "users": { "$oid": "67d1c82ffc13ae72d0527b18" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b19" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b1a" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "6/25/2024",
+    "helpful": { "count": 61, "users": { "$oid": "67d1c82ffc13ae72d0527b1b" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b1c" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b1d" },
+    "rating": 4,
+    "verifiedPurchase": true,
+    "date": "7/15/2024",
+    "helpful": { "count": 84, "users": { "$oid": "67d1c82ffc13ae72d0527b1e" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b1f" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b20" },
+    "rating": 3,
+    "verifiedPurchase": true,
+    "date": "2/1/2025",
+    "helpful": { "count": 6, "users": { "$oid": "67d1c82ffc13ae72d0527b21" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b22" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b23" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "7/29/2024",
+    "helpful": { "count": 76, "users": { "$oid": "67d1c82ffc13ae72d0527b24" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b25" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b26" },
+    "rating": 3,
+    "verifiedPurchase": true,
+    "date": "10/9/2024",
+    "helpful": { "count": 40, "users": { "$oid": "67d1c82ffc13ae72d0527b27" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b28" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b29" },
+    "rating": 4,
+    "verifiedPurchase": false,
+    "date": "9/22/2024",
+    "helpful": { "count": 58, "users": { "$oid": "67d1c82ffc13ae72d0527b2a" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b2b" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b2c" },
+    "rating": 3,
+    "verifiedPurchase": false,
+    "date": "5/15/2024",
+    "helpful": { "count": 75, "users": { "$oid": "67d1c82ffc13ae72d0527b2d" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b2e" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b2f" },
+    "rating": 3,
+    "verifiedPurchase": false,
+    "date": "7/19/2024",
+    "helpful": { "count": 25, "users": { "$oid": "67d1c82ffc13ae72d0527b30" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b31" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b32" },
+    "rating": 2,
+    "verifiedPurchase": true,
+    "date": "9/15/2024",
+    "helpful": { "count": 61, "users": { "$oid": "67d1c82ffc13ae72d0527b33" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b34" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b35" },
+    "rating": 5,
+    "verifiedPurchase": false,
+    "date": "7/16/2024",
+    "helpful": { "count": 86, "users": { "$oid": "67d1c82ffc13ae72d0527b36" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b37" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b38" },
+    "rating": 1,
+    "verifiedPurchase": true,
+    "date": "4/2/2024",
+    "helpful": { "count": 2, "users": { "$oid": "67d1c82ffc13ae72d0527b39" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b3a" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b3b" },
+    "rating": 3,
+    "verifiedPurchase": true,
+    "date": "2/9/2025",
+    "helpful": { "count": 17, "users": { "$oid": "67d1c82ffc13ae72d0527b3c" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b3d" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b3e" },
+    "rating": 3,
+    "verifiedPurchase": true,
+    "date": "3/23/2024",
+    "helpful": { "count": 8, "users": { "$oid": "67d1c82ffc13ae72d0527b3f" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b40" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b41" },
+    "rating": 1,
+    "verifiedPurchase": true,
+    "date": "4/7/2024",
+    "helpful": { "count": 82, "users": { "$oid": "67d1c82ffc13ae72d0527b42" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b43" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b44" },
+    "rating": 1,
+    "verifiedPurchase": false,
+    "date": "7/25/2024",
+    "helpful": { "count": 98, "users": { "$oid": "67d1c82ffc13ae72d0527b45" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b46" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b47" },
+    "rating": 5,
+    "verifiedPurchase": false,
+    "date": "11/24/2024",
+    "helpful": { "count": 76, "users": { "$oid": "67d1c82ffc13ae72d0527b48" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b49" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b4a" },
+    "rating": 4,
+    "verifiedPurchase": true,
+    "date": "1/30/2025",
+    "helpful": { "count": 91, "users": { "$oid": "67d1c82ffc13ae72d0527b4b" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b4c" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b4d" },
+    "rating": 3,
+    "verifiedPurchase": true,
+    "date": "6/13/2024",
+    "helpful": { "count": 90, "users": { "$oid": "67d1c82ffc13ae72d0527b4e" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b4f" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b50" },
+    "rating": 3,
+    "verifiedPurchase": true,
+    "date": "8/6/2024",
+    "helpful": { "count": 76, "users": { "$oid": "67d1c82ffc13ae72d0527b51" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b52" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b53" },
+    "rating": 1,
+    "verifiedPurchase": true,
+    "date": "9/7/2024",
+    "helpful": { "count": 23, "users": { "$oid": "67d1c82ffc13ae72d0527b54" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b55" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b56" },
+    "rating": 5,
+    "verifiedPurchase": false,
+    "date": "6/10/2024",
+    "helpful": { "count": 77, "users": { "$oid": "67d1c82ffc13ae72d0527b57" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b58" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b59" },
+    "rating": 5,
+    "verifiedPurchase": true,
+    "date": "8/22/2024",
+    "helpful": { "count": 25, "users": { "$oid": "67d1c82ffc13ae72d0527b5a" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b5b" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b5c" },
+    "rating": 2,
+    "verifiedPurchase": true,
+    "date": "10/31/2024",
+    "helpful": { "count": 55, "users": { "$oid": "67d1c82ffc13ae72d0527b5d" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b5e" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b5f" },
+    "rating": 2,
+    "verifiedPurchase": true,
+    "date": "12/13/2024",
+    "helpful": { "count": 59, "users": { "$oid": "67d1c82ffc13ae72d0527b60" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b61" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b62" },
+    "rating": 5,
+    "verifiedPurchase": true,
+    "date": "5/27/2024",
+    "helpful": { "count": 37, "users": { "$oid": "67d1c82ffc13ae72d0527b63" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b64" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b65" },
+    "rating": 5,
+    "verifiedPurchase": false,
+    "date": "9/16/2024",
+    "helpful": { "count": 49, "users": { "$oid": "67d1c82ffc13ae72d0527b66" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b67" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b68" },
+    "rating": 5,
+    "verifiedPurchase": false,
+    "date": "8/3/2024",
+    "helpful": { "count": 57, "users": { "$oid": "67d1c82ffc13ae72d0527b69" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b6a" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b6b" },
+    "rating": 2,
+    "verifiedPurchase": true,
+    "date": "11/17/2024",
+    "helpful": { "count": 72, "users": { "$oid": "67d1c82ffc13ae72d0527b6c" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b6d" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b6e" },
+    "rating": 5,
+    "verifiedPurchase": true,
+    "date": "4/5/2024",
+    "helpful": { "count": 24, "users": { "$oid": "67d1c82ffc13ae72d0527b6f" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b70" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b71" },
+    "rating": 5,
+    "verifiedPurchase": true,
+    "date": "2/16/2025",
+    "helpful": { "count": 46, "users": { "$oid": "67d1c82ffc13ae72d0527b72" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b73" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b74" },
+    "rating": 1,
+    "verifiedPurchase": false,
+    "date": "1/9/2025",
+    "helpful": { "count": 86, "users": { "$oid": "67d1c82ffc13ae72d0527b75" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b76" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b77" },
+    "rating": 1,
+    "verifiedPurchase": true,
+    "date": "1/17/2025",
+    "helpful": { "count": 68, "users": { "$oid": "67d1c82ffc13ae72d0527b78" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b79" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b7a" },
+    "rating": 4,
+    "verifiedPurchase": true,
+    "date": "3/9/2025",
+    "helpful": { "count": 1, "users": { "$oid": "67d1c82ffc13ae72d0527b7b" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b7c" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b7d" },
+    "rating": 1,
+    "verifiedPurchase": false,
+    "date": "2/5/2025",
+    "helpful": { "count": 54, "users": { "$oid": "67d1c82ffc13ae72d0527b7e" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b7f" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b80" },
+    "rating": 1,
+    "verifiedPurchase": false,
+    "date": "8/30/2024",
+    "helpful": { "count": 22, "users": { "$oid": "67d1c82ffc13ae72d0527b81" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b82" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b83" },
+    "rating": 4,
+    "verifiedPurchase": false,
+    "date": "3/27/2024",
+    "helpful": { "count": 7, "users": { "$oid": "67d1c82ffc13ae72d0527b84" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b85" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b86" },
+    "rating": 5,
+    "verifiedPurchase": true,
+    "date": "7/13/2024",
+    "helpful": { "count": 42, "users": { "$oid": "67d1c82ffc13ae72d0527b87" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b88" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b89" },
+    "rating": 1,
+    "verifiedPurchase": true,
+    "date": "3/12/2024",
+    "helpful": { "count": 98, "users": { "$oid": "67d1c82ffc13ae72d0527b8a" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b8b" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b8c" },
+    "rating": 3,
+    "verifiedPurchase": false,
+    "date": "7/1/2024",
+    "helpful": { "count": 69, "users": { "$oid": "67d1c82ffc13ae72d0527b8d" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b8e" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b8f" },
+    "rating": 5,
+    "verifiedPurchase": true,
+    "date": "4/21/2024",
+    "helpful": { "count": 41, "users": { "$oid": "67d1c82ffc13ae72d0527b90" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b91" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b92" },
+    "rating": 5,
+    "verifiedPurchase": false,
+    "date": "4/2/2024",
+    "helpful": { "count": 3, "users": { "$oid": "67d1c82ffc13ae72d0527b93" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b94" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b95" },
+    "rating": 5,
+    "verifiedPurchase": false,
+    "date": "5/10/2024",
+    "helpful": { "count": 76, "users": { "$oid": "67d1c82ffc13ae72d0527b96" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b97" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b98" },
+    "rating": 5,
+    "verifiedPurchase": true,
+    "date": "7/3/2024",
+    "helpful": { "count": 63, "users": { "$oid": "67d1c82ffc13ae72d0527b99" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b9a" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b9b" },
+    "rating": 3,
+    "verifiedPurchase": false,
+    "date": "6/27/2024",
+    "helpful": { "count": 45, "users": { "$oid": "67d1c82ffc13ae72d0527b9c" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527b9d" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527b9e" },
+    "rating": 4,
+    "verifiedPurchase": false,
+    "date": "1/7/2025",
+    "helpful": { "count": 13, "users": { "$oid": "67d1c82ffc13ae72d0527b9f" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ba0" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ba1" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "12/21/2024",
+    "helpful": { "count": 52, "users": { "$oid": "67d1c82ffc13ae72d0527ba2" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ba3" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ba4" },
+    "rating": 5,
+    "verifiedPurchase": true,
+    "date": "10/29/2024",
+    "helpful": { "count": 43, "users": { "$oid": "67d1c82ffc13ae72d0527ba5" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ba6" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ba7" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "9/24/2024",
+    "helpful": { "count": 51, "users": { "$oid": "67d1c82ffc13ae72d0527ba8" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ba9" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527baa" },
+    "rating": 1,
+    "verifiedPurchase": true,
+    "date": "11/18/2024",
+    "helpful": { "count": 58, "users": { "$oid": "67d1c82ffc13ae72d0527bab" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527bac" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527bad" },
+    "rating": 4,
+    "verifiedPurchase": true,
+    "date": "9/11/2024",
+    "helpful": { "count": 60, "users": { "$oid": "67d1c82ffc13ae72d0527bae" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527baf" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527bb0" },
+    "rating": 5,
+    "verifiedPurchase": false,
+    "date": "12/29/2024",
+    "helpful": { "count": 87, "users": { "$oid": "67d1c82ffc13ae72d0527bb1" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527bb2" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527bb3" },
+    "rating": 5,
+    "verifiedPurchase": true,
+    "date": "2/22/2025",
+    "helpful": { "count": 71, "users": { "$oid": "67d1c82ffc13ae72d0527bb4" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527bb5" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527bb6" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "7/13/2024",
+    "helpful": { "count": 71, "users": { "$oid": "67d1c82ffc13ae72d0527bb7" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527bb8" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527bb9" },
+    "rating": 2,
+    "verifiedPurchase": true,
+    "date": "4/26/2024",
+    "helpful": { "count": 47, "users": { "$oid": "67d1c82ffc13ae72d0527bba" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527bbb" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527bbc" },
+    "rating": 3,
+    "verifiedPurchase": false,
+    "date": "9/6/2024",
+    "helpful": { "count": 95, "users": { "$oid": "67d1c82ffc13ae72d0527bbd" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527bbe" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527bbf" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "8/31/2024",
+    "helpful": { "count": 26, "users": { "$oid": "67d1c82ffc13ae72d0527bc0" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527bc1" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527bc2" },
+    "rating": 3,
+    "verifiedPurchase": false,
+    "date": "5/27/2024",
+    "helpful": { "count": 19, "users": { "$oid": "67d1c82ffc13ae72d0527bc3" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527bc4" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527bc5" },
+    "rating": 2,
+    "verifiedPurchase": true,
+    "date": "6/4/2024",
+    "helpful": { "count": 29, "users": { "$oid": "67d1c82ffc13ae72d0527bc6" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527bc7" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527bc8" },
+    "rating": 5,
+    "verifiedPurchase": false,
+    "date": "11/19/2024",
+    "helpful": { "count": 56, "users": { "$oid": "67d1c82ffc13ae72d0527bc9" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527bca" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527bcb" },
+    "rating": 5,
+    "verifiedPurchase": false,
+    "date": "5/16/2024",
+    "helpful": { "count": 50, "users": { "$oid": "67d1c82ffc13ae72d0527bcc" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527bcd" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527bce" },
+    "rating": 1,
+    "verifiedPurchase": false,
+    "date": "11/6/2024",
+    "helpful": { "count": 10, "users": { "$oid": "67d1c82ffc13ae72d0527bcf" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527bd0" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527bd1" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "6/20/2024",
+    "helpful": { "count": 30, "users": { "$oid": "67d1c82ffc13ae72d0527bd2" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527bd3" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527bd4" },
+    "rating": 3,
+    "verifiedPurchase": true,
+    "date": "8/25/2024",
+    "helpful": { "count": 68, "users": { "$oid": "67d1c82ffc13ae72d0527bd5" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527bd6" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527bd7" },
+    "rating": 3,
+    "verifiedPurchase": false,
+    "date": "2/1/2025",
+    "helpful": { "count": 37, "users": { "$oid": "67d1c82ffc13ae72d0527bd8" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527bd9" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527bda" },
+    "rating": 4,
+    "verifiedPurchase": true,
+    "date": "9/14/2024",
+    "helpful": { "count": 37, "users": { "$oid": "67d1c82ffc13ae72d0527bdb" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527bdc" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527bdd" },
+    "rating": 3,
+    "verifiedPurchase": false,
+    "date": "10/15/2024",
+    "helpful": { "count": 4, "users": { "$oid": "67d1c82ffc13ae72d0527bde" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527bdf" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527be0" },
+    "rating": 3,
+    "verifiedPurchase": true,
+    "date": "3/14/2024",
+    "helpful": { "count": 53, "users": { "$oid": "67d1c82ffc13ae72d0527be1" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527be2" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527be3" },
+    "rating": 1,
+    "verifiedPurchase": false,
+    "date": "10/12/2024",
+    "helpful": { "count": 8, "users": { "$oid": "67d1c82ffc13ae72d0527be4" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527be5" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527be6" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "1/18/2025",
+    "helpful": { "count": 21, "users": { "$oid": "67d1c82ffc13ae72d0527be7" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527be8" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527be9" },
+    "rating": 3,
+    "verifiedPurchase": true,
+    "date": "1/9/2025",
+    "helpful": { "count": 57, "users": { "$oid": "67d1c82ffc13ae72d0527bea" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527beb" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527bec" },
+    "rating": 4,
+    "verifiedPurchase": true,
+    "date": "12/25/2024",
+    "helpful": { "count": 21, "users": { "$oid": "67d1c82ffc13ae72d0527bed" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527bee" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527bef" },
+    "rating": 5,
+    "verifiedPurchase": false,
+    "date": "2/21/2025",
+    "helpful": { "count": 52, "users": { "$oid": "67d1c82ffc13ae72d0527bf0" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527bf1" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527bf2" },
+    "rating": 4,
+    "verifiedPurchase": false,
+    "date": "3/27/2024",
+    "helpful": { "count": 69, "users": { "$oid": "67d1c82ffc13ae72d0527bf3" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527bf4" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527bf5" },
+    "rating": 4,
+    "verifiedPurchase": true,
+    "date": "2/18/2025",
+    "helpful": { "count": 32, "users": { "$oid": "67d1c82ffc13ae72d0527bf6" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527bf7" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527bf8" },
+    "rating": 5,
+    "verifiedPurchase": true,
+    "date": "11/4/2024",
+    "helpful": { "count": 91, "users": { "$oid": "67d1c82ffc13ae72d0527bf9" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527bfa" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527bfb" },
+    "rating": 1,
+    "verifiedPurchase": false,
+    "date": "9/20/2024",
+    "helpful": { "count": 29, "users": { "$oid": "67d1c82ffc13ae72d0527bfc" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527bfd" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527bfe" },
+    "rating": 3,
+    "verifiedPurchase": true,
+    "date": "5/31/2024",
+    "helpful": { "count": 7, "users": { "$oid": "67d1c82ffc13ae72d0527bff" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c00" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c01" },
+    "rating": 2,
+    "verifiedPurchase": true,
+    "date": "9/28/2024",
+    "helpful": { "count": 28, "users": { "$oid": "67d1c82ffc13ae72d0527c02" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c03" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c04" },
+    "rating": 1,
+    "verifiedPurchase": false,
+    "date": "1/15/2025",
+    "helpful": { "count": 78, "users": { "$oid": "67d1c82ffc13ae72d0527c05" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c06" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c07" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "8/9/2024",
+    "helpful": { "count": 5, "users": { "$oid": "67d1c82ffc13ae72d0527c08" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c09" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c0a" },
+    "rating": 4,
+    "verifiedPurchase": true,
+    "date": "11/23/2024",
+    "helpful": { "count": 40, "users": { "$oid": "67d1c82ffc13ae72d0527c0b" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c0c" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c0d" },
+    "rating": 1,
+    "verifiedPurchase": false,
+    "date": "9/26/2024",
+    "helpful": { "count": 72, "users": { "$oid": "67d1c82ffc13ae72d0527c0e" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c0f" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c10" },
+    "rating": 3,
+    "verifiedPurchase": false,
+    "date": "8/24/2024",
+    "helpful": { "count": 45, "users": { "$oid": "67d1c82ffc13ae72d0527c11" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c12" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c13" },
+    "rating": 5,
+    "verifiedPurchase": false,
+    "date": "4/24/2024",
+    "helpful": { "count": 1, "users": { "$oid": "67d1c82ffc13ae72d0527c14" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c15" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c16" },
+    "rating": 3,
+    "verifiedPurchase": false,
+    "date": "4/27/2024",
+    "helpful": { "count": 72, "users": { "$oid": "67d1c82ffc13ae72d0527c17" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c18" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c19" },
+    "rating": 3,
+    "verifiedPurchase": false,
+    "date": "10/24/2024",
+    "helpful": { "count": 60, "users": { "$oid": "67d1c82ffc13ae72d0527c1a" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c1b" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c1c" },
+    "rating": 5,
+    "verifiedPurchase": false,
+    "date": "9/6/2024",
+    "helpful": { "count": 88, "users": { "$oid": "67d1c82ffc13ae72d0527c1d" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c1e" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c1f" },
+    "rating": 2,
+    "verifiedPurchase": true,
+    "date": "3/30/2024",
+    "helpful": { "count": 11, "users": { "$oid": "67d1c82ffc13ae72d0527c20" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c21" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c22" },
+    "rating": 4,
+    "verifiedPurchase": true,
+    "date": "4/6/2024",
+    "helpful": { "count": 39, "users": { "$oid": "67d1c82ffc13ae72d0527c23" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c24" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c25" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "2/9/2025",
+    "helpful": { "count": 57, "users": { "$oid": "67d1c82ffc13ae72d0527c26" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c27" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c28" },
+    "rating": 4,
+    "verifiedPurchase": false,
+    "date": "10/6/2024",
+    "helpful": { "count": 36, "users": { "$oid": "67d1c82ffc13ae72d0527c29" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c2a" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c2b" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "5/28/2024",
+    "helpful": { "count": 100, "users": { "$oid": "67d1c82ffc13ae72d0527c2c" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c2d" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c2e" },
+    "rating": 5,
+    "verifiedPurchase": true,
+    "date": "6/30/2024",
+    "helpful": { "count": 96, "users": { "$oid": "67d1c82ffc13ae72d0527c2f" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c30" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c31" },
+    "rating": 3,
+    "verifiedPurchase": false,
+    "date": "11/26/2024",
+    "helpful": { "count": 13, "users": { "$oid": "67d1c82ffc13ae72d0527c32" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c33" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c34" },
+    "rating": 4,
+    "verifiedPurchase": false,
+    "date": "3/9/2025",
+    "helpful": { "count": 22, "users": { "$oid": "67d1c82ffc13ae72d0527c35" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c36" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c37" },
+    "rating": 5,
+    "verifiedPurchase": true,
+    "date": "5/18/2024",
+    "helpful": { "count": 49, "users": { "$oid": "67d1c82ffc13ae72d0527c38" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c39" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c3a" },
+    "rating": 1,
+    "verifiedPurchase": true,
+    "date": "11/16/2024",
+    "helpful": { "count": 89, "users": { "$oid": "67d1c82ffc13ae72d0527c3b" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c3c" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c3d" },
+    "rating": 2,
+    "verifiedPurchase": true,
+    "date": "10/21/2024",
+    "helpful": { "count": 7, "users": { "$oid": "67d1c82ffc13ae72d0527c3e" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c3f" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c40" },
+    "rating": 5,
+    "verifiedPurchase": true,
+    "date": "2/24/2025",
+    "helpful": { "count": 95, "users": { "$oid": "67d1c82ffc13ae72d0527c41" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c42" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c43" },
+    "rating": 2,
+    "verifiedPurchase": true,
+    "date": "10/7/2024",
+    "helpful": { "count": 70, "users": { "$oid": "67d1c82ffc13ae72d0527c44" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c45" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c46" },
+    "rating": 1,
+    "verifiedPurchase": true,
+    "date": "8/10/2024",
+    "helpful": { "count": 93, "users": { "$oid": "67d1c82ffc13ae72d0527c47" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c48" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c49" },
+    "rating": 1,
+    "verifiedPurchase": true,
+    "date": "4/10/2024",
+    "helpful": { "count": 64, "users": { "$oid": "67d1c82ffc13ae72d0527c4a" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c4b" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c4c" },
+    "rating": 2,
+    "verifiedPurchase": true,
+    "date": "9/5/2024",
+    "helpful": { "count": 96, "users": { "$oid": "67d1c82ffc13ae72d0527c4d" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c4e" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c4f" },
+    "rating": 2,
+    "verifiedPurchase": true,
+    "date": "8/11/2024",
+    "helpful": { "count": 35, "users": { "$oid": "67d1c82ffc13ae72d0527c50" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c51" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c52" },
+    "rating": 2,
+    "verifiedPurchase": true,
+    "date": "9/12/2024",
+    "helpful": { "count": 33, "users": { "$oid": "67d1c82ffc13ae72d0527c53" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c54" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c55" },
+    "rating": 4,
+    "verifiedPurchase": true,
+    "date": "6/21/2024",
+    "helpful": { "count": 32, "users": { "$oid": "67d1c82ffc13ae72d0527c56" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c57" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c58" },
+    "rating": 3,
+    "verifiedPurchase": false,
+    "date": "6/6/2024",
+    "helpful": { "count": 59, "users": { "$oid": "67d1c82ffc13ae72d0527c59" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c5a" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c5b" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "8/14/2024",
+    "helpful": { "count": 67, "users": { "$oid": "67d1c82ffc13ae72d0527c5c" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c5d" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c5e" },
+    "rating": 1,
+    "verifiedPurchase": false,
+    "date": "11/5/2024",
+    "helpful": { "count": 94, "users": { "$oid": "67d1c82ffc13ae72d0527c5f" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c60" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c61" },
+    "rating": 3,
+    "verifiedPurchase": true,
+    "date": "12/30/2024",
+    "helpful": { "count": 20, "users": { "$oid": "67d1c82ffc13ae72d0527c62" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c63" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c64" },
+    "rating": 4,
+    "verifiedPurchase": false,
+    "date": "4/19/2024",
+    "helpful": { "count": 70, "users": { "$oid": "67d1c82ffc13ae72d0527c65" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c66" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c67" },
+    "rating": 1,
+    "verifiedPurchase": true,
+    "date": "11/21/2024",
+    "helpful": { "count": 24, "users": { "$oid": "67d1c82ffc13ae72d0527c68" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c69" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c6a" },
+    "rating": 1,
+    "verifiedPurchase": false,
+    "date": "3/25/2024",
+    "helpful": { "count": 87, "users": { "$oid": "67d1c82ffc13ae72d0527c6b" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c6c" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c6d" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "4/9/2024",
+    "helpful": { "count": 48, "users": { "$oid": "67d1c82ffc13ae72d0527c6e" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c6f" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c70" },
+    "rating": 1,
+    "verifiedPurchase": false,
+    "date": "11/14/2024",
+    "helpful": { "count": 18, "users": { "$oid": "67d1c82ffc13ae72d0527c71" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c72" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c73" },
+    "rating": 4,
+    "verifiedPurchase": true,
+    "date": "10/7/2024",
+    "helpful": { "count": 53, "users": { "$oid": "67d1c82ffc13ae72d0527c74" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c75" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c76" },
+    "rating": 4,
+    "verifiedPurchase": true,
+    "date": "10/17/2024",
+    "helpful": { "count": 100, "users": { "$oid": "67d1c82ffc13ae72d0527c77" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c78" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c79" },
+    "rating": 3,
+    "verifiedPurchase": true,
+    "date": "9/4/2024",
+    "helpful": { "count": 25, "users": { "$oid": "67d1c82ffc13ae72d0527c7a" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c7b" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c7c" },
+    "rating": 1,
+    "verifiedPurchase": false,
+    "date": "1/20/2025",
+    "helpful": { "count": 6, "users": { "$oid": "67d1c82ffc13ae72d0527c7d" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c7e" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c7f" },
+    "rating": 5,
+    "verifiedPurchase": false,
+    "date": "7/30/2024",
+    "helpful": { "count": 97, "users": { "$oid": "67d1c82ffc13ae72d0527c80" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c81" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c82" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "9/5/2024",
+    "helpful": { "count": 57, "users": { "$oid": "67d1c82ffc13ae72d0527c83" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c84" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c85" },
+    "rating": 3,
+    "verifiedPurchase": true,
+    "date": "11/26/2024",
+    "helpful": { "count": 21, "users": { "$oid": "67d1c82ffc13ae72d0527c86" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c87" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c88" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "3/24/2024",
+    "helpful": { "count": 35, "users": { "$oid": "67d1c82ffc13ae72d0527c89" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c8a" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c8b" },
+    "rating": 1,
+    "verifiedPurchase": true,
+    "date": "10/30/2024",
+    "helpful": { "count": 78, "users": { "$oid": "67d1c82ffc13ae72d0527c8c" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c8d" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c8e" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "7/11/2024",
+    "helpful": { "count": 1, "users": { "$oid": "67d1c82ffc13ae72d0527c8f" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c90" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c91" },
+    "rating": 5,
+    "verifiedPurchase": true,
+    "date": "3/23/2024",
+    "helpful": { "count": 45, "users": { "$oid": "67d1c82ffc13ae72d0527c92" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c93" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c94" },
+    "rating": 1,
+    "verifiedPurchase": false,
+    "date": "3/5/2025",
+    "helpful": { "count": 77, "users": { "$oid": "67d1c82ffc13ae72d0527c95" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c96" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c97" },
+    "rating": 4,
+    "verifiedPurchase": true,
+    "date": "5/13/2024",
+    "helpful": { "count": 30, "users": { "$oid": "67d1c82ffc13ae72d0527c98" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c99" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c9a" },
+    "rating": 5,
+    "verifiedPurchase": false,
+    "date": "5/29/2024",
+    "helpful": { "count": 95, "users": { "$oid": "67d1c82ffc13ae72d0527c9b" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c9c" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527c9d" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "8/19/2024",
+    "helpful": { "count": 2, "users": { "$oid": "67d1c82ffc13ae72d0527c9e" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527c9f" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ca0" },
+    "rating": 5,
+    "verifiedPurchase": true,
+    "date": "7/25/2024",
+    "helpful": { "count": 49, "users": { "$oid": "67d1c82ffc13ae72d0527ca1" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ca2" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ca3" },
+    "rating": 5,
+    "verifiedPurchase": true,
+    "date": "2/24/2025",
+    "helpful": { "count": 75, "users": { "$oid": "67d1c82ffc13ae72d0527ca4" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ca5" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ca6" },
+    "rating": 5,
+    "verifiedPurchase": true,
+    "date": "9/7/2024",
+    "helpful": { "count": 64, "users": { "$oid": "67d1c82ffc13ae72d0527ca7" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ca8" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ca9" },
+    "rating": 4,
+    "verifiedPurchase": false,
+    "date": "11/30/2024",
+    "helpful": { "count": 45, "users": { "$oid": "67d1c82ffc13ae72d0527caa" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527cab" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527cac" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "7/12/2024",
+    "helpful": { "count": 84, "users": { "$oid": "67d1c82ffc13ae72d0527cad" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527cae" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527caf" },
+    "rating": 4,
+    "verifiedPurchase": false,
+    "date": "11/15/2024",
+    "helpful": { "count": 30, "users": { "$oid": "67d1c82ffc13ae72d0527cb0" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527cb1" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527cb2" },
+    "rating": 5,
+    "verifiedPurchase": true,
+    "date": "7/8/2024",
+    "helpful": { "count": 17, "users": { "$oid": "67d1c82ffc13ae72d0527cb3" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527cb4" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527cb5" },
+    "rating": 1,
+    "verifiedPurchase": true,
+    "date": "7/3/2024",
+    "helpful": { "count": 36, "users": { "$oid": "67d1c82ffc13ae72d0527cb6" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527cb7" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527cb8" },
+    "rating": 5,
+    "verifiedPurchase": false,
+    "date": "1/12/2025",
+    "helpful": { "count": 50, "users": { "$oid": "67d1c82ffc13ae72d0527cb9" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527cba" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527cbb" },
+    "rating": 3,
+    "verifiedPurchase": false,
+    "date": "8/23/2024",
+    "helpful": { "count": 61, "users": { "$oid": "67d1c82ffc13ae72d0527cbc" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527cbd" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527cbe" },
+    "rating": 5,
+    "verifiedPurchase": true,
+    "date": "6/7/2024",
+    "helpful": { "count": 36, "users": { "$oid": "67d1c82ffc13ae72d0527cbf" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527cc0" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527cc1" },
+    "rating": 3,
+    "verifiedPurchase": true,
+    "date": "7/21/2024",
+    "helpful": { "count": 69, "users": { "$oid": "67d1c82ffc13ae72d0527cc2" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527cc3" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527cc4" },
+    "rating": 4,
+    "verifiedPurchase": true,
+    "date": "2/8/2025",
+    "helpful": { "count": 5, "users": { "$oid": "67d1c82ffc13ae72d0527cc5" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527cc6" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527cc7" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "8/25/2024",
+    "helpful": { "count": 34, "users": { "$oid": "67d1c82ffc13ae72d0527cc8" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527cc9" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527cca" },
+    "rating": 3,
+    "verifiedPurchase": false,
+    "date": "1/31/2025",
+    "helpful": { "count": 17, "users": { "$oid": "67d1c82ffc13ae72d0527ccb" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ccc" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ccd" },
+    "rating": 5,
+    "verifiedPurchase": false,
+    "date": "9/2/2024",
+    "helpful": { "count": 58, "users": { "$oid": "67d1c82ffc13ae72d0527cce" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ccf" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527cd0" },
+    "rating": 3,
+    "verifiedPurchase": false,
+    "date": "9/23/2024",
+    "helpful": { "count": 30, "users": { "$oid": "67d1c82ffc13ae72d0527cd1" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527cd2" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527cd3" },
+    "rating": 5,
+    "verifiedPurchase": true,
+    "date": "12/21/2024",
+    "helpful": { "count": 77, "users": { "$oid": "67d1c82ffc13ae72d0527cd4" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527cd5" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527cd6" },
+    "rating": 4,
+    "verifiedPurchase": true,
+    "date": "11/18/2024",
+    "helpful": { "count": 23, "users": { "$oid": "67d1c82ffc13ae72d0527cd7" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527cd8" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527cd9" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "5/27/2024",
+    "helpful": { "count": 57, "users": { "$oid": "67d1c82ffc13ae72d0527cda" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527cdb" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527cdc" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "11/19/2024",
+    "helpful": { "count": 79, "users": { "$oid": "67d1c82ffc13ae72d0527cdd" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527cde" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527cdf" },
+    "rating": 5,
+    "verifiedPurchase": true,
+    "date": "9/19/2024",
+    "helpful": { "count": 33, "users": { "$oid": "67d1c82ffc13ae72d0527ce0" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ce1" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ce2" },
+    "rating": 1,
+    "verifiedPurchase": true,
+    "date": "5/8/2024",
+    "helpful": { "count": 4, "users": { "$oid": "67d1c82ffc13ae72d0527ce3" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ce4" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ce5" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "2/13/2025",
+    "helpful": { "count": 94, "users": { "$oid": "67d1c82ffc13ae72d0527ce6" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ce7" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ce8" },
+    "rating": 5,
+    "verifiedPurchase": false,
+    "date": "3/18/2024",
+    "helpful": { "count": 47, "users": { "$oid": "67d1c82ffc13ae72d0527ce9" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527cea" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ceb" },
+    "rating": 5,
+    "verifiedPurchase": false,
+    "date": "7/11/2024",
+    "helpful": { "count": 68, "users": { "$oid": "67d1c82ffc13ae72d0527cec" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ced" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527cee" },
+    "rating": 1,
+    "verifiedPurchase": true,
+    "date": "11/2/2024",
+    "helpful": { "count": 2, "users": { "$oid": "67d1c82ffc13ae72d0527cef" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527cf0" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527cf1" },
+    "rating": 4,
+    "verifiedPurchase": false,
+    "date": "10/31/2024",
+    "helpful": { "count": 100, "users": { "$oid": "67d1c82ffc13ae72d0527cf2" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527cf3" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527cf4" },
+    "rating": 5,
+    "verifiedPurchase": false,
+    "date": "3/20/2024",
+    "helpful": { "count": 17, "users": { "$oid": "67d1c82ffc13ae72d0527cf5" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527cf6" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527cf7" },
+    "rating": 3,
+    "verifiedPurchase": false,
+    "date": "5/23/2024",
+    "helpful": { "count": 77, "users": { "$oid": "67d1c82ffc13ae72d0527cf8" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527cf9" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527cfa" },
+    "rating": 2,
+    "verifiedPurchase": true,
+    "date": "10/5/2024",
+    "helpful": { "count": 48, "users": { "$oid": "67d1c82ffc13ae72d0527cfb" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527cfc" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527cfd" },
+    "rating": 3,
+    "verifiedPurchase": false,
+    "date": "7/29/2024",
+    "helpful": { "count": 90, "users": { "$oid": "67d1c82ffc13ae72d0527cfe" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527cff" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d00" },
+    "rating": 3,
+    "verifiedPurchase": true,
+    "date": "3/1/2025",
+    "helpful": { "count": 32, "users": { "$oid": "67d1c82ffc13ae72d0527d01" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d02" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d03" },
+    "rating": 2,
+    "verifiedPurchase": true,
+    "date": "12/12/2024",
+    "helpful": { "count": 97, "users": { "$oid": "67d1c82ffc13ae72d0527d04" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d05" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d06" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "3/5/2025",
+    "helpful": { "count": 12, "users": { "$oid": "67d1c82ffc13ae72d0527d07" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d08" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d09" },
+    "rating": 3,
+    "verifiedPurchase": true,
+    "date": "10/18/2024",
+    "helpful": { "count": 30, "users": { "$oid": "67d1c82ffc13ae72d0527d0a" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d0b" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d0c" },
+    "rating": 3,
+    "verifiedPurchase": false,
+    "date": "9/13/2024",
+    "helpful": { "count": 15, "users": { "$oid": "67d1c82ffc13ae72d0527d0d" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d0e" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d0f" },
+    "rating": 3,
+    "verifiedPurchase": true,
+    "date": "8/2/2024",
+    "helpful": { "count": 9, "users": { "$oid": "67d1c82ffc13ae72d0527d10" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d11" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d12" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "3/15/2024",
+    "helpful": { "count": 46, "users": { "$oid": "67d1c82ffc13ae72d0527d13" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d14" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d15" },
+    "rating": 4,
+    "verifiedPurchase": false,
+    "date": "6/12/2024",
+    "helpful": { "count": 67, "users": { "$oid": "67d1c82ffc13ae72d0527d16" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d17" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d18" },
+    "rating": 2,
+    "verifiedPurchase": true,
+    "date": "4/18/2024",
+    "helpful": { "count": 96, "users": { "$oid": "67d1c82ffc13ae72d0527d19" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d1a" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d1b" },
+    "rating": 5,
+    "verifiedPurchase": true,
+    "date": "1/19/2025",
+    "helpful": { "count": 76, "users": { "$oid": "67d1c82ffc13ae72d0527d1c" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d1d" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d1e" },
+    "rating": 2,
+    "verifiedPurchase": true,
+    "date": "5/4/2024",
+    "helpful": { "count": 35, "users": { "$oid": "67d1c82ffc13ae72d0527d1f" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d20" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d21" },
+    "rating": 3,
+    "verifiedPurchase": false,
+    "date": "8/23/2024",
+    "helpful": { "count": 23, "users": { "$oid": "67d1c82ffc13ae72d0527d22" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d23" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d24" },
+    "rating": 2,
+    "verifiedPurchase": true,
+    "date": "12/30/2024",
+    "helpful": { "count": 43, "users": { "$oid": "67d1c82ffc13ae72d0527d25" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d26" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d27" },
+    "rating": 3,
+    "verifiedPurchase": false,
+    "date": "2/3/2025",
+    "helpful": { "count": 63, "users": { "$oid": "67d1c82ffc13ae72d0527d28" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d29" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d2a" },
+    "rating": 4,
+    "verifiedPurchase": false,
+    "date": "5/18/2024",
+    "helpful": { "count": 11, "users": { "$oid": "67d1c82ffc13ae72d0527d2b" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d2c" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d2d" },
+    "rating": 3,
+    "verifiedPurchase": true,
+    "date": "9/22/2024",
+    "helpful": { "count": 75, "users": { "$oid": "67d1c82ffc13ae72d0527d2e" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d2f" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d30" },
+    "rating": 2,
+    "verifiedPurchase": true,
+    "date": "12/31/2024",
+    "helpful": { "count": 81, "users": { "$oid": "67d1c82ffc13ae72d0527d31" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d32" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d33" },
+    "rating": 2,
+    "verifiedPurchase": true,
+    "date": "3/24/2024",
+    "helpful": { "count": 50, "users": { "$oid": "67d1c82ffc13ae72d0527d34" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d35" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d36" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "5/30/2024",
+    "helpful": { "count": 97, "users": { "$oid": "67d1c82ffc13ae72d0527d37" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d38" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d39" },
+    "rating": 4,
+    "verifiedPurchase": true,
+    "date": "3/20/2024",
+    "helpful": { "count": 27, "users": { "$oid": "67d1c82ffc13ae72d0527d3a" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d3b" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d3c" },
+    "rating": 3,
+    "verifiedPurchase": false,
+    "date": "1/15/2025",
+    "helpful": { "count": 48, "users": { "$oid": "67d1c82ffc13ae72d0527d3d" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d3e" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d3f" },
+    "rating": 5,
+    "verifiedPurchase": true,
+    "date": "3/11/2025",
+    "helpful": { "count": 82, "users": { "$oid": "67d1c82ffc13ae72d0527d40" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d41" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d42" },
+    "rating": 5,
+    "verifiedPurchase": true,
+    "date": "10/30/2024",
+    "helpful": { "count": 16, "users": { "$oid": "67d1c82ffc13ae72d0527d43" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d44" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d45" },
+    "rating": 3,
+    "verifiedPurchase": false,
+    "date": "4/6/2024",
+    "helpful": { "count": 3, "users": { "$oid": "67d1c82ffc13ae72d0527d46" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d47" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d48" },
+    "rating": 4,
+    "verifiedPurchase": false,
+    "date": "1/5/2025",
+    "helpful": { "count": 33, "users": { "$oid": "67d1c82ffc13ae72d0527d49" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d4a" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d4b" },
+    "rating": 4,
+    "verifiedPurchase": false,
+    "date": "3/12/2024",
+    "helpful": { "count": 83, "users": { "$oid": "67d1c82ffc13ae72d0527d4c" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d4d" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d4e" },
+    "rating": 1,
+    "verifiedPurchase": true,
+    "date": "3/2/2025",
+    "helpful": { "count": 29, "users": { "$oid": "67d1c82ffc13ae72d0527d4f" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d50" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d51" },
+    "rating": 5,
+    "verifiedPurchase": true,
+    "date": "7/22/2024",
+    "helpful": { "count": 80, "users": { "$oid": "67d1c82ffc13ae72d0527d52" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d53" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d54" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "7/31/2024",
+    "helpful": { "count": 2, "users": { "$oid": "67d1c82ffc13ae72d0527d55" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d56" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d57" },
+    "rating": 2,
+    "verifiedPurchase": true,
+    "date": "2/5/2025",
+    "helpful": { "count": 71, "users": { "$oid": "67d1c82ffc13ae72d0527d58" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d59" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d5a" },
+    "rating": 1,
+    "verifiedPurchase": false,
+    "date": "10/29/2024",
+    "helpful": { "count": 100, "users": { "$oid": "67d1c82ffc13ae72d0527d5b" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d5c" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d5d" },
+    "rating": 3,
+    "verifiedPurchase": false,
+    "date": "8/8/2024",
+    "helpful": { "count": 79, "users": { "$oid": "67d1c82ffc13ae72d0527d5e" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d5f" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d60" },
+    "rating": 1,
+    "verifiedPurchase": false,
+    "date": "8/10/2024",
+    "helpful": { "count": 69, "users": { "$oid": "67d1c82ffc13ae72d0527d61" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d62" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d63" },
+    "rating": 5,
+    "verifiedPurchase": false,
+    "date": "9/13/2024",
+    "helpful": { "count": 25, "users": { "$oid": "67d1c82ffc13ae72d0527d64" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d65" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d66" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "5/21/2024",
+    "helpful": { "count": 92, "users": { "$oid": "67d1c82ffc13ae72d0527d67" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d68" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d69" },
+    "rating": 1,
+    "verifiedPurchase": false,
+    "date": "7/27/2024",
+    "helpful": { "count": 32, "users": { "$oid": "67d1c82ffc13ae72d0527d6a" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d6b" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d6c" },
+    "rating": 1,
+    "verifiedPurchase": true,
+    "date": "6/23/2024",
+    "helpful": { "count": 59, "users": { "$oid": "67d1c82ffc13ae72d0527d6d" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d6e" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d6f" },
+    "rating": 4,
+    "verifiedPurchase": false,
+    "date": "12/4/2024",
+    "helpful": { "count": 19, "users": { "$oid": "67d1c82ffc13ae72d0527d70" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d71" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d72" },
+    "rating": 5,
+    "verifiedPurchase": false,
+    "date": "6/22/2024",
+    "helpful": { "count": 31, "users": { "$oid": "67d1c82ffc13ae72d0527d73" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d74" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d75" },
+    "rating": 4,
+    "verifiedPurchase": false,
+    "date": "6/5/2024",
+    "helpful": { "count": 27, "users": { "$oid": "67d1c82ffc13ae72d0527d76" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d77" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d78" },
+    "rating": 2,
+    "verifiedPurchase": true,
+    "date": "7/28/2024",
+    "helpful": { "count": 58, "users": { "$oid": "67d1c82ffc13ae72d0527d79" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d7a" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d7b" },
+    "rating": 1,
+    "verifiedPurchase": true,
+    "date": "11/15/2024",
+    "helpful": { "count": 6, "users": { "$oid": "67d1c82ffc13ae72d0527d7c" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d7d" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d7e" },
+    "rating": 4,
+    "verifiedPurchase": false,
+    "date": "6/11/2024",
+    "helpful": { "count": 85, "users": { "$oid": "67d1c82ffc13ae72d0527d7f" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d80" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d81" },
+    "rating": 1,
+    "verifiedPurchase": false,
+    "date": "7/13/2024",
+    "helpful": { "count": 29, "users": { "$oid": "67d1c82ffc13ae72d0527d82" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d83" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d84" },
+    "rating": 5,
+    "verifiedPurchase": false,
+    "date": "2/8/2025",
+    "helpful": { "count": 86, "users": { "$oid": "67d1c82ffc13ae72d0527d85" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d86" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d87" },
+    "rating": 1,
+    "verifiedPurchase": false,
+    "date": "12/10/2024",
+    "helpful": { "count": 35, "users": { "$oid": "67d1c82ffc13ae72d0527d88" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d89" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d8a" },
+    "rating": 5,
+    "verifiedPurchase": false,
+    "date": "11/22/2024",
+    "helpful": { "count": 81, "users": { "$oid": "67d1c82ffc13ae72d0527d8b" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d8c" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d8d" },
+    "rating": 4,
+    "verifiedPurchase": false,
+    "date": "8/30/2024",
+    "helpful": { "count": 23, "users": { "$oid": "67d1c82ffc13ae72d0527d8e" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d8f" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d90" },
+    "rating": 5,
+    "verifiedPurchase": false,
+    "date": "9/30/2024",
+    "helpful": { "count": 99, "users": { "$oid": "67d1c82ffc13ae72d0527d91" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d92" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d93" },
+    "rating": 2,
+    "verifiedPurchase": true,
+    "date": "7/4/2024",
+    "helpful": { "count": 19, "users": { "$oid": "67d1c82ffc13ae72d0527d94" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d95" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d96" },
+    "rating": 3,
+    "verifiedPurchase": false,
+    "date": "6/24/2024",
+    "helpful": { "count": 80, "users": { "$oid": "67d1c82ffc13ae72d0527d97" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d98" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d99" },
+    "rating": 1,
+    "verifiedPurchase": false,
+    "date": "7/2/2024",
+    "helpful": { "count": 89, "users": { "$oid": "67d1c82ffc13ae72d0527d9a" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d9b" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d9c" },
+    "rating": 3,
+    "verifiedPurchase": false,
+    "date": "6/22/2024",
+    "helpful": { "count": 58, "users": { "$oid": "67d1c82ffc13ae72d0527d9d" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527d9e" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527d9f" },
+    "rating": 1,
+    "verifiedPurchase": true,
+    "date": "7/9/2024",
+    "helpful": { "count": 22, "users": { "$oid": "67d1c82ffc13ae72d0527da0" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527da1" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527da2" },
+    "rating": 5,
+    "verifiedPurchase": true,
+    "date": "10/26/2024",
+    "helpful": { "count": 64, "users": { "$oid": "67d1c82ffc13ae72d0527da3" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527da4" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527da5" },
+    "rating": 4,
+    "verifiedPurchase": true,
+    "date": "1/4/2025",
+    "helpful": { "count": 61, "users": { "$oid": "67d1c82ffc13ae72d0527da6" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527da7" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527da8" },
+    "rating": 5,
+    "verifiedPurchase": true,
+    "date": "11/23/2024",
+    "helpful": { "count": 79, "users": { "$oid": "67d1c82ffc13ae72d0527da9" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527daa" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527dab" },
+    "rating": 5,
+    "verifiedPurchase": false,
+    "date": "11/7/2024",
+    "helpful": { "count": 53, "users": { "$oid": "67d1c82ffc13ae72d0527dac" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527dad" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527dae" },
+    "rating": 5,
+    "verifiedPurchase": true,
+    "date": "5/16/2024",
+    "helpful": { "count": 74, "users": { "$oid": "67d1c82ffc13ae72d0527daf" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527db0" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527db1" },
+    "rating": 4,
+    "verifiedPurchase": true,
+    "date": "11/7/2024",
+    "helpful": { "count": 45, "users": { "$oid": "67d1c82ffc13ae72d0527db2" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527db3" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527db4" },
+    "rating": 3,
+    "verifiedPurchase": true,
+    "date": "2/22/2025",
+    "helpful": { "count": 9, "users": { "$oid": "67d1c82ffc13ae72d0527db5" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527db6" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527db7" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "10/10/2024",
+    "helpful": { "count": 66, "users": { "$oid": "67d1c82ffc13ae72d0527db8" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527db9" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527dba" },
+    "rating": 1,
+    "verifiedPurchase": true,
+    "date": "9/8/2024",
+    "helpful": { "count": 82, "users": { "$oid": "67d1c82ffc13ae72d0527dbb" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527dbc" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527dbd" },
+    "rating": 4,
+    "verifiedPurchase": true,
+    "date": "1/1/2025",
+    "helpful": { "count": 78, "users": { "$oid": "67d1c82ffc13ae72d0527dbe" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527dbf" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527dc0" },
+    "rating": 4,
+    "verifiedPurchase": false,
+    "date": "12/26/2024",
+    "helpful": { "count": 43, "users": { "$oid": "67d1c82ffc13ae72d0527dc1" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527dc2" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527dc3" },
+    "rating": 4,
+    "verifiedPurchase": false,
+    "date": "4/22/2024",
+    "helpful": { "count": 53, "users": { "$oid": "67d1c82ffc13ae72d0527dc4" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527dc5" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527dc6" },
+    "rating": 2,
+    "verifiedPurchase": true,
+    "date": "8/9/2024",
+    "helpful": { "count": 12, "users": { "$oid": "67d1c82ffc13ae72d0527dc7" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527dc8" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527dc9" },
+    "rating": 1,
+    "verifiedPurchase": true,
+    "date": "4/13/2024",
+    "helpful": { "count": 13, "users": { "$oid": "67d1c82ffc13ae72d0527dca" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527dcb" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527dcc" },
+    "rating": 3,
+    "verifiedPurchase": false,
+    "date": "10/21/2024",
+    "helpful": { "count": 96, "users": { "$oid": "67d1c82ffc13ae72d0527dcd" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527dce" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527dcf" },
+    "rating": 3,
+    "verifiedPurchase": false,
+    "date": "12/12/2024",
+    "helpful": { "count": 62, "users": { "$oid": "67d1c82ffc13ae72d0527dd0" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527dd1" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527dd2" },
+    "rating": 5,
+    "verifiedPurchase": true,
+    "date": "9/6/2024",
+    "helpful": { "count": 58, "users": { "$oid": "67d1c82ffc13ae72d0527dd3" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527dd4" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527dd5" },
+    "rating": 3,
+    "verifiedPurchase": false,
+    "date": "12/13/2024",
+    "helpful": { "count": 99, "users": { "$oid": "67d1c82ffc13ae72d0527dd6" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527dd7" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527dd8" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "3/10/2025",
+    "helpful": { "count": 1, "users": { "$oid": "67d1c82ffc13ae72d0527dd9" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527dda" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ddb" },
+    "rating": 4,
+    "verifiedPurchase": false,
+    "date": "10/31/2024",
+    "helpful": { "count": 41, "users": { "$oid": "67d1c82ffc13ae72d0527ddc" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ddd" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527dde" },
+    "rating": 4,
+    "verifiedPurchase": true,
+    "date": "12/22/2024",
+    "helpful": { "count": 59, "users": { "$oid": "67d1c82ffc13ae72d0527ddf" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527de0" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527de1" },
+    "rating": 4,
+    "verifiedPurchase": false,
+    "date": "10/26/2024",
+    "helpful": { "count": 95, "users": { "$oid": "67d1c82ffc13ae72d0527de2" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527de3" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527de4" },
+    "rating": 5,
+    "verifiedPurchase": false,
+    "date": "5/5/2024",
+    "helpful": { "count": 23, "users": { "$oid": "67d1c82ffc13ae72d0527de5" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527de6" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527de7" },
+    "rating": 1,
+    "verifiedPurchase": false,
+    "date": "2/16/2025",
+    "helpful": { "count": 13, "users": { "$oid": "67d1c82ffc13ae72d0527de8" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527de9" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527dea" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "3/10/2025",
+    "helpful": { "count": 51, "users": { "$oid": "67d1c82ffc13ae72d0527deb" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527dec" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ded" },
+    "rating": 1,
+    "verifiedPurchase": false,
+    "date": "12/29/2024",
+    "helpful": { "count": 11, "users": { "$oid": "67d1c82ffc13ae72d0527dee" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527def" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527df0" },
+    "rating": 1,
+    "verifiedPurchase": false,
+    "date": "6/30/2024",
+    "helpful": { "count": 9, "users": { "$oid": "67d1c82ffc13ae72d0527df1" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527df2" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527df3" },
+    "rating": 1,
+    "verifiedPurchase": false,
+    "date": "6/19/2024",
+    "helpful": { "count": 7, "users": { "$oid": "67d1c82ffc13ae72d0527df4" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527df5" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527df6" },
+    "rating": 1,
+    "verifiedPurchase": true,
+    "date": "12/30/2024",
+    "helpful": { "count": 12, "users": { "$oid": "67d1c82ffc13ae72d0527df7" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527df8" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527df9" },
+    "rating": 2,
+    "verifiedPurchase": true,
+    "date": "7/7/2024",
+    "helpful": { "count": 77, "users": { "$oid": "67d1c82ffc13ae72d0527dfa" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527dfb" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527dfc" },
+    "rating": 4,
+    "verifiedPurchase": true,
+    "date": "3/31/2024",
+    "helpful": { "count": 66, "users": { "$oid": "67d1c82ffc13ae72d0527dfd" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527dfe" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527dff" },
+    "rating": 1,
+    "verifiedPurchase": true,
+    "date": "2/3/2025",
+    "helpful": { "count": 76, "users": { "$oid": "67d1c82ffc13ae72d0527e00" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e01" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e02" },
+    "rating": 1,
+    "verifiedPurchase": true,
+    "date": "7/1/2024",
+    "helpful": { "count": 89, "users": { "$oid": "67d1c82ffc13ae72d0527e03" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e04" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e05" },
+    "rating": 2,
+    "verifiedPurchase": true,
+    "date": "2/5/2025",
+    "helpful": { "count": 29, "users": { "$oid": "67d1c82ffc13ae72d0527e06" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e07" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e08" },
+    "rating": 3,
+    "verifiedPurchase": false,
+    "date": "9/25/2024",
+    "helpful": { "count": 68, "users": { "$oid": "67d1c82ffc13ae72d0527e09" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e0a" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e0b" },
+    "rating": 4,
+    "verifiedPurchase": true,
+    "date": "4/30/2024",
+    "helpful": { "count": 91, "users": { "$oid": "67d1c82ffc13ae72d0527e0c" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e0d" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e0e" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "5/18/2024",
+    "helpful": { "count": 73, "users": { "$oid": "67d1c82ffc13ae72d0527e0f" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e10" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e11" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "4/27/2024",
+    "helpful": { "count": 73, "users": { "$oid": "67d1c82ffc13ae72d0527e12" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e13" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e14" },
+    "rating": 3,
+    "verifiedPurchase": true,
+    "date": "10/2/2024",
+    "helpful": { "count": 55, "users": { "$oid": "67d1c82ffc13ae72d0527e15" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e16" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e17" },
+    "rating": 4,
+    "verifiedPurchase": true,
+    "date": "4/30/2024",
+    "helpful": { "count": 92, "users": { "$oid": "67d1c82ffc13ae72d0527e18" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e19" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e1a" },
+    "rating": 5,
+    "verifiedPurchase": false,
+    "date": "11/2/2024",
+    "helpful": { "count": 76, "users": { "$oid": "67d1c82ffc13ae72d0527e1b" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e1c" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e1d" },
+    "rating": 4,
+    "verifiedPurchase": false,
+    "date": "10/2/2024",
+    "helpful": { "count": 9, "users": { "$oid": "67d1c82ffc13ae72d0527e1e" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e1f" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e20" },
+    "rating": 1,
+    "verifiedPurchase": true,
+    "date": "10/23/2024",
+    "helpful": { "count": 42, "users": { "$oid": "67d1c82ffc13ae72d0527e21" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e22" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e23" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "6/9/2024",
+    "helpful": { "count": 25, "users": { "$oid": "67d1c82ffc13ae72d0527e24" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e25" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e26" },
+    "rating": 5,
+    "verifiedPurchase": true,
+    "date": "1/13/2025",
+    "helpful": { "count": 97, "users": { "$oid": "67d1c82ffc13ae72d0527e27" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e28" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e29" },
+    "rating": 4,
+    "verifiedPurchase": false,
+    "date": "11/15/2024",
+    "helpful": { "count": 2, "users": { "$oid": "67d1c82ffc13ae72d0527e2a" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e2b" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e2c" },
+    "rating": 1,
+    "verifiedPurchase": true,
+    "date": "2/27/2025",
+    "helpful": { "count": 27, "users": { "$oid": "67d1c82ffc13ae72d0527e2d" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e2e" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e2f" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "6/6/2024",
+    "helpful": { "count": 100, "users": { "$oid": "67d1c82ffc13ae72d0527e30" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e31" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e32" },
+    "rating": 3,
+    "verifiedPurchase": false,
+    "date": "5/13/2024",
+    "helpful": { "count": 41, "users": { "$oid": "67d1c82ffc13ae72d0527e33" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e34" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e35" },
+    "rating": 3,
+    "verifiedPurchase": false,
+    "date": "8/27/2024",
+    "helpful": { "count": 60, "users": { "$oid": "67d1c82ffc13ae72d0527e36" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e37" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e38" },
+    "rating": 1,
+    "verifiedPurchase": false,
+    "date": "7/16/2024",
+    "helpful": { "count": 50, "users": { "$oid": "67d1c82ffc13ae72d0527e39" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e3a" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e3b" },
+    "rating": 4,
+    "verifiedPurchase": true,
+    "date": "12/7/2024",
+    "helpful": { "count": 79, "users": { "$oid": "67d1c82ffc13ae72d0527e3c" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e3d" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e3e" },
+    "rating": 1,
+    "verifiedPurchase": false,
+    "date": "4/17/2024",
+    "helpful": { "count": 19, "users": { "$oid": "67d1c82ffc13ae72d0527e3f" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e40" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e41" },
+    "rating": 1,
+    "verifiedPurchase": true,
+    "date": "3/3/2025",
+    "helpful": { "count": 84, "users": { "$oid": "67d1c82ffc13ae72d0527e42" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e43" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e44" },
+    "rating": 1,
+    "verifiedPurchase": true,
+    "date": "6/18/2024",
+    "helpful": { "count": 35, "users": { "$oid": "67d1c82ffc13ae72d0527e45" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e46" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e47" },
+    "rating": 4,
+    "verifiedPurchase": false,
+    "date": "2/11/2025",
+    "helpful": { "count": 7, "users": { "$oid": "67d1c82ffc13ae72d0527e48" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e49" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e4a" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "7/20/2024",
+    "helpful": { "count": 72, "users": { "$oid": "67d1c82ffc13ae72d0527e4b" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e4c" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e4d" },
+    "rating": 2,
+    "verifiedPurchase": true,
+    "date": "4/8/2024",
+    "helpful": { "count": 22, "users": { "$oid": "67d1c82ffc13ae72d0527e4e" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e4f" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e50" },
+    "rating": 5,
+    "verifiedPurchase": true,
+    "date": "12/30/2024",
+    "helpful": { "count": 97, "users": { "$oid": "67d1c82ffc13ae72d0527e51" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e52" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e53" },
+    "rating": 5,
+    "verifiedPurchase": false,
+    "date": "10/13/2024",
+    "helpful": { "count": 93, "users": { "$oid": "67d1c82ffc13ae72d0527e54" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e55" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e56" },
+    "rating": 5,
+    "verifiedPurchase": true,
+    "date": "2/20/2025",
+    "helpful": { "count": 6, "users": { "$oid": "67d1c82ffc13ae72d0527e57" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e58" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e59" },
+    "rating": 3,
+    "verifiedPurchase": true,
+    "date": "2/10/2025",
+    "helpful": { "count": 90, "users": { "$oid": "67d1c82ffc13ae72d0527e5a" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e5b" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e5c" },
+    "rating": 1,
+    "verifiedPurchase": false,
+    "date": "9/25/2024",
+    "helpful": { "count": 95, "users": { "$oid": "67d1c82ffc13ae72d0527e5d" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e5e" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e5f" },
+    "rating": 4,
+    "verifiedPurchase": false,
+    "date": "4/25/2024",
+    "helpful": { "count": 16, "users": { "$oid": "67d1c82ffc13ae72d0527e60" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e61" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e62" },
+    "rating": 4,
+    "verifiedPurchase": true,
+    "date": "1/30/2025",
+    "helpful": { "count": 24, "users": { "$oid": "67d1c82ffc13ae72d0527e63" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e64" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e65" },
+    "rating": 1,
+    "verifiedPurchase": true,
+    "date": "5/31/2024",
+    "helpful": { "count": 69, "users": { "$oid": "67d1c82ffc13ae72d0527e66" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e67" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e68" },
+    "rating": 4,
+    "verifiedPurchase": false,
+    "date": "7/5/2024",
+    "helpful": { "count": 43, "users": { "$oid": "67d1c82ffc13ae72d0527e69" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e6a" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e6b" },
+    "rating": 3,
+    "verifiedPurchase": false,
+    "date": "3/25/2024",
+    "helpful": { "count": 48, "users": { "$oid": "67d1c82ffc13ae72d0527e6c" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e6d" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e6e" },
+    "rating": 5,
+    "verifiedPurchase": true,
+    "date": "9/18/2024",
+    "helpful": { "count": 90, "users": { "$oid": "67d1c82ffc13ae72d0527e6f" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e70" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e71" },
+    "rating": 3,
+    "verifiedPurchase": true,
+    "date": "7/12/2024",
+    "helpful": { "count": 73, "users": { "$oid": "67d1c82ffc13ae72d0527e72" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e73" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e74" },
+    "rating": 1,
+    "verifiedPurchase": true,
+    "date": "6/4/2024",
+    "helpful": { "count": 5, "users": { "$oid": "67d1c82ffc13ae72d0527e75" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e76" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e77" },
+    "rating": 3,
+    "verifiedPurchase": false,
+    "date": "9/3/2024",
+    "helpful": { "count": 35, "users": { "$oid": "67d1c82ffc13ae72d0527e78" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e79" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e7a" },
+    "rating": 1,
+    "verifiedPurchase": false,
+    "date": "12/28/2024",
+    "helpful": { "count": 99, "users": { "$oid": "67d1c82ffc13ae72d0527e7b" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e7c" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e7d" },
+    "rating": 5,
+    "verifiedPurchase": false,
+    "date": "3/28/2024",
+    "helpful": { "count": 1, "users": { "$oid": "67d1c82ffc13ae72d0527e7e" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e7f" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e80" },
+    "rating": 5,
+    "verifiedPurchase": false,
+    "date": "4/7/2024",
+    "helpful": { "count": 54, "users": { "$oid": "67d1c82ffc13ae72d0527e81" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e82" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e83" },
+    "rating": 1,
+    "verifiedPurchase": true,
+    "date": "12/11/2024",
+    "helpful": { "count": 66, "users": { "$oid": "67d1c82ffc13ae72d0527e84" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e85" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e86" },
+    "rating": 5,
+    "verifiedPurchase": false,
+    "date": "11/21/2024",
+    "helpful": { "count": 9, "users": { "$oid": "67d1c82ffc13ae72d0527e87" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e88" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e89" },
+    "rating": 2,
+    "verifiedPurchase": true,
+    "date": "11/23/2024",
+    "helpful": { "count": 16, "users": { "$oid": "67d1c82ffc13ae72d0527e8a" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e8b" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e8c" },
+    "rating": 2,
+    "verifiedPurchase": true,
+    "date": "7/9/2024",
+    "helpful": { "count": 97, "users": { "$oid": "67d1c82ffc13ae72d0527e8d" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e8e" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e8f" },
+    "rating": 2,
+    "verifiedPurchase": true,
+    "date": "7/3/2024",
+    "helpful": { "count": 6, "users": { "$oid": "67d1c82ffc13ae72d0527e90" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e91" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e92" },
+    "rating": 4,
+    "verifiedPurchase": false,
+    "date": "12/18/2024",
+    "helpful": { "count": 48, "users": { "$oid": "67d1c82ffc13ae72d0527e93" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e94" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e95" },
+    "rating": 5,
+    "verifiedPurchase": true,
+    "date": "1/14/2025",
+    "helpful": { "count": 84, "users": { "$oid": "67d1c82ffc13ae72d0527e96" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e97" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e98" },
+    "rating": 1,
+    "verifiedPurchase": true,
+    "date": "5/11/2024",
+    "helpful": { "count": 85, "users": { "$oid": "67d1c82ffc13ae72d0527e99" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e9a" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e9b" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "7/20/2024",
+    "helpful": { "count": 56, "users": { "$oid": "67d1c82ffc13ae72d0527e9c" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527e9d" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527e9e" },
+    "rating": 4,
+    "verifiedPurchase": false,
+    "date": "4/16/2024",
+    "helpful": { "count": 95, "users": { "$oid": "67d1c82ffc13ae72d0527e9f" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ea0" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ea1" },
+    "rating": 1,
+    "verifiedPurchase": false,
+    "date": "9/16/2024",
+    "helpful": { "count": 83, "users": { "$oid": "67d1c82ffc13ae72d0527ea2" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ea3" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ea4" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "1/20/2025",
+    "helpful": { "count": 94, "users": { "$oid": "67d1c82ffc13ae72d0527ea5" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ea6" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ea7" },
+    "rating": 4,
+    "verifiedPurchase": true,
+    "date": "3/2/2025",
+    "helpful": { "count": 26, "users": { "$oid": "67d1c82ffc13ae72d0527ea8" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ea9" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527eaa" },
+    "rating": 1,
+    "verifiedPurchase": false,
+    "date": "1/9/2025",
+    "helpful": { "count": 4, "users": { "$oid": "67d1c82ffc13ae72d0527eab" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527eac" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ead" },
+    "rating": 4,
+    "verifiedPurchase": false,
+    "date": "2/23/2025",
+    "helpful": { "count": 48, "users": { "$oid": "67d1c82ffc13ae72d0527eae" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527eaf" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527eb0" },
+    "rating": 3,
+    "verifiedPurchase": true,
+    "date": "9/18/2024",
+    "helpful": { "count": 64, "users": { "$oid": "67d1c82ffc13ae72d0527eb1" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527eb2" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527eb3" },
+    "rating": 3,
+    "verifiedPurchase": true,
+    "date": "6/9/2024",
+    "helpful": { "count": 44, "users": { "$oid": "67d1c82ffc13ae72d0527eb4" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527eb5" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527eb6" },
+    "rating": 2,
+    "verifiedPurchase": true,
+    "date": "11/11/2024",
+    "helpful": { "count": 26, "users": { "$oid": "67d1c82ffc13ae72d0527eb7" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527eb8" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527eb9" },
+    "rating": 5,
+    "verifiedPurchase": true,
+    "date": "3/18/2024",
+    "helpful": { "count": 41, "users": { "$oid": "67d1c82ffc13ae72d0527eba" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ebb" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ebc" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "11/26/2024",
+    "helpful": { "count": 93, "users": { "$oid": "67d1c82ffc13ae72d0527ebd" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ebe" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ebf" },
+    "rating": 3,
+    "verifiedPurchase": false,
+    "date": "5/11/2024",
+    "helpful": { "count": 16, "users": { "$oid": "67d1c82ffc13ae72d0527ec0" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ec1" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ec2" },
+    "rating": 3,
+    "verifiedPurchase": false,
+    "date": "4/11/2024",
+    "helpful": { "count": 57, "users": { "$oid": "67d1c82ffc13ae72d0527ec3" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ec4" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ec5" },
+    "rating": 3,
+    "verifiedPurchase": true,
+    "date": "10/30/2024",
+    "helpful": { "count": 23, "users": { "$oid": "67d1c82ffc13ae72d0527ec6" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ec7" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ec8" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "8/13/2024",
+    "helpful": { "count": 92, "users": { "$oid": "67d1c82ffc13ae72d0527ec9" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527eca" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ecb" },
+    "rating": 2,
+    "verifiedPurchase": true,
+    "date": "8/20/2024",
+    "helpful": { "count": 11, "users": { "$oid": "67d1c82ffc13ae72d0527ecc" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ecd" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ece" },
+    "rating": 1,
+    "verifiedPurchase": true,
+    "date": "6/22/2024",
+    "helpful": { "count": 1, "users": { "$oid": "67d1c82ffc13ae72d0527ecf" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ed0" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ed1" },
+    "rating": 4,
+    "verifiedPurchase": false,
+    "date": "3/7/2025",
+    "helpful": { "count": 53, "users": { "$oid": "67d1c82ffc13ae72d0527ed2" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ed3" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ed4" },
+    "rating": 2,
+    "verifiedPurchase": true,
+    "date": "5/18/2024",
+    "helpful": { "count": 27, "users": { "$oid": "67d1c82ffc13ae72d0527ed5" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ed6" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ed7" },
+    "rating": 5,
+    "verifiedPurchase": true,
+    "date": "1/6/2025",
+    "helpful": { "count": 58, "users": { "$oid": "67d1c82ffc13ae72d0527ed8" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ed9" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527eda" },
+    "rating": 2,
+    "verifiedPurchase": true,
+    "date": "12/23/2024",
+    "helpful": { "count": 48, "users": { "$oid": "67d1c82ffc13ae72d0527edb" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527edc" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527edd" },
+    "rating": 5,
+    "verifiedPurchase": false,
+    "date": "10/4/2024",
+    "helpful": { "count": 87, "users": { "$oid": "67d1c82ffc13ae72d0527ede" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527edf" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ee0" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "4/18/2024",
+    "helpful": { "count": 51, "users": { "$oid": "67d1c82ffc13ae72d0527ee1" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ee2" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ee3" },
+    "rating": 3,
+    "verifiedPurchase": false,
+    "date": "10/17/2024",
+    "helpful": { "count": 95, "users": { "$oid": "67d1c82ffc13ae72d0527ee4" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ee5" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ee6" },
+    "rating": 2,
+    "verifiedPurchase": true,
+    "date": "4/12/2024",
+    "helpful": { "count": 16, "users": { "$oid": "67d1c82ffc13ae72d0527ee7" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ee8" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ee9" },
+    "rating": 5,
+    "verifiedPurchase": false,
+    "date": "7/20/2024",
+    "helpful": { "count": 86, "users": { "$oid": "67d1c82ffc13ae72d0527eea" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527eeb" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527eec" },
+    "rating": 2,
+    "verifiedPurchase": true,
+    "date": "1/3/2025",
+    "helpful": { "count": 3, "users": { "$oid": "67d1c82ffc13ae72d0527eed" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527eee" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527eef" },
+    "rating": 4,
+    "verifiedPurchase": false,
+    "date": "4/4/2024",
+    "helpful": { "count": 22, "users": { "$oid": "67d1c82ffc13ae72d0527ef0" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ef1" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ef2" },
+    "rating": 4,
+    "verifiedPurchase": true,
+    "date": "7/24/2024",
+    "helpful": { "count": 24, "users": { "$oid": "67d1c82ffc13ae72d0527ef3" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ef4" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ef5" },
+    "rating": 1,
+    "verifiedPurchase": true,
+    "date": "12/9/2024",
+    "helpful": { "count": 55, "users": { "$oid": "67d1c82ffc13ae72d0527ef6" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527ef7" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527ef8" },
+    "rating": 2,
+    "verifiedPurchase": false,
+    "date": "7/14/2024",
+    "helpful": { "count": 68, "users": { "$oid": "67d1c82ffc13ae72d0527ef9" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527efa" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527efb" },
+    "rating": 4,
+    "verifiedPurchase": true,
+    "date": "4/9/2024",
+    "helpful": { "count": 26, "users": { "$oid": "67d1c82ffc13ae72d0527efc" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527efd" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527efe" },
+    "rating": 5,
+    "verifiedPurchase": false,
+    "date": "3/18/2024",
+    "helpful": { "count": 74, "users": { "$oid": "67d1c82ffc13ae72d0527eff" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527f00" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527f01" },
+    "rating": 4,
+    "verifiedPurchase": false,
+    "date": "8/8/2024",
+    "helpful": { "count": 15, "users": { "$oid": "67d1c82ffc13ae72d0527f02" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527f03" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527f04" },
+    "rating": 1,
+    "verifiedPurchase": true,
+    "date": "8/14/2024",
+    "helpful": { "count": 61, "users": { "$oid": "67d1c82ffc13ae72d0527f05" } }
+  },
+  {
+    "user": { "$oid": "67d1c82ffc13ae72d0527f06" },
+    "product": { "$oid": "67d1c82ffc13ae72d0527f07" },
+    "rating": 4,
+    "verifiedPurchase": true,
+    "date": "8/18/2024",
+    "helpful": { "count": 44, "users": { "$oid": "67d1c82ffc13ae72d0527f08" } }
+  }
+]

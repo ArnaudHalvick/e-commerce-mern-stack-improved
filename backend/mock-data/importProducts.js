@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const path = require("path");
 
 // Import the new Product model (adjust the path if needed)
-const Product = require("./models/Product");
+const Product = require("../models/Product");
 
 // MongoDB connection details
 const dbUsername = process.env.DB_USERNAME;
@@ -22,7 +22,7 @@ mongoose
   });
 
 // Load the JSON data
-const products = require("./products.json");
+const products = require("../products.json");
 
 // Convert date objects if needed
 const cleanedProducts = products.map((product) => {
