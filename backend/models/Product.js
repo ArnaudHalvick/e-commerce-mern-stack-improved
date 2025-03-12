@@ -50,10 +50,10 @@ const ProductSchema = new mongoose.Schema({
     type: [
       {
         type: String,
-        enum: ["S", "M", "L", "XL", "XXL"],
+        enum: ["S", "M", "L", "XL", "XXL", "One Size"],
       },
     ],
-    default: ["S", "M", "L", "XL", "XXL"], // By default, all sizes are available
+    default: ["S", "M", "L", "XL", "XXL", "One Size"], // By default, all sizes are available
   },
   tags: {
     type: [
@@ -62,6 +62,8 @@ const ProductSchema = new mongoose.Schema({
         enum: [
           "Winter",
           "Summer",
+          "Spring",
+          "Fall",
           "Trendy",
           "Elegant",
           "Casual",
@@ -70,9 +72,6 @@ const ProductSchema = new mongoose.Schema({
           "Minimalist",
           "Party",
           "Chic",
-          "Streetwear",
-          "Classic",
-          "Sportswear",
         ],
       },
     ],
@@ -90,18 +89,11 @@ const ProductSchema = new mongoose.Schema({
           "Dress",
           "Skirt",
           "Jacket",
-          "Coat",
           "Sweater",
           "Hoodie",
           "Crop Top",
           "Pants",
           "Shorts",
-          "Accessories",
-          "Activewear",
-          "Underwear",
-          "Blouse",
-          "Top",
-          "Windbreaker",
         ],
       },
     ],
