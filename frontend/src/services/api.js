@@ -54,7 +54,7 @@ export const reviewsApi = {
       } else if (error.message) {
         throw error.message;
       } else {
-        throw "Failed to fetch reviews";
+        throw new Error("Failed to fetch reviews");
       }
     }
   },
@@ -75,7 +75,7 @@ export const reviewsApi = {
       } else if (error.message) {
         throw error.message;
       } else {
-        throw "Failed to add review";
+        throw new Error("Failed to add review");
       }
     }
   },
@@ -147,8 +147,10 @@ export const cartApi = {
 };
 
 // Export default for convenience
-export default {
+const apiServices = {
   reviewsApi,
   productsApi,
   cartApi,
 };
+
+export default apiServices;
