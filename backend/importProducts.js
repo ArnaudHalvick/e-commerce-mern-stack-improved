@@ -10,7 +10,7 @@ const Product = require("./models/Product");
 // MongoDB connection details
 const dbUsername = process.env.DB_USERNAME;
 const dbPassword = process.env.DB_PASSWORD;
-const mongoURI = `mongodb+srv://${dbUsername}:${dbPassword}@cluster0.prdnq.mongodb.net/your_db_name?retryWrites=true&w=majority`;
+const mongoURI = `mongodb+srv://${dbUsername}:${dbPassword}@cluster0.prdnq.mongodb.net/ecommerce-mern?retryWrites=true&w=majority`;
 
 // Connect to MongoDB
 mongoose
