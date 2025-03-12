@@ -11,12 +11,16 @@ const RelatedProducts = () => {
       <hr />
       <div className="related-products-item">
         {data_product.map((item, i) => {
+          // Convert legacy data format to new format if needed
+          const itemImages = item.images || (item.image ? [item.image] : []);
+
           return (
             <Item
               key={i}
               id={item.id}
               name={item.name}
-              image={item.image}
+              images={itemImages}
+              mainImageIndex={item.mainImageIndex || 0}
               new_price={item.new_price}
               old_price={item.old_price}
             />
