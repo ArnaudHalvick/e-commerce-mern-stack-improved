@@ -144,6 +144,60 @@ export const cartApi = {
       );
     }
   },
+
+  /**
+   * Remove an item from the cart
+   * @param {object} params - Parameters (itemId, quantity, removeAll)
+   * @returns {Promise} - Promise that resolves to updated cart
+   */
+  removeFromCart: async ({ itemId, quantity = 1, removeAll = false }) => {
+    try {
+      const response = await apiClient.post("/api/cart/remove", {
+        itemId,
+        quantity,
+        removeAll,
+      });
+      return response.data;
+    } catch (error) {
+      throw (
+        error.response?.data ||
+        error.message ||
+        "Failed to remove item from cart"
+      );
+    }
+  },
+
+  /**
+   * Update a cart item's quantity
+   * @param {object} params - Parameters (itemId, quantity)
+   * @returns {Promise} - Promise that resolves to updated cart
+   */
+  updateCartItem: async ({ itemId, quantity }) => {
+    try {
+      const response = await apiClient.put("/api/cart/update", {
+        itemId,
+        quantity,
+      });
+      return response.data;
+    } catch (error) {
+      throw (
+        error.response?.data || error.message || "Failed to update cart item"
+      );
+    }
+  },
+
+  /**
+   * Clear the cart
+   * @returns {Promise} - Promise that resolves to empty cart
+   */
+  clearCart: async () => {
+    try {
+      const response = await apiClient.delete("/api/cart/clear");
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message || "Failed to clear cart";
+    }
+  },
 };
 
 // Export default for convenience

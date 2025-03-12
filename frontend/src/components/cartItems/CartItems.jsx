@@ -1,7 +1,6 @@
 // Path: frontend/src/components/cartItems/CartItems.jsx
 import "./CartItems.css";
-import remove_icon from "../assets/cart_cross_icon.png";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchCart,
@@ -10,6 +9,7 @@ import {
   updateCartItem,
 } from "../../redux/slices/cartSlice";
 import { AuthContext } from "../../context/AuthContext";
+import CartItem from "./CartItem";
 
 const CartItems = () => {
   const dispatch = useDispatch();
@@ -26,6 +26,13 @@ const CartItems = () => {
   );
 
   const [editableQuantities, setEditableQuantities] = useState({});
+  // Local state for optimistic UI updates
+  const [localTotalPrice, setLocalTotalPrice] = useState(totalPrice);
+
+  // Update local total price when Redux state changes
+  useEffect(() => {
+    setLocalTotalPrice(totalPrice);
+  }, [totalPrice]);
 
   // Fetch cart data when component mounts or auth status changes
   useEffect(() => {
@@ -34,43 +41,71 @@ const CartItems = () => {
     }
   }, [dispatch, isAuthenticated]);
 
-  // Handle item quantity change
-  const handleQuantityChange = (id, value) => {
+  // Memoized handlers to prevent unnecessary re-renders
+  const handleQuantityChange = useCallback((id, value) => {
     // Ensure value is a valid number and not less than 1
     const newValue = Math.max(1, parseInt(value) || 1);
-    setEditableQuantities({ ...editableQuantities, [id]: newValue });
-  };
+    setEditableQuantities((prev) => ({ ...prev, [id]: newValue }));
+  }, []);
 
-  // Handle quantity input blur event
-  const handleQuantityBlur = (id) => {
-    const newValue = editableQuantities[id];
-    if (newValue !== undefined) {
-      dispatch(updateCartItem({ itemId: id, quantity: newValue }));
+  const handleQuantityBlur = useCallback(
+    (id) => {
+      const newValue = editableQuantities[id];
+      if (newValue !== undefined) {
+        dispatch(updateCartItem({ itemId: id, quantity: newValue }));
 
-      // Clear the editable state
-      const newEditableQuantities = { ...editableQuantities };
-      delete newEditableQuantities[id];
-      setEditableQuantities(newEditableQuantities);
-    }
-  };
+        // Clear the editable state
+        setEditableQuantities((prev) => {
+          const newState = { ...prev };
+          delete newState[id];
+          return newState;
+        });
+      }
+    },
+    [dispatch, editableQuantities]
+  );
 
-  // Handle removing all items of a product
-  const handleRemoveAll = (id) => {
-    dispatch(removeFromCart({ itemId: id, removeAll: true }));
-  };
+  const handleRemoveAll = useCallback(
+    (id) => {
+      // Find the item to calculate price impact
+      const item = items.find((item) => item.productId === id);
+      if (item) {
+        // Update local total price immediately for better UX
+        setLocalTotalPrice((prev) => prev - item.price * item.quantity);
+      }
+      dispatch(removeFromCart({ itemId: id, removeAll: true }));
+    },
+    [dispatch, items]
+  );
 
-  // Handle adding item to cart
-  const handleAddItem = (id) => {
-    dispatch(addToCart({ itemId: id, quantity: 1 }));
-  };
+  const handleAddItem = useCallback(
+    (id) => {
+      // Find the item to calculate price impact
+      const item = items.find((item) => item.productId === id);
+      if (item) {
+        // Update local total price immediately for better UX
+        setLocalTotalPrice((prev) => prev + item.price);
+      }
+      dispatch(addToCart({ itemId: id, quantity: 1 }));
+    },
+    [dispatch, items]
+  );
 
-  // Handle removing item from cart
-  const handleRemoveItem = (id) => {
-    dispatch(removeFromCart({ itemId: id, quantity: 1 }));
-  };
+  const handleRemoveItem = useCallback(
+    (id) => {
+      // Find the item to calculate price impact
+      const item = items.find((item) => item.productId === id);
+      if (item) {
+        // Update local total price immediately for better UX
+        setLocalTotalPrice((prev) => prev - item.price);
+      }
+      dispatch(removeFromCart({ itemId: id, quantity: 1 }));
+    },
+    [dispatch, items]
+  );
 
   // Display loading message
-  if (loading) {
+  if (loading && items.length === 0) {
     return <div className="cart-loading">Loading cart...</div>;
   }
 
@@ -100,71 +135,15 @@ const CartItems = () => {
         </thead>
         <tbody>
           {items.map((item) => (
-            <tr key={item.productId}>
-              <td>
-                <img
-                  className="cart-product-image"
-                  src={item.image}
-                  alt={item.name}
-                />
-              </td>
-              <td>{item.name}</td>
-              <td>
-                <span
-                  className={item.isDiscounted ? "cart-price-discounted" : ""}
-                >
-                  ${item.price}
-                </span>
-              </td>
-              <td>
-                <div className="cart-quantity-controls">
-                  <button
-                    className="cart-quantity-adjust-btn"
-                    onClick={() => handleRemoveItem(item.productId)}
-                  >
-                    -
-                  </button>
-                  <input
-                    type="number"
-                    className="cart-quantity-input"
-                    value={
-                      editableQuantities[item.productId] !== undefined
-                        ? editableQuantities[item.productId]
-                        : item.quantity
-                    }
-                    onChange={(event) =>
-                      handleQuantityChange(item.productId, event.target.value)
-                    }
-                    onBlur={() => handleQuantityBlur(item.productId)}
-                    min="1"
-                  />
-                  <button
-                    className="cart-quantity-adjust-btn"
-                    onClick={() => handleAddItem(item.productId)}
-                  >
-                    +
-                  </button>
-                </div>
-              </td>
-              <td>
-                <span
-                  className={item.isDiscounted ? "cart-price-discounted" : ""}
-                >
-                  ${(item.price * item.quantity).toFixed(2)}
-                </span>
-              </td>
-              <td>
-                <div className="cart-remove-icon-container">
-                  <img
-                    className="cart-remove-icon"
-                    onClick={() => handleRemoveAll(item.productId)}
-                    src={remove_icon}
-                    alt=""
-                    title="Remove all"
-                  />
-                </div>
-              </td>
-            </tr>
+            <CartItem
+              key={item.productId}
+              item={item}
+              onRemoveItem={handleRemoveItem}
+              onAddItem={handleAddItem}
+              onRemoveAll={handleRemoveAll}
+              onQuantityChange={handleQuantityChange}
+              onQuantityBlur={handleQuantityBlur}
+            />
           ))}
         </tbody>
       </table>
@@ -175,7 +154,7 @@ const CartItems = () => {
         <div className="cart-totals-item">
           <p className="cart-totals-label">Subtotal</p>
           <p className="cart-totals-value cart-price-discounted">
-            ${totalPrice.toFixed(2)}
+            ${localTotalPrice.toFixed(2)}
           </p>
         </div>
         <div className="cart-totals-item">
@@ -186,7 +165,7 @@ const CartItems = () => {
         <div className="cart-totals-item">
           <p className="cart-totals-label">Total</p>
           <p className="cart-totals-value cart-total-amount cart-price-discounted">
-            ${totalPrice.toFixed(2)}
+            ${localTotalPrice.toFixed(2)}
           </p>
         </div>
         <button className="checkout-button">PROCEED TO CHECKOUT</button>

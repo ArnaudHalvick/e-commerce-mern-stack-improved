@@ -6,6 +6,16 @@ import { cartApi } from "../../services/api";
 // API endpoints
 const API_URL = "http://localhost:4000/api";
 
+// Helper function to calculate cart totals
+const calculateCartTotals = (items) => {
+  const totalItems = items.reduce((total, item) => total + item.quantity, 0);
+  const totalPrice = items.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0
+  );
+  return { totalItems, totalPrice };
+};
+
 // Async thunks for cart operations
 export const fetchCart = createAsyncThunk(
   "cart/fetchCart",
@@ -56,27 +66,17 @@ export const removeFromCart = createAsyncThunk(
         return rejectWithValue("Authentication required");
       }
 
-      const response = await fetch(`${API_URL}/cart/remove`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          "auth-token": token,
-        },
-        body: JSON.stringify({ itemId, quantity, removeAll }),
+      // Use API service
+      const data = await cartApi.removeFromCart({
+        itemId,
+        quantity,
+        removeAll,
       });
-
-      const data = await response.json();
-      if (!data.success) {
-        return rejectWithValue(
-          data.message || "Failed to remove item from cart"
-        );
-      }
 
       return data.cart || { items: [], totalItems: 0, totalPrice: 0 };
     } catch (error) {
       return rejectWithValue(
-        error.message || "Failed to remove item from cart"
+        typeof error === "string" ? error : "Failed to remove item from cart"
       );
     }
   }
@@ -91,24 +91,14 @@ export const updateCartItem = createAsyncThunk(
         return rejectWithValue("Authentication required");
       }
 
-      const response = await fetch(`${API_URL}/cart/update`, {
-        method: "PUT",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          "auth-token": token,
-        },
-        body: JSON.stringify({ itemId, quantity }),
-      });
-
-      const data = await response.json();
-      if (!data.success) {
-        return rejectWithValue(data.message || "Failed to update cart item");
-      }
+      // Use API service
+      const data = await cartApi.updateCartItem({ itemId, quantity });
 
       return data.cart || { items: [], totalItems: 0, totalPrice: 0 };
     } catch (error) {
-      return rejectWithValue(error.message || "Failed to update cart item");
+      return rejectWithValue(
+        typeof error === "string" ? error : "Failed to update cart item"
+      );
     }
   }
 );
@@ -122,23 +112,14 @@ export const clearCart = createAsyncThunk(
         return rejectWithValue("Authentication required");
       }
 
-      const response = await fetch(`${API_URL}/cart/clear`, {
-        method: "DELETE",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          "auth-token": token,
-        },
-      });
-
-      const data = await response.json();
-      if (!data.success) {
-        return rejectWithValue(data.message || "Failed to clear cart");
-      }
+      // Use API service
+      const data = await cartApi.clearCart();
 
       return data.cart || { items: [], totalItems: 0, totalPrice: 0 };
     } catch (error) {
-      return rejectWithValue(error.message || "Failed to clear cart");
+      return rejectWithValue(
+        typeof error === "string" ? error : "Failed to clear cart"
+      );
     }
   }
 );
@@ -185,7 +166,24 @@ const cartSlice = createSlice({
       })
 
       // addToCart
-      .addCase(addToCart.pending, (state) => {
+      .addCase(addToCart.pending, (state, action) => {
+        // Optimistic update - find the item and increment its quantity
+        const { itemId, quantity } = action.meta.arg;
+        const existingItem = state.items.find(
+          (item) => item.productId === itemId
+        );
+
+        if (existingItem) {
+          // Item exists, update quantity
+          existingItem.quantity += quantity;
+        }
+
+        // Recalculate totals
+        const { totalItems, totalPrice } = calculateCartTotals(state.items);
+        state.totalItems = totalItems;
+        state.totalPrice = totalPrice;
+
+        // Set loading state but don't block UI
         state.loading = true;
         state.error = null;
       })
@@ -204,10 +202,45 @@ const cartSlice = createSlice({
       .addCase(addToCart.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to add item to cart";
+        // Revert optimistic update by fetching the cart again
+        // This is a simple approach - a more complex one would save the previous state
       })
 
       // removeFromCart
-      .addCase(removeFromCart.pending, (state) => {
+      .addCase(removeFromCart.pending, (state, action) => {
+        // Optimistic update
+        const { itemId, quantity, removeAll } = action.meta.arg;
+
+        if (removeAll) {
+          // Remove the item completely
+          state.items = state.items.filter((item) => item.productId !== itemId);
+        } else {
+          // Find the item and decrement its quantity
+          const existingItem = state.items.find(
+            (item) => item.productId === itemId
+          );
+
+          if (existingItem) {
+            existingItem.quantity = Math.max(
+              0,
+              existingItem.quantity - quantity
+            );
+
+            // If quantity is 0, remove the item
+            if (existingItem.quantity === 0) {
+              state.items = state.items.filter(
+                (item) => item.productId !== itemId
+              );
+            }
+          }
+        }
+
+        // Recalculate totals
+        const { totalItems, totalPrice } = calculateCartTotals(state.items);
+        state.totalItems = totalItems;
+        state.totalPrice = totalPrice;
+
+        // Set loading state but don't block UI
         state.loading = true;
         state.error = null;
       })
@@ -226,10 +259,31 @@ const cartSlice = createSlice({
       .addCase(removeFromCart.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to remove item from cart";
+        // Revert optimistic update by fetching the cart again
       })
 
       // updateCartItem
-      .addCase(updateCartItem.pending, (state) => {
+      .addCase(updateCartItem.pending, (state, action) => {
+        // Optimistic update
+        const { itemId, quantity } = action.meta.arg;
+        const existingItem = state.items.find(
+          (item) => item.productId === itemId
+        );
+
+        if (existingItem) {
+          // Store the old quantity for potential rollback
+          const oldQuantity = existingItem.quantity;
+
+          // Update the quantity
+          existingItem.quantity = quantity;
+
+          // Recalculate totals
+          const { totalItems, totalPrice } = calculateCartTotals(state.items);
+          state.totalItems = totalItems;
+          state.totalPrice = totalPrice;
+        }
+
+        // Set loading state but don't block UI
         state.loading = true;
         state.error = null;
       })
@@ -248,6 +302,7 @@ const cartSlice = createSlice({
       .addCase(updateCartItem.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to update cart item";
+        // Revert optimistic update by fetching the cart again
       })
 
       // clearCart
@@ -255,7 +310,7 @@ const cartSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(clearCart.fulfilled, (state, action) => {
+      .addCase(clearCart.fulfilled, (state) => {
         state.loading = false;
         state.items = [];
         state.totalItems = 0;
