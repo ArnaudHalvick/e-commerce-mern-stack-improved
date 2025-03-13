@@ -479,7 +479,6 @@ module.exports = {
   getProductsByType,
   getProductById,
   getProductBySlug,
-  getProductsByCategory,
   createSampleProducts,
   formatProductForClient,
   formatProductForResponse,
