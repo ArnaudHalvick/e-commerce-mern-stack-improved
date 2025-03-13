@@ -35,10 +35,10 @@ const Navbar = () => {
 
   return (
     <div className="shop-navbar">
-      <div className="shop-nav-logo">
+      <Link to="/" className="shop-nav-logo">
         <img src={logo} alt="logo" />
         <p>SHOPPER</p>
-      </div>
+      </Link>
 
       {/* Hamburger Icon for Mobile */}
       <div
@@ -52,7 +52,7 @@ const Navbar = () => {
 
       <ul className={`shop-nav-menu ${isMobileMenuOpen ? "active" : ""}`}>
         <li onClick={() => handleMenuClick("shop")}>
-          <Link to="/">Shop {activeMenu === "shop" && <hr />}</Link>
+          <Link to="/">Home {activeMenu === "shop" && <hr />}</Link>
         </li>
         <li onClick={() => handleMenuClick("men")}>
           <Link to="/men">Men {activeMenu === "men" && <hr />}</Link>
@@ -64,7 +64,7 @@ const Navbar = () => {
           <Link to="/kids">Kids {activeMenu === "kids" && <hr />}</Link>
         </li>
         <li onClick={() => handleMenuClick("offers")}>
-          <Link to="/offers">Offers {activeMenu === "offers" && <hr />}</Link>
+          <Link to="/offers">Shop {activeMenu === "offers" && <hr />}</Link>
         </li>
       </ul>
 

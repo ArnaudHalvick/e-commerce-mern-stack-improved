@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 // Import components
 import {
@@ -18,6 +19,8 @@ import "../CSS/Offers.css";
  * Main Offers page component that displays special offers and deals
  */
 const Offers = () => {
+  const location = useLocation();
+
   const {
     // Data
     displayedProducts,
@@ -49,6 +52,16 @@ const Offers = () => {
   useEffect(() => {
     document.title = "Special Offers & Deals | Your E-Commerce Store";
   }, []);
+
+  // Check for URL parameters and set filters accordingly
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const discountParam = params.get("discount");
+
+    if (discountParam === "true" && !filters.discount) {
+      handleFilterChange("discount", true);
+    }
+  }, [location.search, filters.discount, handleFilterChange]);
 
   // Show loading state
   if (loading) {

@@ -12,7 +12,7 @@ const Offers = () => {
         <h1>Exclusive Deals</h1>
         <h1>Just for You</h1>
         <p>ONLY TOP SELLING PRODUCTS</p>
-        <Link to="/offers">
+        <Link to="/offers?discount=true">
           <button>Discover Now</button>
         </Link>
       </div>

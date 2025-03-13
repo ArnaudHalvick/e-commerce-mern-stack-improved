@@ -48,6 +48,23 @@
   color: white;
   font-size: 1.4rem;
   font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.hero-discover-now {
+  display: inline-block;
+  margin-top: 1rem;
+  color: #007bff;
+  font-size: 1.2rem;
+  font-weight: 500;
+  text-decoration: underline;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.hero-discover-now:hover {
+  color: #0056b3;
 }
 
 .hero-section-right {
@@ -87,6 +104,10 @@
     height: 3.5rem;
     font-size: 1.2rem;
   }
+
+  .hero-discover-now {
+    font-size: 1.1rem;
+  }
 }
 
 @media (max-width: 767.98px) {
@@ -102,6 +123,11 @@
 
   .hero-section-left p {
     font-size: 3.5rem;
+  }
+
+  .hero-discover-now {
+    font-size: 1rem;
+    margin-top: 0.8rem;
   }
 
   .hero-section-right {
@@ -127,6 +153,10 @@
     width: 14rem;
     height: 3rem;
     font-size: 1rem;
+  }
+
+  .hero-discover-now {
+    font-size: 0.9rem;
   }
 
   .hero-section-right img {
