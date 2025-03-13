@@ -13,7 +13,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem 0;
+  margin-top: 1rem;
 }
 
 .signup-container {
@@ -136,5 +136,9 @@
 
   .signup-container button {
     font-size: 1.2rem;
+  }
+
+  .loginsignup {
+    margin-top: 0.7rem;
   }
 }

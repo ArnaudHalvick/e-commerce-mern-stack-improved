@@ -4,22 +4,10 @@ import "./CSS/Auth.css";
 import { Link } from "react-router-dom";
 import { useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
-import arrow_icon from "../components/assets/breadcrum_arrow.png";
-import "../components/breadcrumbs/breadcrumb.css";
+import Breadcrumb from "../components/breadcrumbs/Breadcrumb";
 // TODO: Work on responsiveness and auth pages after backend is done
 
 // Simple breadcrumb component for auth page
-const AuthBreadcrumb = ({ state }) => {
-  return (
-    <div className="breadcrumb">
-      <Link to="/" className="breadcrumb-link">
-        HOME
-      </Link>
-      <img src={arrow_icon} alt="" />
-      <span className="breadcrumb-current">{state}</span>
-    </div>
-  );
-};
 
 const Auth = () => {
   const [state, setState] = useState("Login");
@@ -56,7 +44,7 @@ const Auth = () => {
 
   return (
     <div className="auth-container">
-      <AuthBreadcrumb state={state} />
+      <Breadcrumb routes={[{ label: "HOME", path: "/" }, { label: state }]} />
       <div className="loginsignup">
         <div className="signup-container">
           <h1>{state === "Signup" ? "Create Account" : "Login"}</h1>

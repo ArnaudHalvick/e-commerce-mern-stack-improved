@@ -1,33 +1,14 @@
 // Path: frontend/src/pages/ShopCategory.jsx
 // External Libraries
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 
 // Internal Components
 import Item from "../components/item/Item";
+import Breadcrumb from "../components/breadcrumbs/Breadcrumb";
 
 // Styles and Assets
-import arrow_icon from "../components/assets/breadcrum_arrow.png";
 import dropdown_icon from "../components/assets/dropdown_icon.png";
-import "../components/breadcrumbs/breadcrumb.css";
 import "./CSS/ShopCategory.css";
-
-// Simple breadcrumb component for category pages
-const CategoryBreadcrumb = ({ category }) => {
-  return (
-    <div className="breadcrumb">
-      <Link to="/" className="breadcrumb-link">
-        HOME
-      </Link>
-      <img src={arrow_icon} alt="" />
-      <Link to="/" className="breadcrumb-link">
-        SHOP
-      </Link>
-      <img src={arrow_icon} alt="" />
-      <span className="breadcrumb-current">{category}</span>
-    </div>
-  );
-};
 
 const ShopCategory = (props) => {
   const [products, setProducts] = useState([]);
@@ -84,7 +65,13 @@ const ShopCategory = (props) => {
 
   return (
     <div className="product-category-container">
-      <CategoryBreadcrumb category={props.category} />
+      <Breadcrumb
+        routes={[
+          { label: "HOME", path: "/" },
+          { label: "SHOP", path: "/" },
+          { label: props.category },
+        ]}
+      />
       <img className="category-banner" src={props.banner} alt="" />
       <div className="product-filter-bar">
         <p>

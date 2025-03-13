@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 import { useContext, useEffect, useState } from "react";
 
-import Breadcrumb from "../components/breadcrumbs/breadcrumb";
+import Breadcrumb from "../components/breadcrumbs/Breadcrumb";
 import ProductDisplay from "../components/productDisplay/ProductDisplay";
 import DescriptionBox from "../components/descriptionBox/DescriptionBox";
 import RelatedProducts from "../components/relatedProducts/RelatedProducts";
@@ -139,7 +139,17 @@ const Product = () => {
 
   return (
     <div>
-      <Breadcrumb product={product} />
+      <Breadcrumb
+        routes={[
+          { label: "HOME", path: "/" },
+          { label: "SHOP", path: "/" },
+          {
+            label: product.category,
+            path: `/${product.category.toLowerCase()}`,
+          },
+          { label: product.name },
+        ]}
+      />
       <ProductDisplay product={product} />
       <DescriptionBox product={product} />
       <RelatedProducts product={product} />

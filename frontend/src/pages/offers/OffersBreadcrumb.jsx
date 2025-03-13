@@ -1,14 +1,16 @@
-import Breadcrumb from "../../components/breadcrumbs/breadcrumb";
+import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
 
-// Modified version of Breadcrumb for the offers page
+// Component for the offers page breadcrumb
 const OffersBreadcrumb = () => {
-  // Create a simplified object with just category and name for the breadcrumb component
-  const offerPage = {
-    category: "SHOP",
-    name: "OFFERS",
-  };
-
-  return <Breadcrumb product={offerPage} />;
+  return (
+    <Breadcrumb
+      routes={[
+        { label: "HOME", path: "/" },
+        { label: "SHOP", path: "/" },
+        { label: "OFFERS" },
+      ]}
+    />
+  );
 };
 
 export default OffersBreadcrumb;
