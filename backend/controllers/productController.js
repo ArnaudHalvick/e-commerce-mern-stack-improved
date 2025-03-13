@@ -232,29 +232,46 @@ const getAllProducts = async (req, res) => {
 // Get new collection
 const getNewCollection = async (req, res) => {
   try {
-    // Check if we should include reviews or just basic info
+    // Determine if reviews should be included and if only basic info is needed
     const includeReviews = req.query.includeReviews === "true";
     const basicInfo = req.query.basicInfo !== "false";
 
-    let query = Product.find();
+    // Define population options for reviews if requested
+    const populateOptions = includeReviews
+      ? { path: "reviews", populate: { path: "user", select: "name" } }
+      : null;
 
-    // Only populate reviews if requested
-    if (includeReviews) {
-      query = query.populate({
-        path: "reviews",
-        populate: { path: "user", select: "name" },
-      });
+    // Build queries for each category using sort and limit by date
+    const womenQuery = Product.find({ category: "women" })
+      .sort({ date: -1 })
+      .limit(4);
+    const menQuery = Product.find({ category: "men" })
+      .sort({ date: -1 })
+      .limit(2);
+    const kidsQuery = Product.find({ category: "kids" })
+      .sort({ date: -1 })
+      .limit(2);
+
+    // Apply population if reviews are needed
+    if (populateOptions) {
+      womenQuery.populate(populateOptions);
+      menQuery.populate(populateOptions);
+      kidsQuery.populate(populateOptions);
     }
 
-    let products = await query;
-    let newcollection = products.slice(-8);
+    // Execute all three queries concurrently
+    const [womenProducts, menProducts, kidsProducts] = await Promise.all([
+      womenQuery,
+      menQuery,
+      kidsQuery,
+    ]);
 
-    // Format products with the appropriate level of detail
+    // Combine results (order: women, then men, then kids)
+    const newcollection = [...womenProducts, ...menProducts, ...kidsProducts];
+
+    // Format each product for the response
     const formattedProducts = newcollection.map((product) =>
-      formatProductForResponse(product, {
-        includeReviews,
-        basicInfo,
-      })
+      formatProductForResponse(product, { includeReviews, basicInfo })
     );
 
     res.send(formattedProducts);
