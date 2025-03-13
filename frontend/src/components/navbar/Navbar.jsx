@@ -63,6 +63,9 @@ const Navbar = () => {
         <li onClick={() => handleMenuClick("kids")}>
           <Link to="/kids">Kids {activeMenu === "kids" && <hr />}</Link>
         </li>
+        <li onClick={() => handleMenuClick("offers")}>
+          <Link to="/offers">Offers {activeMenu === "offers" && <hr />}</Link>
+        </li>
       </ul>
 
       <div className="shop-nav-login-cart">

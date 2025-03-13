@@ -11,6 +11,7 @@ import ShopCategory from "./pages/ShopCategory";
 import Product from "./pages/Product";
 import Cart from "./pages/Cart";
 import Auth from "./pages/Auth";
+import Offers from "./pages/Offers";
 
 import men_banner from "./components/assets/banner_mens.png";
 import women_banner from "./components/assets/banner_women.png";
@@ -39,6 +40,7 @@ function App() {
             path="/kids"
             element={<ShopCategory category="kids" banner={kids_banner} />}
           />
+          <Route path="/offers" element={<Offers />} />
 
           {/* Product routes */}
           {/* Legacy ID-based routes (for backward compatibility) */}
