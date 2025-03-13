@@ -24,6 +24,14 @@
   color: #555;
 }
 
+/* Main content layout - this was missing */
+.offers-main-content {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 4rem;
+}
+
+/* Keep the old class for backward compatibility */
 .offers-layout {
   display: flex;
   gap: 2rem;
@@ -211,6 +219,9 @@
 /* Products Content */
 .products-content {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .offers-filter-bar {
@@ -222,6 +233,7 @@
   border-bottom: 1px solid #f1f1f1;
   flex-wrap: wrap;
   gap: 1rem;
+  width: 100%;
 }
 
 .offers-filter-bar p {
@@ -325,6 +337,7 @@
   grid-template-columns: repeat(4, 1fr);
   gap: 2rem;
   row-gap: 4rem;
+  justify-content: center;
 }
 
 /* No products message */
@@ -432,13 +445,17 @@
 }
 
 @media screen and (max-width: 992px) {
+  .offers-main-content,
   .offers-layout {
     flex-direction: column;
+    align-items: center;
   }
 
   .filter-sidebar {
     flex: none;
     width: 100%;
+    max-width: 600px;
+    margin-bottom: 2rem;
   }
 
   .filter-options {
@@ -459,18 +476,20 @@
 
   .offers-filter-bar {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
   }
 
   .controls-container {
     width: 100%;
-    justify-content: space-between;
+    justify-content: center;
   }
 }
 
 @media screen and (max-width: 576px) {
   .product-grid {
     grid-template-columns: 1fr;
+    max-width: 320px;
+    margin: 0 auto;
   }
 
   .offers-header h1 {

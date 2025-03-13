@@ -1,5 +1,5 @@
-import Item from "../../components/item/Item";
-import dropdown_icon from "../../components/assets/dropdown_icon.png";
+import Item from "../../../components/item/Item";
+import dropdown_icon from "../../../components/assets/dropdown_icon.png";
 
 const ProductsContent = ({
   displayedProducts,

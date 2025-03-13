@@ -1,4 +1,4 @@
-import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
+import Breadcrumb from "../../../components/breadcrumbs/Breadcrumb";
 
 // Component for the offers page breadcrumb
 const OffersBreadcrumb = () => {
