@@ -6,27 +6,34 @@ import Container from "./components/container/Container";
 import Navbar from "./components/navbar/Navbar";
 import Footer from "./components/footer/Footer";
 
+// Page Components
 import Shop from "./pages/Shop";
-import ShopCategory from "./pages/ShopCategory";
-import Product from "./pages/Product";
+import ShopCategory from "./pages/shopCategory";
+import Product from "./pages/product";
 import Cart from "./pages/Cart";
-import Auth from "./pages/Auth";
+import Auth from "./pages/auth";
 import Offers from "./pages/offers";
 
+// Assets
 import men_banner from "./components/assets/banner_mens.png";
 import women_banner from "./components/assets/banner_women.png";
 import kids_banner from "./components/assets/banner_kids.png";
 
+/**
+ * Main App component that defines the application structure and routes
+ */
 function App() {
   return (
     <>
+      {/* Fixed Header */}
       <Container fluid={true}>
         <Navbar />
       </Container>
 
+      {/* Main Content Area */}
       <Container>
         <Routes>
-          {/* Main routes */}
+          {/* Home and Category Routes */}
           <Route path="/" element={<Shop />} />
           <Route
             path="/men"
@@ -40,23 +47,25 @@ function App() {
             path="/kids"
             element={<ShopCategory category="kids" banner={kids_banner} />}
           />
+
+          {/* Special Offer Routes */}
           <Route path="/offers" element={<Offers />} />
 
-          {/* Product routes */}
+          {/* Product Detail Routes */}
           {/* Legacy ID-based routes (for backward compatibility) */}
           <Route path="/product" element={<Product />}>
             <Route path=":productId" element={<Product />} />
           </Route>
-
-          {/* New slug-based routes (preferred) */}
+          {/* New slug-based routes (preferred for SEO) */}
           <Route path="/products/:productSlug" element={<Product />} />
 
-          {/* Other routes */}
+          {/* User Account Routes */}
           <Route path="/cart" element={<Cart />} />
           <Route path="/login" element={<Auth />} />
         </Routes>
       </Container>
 
+      {/* Fixed Footer */}
       <Container fluid={true}>
         <Footer />
       </Container>
