@@ -4,8 +4,9 @@ import "./Navbar.css";
 
 import logo from "../assets/logo.png";
 import cart_icon from "../assets/cart_icon.png";
+import user_icon from "../assets/user_icon.svg";
 
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 
 import { AuthContext } from "../../context/AuthContext";
@@ -16,6 +17,8 @@ const Navbar = () => {
   const [activeMenu, setActiveMenu] = useState("shop");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [displayName, setDisplayName] = useState("User");
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const userMenuRef = useRef(null);
 
   // Update displayName whenever user changes
   useEffect(() => {
@@ -27,10 +30,28 @@ const Navbar = () => {
     }
   }, [user]);
 
+  // Close user menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+        setIsUserMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const handleMenuClick = (menuItem) => {
     setActiveMenu(menuItem);
     // Close mobile menu after selection
     setIsMobileMenuOpen(false);
+  };
+
+  const toggleUserMenu = () => {
+    setIsUserMenuOpen(!isUserMenuOpen);
   };
 
   return (
@@ -70,12 +91,23 @@ const Navbar = () => {
 
       <div className="shop-nav-login-cart">
         {isAuthenticated ? (
-          <>
-            <span className="welcome-user">{displayName}</span>
-            <div className="user-controls">
-              <button onClick={logout}>Logout</button>
+          <div className="user-account" ref={userMenuRef}>
+            <div className="user-account-trigger" onClick={toggleUserMenu}>
+              <span className="welcome-user">{displayName}</span>
+              <img src={user_icon} alt="User" className="user-icon" />
             </div>
-          </>
+            {isUserMenuOpen && (
+              <div className="user-dropdown">
+                <Link to="/profile" onClick={() => setIsUserMenuOpen(false)}>
+                  My Profile
+                </Link>
+                <Link to="/cart" onClick={() => setIsUserMenuOpen(false)}>
+                  My Cart
+                </Link>
+                <button onClick={logout}>Logout</button>
+              </div>
+            )}
+          </div>
         ) : (
           <Link to="/login">
             <button>Login</button>

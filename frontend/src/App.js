@@ -15,6 +15,8 @@ import Cart from "./pages/Cart";
 import Auth from "./pages/auth";
 import Offers from "./pages/offers";
 import NotFound from "./pages/NotFound";
+import VerifyEmail from "./pages/VerifyEmail";
+import Profile from "./pages/Profile";
 
 // Assets
 import men_banner from "./components/assets/banner_mens.png";
@@ -64,6 +66,8 @@ function App() {
           {/* User Account Routes */}
           <Route path="/cart" element={<Cart />} />
           <Route path="/login" element={<Auth />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/verify-email" element={<VerifyEmail />} />
 
           {/* 404 Route - Must be the last route */}
           <Route path="*" element={<NotFound />} />

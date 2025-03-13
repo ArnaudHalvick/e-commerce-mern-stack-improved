@@ -2,11 +2,12 @@ import { createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { resetCart } from "../redux/slices/cartSlice";
+import { setUser, clearUser } from "../redux/slices/userSlice";
 
 export const AuthContext = createContext(null);
 
 const AuthContextProvider = (props) => {
-  const [user, setUser] = useState(null);
+  const [user, setUserState] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -33,7 +34,8 @@ const AuthContextProvider = (props) => {
 
       if (!token) {
         setIsAuthenticated(false);
-        setUser(null);
+        setUserState(null);
+        dispatch(clearUser());
         setLoading(false);
         return;
       }
@@ -51,13 +53,16 @@ const AuthContextProvider = (props) => {
         const data = await response.json();
 
         if (response.ok && data.valid) {
-          setUser(normalizeUserData(data.user));
+          const normalizedUser = normalizeUserData(data.user);
+          setUserState(normalizedUser);
+          dispatch(setUser(normalizedUser));
           setIsAuthenticated(true);
         } else {
           // Token is invalid
           localStorage.removeItem("auth-token");
           setIsAuthenticated(false);
-          setUser(null);
+          setUserState(null);
+          dispatch(clearUser());
           // Don't show error for normal auth flow
           setError(null);
         }
@@ -72,7 +77,8 @@ const AuthContextProvider = (props) => {
         } else {
           localStorage.removeItem("auth-token");
           setIsAuthenticated(false);
-          setUser(null);
+          setUserState(null);
+          dispatch(clearUser());
           setError("Authentication verification failed");
         }
       } finally {
@@ -81,7 +87,7 @@ const AuthContextProvider = (props) => {
     };
 
     checkAuthStatus();
-  }, []);
+  }, [dispatch]);
 
   // Login function
   const login = async (email, password) => {
@@ -101,7 +107,9 @@ const AuthContextProvider = (props) => {
 
       if (response.ok && data.success) {
         localStorage.setItem("auth-token", data.accessToken);
-        setUser(normalizeUserData(data.user));
+        const normalizedUser = normalizeUserData(data.user);
+        setUserState(normalizedUser);
+        dispatch(setUser(normalizedUser));
         setIsAuthenticated(true);
         navigate("/");
         return { success: true };
@@ -136,7 +144,9 @@ const AuthContextProvider = (props) => {
 
       if (response.ok && data.success) {
         localStorage.setItem("auth-token", data.accessToken);
-        setUser(normalizeUserData(data.user));
+        const normalizedUser = normalizeUserData(data.user);
+        setUserState(normalizedUser);
+        dispatch(setUser(normalizedUser));
         setIsAuthenticated(true);
         navigate("/");
         return { success: true };
@@ -156,10 +166,11 @@ const AuthContextProvider = (props) => {
   // Logout function
   const logout = () => {
     localStorage.removeItem("auth-token");
-    setUser(null);
+    setUserState(null);
     setIsAuthenticated(false);
     // Reset cart state when user logs out
     dispatch(resetCart());
+    dispatch(clearUser());
     navigate("/");
   };
 

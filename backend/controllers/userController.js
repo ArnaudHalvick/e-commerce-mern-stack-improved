@@ -1,6 +1,8 @@
 // backend/controllers/userController.js
 
 const User = require("../models/User");
+const crypto = require("crypto");
+const sendEmail = require("../utils/sendEmail");
 
 // Helper function to send tokens
 const sendTokens = (user, statusCode, res) => {
@@ -29,6 +31,7 @@ const sendTokens = (user, statusCode, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
+        isEmailVerified: user.isEmailVerified,
       },
       accessToken,
     });
@@ -66,7 +69,34 @@ const registerUser = async (req, res) => {
       cartData: cart,
     });
 
-    sendTokens(user, 201, res);
+    // Generate email verification token
+    const verificationToken = user.generateEmailVerificationToken();
+    await user.save();
+
+    // Create verification URL
+    const verificationUrl = `${
+      process.env.FRONTEND_URL || "http://localhost:3000"
+    }/verify-email?token=${verificationToken}`;
+
+    // Send verification email
+    try {
+      await sendEmail({
+        email: user.email,
+        subject: "Email Verification",
+        message: `Please verify your email by clicking on the link: ${verificationUrl}`,
+      });
+
+      sendTokens(user, 201, res);
+    } catch (error) {
+      user.emailVerificationToken = undefined;
+      user.emailVerificationExpiry = undefined;
+      await user.save();
+
+      return res.status(500).json({
+        success: false,
+        message: "Email could not be sent",
+      });
+    }
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -175,6 +205,157 @@ const getUserProfile = async (req, res) => {
   }
 };
 
+// Update user profile
+const updateProfile = async (req, res) => {
+  try {
+    const { name, phone, address } = req.body;
+
+    // Find the user
+    const user = await User.findById(req.user.id);
+
+    // Update fields if provided
+    if (name) user.name = name;
+    if (phone) user.phone = phone;
+    if (address) {
+      // Update only the provided address fields
+      user.address = {
+        ...user.address,
+        ...address,
+      };
+    }
+
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      user,
+      message: "Profile updated successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
+    });
+  }
+};
+
+// Request email verification
+const requestVerification = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide an email",
+      });
+    }
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    if (user.isEmailVerified) {
+      return res.status(400).json({
+        success: false,
+        message: "Email is already verified",
+      });
+    }
+
+    // Generate verification token
+    const verificationToken = user.generateEmailVerificationToken();
+    await user.save();
+
+    // Create verification URL
+    const verificationUrl = `${
+      process.env.FRONTEND_URL || "http://localhost:3000"
+    }/verify-email?token=${verificationToken}`;
+
+    // Send verification email
+    try {
+      await sendEmail({
+        email: user.email,
+        subject: "Email Verification",
+        message: `Please verify your email by clicking on the link: ${verificationUrl}`,
+      });
+
+      res.status(200).json({
+        success: true,
+        message: "Verification email sent",
+      });
+    } catch (error) {
+      user.emailVerificationToken = undefined;
+      user.emailVerificationExpiry = undefined;
+      await user.save();
+
+      return res.status(500).json({
+        success: false,
+        message: "Email could not be sent",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
+    });
+  }
+};
+
+// Verify email
+const verifyEmail = async (req, res) => {
+  try {
+    const { token } = req.query;
+
+    if (!token) {
+      return res.status(400).json({
+        success: false,
+        message: "Verification token is required",
+      });
+    }
+
+    // Hash the token
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
+    // Find user with the token and valid expiry
+    const user = await User.findOne({
+      emailVerificationToken: hashedToken,
+      emailVerificationExpiry: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid or expired token",
+      });
+    }
+
+    // Set email as verified and remove the token
+    user.isEmailVerified = true;
+    user.emailVerificationToken = undefined;
+    user.emailVerificationExpiry = undefined;
+
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Email verified successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
+    });
+  }
+};
+
 // Verify token and return user info
 const verifyToken = async (req, res) => {
   try {
@@ -188,6 +369,7 @@ const verifyToken = async (req, res) => {
         id: user._id,
         username: user.name,
         email: user.email,
+        isEmailVerified: user.isEmailVerified,
       },
     });
   } catch (error) {
@@ -204,5 +386,8 @@ module.exports = {
   logoutUser,
   refreshToken,
   getUserProfile,
+  updateProfile,
+  requestVerification,
+  verifyEmail,
   verifyToken,
 };

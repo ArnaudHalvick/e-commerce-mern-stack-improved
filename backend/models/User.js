@@ -3,6 +3,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 
 const UserSchema = new mongoose.Schema({
   name: {
@@ -26,6 +27,40 @@ const UserSchema = new mongoose.Schema({
   },
   refreshToken: {
     type: String,
+  },
+  isEmailVerified: {
+    type: Boolean,
+    default: false,
+  },
+  emailVerificationToken: {
+    type: String,
+  },
+  emailVerificationExpiry: {
+    type: Date,
+  },
+  phone: {
+    type: String,
+  },
+  address: {
+    street: {
+      type: String,
+    },
+    city: {
+      type: String,
+    },
+    state: {
+      type: String,
+    },
+    zipCode: {
+      type: String,
+    },
+    country: {
+      type: String,
+    },
+  },
+  cartData: {
+    type: Object,
+    default: {},
   },
   date: {
     type: Date,
@@ -59,6 +94,23 @@ UserSchema.methods.generateRefreshToken = function () {
   return jwt.sign({ id: this._id }, process.env.REFRESH_TOKEN_SECRET, {
     expiresIn: process.env.REFRESH_TOKEN_EXPIRE,
   });
+};
+
+// Generate email verification token
+UserSchema.methods.generateEmailVerificationToken = function () {
+  // Generate a random token
+  const verificationToken = crypto.randomBytes(20).toString("hex");
+
+  // Hash and set to emailVerificationToken
+  this.emailVerificationToken = crypto
+    .createHash("sha256")
+    .update(verificationToken)
+    .digest("hex");
+
+  // Set token expiry (24 hours)
+  this.emailVerificationExpiry = Date.now() + 24 * 60 * 60 * 1000;
+
+  return verificationToken;
 };
 
 module.exports = mongoose.model("Users", UserSchema);
