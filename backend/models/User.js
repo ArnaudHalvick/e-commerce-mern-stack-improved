@@ -98,14 +98,21 @@ UserSchema.methods.generateRefreshToken = function () {
 
 // Generate email verification token
 UserSchema.methods.generateEmailVerificationToken = function () {
-  // Generate a random token
-  const verificationToken = crypto.randomBytes(20).toString("hex");
+  // Generate a random token with more entropy
+  const verificationToken = crypto.randomBytes(32).toString("hex");
+
+  // Log the original token for debugging
+  console.log(`Original verification token generated: ${verificationToken}`);
 
   // Hash and set to emailVerificationToken
   this.emailVerificationToken = crypto
     .createHash("sha256")
     .update(verificationToken)
     .digest("hex");
+
+  console.log(
+    `Hashed token stored in database: ${this.emailVerificationToken}`
+  );
 
   // Set token expiry (24 hours)
   this.emailVerificationExpiry = Date.now() + 24 * 60 * 60 * 1000;

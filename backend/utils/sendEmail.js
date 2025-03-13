@@ -6,6 +6,7 @@ const nodemailer = require("nodemailer");
  * @param {string} options.email - Recipient email
  * @param {string} options.subject - Email subject
  * @param {string} options.message - Email message
+ * @param {string} options.html - Optional HTML content
  * @returns {Promise} - Promise that resolves when email is sent
  */
 const sendEmail = async (options) => {
@@ -42,13 +43,27 @@ const sendEmail = async (options) => {
     await transporter.verify();
     console.log("SMTP connection verified successfully");
 
+    // Create HTML version if not provided but text is
+    let htmlContent = options.html;
+    if (!htmlContent && options.message) {
+      // Convert plain text to basic HTML with clickable links
+      htmlContent = options.message
+        .replace(/\n/g, "<br>")
+        .replace(
+          /(https?:\/\/[^\s]+)/g,
+          '<a href="$1" style="color: #f85606; text-decoration: underline;">$1</a>'
+        );
+    }
+
     // Define email options
     const mailOptions = {
-      from: process.env.SMTP_FROM_EMAIL || "noreply@ecommerce.com",
+      from: `"E-Commerce Store" <${
+        process.env.SMTP_FROM_EMAIL || "noreply@ecommerce.com"
+      }>`,
       to: options.email,
       subject: options.subject,
-      text: options.message,
-      html: options.html || options.message.replace(/\n/g, "<br>"),
+      text: options.message, // Plain text version
+      html: htmlContent, // HTML version
     };
 
     console.log(`Sending email to: ${options.email}`);

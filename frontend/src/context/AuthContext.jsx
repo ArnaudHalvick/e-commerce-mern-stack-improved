@@ -143,13 +143,22 @@ const AuthContextProvider = (props) => {
       const data = await response.json();
 
       if (response.ok && data.success) {
-        localStorage.setItem("auth-token", data.accessToken);
-        const normalizedUser = normalizeUserData(data.user);
-        setUserState(normalizedUser);
-        dispatch(setUser(normalizedUser));
-        setIsAuthenticated(true);
-        navigate("/");
-        return { success: true };
+        // Don't set auth state if verification is required
+        if (!data.requiresVerification) {
+          localStorage.setItem("auth-token", data.accessToken);
+          const normalizedUser = normalizeUserData(data.user);
+          setUserState(normalizedUser);
+          dispatch(setUser(normalizedUser));
+          setIsAuthenticated(true);
+        }
+
+        // Return the full response
+        return {
+          success: true,
+          requiresVerification: data.requiresVerification,
+          email: data.email,
+          message: data.message,
+        };
       } else {
         setError(data.message || "Signup failed");
         return { success: false, message: data.message };

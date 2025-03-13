@@ -79,12 +79,43 @@ const registerUser = async (req, res) => {
     }/verify-email?token=${verificationToken}`;
 
     console.log(`Generated verification URL: ${verificationUrl}`);
+    console.log(`Verification token: ${verificationToken}`);
+    console.log(`Hashed token in DB: ${user.emailVerificationToken}`);
 
-    // Send verification email
+    // Send verification email with improved HTML
     try {
       await sendEmail({
         email: user.email,
         subject: "Welcome to our store! Please verify your email",
+        html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px;">
+          <div style="text-align: center; margin-bottom: 20px;">
+            <h1 style="color: #f85606;">Welcome to Our Store!</h1>
+          </div>
+          
+          <p>Hello ${username},</p>
+          
+          <p>Thank you for creating an account with our e-commerce store!</p>
+          
+          <p>To verify your email address and access all features, please click on the button below:</p>
+          
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${verificationUrl}" style="background-color: #f85606; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block; font-weight: bold;">Verify My Email</a>
+          </div>
+          
+          <p>Or copy and paste the following link in your browser:</p>
+          <p><a href="${verificationUrl}" style="color: #f85606; word-break: break-all;">${verificationUrl}</a></p>
+          
+          <p>This link will expire in 24 hours.</p>
+          
+          <p>If you did not create this account, please ignore this email.</p>
+          
+          <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0; text-align: center; color: #666; font-size: 12px;">
+            <p>Best regards,<br>The E-Commerce Team</p>
+          </div>
+        </div>
+        `,
+        // Plain text fallback
         message: `
 Hello ${username},
 
@@ -104,8 +135,14 @@ The E-Commerce Team
 
       console.log(`Verification email sent successfully to ${user.email}`);
 
-      // Return user info and token
-      sendTokens(user, 201, res);
+      // Return success but don't log in the user
+      return res.status(201).json({
+        success: true,
+        message:
+          "Account created successfully! Please check your email to verify your account before logging in.",
+        requiresVerification: true,
+        email: user.email,
+      });
     } catch (error) {
       console.error("Email sending error:", error);
 
@@ -117,15 +154,10 @@ The E-Commerce Team
       // Still create the user but notify about email issue
       return res.status(201).json({
         success: true,
-        user: {
-          id: user._id,
-          name: user.name,
-          email: user.email,
-          isEmailVerified: user.isEmailVerified,
-        },
-        accessToken: user.generateAccessToken(),
         message:
-          "Account created successfully, but verification email could not be sent. Please request a new verification email from your profile.",
+          "Account created successfully, but verification email could not be sent. Please request a new verification email after logging in.",
+        requiresVerification: true,
+        email: user.email,
       });
     }
   } catch (error) {
@@ -163,6 +195,16 @@ const loginUser = async (req, res) => {
       return res.status(401).json({
         success: false,
         message: "Invalid email or password",
+      });
+    }
+
+    // Check if email is verified
+    if (!user.isEmailVerified) {
+      return res.status(403).json({
+        success: false,
+        message: "Please verify your email before logging in",
+        requiresVerification: true,
+        email: user.email,
       });
     }
 
@@ -311,11 +353,40 @@ const requestVerification = async (req, res) => {
 
     console.log(`Generated verification URL: ${verificationUrl}`);
 
-    // Send verification email
+    // Send verification email with improved HTML
     try {
       await sendEmail({
         email: user.email,
         subject: "E-commerce Store - Email Verification",
+        html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px;">
+          <div style="text-align: center; margin-bottom: 20px;">
+            <h1 style="color: #f85606;">Email Verification</h1>
+          </div>
+          
+          <p>Hello ${user.name},</p>
+          
+          <p>You recently requested a new verification link for your e-commerce account.</p>
+          
+          <p>To verify your email address, please click on the button below:</p>
+          
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${verificationUrl}" style="background-color: #f85606; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block; font-weight: bold;">Verify My Email</a>
+          </div>
+          
+          <p>Or copy and paste the following link in your browser:</p>
+          <p><a href="${verificationUrl}" style="color: #f85606; word-break: break-all;">${verificationUrl}</a></p>
+          
+          <p>This link will expire in 24 hours.</p>
+          
+          <p>If you did not request this verification, please ignore this email.</p>
+          
+          <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0; text-align: center; color: #666; font-size: 12px;">
+            <p>Best regards,<br>The E-Commerce Team</p>
+          </div>
+        </div>
+        `,
+        // Plain text fallback
         message: `
 Hello ${user.name},
 
@@ -375,19 +446,68 @@ const verifyEmail = async (req, res) => {
       });
     }
 
+    console.log(`Received token for verification: ${token}`);
+
     // Hash the token
     const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+    console.log(`Hashed token for lookup: ${hashedToken}`);
 
-    // Find user with the token and valid expiry
-    const user = await User.findOne({
+    // Find user with the token first
+    let user = await User.findOne({
       emailVerificationToken: hashedToken,
-      emailVerificationExpiry: { $gt: Date.now() },
     });
 
+    // If no user found with token, check if any user has the email verified already
+    // This handles cases where the link is clicked multiple times
     if (!user) {
+      console.log(`No user found with token hash: ${hashedToken}`);
+
+      // Check for already verified accounts using this token (that might have had token removed)
+      // This requires storing the original email alongside the token in a separate field
+      const verifiedUser = await User.findOne({
+        isEmailVerified: true,
+        // Check if user is already verified and has no token (already used the link once)
+        emailVerificationToken: { $exists: false },
+      });
+
+      if (verifiedUser) {
+        return res.status(200).json({
+          success: true,
+          message: "Your email is already verified",
+          alreadyVerified: true,
+        });
+      }
+
       return res.status(400).json({
         success: false,
-        message: "Invalid or expired token",
+        message: "Invalid token or user not found",
+      });
+    }
+
+    console.log(`User found: ${user.email}`);
+
+    // Check if email is already verified
+    if (user.isEmailVerified) {
+      console.log(`Email already verified for user: ${user.email}`);
+
+      return res.status(200).json({
+        success: true,
+        message: "Your email is already verified",
+        alreadyVerified: true,
+      });
+    }
+
+    // Check if token is expired
+    if (
+      user.emailVerificationExpiry &&
+      user.emailVerificationExpiry < Date.now()
+    ) {
+      console.log(`Token expired for user: ${user.email}`);
+
+      return res.status(400).json({
+        success: false,
+        message: "Verification token has expired",
+        expired: true,
       });
     }
 
@@ -398,11 +518,14 @@ const verifyEmail = async (req, res) => {
 
     await user.save();
 
+    console.log(`Successfully verified email for user: ${user.email}`);
+
     res.status(200).json({
       success: true,
       message: "Email verified successfully",
     });
   } catch (error) {
+    console.error("Email verification error:", error);
     res.status(500).json({
       success: false,
       message: "Server error",
