@@ -1,7 +1,12 @@
 // Path: frontend/src/pages/Cart.jsx
+// External Libraries
 import React, { memo } from "react";
-import CartItems from "../components/cartItems/CartItems";
 import { Link } from "react-router-dom";
+
+// Internal Components
+import CartItems from "../components/cartItems/CartItems";
+
+// Styles and Assets
 import arrow_icon from "../components/assets/breadcrum_arrow.png";
 import "../components/breadcrumbs/breadcrumb.css";
 import "./CSS/Cart.css";

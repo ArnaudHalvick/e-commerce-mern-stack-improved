@@ -1,11 +1,16 @@
 // Path: frontend/src/pages/ShopCategory.jsx
+// External Libraries
 import { useState, useEffect } from "react";
-import dropdown_icon from "../components/assets/dropdown_icon.png";
-import Item from "../components/item/Item";
-import "./CSS/ShopCategory.css";
 import { Link } from "react-router-dom";
+
+// Internal Components
+import Item from "../components/item/Item";
+
+// Styles and Assets
 import arrow_icon from "../components/assets/breadcrum_arrow.png";
+import dropdown_icon from "../components/assets/dropdown_icon.png";
 import "../components/breadcrumbs/breadcrumb.css";
+import "./CSS/ShopCategory.css";
 
 // Simple breadcrumb component for category pages
 const CategoryBreadcrumb = ({ category }) => {

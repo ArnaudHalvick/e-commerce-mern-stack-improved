@@ -1,10 +1,17 @@
+// Path: frontend/src/pages/Offers.jsx
+
+// External Libraries
 import { useState, useEffect } from "react";
-import Item from "../components/item/Item";
-import "./CSS/Offers.css";
 import { Link } from "react-router-dom";
+
+// Internal Components
+import Item from "../components/item/Item";
+
+// Styles and Assets
+import "./CSS/Offers.css";
 import arrow_icon from "../components/assets/breadcrum_arrow.png";
-import "../components/breadcrumbs/breadcrumb.css";
 import dropdown_icon from "../components/assets/dropdown_icon.png";
+import "../components/breadcrumbs/breadcrumb.css";
 
 // Simple breadcrumb component for the offers page
 const OffersBreadcrumb = () => {
