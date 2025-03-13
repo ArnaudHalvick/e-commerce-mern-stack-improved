@@ -4,12 +4,14 @@ import React from "react";
 import Item from "../../components/item/Item";
 import CategoryHeader from "./components/CategoryHeader";
 import FilterBar from "./components/FilterBar";
+import EmptyState from "../../components/errorHandling/EmptyState";
 
 // Hooks
 import useCategoryProducts from "./hooks/useCategoryProducts";
 
 // Styles
 import "../CSS/ShopCategory.css";
+import "../../components/errorHandling/LoadingIndicator.css";
 
 /**
  * Shop category page component that displays products by category
@@ -28,11 +30,40 @@ const ShopCategory = (props) => {
   const displayRange = `1-${Math.min(12, productCount)}`;
 
   if (loading) {
-    return <div className="loading">Loading products...</div>;
+    return (
+      <div className="product-category-container">
+        <CategoryHeader category={props.category} banner={props.banner} />
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p>Loading products...</p>
+        </div>
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="error">Error loading products: {error}</div>;
+    return (
+      <div className="product-category-container">
+        <CategoryHeader category={props.category} banner={props.banner} />
+        <EmptyState
+          title="Error Loading Products"
+          message={`We encountered a problem loading products. ${error}`}
+          icon="⚠️"
+          actions={[
+            {
+              label: "Try Again",
+              onClick: () => window.location.reload(),
+              type: "primary",
+            },
+            {
+              label: "Browse All Products",
+              to: "/",
+              type: "secondary",
+            },
+          ]}
+        />
+      </div>
+    );
   }
 
   return (
@@ -57,7 +88,23 @@ const ShopCategory = (props) => {
             />
           ))
         ) : (
-          <p>No products available in this category.</p>
+          <EmptyState
+            title="No Products Found"
+            message={`We couldn't find any products in the ${props.category} category. Please check back later or explore other categories.`}
+            icon="👕"
+            actions={[
+              {
+                label: "Browse All Products",
+                to: "/",
+                type: "primary",
+              },
+              {
+                label: "Check Offers",
+                to: "/offers",
+                type: "secondary",
+              },
+            ]}
+          />
         )}
       </div>
       {products.length > 0 && (

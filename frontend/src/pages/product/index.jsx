@@ -7,6 +7,7 @@ import ProductDisplay from "../../components/productDisplay";
 import DescriptionBox from "../../components/descriptionBox/DescriptionBox";
 import RelatedProducts from "../../components/relatedProducts/RelatedProducts";
 import ProductPageStatus from "./components/ProductPageStatus";
+import EmptyState from "../../components/errorHandling/EmptyState";
 
 // Hooks
 import useProductData from "./hooks/useProductData";
@@ -25,7 +26,34 @@ const Product = () => {
 
   // Show not found if no product found
   if (!product) {
-    return <div className="not-found">Product not found</div>;
+    return (
+      <div>
+        <Breadcrumb
+          routes={[
+            { label: "HOME", path: "/" },
+            { label: "SHOP", path: "/" },
+            { label: "PRODUCT NOT FOUND" },
+          ]}
+        />
+        <EmptyState
+          title="Product Not Found"
+          message={`We couldn't find the product you're looking for. It may have been removed or is no longer available.`}
+          icon="🔍"
+          actions={[
+            {
+              label: "Browse Products",
+              to: "/",
+              type: "primary",
+            },
+            {
+              label: "Check Offers",
+              to: "/offers",
+              type: "secondary",
+            },
+          ]}
+        />
+      </div>
+    );
   }
 
   return (

@@ -1,6 +1,8 @@
 import "./CartItems.css";
 import { CartItem, CartTotals, PromoCodeSection } from "./components";
 import useCart from "./hooks/useCart";
+import EmptyState from "../errorHandling/EmptyState";
+import "../errorHandling/LoadingIndicator.css";
 
 /**
  * Cart display component showing all items in cart and totals
@@ -20,17 +22,58 @@ const CartItems = () => {
 
   // Display loading message
   if (loading && items.length === 0) {
-    return <div className="cart-loading">Loading cart...</div>;
+    return (
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p>Loading your cart...</p>
+      </div>
+    );
   }
 
   // Display error message if any
   if (error) {
-    return <div className="cart-error">Error: {error}</div>;
+    return (
+      <EmptyState
+        title="Error Loading Cart"
+        message={`We encountered a problem loading your cart. ${error}`}
+        icon="⚠️"
+        actions={[
+          {
+            label: "Try Again",
+            onClick: () => window.location.reload(),
+            type: "primary",
+          },
+          {
+            label: "Continue Shopping",
+            to: "/",
+            type: "secondary",
+          },
+        ]}
+      />
+    );
   }
 
   // Display empty cart message
   if (!items || items.length === 0) {
-    return <div className="cart-empty">Your cart is empty</div>;
+    return (
+      <EmptyState
+        title="Your Cart is Empty"
+        message="Looks like you haven't added any items to your cart yet. Browse our collection to find something you'll love!"
+        icon="🛒"
+        actions={[
+          {
+            label: "Continue Shopping",
+            to: "/",
+            type: "primary",
+          },
+          {
+            label: "View Offers",
+            to: "/offers",
+            type: "secondary",
+          },
+        ]}
+      />
+    );
   }
 
   return (

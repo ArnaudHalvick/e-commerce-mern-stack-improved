@@ -5,6 +5,7 @@ import { Routes, Route } from "react-router-dom"; // Removed BrowserRouter
 import Container from "./components/container/Container";
 import Navbar from "./components/navbar/Navbar";
 import Footer from "./components/footer/Footer";
+import ErrorBoundary from "./components/errorHandling/ErrorBoundary";
 
 // Page Components
 import Shop from "./pages/Shop";
@@ -13,6 +14,7 @@ import Product from "./pages/product";
 import Cart from "./pages/Cart";
 import Auth from "./pages/auth";
 import Offers from "./pages/offers";
+import NotFound from "./pages/NotFound";
 
 // Assets
 import men_banner from "./components/assets/banner_mens.png";
@@ -24,7 +26,7 @@ import kids_banner from "./components/assets/banner_kids.png";
  */
 function App() {
   return (
-    <>
+    <ErrorBoundary>
       {/* Fixed Header */}
       <Container fluid={true}>
         <Navbar />
@@ -62,6 +64,9 @@ function App() {
           {/* User Account Routes */}
           <Route path="/cart" element={<Cart />} />
           <Route path="/login" element={<Auth />} />
+
+          {/* 404 Route - Must be the last route */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Container>
 
@@ -69,7 +74,7 @@ function App() {
       <Container fluid={true}>
         <Footer />
       </Container>
-    </>
+    </ErrorBoundary>
   );
 }
 
