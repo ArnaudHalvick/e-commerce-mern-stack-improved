@@ -78,29 +78,61 @@ const registerUser = async (req, res) => {
       process.env.FRONTEND_URL || "http://localhost:3000"
     }/verify-email?token=${verificationToken}`;
 
+    console.log(`Generated verification URL: ${verificationUrl}`);
+
     // Send verification email
     try {
       await sendEmail({
         email: user.email,
-        subject: "Email Verification",
-        message: `Please verify your email by clicking on the link: ${verificationUrl}`,
+        subject: "Welcome to our store! Please verify your email",
+        message: `
+Hello ${username},
+
+Thank you for creating an account with our e-commerce store!
+
+To verify your email address and access all features, please click on the following link:
+${verificationUrl}
+
+This link will expire in 24 hours.
+
+If you did not create this account, please ignore this email.
+
+Best regards,
+The E-Commerce Team
+        `,
       });
 
+      console.log(`Verification email sent successfully to ${user.email}`);
+
+      // Return user info and token
       sendTokens(user, 201, res);
     } catch (error) {
+      console.error("Email sending error:", error);
+
+      // Reset verification token
       user.emailVerificationToken = undefined;
       user.emailVerificationExpiry = undefined;
       await user.save();
 
-      return res.status(500).json({
-        success: false,
-        message: "Email could not be sent",
+      // Still create the user but notify about email issue
+      return res.status(201).json({
+        success: true,
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          isEmailVerified: user.isEmailVerified,
+        },
+        accessToken: user.generateAccessToken(),
+        message:
+          "Account created successfully, but verification email could not be sent. Please request a new verification email from your profile.",
       });
     }
   } catch (error) {
+    console.error("Registration error:", error);
     res.status(500).json({
       success: false,
-      message: "Server error",
+      message: "Server error during registration",
       error: error.message,
     });
   }
@@ -277,33 +309,56 @@ const requestVerification = async (req, res) => {
       process.env.FRONTEND_URL || "http://localhost:3000"
     }/verify-email?token=${verificationToken}`;
 
+    console.log(`Generated verification URL: ${verificationUrl}`);
+
     // Send verification email
     try {
       await sendEmail({
         email: user.email,
-        subject: "Email Verification",
-        message: `Please verify your email by clicking on the link: ${verificationUrl}`,
+        subject: "E-commerce Store - Email Verification",
+        message: `
+Hello ${user.name},
+
+You recently requested a new verification link for your e-commerce account.
+
+To verify your email address, please click on the following link:
+${verificationUrl}
+
+This link will expire in 24 hours.
+
+If you did not request this verification, please ignore this email.
+
+Best regards,
+The E-Commerce Team
+        `,
       });
+
+      console.log(`Verification email sent successfully to ${user.email}`);
 
       res.status(200).json({
         success: true,
         message: "Verification email sent",
       });
     } catch (error) {
+      console.error("Email sending error:", error);
+
       user.emailVerificationToken = undefined;
       user.emailVerificationExpiry = undefined;
       await user.save();
 
       return res.status(500).json({
         success: false,
-        message: "Email could not be sent",
+        message: "Email could not be sent. Please try again later.",
+        error:
+          process.env.NODE_ENV === "development" ? error.message : undefined,
       });
     }
   } catch (error) {
+    console.error("Verification request error:", error);
     res.status(500).json({
       success: false,
       message: "Server error",
-      error: error.message,
+      error: process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }
 };

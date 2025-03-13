@@ -4,7 +4,7 @@ import "./Navbar.css";
 
 import logo from "../assets/logo.png";
 import cart_icon from "../assets/cart_icon.png";
-import user_icon from "../assets/user_icon.svg";
+import user_icon from "../assets/user_icon.png";
 
 import { useContext, useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";

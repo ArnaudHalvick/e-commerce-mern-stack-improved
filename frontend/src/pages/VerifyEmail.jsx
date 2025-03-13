@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useSearchParams, useNavigate, Link } from "react-router-dom";
+import { useSearchParams, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { verifyEmail } from "../redux/slices/userSlice";
 
@@ -15,12 +15,9 @@ import "./CSS/VerifyEmail.css";
 const VerifyEmail = () => {
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
-  const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { loading, error, isEmailVerified } = useSelector(
-    (state) => state.user
-  );
+  const { loading } = useSelector((state) => state.user);
   const [verificationStatus, setVerificationStatus] = useState({
     message: "Verifying your email...",
     success: false,
