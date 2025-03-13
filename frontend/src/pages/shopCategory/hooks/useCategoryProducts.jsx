@@ -1,21 +1,145 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 /**
- * Custom hook for fetching products by category
+ * Custom hook for fetching and filtering products by category
  *
  * @param {String} category - Category name to fetch products for
- * @returns {Object} Products data, loading state and error
+ * @returns {Object} Products data, filtering options, and actions
  */
 const useCategoryProducts = (category) => {
-  const [products, setProducts] = useState([]);
+  // State for all products
+  const [allProducts, setAllProducts] = useState([]);
+  const [displayedProducts, setDisplayedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Filter states
+  const [filters, setFilters] = useState({
+    category: [], // This will be empty since we're already filtering by category
+    price: { min: 0, max: 1000 },
+    discount: false,
+    rating: 0,
+    tags: [],
+    types: [],
+  });
+
+  // Sort state
+  const [sortBy, setSortBy] = useState("newest");
+  const [showSortOptions, setShowSortOptions] = useState(false);
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(12);
+  const [totalPages, setTotalPages] = useState(1);
+
+  // Available filter options from the data
+  const [availableTags, setAvailableTags] = useState([]);
+  const [availableTypes, setAvailableTypes] = useState([]);
+
+  // Wrap the filtering and sorting logic in useCallback
+  const applyFiltersAndSort = useCallback(
+    (products) => {
+      if (!products || products.length === 0) return;
+
+      let filtered = [...products];
+
+      // Note: No need to filter by category as it's already done by the API
+
+      // Filter by price range
+      const effectiveMax =
+        filters.price.max === 0 ? Infinity : filters.price.max;
+      filtered = filtered.filter((item) => {
+        const price = item.new_price > 0 ? item.new_price : item.old_price;
+        return price >= filters.price.min && price <= effectiveMax;
+      });
+
+      // Filter by discount
+      if (filters.discount) {
+        filtered = filtered.filter(
+          (item) => item.new_price > 0 && item.new_price < item.old_price
+        );
+      }
+
+      // Filter by rating
+      if (filters.rating > 0) {
+        filtered = filtered.filter((item) => {
+          const productRating = Number(item.rating || 0);
+          return productRating >= filters.rating;
+        });
+      }
+
+      // Filter by tags
+      if (filters.tags.length > 0) {
+        filtered = filtered.filter(
+          (item) =>
+            item.tags && filters.tags.some((tag) => item.tags.includes(tag))
+        );
+      }
+
+      // Filter by types
+      if (filters.types.length > 0) {
+        filtered = filtered.filter(
+          (item) =>
+            item.types &&
+            filters.types.some((type) => item.types.includes(type))
+        );
+      }
+
+      // Apply sorting
+      switch (sortBy) {
+        case "newest":
+          filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+          break;
+        case "price-asc":
+          filtered.sort((a, b) => {
+            const priceA = a.new_price > 0 ? a.new_price : a.old_price;
+            const priceB = b.new_price > 0 ? b.new_price : b.old_price;
+            return priceA - priceB;
+          });
+          break;
+        case "price-desc":
+          filtered.sort((a, b) => {
+            const priceA = a.new_price > 0 ? a.new_price : a.old_price;
+            const priceB = b.new_price > 0 ? b.new_price : b.old_price;
+            return priceB - priceA;
+          });
+          break;
+        case "discount":
+          filtered.sort((a, b) => {
+            const discountA = a.old_price - (a.new_price || a.old_price);
+            const discountB = b.old_price - (b.new_price || b.old_price);
+            return discountB - discountA;
+          });
+          break;
+        case "rating":
+          filtered.sort((a, b) => {
+            const ratingA = Number(a.rating || 0);
+            const ratingB = Number(b.rating || 0);
+            return ratingB - ratingA;
+          });
+          break;
+        default:
+          break;
+      }
+
+      // Calculate total pages
+      setTotalPages(Math.ceil(filtered.length / itemsPerPage));
+
+      // Apply pagination
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const endIndex = startIndex + itemsPerPage;
+      const paginatedProducts = filtered.slice(startIndex, endIndex);
+
+      setDisplayedProducts(paginatedProducts);
+    },
+    [filters, sortBy, currentPage, itemsPerPage]
+  );
+
+  // Fetch products by category
   useEffect(() => {
     setLoading(true);
     setError(null);
 
-    // Use the new API endpoint that filters by category on the server
     fetch(
       `http://localhost:4000/api/products/category/${category}?basicInfo=true`
     )
@@ -30,10 +154,21 @@ const useCategoryProducts = (category) => {
       .then((data) => {
         if (!Array.isArray(data)) {
           console.warn("API didn't return an array for products", data);
-          setProducts([]);
+          setAllProducts([]);
+          setDisplayedProducts([]);
         } else {
-          // No need to filter as the API already returns the correct category
-          setProducts(data);
+          setAllProducts(data);
+
+          // Extract available tags and types
+          setAvailableTags([
+            ...new Set(data.flatMap((item) => item.tags || [])),
+          ]);
+          setAvailableTypes([
+            ...new Set(data.flatMap((item) => item.types || [])),
+          ]);
+
+          // Apply initial filters
+          applyFiltersAndSort(data);
         }
         setLoading(false);
       })
@@ -42,9 +177,118 @@ const useCategoryProducts = (category) => {
         setError(err.message);
         setLoading(false);
       });
-  }, [category]);
+  }, [category, applyFiltersAndSort]);
 
-  return { products, loading, error };
+  // Reapply filters when they change
+  useEffect(() => {
+    if (allProducts.length > 0) {
+      applyFiltersAndSort(allProducts);
+    }
+  }, [allProducts, applyFiltersAndSort]);
+
+  // Handle filter changes
+  const handleFilterChange = (filterType, value) => {
+    setFilters((prev) => {
+      const newFilters = { ...prev };
+
+      switch (filterType) {
+        case "price":
+          newFilters.price = value;
+          break;
+        case "discount":
+          newFilters.discount = value;
+          break;
+        case "rating":
+          newFilters.rating = value;
+          break;
+        case "tag":
+          if (newFilters.tags.includes(value)) {
+            newFilters.tags = newFilters.tags.filter((tag) => tag !== value);
+          } else {
+            newFilters.tags = [...newFilters.tags, value];
+          }
+          break;
+        case "type":
+          if (newFilters.types.includes(value)) {
+            newFilters.types = newFilters.types.filter(
+              (type) => type !== value
+            );
+          } else {
+            newFilters.types = [...newFilters.types, value];
+          }
+          break;
+        default:
+          break;
+      }
+
+      // Reset to first page when filters change
+      setCurrentPage(1);
+
+      return newFilters;
+    });
+  };
+
+  // Handle sort change
+  const handleSortChange = (sortOption) => {
+    setSortBy(sortOption);
+    setShowSortOptions(false);
+  };
+
+  // Handle page change
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  // Handle items per page change
+  const handleItemsPerPageChange = (items) => {
+    setItemsPerPage(items);
+    setCurrentPage(1); // Reset to first page when changing items per page
+  };
+
+  // Clear all filters
+  const clearAllFilters = () => {
+    setFilters({
+      category: [], // Keep empty since we're already filtering by category
+      price: { min: 0, max: 1000 },
+      discount: false,
+      rating: 0,
+      tags: [],
+      types: [],
+    });
+    setSortBy("newest");
+    setCurrentPage(1);
+  };
+
+  return {
+    // Data
+    allProducts,
+    displayedProducts, // This now contains the filtered products
+    loading,
+    error,
+    totalPages,
+    currentPage,
+    itemsPerPage,
+    sortBy,
+    showSortOptions,
+    filters,
+    availableTags,
+    availableTypes,
+
+    // Display info
+    displayRange: `${Math.min(
+      (currentPage - 1) * itemsPerPage + 1,
+      allProducts.length
+    )}-${Math.min(currentPage * itemsPerPage, allProducts.length)}`,
+    totalProducts: allProducts.length,
+
+    // Actions
+    setShowSortOptions,
+    handleFilterChange,
+    handleSortChange,
+    handlePageChange,
+    handleItemsPerPageChange,
+    clearAllFilters,
+  };
 };
 
 export default useCategoryProducts;

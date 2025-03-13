@@ -1,0 +1,130 @@
+.filter-sidebar {
+  width: 250px;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  margin-right: 20px;
+}
+
+.filter-section {
+  margin-bottom: 20px;
+}
+
+.filter-section h3 {
+  font-size: 18px;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.filter-section h4 {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.clear-filters {
+  background: none;
+  border: none;
+  color: #4a00e0;
+  cursor: pointer;
+  font-size: 14px;
+  text-decoration: underline;
+}
+
+.filter-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filter-checkbox {
+  display: flex;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+  font-size: 14px;
+  user-select: none;
+  padding-left: 25px;
+}
+
+.filter-checkbox input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkmark {
+  position: absolute;
+  left: 0;
+  height: 16px;
+  width: 16px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+.filter-checkbox:hover input ~ .checkmark {
+  background-color: #f0f0f0;
+}
+
+.filter-checkbox input:checked ~ .checkmark {
+  background-color: #4a00e0;
+  border-color: #4a00e0;
+}
+
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.filter-checkbox input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.filter-checkbox .checkmark:after {
+  left: 5px;
+  top: 2px;
+  width: 4px;
+  height: 8px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.price-inputs {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.price-inputs input {
+  width: 80px;
+  padding: 6px 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.rating-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.star-rating {
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 4px;
+}
+
+.star-rating:hover {
+  background-color: #eee;
+}
+
+.star-rating.active {
+  background-color: #e6f7ff;
+  font-weight: bold;
+}
