@@ -2,42 +2,6 @@
 
 const Product = require("../models/Product");
 
-// Helper function to generate a slug from a product name
-const generateSlug = (name) => {
-  return name
-    .toLowerCase()
-    .replace(/[^\w\s-]/g, "") // Remove special characters
-    .replace(/\s+/g, "-") // Replace spaces with hyphens
-    .replace(/-+/g, "-") // Replace multiple hyphens with a single one
-    .trim(); // Trim leading/trailing whitespace
-};
-
-// Function to ensure slug uniqueness
-const ensureUniqueSlug = async (baseSlug, productId = null) => {
-  // Check if slug already exists (excluding the current product if updating)
-  const query = productId
-    ? { slug: baseSlug, _id: { $ne: productId } }
-    : { slug: baseSlug };
-  const existingProduct = await Product.findOne(query);
-
-  if (!existingProduct) return baseSlug;
-
-  // If slug exists, add a numeric suffix
-  let counter = 1;
-  let newSlug = `${baseSlug}-${counter}`;
-
-  while (
-    await Product.findOne(
-      productId ? { slug: newSlug, _id: { $ne: productId } } : { slug: newSlug }
-    )
-  ) {
-    counter++;
-    newSlug = `${baseSlug}-${counter}`;
-  }
-
-  return newSlug;
-};
-
 // Helper function to transform product data from MongoDB to proper JSON
 const formatProductForClient = (product) => {
   if (!product) return null;
