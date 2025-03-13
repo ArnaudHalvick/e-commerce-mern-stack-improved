@@ -1,7 +1,7 @@
 // Path: frontend/src/pages/Offers.jsx
 
 // External Libraries
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 
 // Internal Components
@@ -56,7 +56,112 @@ const Offers = () => {
   const [availableTags, setAvailableTags] = useState([]);
   const [availableTypes, setAvailableTypes] = useState([]);
 
-  // Fetch all products
+  // Wrap the filtering and sorting logic in useCallback so that its identity is stable
+  const applyFiltersAndSort = useCallback(
+    (products) => {
+      let filtered = [...products];
+
+      // Filter by category
+      if (filters.category.length > 0) {
+        filtered = filtered.filter((item) =>
+          filters.category.some(
+            (cat) => cat.toLowerCase() === (item.category || "").toLowerCase()
+          )
+        );
+      }
+
+      // Filter by price range
+      // If max price is 0, ignore the upper limit by using Infinity
+      const effectiveMax =
+        filters.price.max === 0 ? Infinity : filters.price.max;
+      filtered = filtered.filter((item) => {
+        const price = item.new_price > 0 ? item.new_price : item.old_price;
+        return price >= filters.price.min && price <= effectiveMax;
+      });
+
+      // Filter by discount
+      if (filters.discount) {
+        filtered = filtered.filter(
+          (item) => item.new_price > 0 && item.new_price < item.old_price
+        );
+      }
+
+      // Filter by rating
+      if (filters.rating > 0) {
+        filtered = filtered.filter((item) => {
+          const productRating = Number(item.rating || 0);
+          return productRating >= filters.rating;
+        });
+      }
+
+      // Filter by tags
+      if (filters.tags.length > 0) {
+        filtered = filtered.filter(
+          (item) =>
+            item.tags && filters.tags.some((tag) => item.tags.includes(tag))
+        );
+      }
+
+      // Filter by types
+      if (filters.types.length > 0) {
+        filtered = filtered.filter(
+          (item) =>
+            item.types &&
+            filters.types.some((type) => item.types.includes(type))
+        );
+      }
+
+      // Apply sorting
+      switch (sortBy) {
+        case "newest":
+          filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+          break;
+        case "price-asc":
+          filtered.sort((a, b) => {
+            const priceA = a.new_price > 0 ? a.new_price : a.old_price;
+            const priceB = b.new_price > 0 ? b.new_price : b.old_price;
+            return priceA - priceB;
+          });
+          break;
+        case "price-desc":
+          filtered.sort((a, b) => {
+            const priceA = a.new_price > 0 ? a.new_price : a.old_price;
+            const priceB = b.new_price > 0 ? b.new_price : b.old_price;
+            return priceB - priceA;
+          });
+          break;
+        case "discount":
+          filtered.sort((a, b) => {
+            const discountA = a.old_price - (a.new_price || a.old_price);
+            const discountB = b.old_price - (b.new_price || b.old_price);
+            return discountB - discountA;
+          });
+          break;
+        case "rating":
+          filtered.sort((a, b) => {
+            const ratingA = Number(a.rating || 0);
+            const ratingB = Number(b.rating || 0);
+            return ratingB - ratingA;
+          });
+          break;
+        default:
+          break;
+      }
+
+      // Calculate total pages
+      setTotalPages(Math.ceil(filtered.length / itemsPerPage));
+
+      // Apply pagination
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const endIndex = startIndex + itemsPerPage;
+      const paginatedProducts = filtered.slice(startIndex, endIndex);
+
+      setDisplayedProducts(paginatedProducts);
+    },
+    [filters, sortBy, currentPage, itemsPerPage]
+  );
+
+  // Fetch all products (runs only once)
   useEffect(() => {
     setLoading(true);
     setError(null);
@@ -76,30 +181,14 @@ const Offers = () => {
           setAllProducts([]);
           setDisplayedProducts([]);
         } else {
-          // Log sample of the product data to debug
           console.log("Received product data sample:", data.slice(0, 3));
-          console.log("Product categories:", [
-            ...new Set(data.map((p) => p.category)),
-          ]);
-          console.log(
-            "Product ratings distribution:",
-            data.reduce((acc, p) => {
-              const rating = Math.floor(p.rating || 0);
-              acc[rating] = (acc[rating] || 0) + 1;
-              return acc;
-            }, {})
-          );
-
           setAllProducts(data);
-
-          // Extract unique tags and types for filters
-          const tags = [...new Set(data.flatMap((item) => item.tags || []))];
-          const types = [...new Set(data.flatMap((item) => item.types || []))];
-
-          setAvailableTags(tags);
-          setAvailableTypes(types);
-
-          // Initial filtering and sorting
+          setAvailableTags([
+            ...new Set(data.flatMap((item) => item.tags || [])),
+          ]);
+          setAvailableTypes([
+            ...new Set(data.flatMap((item) => item.types || [])),
+          ]);
           applyFiltersAndSort(data);
         }
         setLoading(false);
@@ -109,147 +198,17 @@ const Offers = () => {
         setError(err.message);
         setLoading(false);
       });
+    // We only want this effect to run once on mount,
+    // so disable exhaustive-deps warning for applyFiltersAndSort.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Apply filters and sorting whenever filters or sort option changes
+  // Reapply filters and sorting whenever allProducts or filtering options change
   useEffect(() => {
     if (allProducts.length > 0) {
       applyFiltersAndSort(allProducts);
     }
-  }, [filters, sortBy, currentPage, itemsPerPage]);
-
-  // Function to apply filters and sorting
-  const applyFiltersAndSort = (products) => {
-    // Apply filters
-    let filtered = [...products];
-
-    // Filter by category
-    if (filters.category.length > 0) {
-      console.log("Filtering by categories:", filters.category);
-      console.log(
-        "First few products' categories:",
-        filtered.slice(0, 3).map((item) => item.category)
-      );
-
-      filtered = filtered.filter((item) => {
-        // Ensure case-insensitive comparison
-        return filters.category.some(
-          (cat) => cat.toLowerCase() === (item.category || "").toLowerCase()
-        );
-      });
-    }
-
-    // Filter by price range
-    filtered = filtered.filter((item) => {
-      const price = item.new_price > 0 ? item.new_price : item.old_price;
-      return price >= filters.price.min && price <= filters.price.max;
-    });
-
-    // Filter by discount
-    if (filters.discount) {
-      filtered = filtered.filter(
-        (item) => item.new_price > 0 && item.new_price < item.old_price
-      );
-    }
-
-    // Filter by rating
-    if (filters.rating > 0) {
-      console.log("Filtering by rating:", filters.rating);
-      console.log(
-        "Sample product ratings:",
-        filtered.slice(0, 5).map((item) => ({
-          name: item.name,
-          rating: item.rating || 0,
-        }))
-      );
-
-      filtered = filtered.filter((item) => {
-        // Ensure rating is a number, default to 0 if undefined/null
-        const productRating = Number(item.rating || 0);
-        return productRating >= filters.rating;
-      });
-      console.log("Products after rating filter:", filtered.length);
-    }
-
-    // Filter by tags
-    if (filters.tags.length > 0) {
-      filtered = filtered.filter(
-        (item) =>
-          item.tags && filters.tags.some((tag) => item.tags.includes(tag))
-      );
-    }
-
-    // Filter by types
-    if (filters.types.length > 0) {
-      filtered = filtered.filter(
-        (item) =>
-          item.types && filters.types.some((type) => item.types.includes(type))
-      );
-    }
-
-    // Apply sorting
-    switch (sortBy) {
-      case "newest":
-        filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
-        break;
-      case "price-asc":
-        filtered.sort((a, b) => {
-          const priceA = a.new_price > 0 ? a.new_price : a.old_price;
-          const priceB = b.new_price > 0 ? b.new_price : b.old_price;
-          return priceA - priceB;
-        });
-        break;
-      case "price-desc":
-        filtered.sort((a, b) => {
-          const priceA = a.new_price > 0 ? a.new_price : a.old_price;
-          const priceB = b.new_price > 0 ? b.new_price : b.old_price;
-          return priceB - priceA;
-        });
-        break;
-      case "discount":
-        filtered.sort((a, b) => {
-          const discountA = a.old_price - (a.new_price || a.old_price);
-          const discountB = b.old_price - (b.new_price || b.old_price);
-          return discountB - discountA;
-        });
-        break;
-      case "rating":
-        console.log("Sorting by rating");
-        // Log a few products before sorting
-        const sampleBefore = filtered.slice(0, 5).map((p) => ({
-          name: p.name,
-          rating: p.rating || 0,
-        }));
-        console.log("Sample before sort:", sampleBefore);
-
-        filtered.sort((a, b) => {
-          // Ensure we're comparing numbers and handling null/undefined ratings
-          const ratingA = Number(a.rating || 0);
-          const ratingB = Number(b.rating || 0);
-          return ratingB - ratingA;
-        });
-
-        // Log products after sorting
-        const sampleAfter = filtered.slice(0, 5).map((p) => ({
-          name: p.name,
-          rating: p.rating || 0,
-        }));
-        console.log("Sample after sort:", sampleAfter);
-        break;
-      default:
-        break;
-    }
-
-    // Calculate total pages
-    setTotalPages(Math.ceil(filtered.length / itemsPerPage));
-
-    // Apply pagination
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const paginatedProducts = filtered.slice(startIndex, endIndex);
-
-    setDisplayedProducts(paginatedProducts);
-  };
+  }, [allProducts, applyFiltersAndSort]);
 
   // Handle filter changes
   const handleFilterChange = (filterType, value) => {
@@ -258,7 +217,6 @@ const Offers = () => {
 
       switch (filterType) {
         case "category":
-          // Toggle category selection
           if (newFilters.category.includes(value)) {
             newFilters.category = newFilters.category.filter(
               (cat) => cat !== value
@@ -277,7 +235,6 @@ const Offers = () => {
           newFilters.rating = value;
           break;
         case "tag":
-          // Toggle tag selection
           if (newFilters.tags.includes(value)) {
             newFilters.tags = newFilters.tags.filter((tag) => tag !== value);
           } else {
@@ -285,7 +242,6 @@ const Offers = () => {
           }
           break;
         case "type":
-          // Toggle type selection
           if (newFilters.types.includes(value)) {
             newFilters.types = newFilters.types.filter(
               (type) => type !== value
@@ -603,9 +559,7 @@ const Offers = () => {
                 {[...Array(totalPages)].map((_, index) => {
                   const pageNumber = index + 1;
 
-                  // Show ellipsis for large page counts
                   if (totalPages > 7) {
-                    // Always show first and last pages
                     if (pageNumber === 1 || pageNumber === totalPages) {
                       return (
                         <button
@@ -620,7 +574,6 @@ const Offers = () => {
                       );
                     }
 
-                    // Show pages around current page
                     if (
                       pageNumber === currentPage ||
                       pageNumber === currentPage - 1 ||
@@ -639,7 +592,6 @@ const Offers = () => {
                       );
                     }
 
-                    // Show ellipsis
                     if (
                       (pageNumber === 2 && currentPage > 3) ||
                       (pageNumber === totalPages - 1 &&
@@ -655,7 +607,6 @@ const Offers = () => {
                     return null;
                   }
 
-                  // Show all pages for small page counts
                   return (
                     <button
                       key={pageNumber}
