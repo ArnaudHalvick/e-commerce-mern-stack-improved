@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 
 // Components
 import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
-import ProductDisplay from "../../components/productDisplay/ProductDisplay";
+import ProductDisplay from "../../components/productDisplay";
 import DescriptionBox from "../../components/descriptionBox/DescriptionBox";
 import RelatedProducts from "../../components/relatedProducts/RelatedProducts";
 import ProductPageStatus from "./components/ProductPageStatus";

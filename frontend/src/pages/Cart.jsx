@@ -3,7 +3,7 @@
 import React, { memo } from "react";
 
 // Internal Components
-import CartItems from "../components/cartItems/CartItems";
+import CartItems from "../components/cartItems";
 import Breadcrumb from "../components/breadcrumbs/Breadcrumb";
 
 // Styles and Assets
