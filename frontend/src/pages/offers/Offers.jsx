@@ -21,6 +21,11 @@ import "../CSS/Offers.css";
 const Offers = () => {
   const location = useLocation();
 
+  // Scroll to top when the component mounts or the URL changes
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location]);
+
   const {
     // Data
     displayedProducts,
