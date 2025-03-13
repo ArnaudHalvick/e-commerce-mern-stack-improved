@@ -533,6 +533,88 @@ const getProductsByCategory = async (req, res) => {
   }
 };
 
+// Get related products based on category, sorted by rating and discount
+const getRelatedProducts = async (req, res) => {
+  try {
+    const { category, productId, productSlug } = req.params;
+
+    // Validate that category is one of the allowed values
+    if (!["men", "women", "kids"].includes(category)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid category. Must be one of: men, women, kids",
+      });
+    }
+
+    // Check if we should include reviews or just basic info
+    const includeReviews = req.query.includeReviews === "true";
+    const basicInfo = req.query.basicInfo !== "false";
+    const limit = parseInt(req.query.limit) || 4; // Default to 4 related products
+
+    // Build query to find products in the same category, excluding the current product
+    let query = { category };
+
+    // Exclude the current product from results
+    if (productId) {
+      query._id = { $ne: productId };
+    } else if (productSlug) {
+      query.slug = { $ne: productSlug };
+    }
+
+    // Find products and sort by rating (descending) and discount amount (descending)
+    let productsQuery = Product.find(query)
+      .sort({ rating: -1 }) // Sort by rating first (highest first)
+      .limit(limit);
+
+    // Only populate reviews if requested
+    if (includeReviews) {
+      productsQuery = productsQuery.populate({
+        path: "reviews",
+        populate: { path: "user", select: "name" },
+      });
+    }
+
+    let products = await productsQuery;
+
+    // Calculate discount amount and sort by it as a secondary criterion
+    products = products
+      .map((product) => {
+        const formattedProduct = formatProductForResponse(product, {
+          includeReviews,
+          basicInfo,
+        });
+
+        // Calculate discount amount
+        formattedProduct.discountAmount =
+          formattedProduct.old_price -
+          (formattedProduct.new_price || formattedProduct.old_price);
+
+        return formattedProduct;
+      })
+      .sort((a, b) => {
+        // If ratings are equal, sort by discount amount
+        if (a.rating === b.rating) {
+          return b.discountAmount - a.discountAmount;
+        }
+        return 0; // Keep the original rating-based sort
+      })
+      .slice(0, limit); // Ensure we only return the requested number of products
+
+    // Remove the temporary discountAmount property before sending response
+    products.forEach((product) => {
+      delete product.discountAmount;
+    });
+
+    res.send(products);
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   addProduct,
   removeProduct,
@@ -546,4 +628,5 @@ module.exports = {
   formatProductForClient,
   formatProductForResponse,
   getProductsByCategory,
+  getRelatedProducts,
 };

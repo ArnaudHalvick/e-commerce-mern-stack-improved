@@ -18,5 +18,9 @@ router.get(
 );
 router.get("/product/slug/:slug", productController.getProductBySlug);
 router.get("/product/:id", productController.getProductById);
+router.get(
+  "/related-products/:category/:productId?/:productSlug?",
+  productController.getRelatedProducts
+);
 
 module.exports = router;

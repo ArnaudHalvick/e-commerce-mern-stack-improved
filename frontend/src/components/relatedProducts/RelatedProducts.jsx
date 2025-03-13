@@ -4,19 +4,46 @@ import "./RelatedProducts.css";
 import Item from "../item/Item";
 import { useParams } from "react-router-dom";
 
-const RelatedProducts = () => {
+const RelatedProducts = ({ product }) => {
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { productId, productSlug } = useParams();
 
   useEffect(() => {
-    // For now, fetch general 'featured women' products as a placeholder for related
-    // Later you might want to implement a proper "related products" API endpoint
+    // Don't attempt to fetch if we don't have a product or category
+    if (!product || !product.category) {
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
-    fetch("http://localhost:4000/api/featured-women?basicInfo=true")
+    // Determine which parameters to use for the API call
+    const id = product._id || productId;
+    const slug = product.slug || productSlug;
+    const { category } = product;
+
+    // Build the API URL with the available parameters
+    let apiUrl = `http://localhost:4000/api/related-products/${category}`;
+
+    // Add productId if available
+    if (id) {
+      apiUrl += `/${id}`;
+    } else {
+      apiUrl += "/null"; // Use 'null' as a placeholder
+    }
+
+    // Add productSlug if available
+    if (slug) {
+      apiUrl += `/${slug}`;
+    }
+
+    // Add query parameters
+    apiUrl += "?basicInfo=true";
+
+    fetch(apiUrl)
       .then((res) => {
         if (!res.ok) {
           throw new Error(
@@ -31,17 +58,7 @@ const RelatedProducts = () => {
           console.warn("API didn't return an array for related products", data);
           setRelatedProducts([]);
         } else {
-          // If we have a current product ID or slug, filter it out of the related products
-          let filteredProducts = data;
-          if (productId) {
-            filteredProducts = data.filter(
-              (p) => p.id !== Number(productId) && p._id !== productId
-            );
-          } else if (productSlug) {
-            filteredProducts = data.filter((p) => p.slug !== productSlug);
-          }
-
-          setRelatedProducts(filteredProducts);
+          setRelatedProducts(data);
         }
         setLoading(false);
       })
@@ -50,7 +67,7 @@ const RelatedProducts = () => {
         setError(err.message);
         setLoading(false);
       });
-  }, [productId, productSlug]);
+  }, [product, productId, productSlug]);
 
   if (loading) {
     return <div className="loading">Loading related products...</div>;
@@ -58,6 +75,11 @@ const RelatedProducts = () => {
 
   if (error) {
     return <div className="error">Error loading related products: {error}</div>;
+  }
+
+  // Don't render if no related products found
+  if (relatedProducts.length === 0) {
+    return null;
   }
 
   return (
