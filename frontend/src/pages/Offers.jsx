@@ -69,6 +69,20 @@ const Offers = () => {
           setAllProducts([]);
           setDisplayedProducts([]);
         } else {
+          // Log sample of the product data to debug
+          console.log("Received product data sample:", data.slice(0, 3));
+          console.log("Product categories:", [
+            ...new Set(data.map((p) => p.category)),
+          ]);
+          console.log(
+            "Product ratings distribution:",
+            data.reduce((acc, p) => {
+              const rating = Math.floor(p.rating || 0);
+              acc[rating] = (acc[rating] || 0) + 1;
+              return acc;
+            }, {})
+          );
+
           setAllProducts(data);
 
           // Extract unique tags and types for filters
@@ -104,9 +118,18 @@ const Offers = () => {
 
     // Filter by category
     if (filters.category.length > 0) {
-      filtered = filtered.filter((item) =>
-        filters.category.includes(item.category)
+      console.log("Filtering by categories:", filters.category);
+      console.log(
+        "First few products' categories:",
+        filtered.slice(0, 3).map((item) => item.category)
       );
+
+      filtered = filtered.filter((item) => {
+        // Ensure case-insensitive comparison
+        return filters.category.some(
+          (cat) => cat.toLowerCase() === (item.category || "").toLowerCase()
+        );
+      });
     }
 
     // Filter by price range
@@ -124,9 +147,21 @@ const Offers = () => {
 
     // Filter by rating
     if (filters.rating > 0) {
-      filtered = filtered.filter(
-        (item) => (item.rating || 0) >= filters.rating
+      console.log("Filtering by rating:", filters.rating);
+      console.log(
+        "Sample product ratings:",
+        filtered.slice(0, 5).map((item) => ({
+          name: item.name,
+          rating: item.rating || 0,
+        }))
       );
+
+      filtered = filtered.filter((item) => {
+        // Ensure rating is a number, default to 0 if undefined/null
+        const productRating = Number(item.rating || 0);
+        return productRating >= filters.rating;
+      });
+      console.log("Products after rating filter:", filtered.length);
     }
 
     // Filter by tags
@@ -172,7 +207,27 @@ const Offers = () => {
         });
         break;
       case "rating":
-        filtered.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+        console.log("Sorting by rating");
+        // Log a few products before sorting
+        const sampleBefore = filtered.slice(0, 5).map((p) => ({
+          name: p.name,
+          rating: p.rating || 0,
+        }));
+        console.log("Sample before sort:", sampleBefore);
+
+        filtered.sort((a, b) => {
+          // Ensure we're comparing numbers and handling null/undefined ratings
+          const ratingA = Number(a.rating || 0);
+          const ratingB = Number(b.rating || 0);
+          return ratingB - ratingA;
+        });
+
+        // Log products after sorting
+        const sampleAfter = filtered.slice(0, 5).map((p) => ({
+          name: p.name,
+          rating: p.rating || 0,
+        }));
+        console.log("Sample after sort:", sampleAfter);
         break;
       default:
         break;
@@ -381,7 +436,7 @@ const Offers = () => {
                 <div
                   key={star}
                   className={`star-rating ${
-                    filters.rating >= star ? "active" : ""
+                    filters.rating === star ? "active" : ""
                   }`}
                   onClick={() =>
                     handleFilterChange(
@@ -390,7 +445,7 @@ const Offers = () => {
                     )
                   }
                 >
-                  {star}★ & Up
+                  {star}★ & Up {filters.rating === star && "✓"}
                 </div>
               ))}
             </div>

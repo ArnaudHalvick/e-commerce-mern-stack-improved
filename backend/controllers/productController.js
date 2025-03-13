@@ -49,6 +49,10 @@ const formatProductForResponse = (product, options = {}) => {
         new_price,
         old_price,
         mainImage,
+        category,
+        rating,
+        tags,
+        types,
       } = product;
       return {
         _id,
@@ -60,6 +64,10 @@ const formatProductForResponse = (product, options = {}) => {
         new_price,
         old_price,
         mainImage,
+        category,
+        rating,
+        tags,
+        types,
       };
     }
     return product;
@@ -80,6 +88,10 @@ const formatProductForResponse = (product, options = {}) => {
       mainImageIndex: minimalObj.mainImageIndex,
       new_price: minimalObj.new_price,
       old_price: minimalObj.old_price,
+      category: minimalObj.category,
+      rating: minimalObj.rating || 0,
+      tags: minimalObj.tags || [],
+      types: minimalObj.types || [],
     };
 
     // Add mainImage virtual if it exists
