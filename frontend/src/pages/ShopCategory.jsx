@@ -34,7 +34,10 @@ const ShopCategory = (props) => {
     setLoading(true);
     setError(null);
 
-    fetch(`http://localhost:4000/api/all-products?basicInfo=true`)
+    // Use the new API endpoint that filters by category on the server
+    fetch(
+      `http://localhost:4000/api/products/category/${props.category}?basicInfo=true`
+    )
       .then((res) => {
         if (!res.ok) {
           throw new Error(
@@ -48,11 +51,8 @@ const ShopCategory = (props) => {
           console.warn("API didn't return an array for products", data);
           setProducts([]);
         } else {
-          // Filter products by category
-          const filteredProducts = data.filter(
-            (item) => item.category === props.category
-          );
-          setProducts(filteredProducts);
+          // No need to filter as the API already returns the correct category
+          setProducts(data);
         }
         setLoading(false);
       })

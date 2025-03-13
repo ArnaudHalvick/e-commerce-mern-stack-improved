@@ -469,6 +469,53 @@ const getProductBySlug = async (req, res) => {
   }
 };
 
+// Get products by category
+const getProductsByCategory = async (req, res) => {
+  try {
+    const { category } = req.params;
+
+    // Validate that category is one of the allowed values
+    if (!["men", "women", "kids"].includes(category)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid category. Must be one of: men, women, kids",
+      });
+    }
+
+    // Check if we should include reviews or just basic info
+    const includeReviews = req.query.includeReviews === "true";
+    const basicInfo = req.query.basicInfo !== "false";
+
+    let query = Product.find({ category: category });
+
+    // Only populate reviews if requested
+    if (includeReviews) {
+      query = query.populate({
+        path: "reviews",
+        populate: { path: "user", select: "name" },
+      });
+    }
+
+    let products = await query;
+
+    // Format products with the appropriate level of detail
+    const formattedProducts = products.map((product) =>
+      formatProductForResponse(product, {
+        includeReviews,
+        basicInfo,
+      })
+    );
+
+    res.send(formattedProducts);
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   addProduct,
   removeProduct,
@@ -479,7 +526,7 @@ module.exports = {
   getProductsByType,
   getProductById,
   getProductBySlug,
-  createSampleProducts,
   formatProductForClient,
   formatProductForResponse,
+  getProductsByCategory,
 };
