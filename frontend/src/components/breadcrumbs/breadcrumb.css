@@ -32,6 +32,7 @@
   .breadcrumb {
     font-size: 14px;
     gap: 6px;
+    margin-left: 1rem;
   }
 }
 
@@ -39,5 +40,6 @@
   .breadcrumb {
     font-size: 12px;
     gap: 4px;
+    margin-left: 0.5rem;
   }
 }

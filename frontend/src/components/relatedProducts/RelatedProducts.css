@@ -4,7 +4,8 @@
   flex-direction: column;
   align-items: center;
   gap: 1rem;
-  height: 90vh;
+  min-height: 30vh;
+  padding: 1rem 0;
 }
 
 .related-products h1 {
@@ -20,8 +21,37 @@
   background-color: #171717;
 }
 
-.related-products-item {
+.related-products-items {
   display: flex;
-  margin-top: 3rem;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
   gap: 1.8rem;
+  justify-content: center;
+  width: 100%;
+  padding: 0 1rem;
+}
+
+/* Add responsive adjustments */
+@media screen and (max-width: 768px) {
+  .related-products-items {
+    gap: 1.2rem;
+  }
+
+  .related-products h1 {
+    font-size: 1.75rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .related-products-items {
+    gap: 1rem;
+  }
+
+  .related-products h1 {
+    font-size: 1.5rem;
+  }
+
+  .related-products hr {
+    width: 10rem;
+  }
 }
