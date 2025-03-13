@@ -156,14 +156,17 @@ const getFeaturedWomen = async (req, res) => {
   try {
     let products = await Product.find({
       category: "women",
-    }).populate({
-      path: "reviews",
-      populate: { path: "user", select: "name" },
-    });
-    let featured_product = products.slice(0, 4);
+      rating: { $gte: 3.7 }, // Only products with rating 3.7 or above
+    })
+      .sort({ createdAt: -1 }) // Sort by latest created date
+      .limit(4) // Return a maximum of 4 products
+      .populate({
+        path: "reviews",
+        populate: { path: "user", select: "name" },
+      });
 
     // Format products to ensure _id is properly sent to client
-    const formattedProducts = featured_product.map(formatProductForClient);
+    const formattedProducts = products.map(formatProductForClient);
 
     res.send(formattedProducts);
   } catch (error) {
