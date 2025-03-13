@@ -452,21 +452,18 @@ const verifyEmail = async (req, res) => {
     const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
     console.log(`Hashed token for lookup: ${hashedToken}`);
 
-    // Find user with the token first
+    // Find user with the token
     let user = await User.findOne({
       emailVerificationToken: hashedToken,
     });
 
-    // If no user found with token, check if any user has the email verified already
-    // This handles cases where the link is clicked multiple times
     if (!user) {
       console.log(`No user found with token hash: ${hashedToken}`);
 
-      // Check for already verified accounts using this token (that might have had token removed)
-      // This requires storing the original email alongside the token in a separate field
+      // Check if there's a user with this email who is already verified
+      // This is a common case where users click the link multiple times
       const verifiedUser = await User.findOne({
         isEmailVerified: true,
-        // Check if user is already verified and has no token (already used the link once)
         emailVerificationToken: { $exists: false },
       });
 
@@ -484,12 +481,8 @@ const verifyEmail = async (req, res) => {
       });
     }
 
-    console.log(`User found: ${user.email}`);
-
     // Check if email is already verified
     if (user.isEmailVerified) {
-      console.log(`Email already verified for user: ${user.email}`);
-
       return res.status(200).json({
         success: true,
         message: "Your email is already verified",
@@ -502,8 +495,6 @@ const verifyEmail = async (req, res) => {
       user.emailVerificationExpiry &&
       user.emailVerificationExpiry < Date.now()
     ) {
-      console.log(`Token expired for user: ${user.email}`);
-
       return res.status(400).json({
         success: false,
         message: "Verification token has expired",

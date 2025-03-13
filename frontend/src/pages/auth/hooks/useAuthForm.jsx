@@ -1,5 +1,6 @@
 import { useState, useContext } from "react";
 import { AuthContext } from "../../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 /**
  * Custom hook for Auth form handling
@@ -15,6 +16,7 @@ const useAuthForm = () => {
   });
   const [termsAccepted, setTermsAccepted] = useState(false);
   const { login, signup, loading, error } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const switchState = () => {
     setState((prevState) => (prevState === "Signup" ? "Login" : "Signup"));
@@ -35,7 +37,15 @@ const useAuthForm = () => {
     if (state === "Login") {
       await login(formData.email, formData.password);
     } else {
-      await signup(formData);
+      const result = await signup(formData);
+
+      // Check if signup requires email verification
+      if (result && result.success && result.requiresVerification) {
+        // Redirect to verification pending page with email
+        navigate("/verify-pending", {
+          state: { email: formData.email },
+        });
+      }
     }
   };
 

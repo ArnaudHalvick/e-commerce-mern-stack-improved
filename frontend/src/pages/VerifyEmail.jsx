@@ -5,6 +5,8 @@ import {
   verifyEmail,
   requestEmailVerification,
 } from "../redux/slices/userSlice";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 
 // Components
 import Breadcrumb from "../components/breadcrumbs/Breadcrumb";
@@ -19,6 +21,7 @@ const VerifyEmail = () => {
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
   const dispatch = useDispatch();
+  const { isAuthenticated } = useContext(AuthContext);
 
   const { loading } = useSelector((state) => state.user);
   const [verificationStatus, setVerificationStatus] = useState({
@@ -139,9 +142,15 @@ const VerifyEmail = () => {
             {verificationStatus.success ? (
               <div className="success-actions">
                 <p>You can now enjoy all features of our platform.</p>
-                <Link to="/profile" className="btn-primary">
-                  Go to Your Profile
-                </Link>
+                {isAuthenticated ? (
+                  <Link to="/profile" className="btn-primary">
+                    Go to Your Profile
+                  </Link>
+                ) : (
+                  <Link to="/login" className="btn-primary">
+                    Login Now
+                  </Link>
+                )}
                 <Link to="/" className="btn-secondary">
                   Continue Shopping
                 </Link>

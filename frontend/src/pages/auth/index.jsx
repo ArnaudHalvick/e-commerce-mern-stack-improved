@@ -28,56 +28,6 @@ const Auth = () => {
     handleSubmit,
   } = useAuthForm();
 
-  const signup = async (e) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
-
-    // Simple validation
-    if (formData.username.trim() === "") {
-      setError("Username is required");
-      setLoading(false);
-      return;
-    }
-    if (formData.email.trim() === "") {
-      setError("Email is required");
-      setLoading(false);
-      return;
-    }
-    if (formData.password.trim() === "") {
-      setError("Password is required");
-      setLoading(false);
-      return;
-    }
-    if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match");
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const result = await authContext.signup({
-        username: formData.username,
-        email: formData.email,
-        password: formData.password,
-      });
-
-      if (result.success) {
-        // Redirect to verification pending page
-        navigate("/verify-pending", {
-          state: { email: formData.email },
-        });
-      } else {
-        setError(result.message || "Failed to create account");
-      }
-    } catch (err) {
-      console.error("Signup error:", err);
-      setError("Failed to create account. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <div className="auth-container">
       <Breadcrumb routes={[{ label: "HOME", path: "/" }, { label: state }]} />
