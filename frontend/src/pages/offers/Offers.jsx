@@ -97,6 +97,7 @@ const Offers = () => {
           availableTags={availableTags}
           availableTypes={availableTypes}
           clearAllFilters={clearAllFilters}
+          showCategoryFilter={true}
         />
 
         {/* Products area */}
