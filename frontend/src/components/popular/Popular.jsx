@@ -12,7 +12,8 @@ const Popular = () => {
     setLoading(true);
     setError(null);
 
-    fetch("http://localhost:4000/api/featured-women")
+    // Use optimized API endpoint with basicInfo=true parameter
+    fetch("http://localhost:4000/api/featured-women?basicInfo=true")
       .then((res) => {
         if (!res.ok) {
           throw new Error(

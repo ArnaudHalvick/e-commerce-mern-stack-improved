@@ -17,46 +17,105 @@ const Product = () => {
   const { productId, productSlug } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     // Only try to find product when context is loaded
     if (!contextLoading) {
-      if (all_product && all_product.length > 0) {
-        let foundProduct;
+      // If we have a product slug, we can directly fetch the detailed product
+      if (productSlug) {
+        setLoading(true);
+        // Use the correct endpoint URL: /api/product/slug/:slug
+        fetch(
+          `http://localhost:4000/api/product/slug/${productSlug}?includeReviews=true`
+        )
+          .then((res) => {
+            if (!res.ok) {
+              throw new Error(
+                `Failed to fetch product: ${res.status} ${res.statusText}`
+              );
+            }
+            return res.json();
+          })
+          .then((data) => {
+            setProduct(data);
+            setLoading(false);
+          })
+          .catch((err) => {
+            console.error("Error fetching product by slug:", err);
 
-        if (productId) {
-          // Try to find by ID as a number first (for backward compatibility)
-          foundProduct = all_product.find((e) => e.id === Number(productId));
+            // If we couldn't fetch by slug, try to find the product in all_product context
+            if (all_product && all_product.length > 0) {
+              const contextProduct = all_product.find(
+                (p) => p.slug === productSlug
+              );
+              if (contextProduct) {
+                setProduct(contextProduct);
+                setError(null);
+              } else {
+                setError(err.message);
+              }
+            } else {
+              setError(err.message);
+            }
 
-          // If not found, try by MongoDB _id directly
-          if (!foundProduct) {
-            foundProduct = all_product.find((e) => {
-              // Handle both string _id and object with $oid
-              const mongoId =
-                e._id && typeof e._id === "object" && e._id.$oid
-                  ? e._id.$oid
-                  : e._id;
-              return mongoId === productId;
-            });
-          }
-
-          // If found by ID but has a slug, redirect to the slug URL for better SEO
-          if (foundProduct && foundProduct.slug) {
-            navigate(`/products/${foundProduct.slug}`, { replace: true });
-            return;
-          }
-        } else if (productSlug) {
-          // Preferred: Lookup by slug
-          foundProduct = all_product.find((e) => e.slug === productSlug);
-        }
-
-        setProduct(foundProduct);
+            setLoading(false);
+          });
       }
-      // Set loading to false even if we didn't find a product
-      setLoading(false);
+      // If we have a product ID, fetch by ID
+      else if (productId) {
+        setLoading(true);
+        // The product ID endpoint is correct: /api/product/:id
+        fetch(
+          `http://localhost:4000/api/product/${productId}?includeReviews=true`
+        )
+          .then((res) => {
+            if (!res.ok) {
+              throw new Error(
+                `Failed to fetch product: ${res.status} ${res.statusText}`
+              );
+            }
+            return res.json();
+          })
+          .then((data) => {
+            // If product has a slug, redirect to the slug URL for better SEO
+            if (data.slug) {
+              navigate(`/products/${data.slug}`, { replace: true });
+              return;
+            }
+            setProduct(data);
+            setLoading(false);
+          })
+          .catch((err) => {
+            console.error("Error fetching product by ID:", err);
+
+            // If we couldn't fetch by ID, try to find the product in all_product context
+            if (all_product && all_product.length > 0) {
+              const contextProduct = all_product.find(
+                (p) => p.id === parseInt(productId) || p._id === productId
+              );
+
+              if (contextProduct) {
+                setProduct(contextProduct);
+                setError(null);
+              } else {
+                setError(err.message);
+              }
+            } else {
+              setError(err.message);
+            }
+
+            setLoading(false);
+          });
+      }
+      // If no slug or ID, use context to find product (less common case)
+      else if (all_product && all_product.length > 0) {
+        setLoading(false);
+        setError("No product identifier provided");
+      }
     }
-  }, [all_product, productId, productSlug, navigate, contextLoading]);
+  }, [productId, productSlug, navigate, contextLoading, all_product]);
 
   // Show loading state if either we're still loading from context or still finding the product
   if (contextLoading || loading) {
@@ -66,6 +125,11 @@ const Product = () => {
   // Show error if context has an error
   if (contextError) {
     return <div className="error">Error loading products: {contextError}</div>;
+  }
+
+  // Show error from product fetch if applicable
+  if (error) {
+    return <div className="error">Error: {error}</div>;
   }
 
   // Show not found if no product found

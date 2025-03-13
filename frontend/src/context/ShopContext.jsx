@@ -14,8 +14,9 @@ const ShopContextProvider = (props) => {
     setLoading(true);
     setError(null);
 
-    // Fetch all products
-    fetch("http://localhost:4000/api/all-products")
+    // Fetch all products with basicInfo=true to get only essential fields
+    // We don't need reviews here as they're loaded separately on product detail pages
+    fetch("http://localhost:4000/api/all-products?basicInfo=true")
       .then((res) => {
         if (!res.ok) {
           throw new Error(

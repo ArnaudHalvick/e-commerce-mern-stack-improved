@@ -12,7 +12,7 @@ router.get("/newcollection", productController.getNewCollection);
 router.get("/featured-women", productController.getFeaturedWomen);
 router.get("/products/tag/:tag", productController.getProductsByTag);
 router.get("/products/type/:type", productController.getProductsByType);
-router.get("/product/:id", productController.getProductById);
 router.get("/product/slug/:slug", productController.getProductBySlug);
+router.get("/product/:id", productController.getProductById);
 
 module.exports = router;

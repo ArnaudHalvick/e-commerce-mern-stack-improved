@@ -1,6 +1,5 @@
 // Path: frontend/src/pages/ShopCategory.jsx
-import { useContext, useMemo } from "react";
-import { ShopContext } from "../context/ShopContext";
+import { useState, useEffect } from "react";
 import dropdown_icon from "../components/assets/dropdown_icon.png";
 import Item from "../components/item/Item";
 import "./CSS/ShopCategory.css";
@@ -26,18 +25,46 @@ const CategoryBreadcrumb = ({ category }) => {
 };
 
 const ShopCategory = (props) => {
-  const context = useContext(ShopContext);
-  const { all_product, loading, error } = context || {};
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Filter products by category
-  const filteredProducts = useMemo(() => {
-    return all_product
-      ? all_product.filter((item) => item.category === props.category)
-      : [];
-  }, [all_product, props.category]);
+  // Fetch products by category directly from API
+  useEffect(() => {
+    setLoading(true);
+    setError(null);
+
+    fetch(`http://localhost:4000/api/all-products?basicInfo=true`)
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(
+            `Failed to fetch products: ${res.status} ${res.statusText}`
+          );
+        }
+        return res.json();
+      })
+      .then((data) => {
+        if (!Array.isArray(data)) {
+          console.warn("API didn't return an array for products", data);
+          setProducts([]);
+        } else {
+          // Filter products by category
+          const filteredProducts = data.filter(
+            (item) => item.category === props.category
+          );
+          setProducts(filteredProducts);
+        }
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error fetching products:", err);
+        setError(err.message);
+        setLoading(false);
+      });
+  }, [props.category]);
 
   // Calculate the total count of products in this category
-  const productCount = filteredProducts.length;
+  const productCount = products.length;
 
   // For now we'll show a fixed range (1-12), but this could be expanded with pagination
   const displayRange = `1-${Math.min(12, productCount)}`;
@@ -63,8 +90,8 @@ const ShopCategory = (props) => {
         </div>
       </div>
       <div className="product-grid">
-        {filteredProducts.length > 0 ? (
-          filteredProducts.map((item, index) => (
+        {products.length > 0 ? (
+          products.map((item, index) => (
             <Item
               key={item._id || item.id || index}
               id={item.id}
@@ -81,7 +108,7 @@ const ShopCategory = (props) => {
           <p>No products available in this category.</p>
         )}
       </div>
-      {filteredProducts.length > 0 && (
+      {products.length > 0 && (
         <div className="load-more-button">Explore more</div>
       )}
     </div>

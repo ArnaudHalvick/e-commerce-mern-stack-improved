@@ -16,7 +16,7 @@ const RelatedProducts = () => {
     setLoading(true);
     setError(null);
 
-    fetch("http://localhost:4000/api/featured-women")
+    fetch("http://localhost:4000/api/featured-women?basicInfo=true")
       .then((res) => {
         if (!res.ok) {
           throw new Error(
@@ -64,16 +64,16 @@ const RelatedProducts = () => {
     <div className="related-products">
       <h1>Related Products</h1>
       <hr />
-      <div className="related-products-item">
-        {relatedProducts.map((item, i) => (
+      <div className="related-products-items">
+        {relatedProducts.map((item, index) => (
           <Item
-            key={i}
+            key={item._id || item.id || index}
             id={item.id}
             _id={item._id}
             slug={item.slug}
+            images={item.images}
+            mainImageIndex={item.mainImageIndex}
             name={item.name}
-            images={item.images || []}
-            mainImageIndex={item.mainImageIndex || 0}
             new_price={item.new_price}
             old_price={item.old_price}
           />

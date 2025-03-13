@@ -22,6 +22,90 @@ const formatProductForClient = (product) => {
   return productObj;
 };
 
+// New helper function that allows specifying which fields to include
+const formatProductForResponse = (product, options = {}) => {
+  if (!product) return null;
+
+  // Default options
+  const defaultOptions = {
+    includeReviews: false,
+    basicInfo: false,
+  };
+
+  // Merge provided options with defaults
+  const mergedOptions = { ...defaultOptions, ...options };
+
+  // If product is not a mongoose document, return as is or filter fields
+  if (!product.toObject) {
+    // If we need only basic info, filter fields
+    if (mergedOptions.basicInfo) {
+      const {
+        _id,
+        id,
+        name,
+        slug,
+        images,
+        mainImageIndex,
+        new_price,
+        old_price,
+        mainImage,
+      } = product;
+      return {
+        _id,
+        id,
+        name,
+        slug,
+        images,
+        mainImageIndex,
+        new_price,
+        old_price,
+        mainImage,
+      };
+    }
+    return product;
+  }
+
+  // Convert to object and decide what to include
+  let productObj;
+
+  if (mergedOptions.basicInfo) {
+    // Only include essential fields for listing views
+    const minimalObj = product.toObject({ virtuals: false });
+    productObj = {
+      _id: minimalObj._id.toString(),
+      id: minimalObj.id,
+      name: minimalObj.name,
+      slug: minimalObj.slug,
+      images: minimalObj.images,
+      mainImageIndex: minimalObj.mainImageIndex,
+      new_price: minimalObj.new_price,
+      old_price: minimalObj.old_price,
+    };
+
+    // Add mainImage virtual if it exists
+    if (product.mainImage) {
+      productObj.mainImage = product.mainImage;
+    }
+
+    return productObj;
+  }
+
+  // Full object conversion
+  productObj = product.toObject({ virtuals: true });
+
+  // Ensure _id is properly passed
+  if (productObj._id) {
+    productObj._id = productObj._id.toString();
+  }
+
+  // Remove reviews if not needed
+  if (!mergedOptions.includeReviews && productObj.reviews) {
+    delete productObj.reviews;
+  }
+
+  return productObj;
+};
+
 // Add a new product
 const addProduct = async (req, res) => {
   try {
@@ -111,13 +195,29 @@ const removeProduct = async (req, res) => {
 // Get all products
 const getAllProducts = async (req, res) => {
   try {
-    let products = await Product.find().populate({
-      path: "reviews",
-      populate: { path: "user", select: "name" },
-    });
+    // Check if we should include reviews or just basic info
+    const includeReviews = req.query.includeReviews === "true";
+    const basicInfo = req.query.basicInfo !== "false";
 
-    // Format products to ensure _id is properly sent to client
-    const formattedProducts = products.map(formatProductForClient);
+    let query = Product.find();
+
+    // Only populate reviews if requested
+    if (includeReviews) {
+      query = query.populate({
+        path: "reviews",
+        populate: { path: "user", select: "name" },
+      });
+    }
+
+    let products = await query;
+
+    // Format products with the appropriate level of detail
+    const formattedProducts = products.map((product) =>
+      formatProductForResponse(product, {
+        includeReviews,
+        basicInfo,
+      })
+    );
 
     res.send(formattedProducts);
   } catch (error) {
@@ -132,14 +232,30 @@ const getAllProducts = async (req, res) => {
 // Get new collection
 const getNewCollection = async (req, res) => {
   try {
-    let products = await Product.find().populate({
-      path: "reviews",
-      populate: { path: "user", select: "name" },
-    });
+    // Check if we should include reviews or just basic info
+    const includeReviews = req.query.includeReviews === "true";
+    const basicInfo = req.query.basicInfo !== "false";
+
+    let query = Product.find();
+
+    // Only populate reviews if requested
+    if (includeReviews) {
+      query = query.populate({
+        path: "reviews",
+        populate: { path: "user", select: "name" },
+      });
+    }
+
+    let products = await query;
     let newcollection = products.slice(-8);
 
-    // Format products to ensure _id is properly sent to client
-    const formattedProducts = newcollection.map(formatProductForClient);
+    // Format products with the appropriate level of detail
+    const formattedProducts = newcollection.map((product) =>
+      formatProductForResponse(product, {
+        includeReviews,
+        basicInfo,
+      })
+    );
 
     res.send(formattedProducts);
   } catch (error) {
@@ -154,19 +270,34 @@ const getNewCollection = async (req, res) => {
 // Get featured women's products
 const getFeaturedWomen = async (req, res) => {
   try {
-    let products = await Product.find({
+    // Check if we should include reviews or just basic info
+    const includeReviews = req.query.includeReviews === "true";
+    const basicInfo = req.query.basicInfo !== "false";
+
+    let query = Product.find({
       category: "women",
       rating: { $gte: 3.7 }, // Only products with rating 3.7 or above
     })
       .sort({ createdAt: -1 }) // Sort by latest created date
-      .limit(4) // Return a maximum of 4 products
-      .populate({
+      .limit(4); // Return a maximum of 4 products
+
+    // Only populate reviews if requested
+    if (includeReviews) {
+      query = query.populate({
         path: "reviews",
         populate: { path: "user", select: "name" },
       });
+    }
 
-    // Format products to ensure _id is properly sent to client
-    const formattedProducts = products.map(formatProductForClient);
+    let products = await query;
+
+    // Format products with the appropriate level of detail
+    const formattedProducts = products.map((product) =>
+      formatProductForResponse(product, {
+        includeReviews,
+        basicInfo,
+      })
+    );
 
     res.send(formattedProducts);
   } catch (error) {
@@ -182,13 +313,29 @@ const getFeaturedWomen = async (req, res) => {
 const getProductsByTag = async (req, res) => {
   try {
     const { tag } = req.params;
-    let products = await Product.find({ tags: tag }).populate({
-      path: "reviews",
-      populate: { path: "user", select: "name" },
-    });
+    // Check if we should include reviews or just basic info
+    const includeReviews = req.query.includeReviews === "true";
+    const basicInfo = req.query.basicInfo !== "false";
 
-    // Format products to ensure _id is properly sent to client
-    const formattedProducts = products.map(formatProductForClient);
+    let query = Product.find({ tags: tag });
+
+    // Only populate reviews if requested
+    if (includeReviews) {
+      query = query.populate({
+        path: "reviews",
+        populate: { path: "user", select: "name" },
+      });
+    }
+
+    let products = await query;
+
+    // Format products with the appropriate level of detail
+    const formattedProducts = products.map((product) =>
+      formatProductForResponse(product, {
+        includeReviews,
+        basicInfo,
+      })
+    );
 
     res.send(formattedProducts);
   } catch (error) {
@@ -204,13 +351,29 @@ const getProductsByTag = async (req, res) => {
 const getProductsByType = async (req, res) => {
   try {
     const { type } = req.params;
-    let products = await Product.find({ types: type }).populate({
-      path: "reviews",
-      populate: { path: "user", select: "name" },
-    });
+    // Check if we should include reviews or just basic info
+    const includeReviews = req.query.includeReviews === "true";
+    const basicInfo = req.query.basicInfo !== "false";
 
-    // Format products to ensure _id is properly sent to client
-    const formattedProducts = products.map(formatProductForClient);
+    let query = Product.find({ types: type });
+
+    // Only populate reviews if requested
+    if (includeReviews) {
+      query = query.populate({
+        path: "reviews",
+        populate: { path: "user", select: "name" },
+      });
+    }
+
+    let products = await query;
+
+    // Format products with the appropriate level of detail
+    const formattedProducts = products.map((product) =>
+      formatProductForResponse(product, {
+        includeReviews,
+        basicInfo,
+      })
+    );
 
     res.send(formattedProducts);
   } catch (error) {
@@ -226,10 +389,20 @@ const getProductsByType = async (req, res) => {
 const getProductById = async (req, res) => {
   try {
     const { id } = req.params;
-    let product = await Product.findById(id).populate({
-      path: "reviews",
-      populate: { path: "user", select: "name" },
-    });
+    // Check if we should include reviews
+    const includeReviews = req.query.includeReviews !== "false"; // Default to true for single product view
+
+    let query = Product.findById(id);
+
+    // Populate reviews if requested
+    if (includeReviews) {
+      query = query.populate({
+        path: "reviews",
+        populate: { path: "user", select: "name" },
+      });
+    }
+
+    let product = await query;
 
     if (!product) {
       return res.status(404).json({
@@ -238,8 +411,11 @@ const getProductById = async (req, res) => {
       });
     }
 
-    // Format the product
-    const formattedProduct = formatProductForClient(product);
+    // Format the product with requested detail level
+    const formattedProduct = formatProductForResponse(product, {
+      includeReviews,
+      basicInfo: false, // Always include full details for single product view
+    });
 
     res.send(formattedProduct);
   } catch (error) {
@@ -255,10 +431,20 @@ const getProductById = async (req, res) => {
 const getProductBySlug = async (req, res) => {
   try {
     const { slug } = req.params;
-    let product = await Product.findOne({ slug }).populate({
-      path: "reviews",
-      populate: { path: "user", select: "name" },
-    });
+    // Check if we should include reviews
+    const includeReviews = req.query.includeReviews !== "false"; // Default to true for single product view
+
+    let query = Product.findOne({ slug });
+
+    // Populate reviews if requested
+    if (includeReviews) {
+      query = query.populate({
+        path: "reviews",
+        populate: { path: "user", select: "name" },
+      });
+    }
+
+    let product = await query;
 
     if (!product) {
       return res.status(404).json({
@@ -267,8 +453,11 @@ const getProductBySlug = async (req, res) => {
       });
     }
 
-    // Format the product
-    const formattedProduct = formatProductForClient(product);
+    // Format the product with requested detail level
+    const formattedProduct = formatProductForResponse(product, {
+      includeReviews,
+      basicInfo: false, // Always include full details for single product view
+    });
 
     res.send(formattedProduct);
   } catch (error) {
@@ -290,5 +479,8 @@ module.exports = {
   getProductsByType,
   getProductById,
   getProductBySlug,
+  getProductsByCategory,
+  createSampleProducts,
   formatProductForClient,
+  formatProductForResponse,
 };
