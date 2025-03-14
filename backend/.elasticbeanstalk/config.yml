@@ -1,0 +1,9 @@
+branch-defaults:
+  aws-deployment:
+    environment: ecommerce-api-env
+global:
+  application_name: ecommerce-mern-app
+  default_ec2_keyname: null
+  default_platform: Node.js 18
+  default_region: us-east-1
+  sc: git

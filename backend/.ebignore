@@ -1,0 +1,13 @@
+# Ignore development files
+node_modules
+npm-debug.log
+.env.local
+.env.development
+
+# Ignore git files
+.git
+.gitignore
+
+# Ignore local upload folder contents but keep the folder
+upload/images/*
+!upload/images/.gitkeep 
