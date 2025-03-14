@@ -1,8 +1,8 @@
 // Path: admin/src/components/addProduct/AddProduct.jsx
 import "./AddProduct.css";
-import axios from "axios";
 import upload_area from "../../assets/admin_assets/upload_area.svg";
 import { useState } from "react";
+import { productApi } from "../../services/api";
 
 const AddProduct = () => {
   const [image, setImage] = useState(null);
@@ -53,41 +53,23 @@ const AddProduct = () => {
 
     try {
       setLoading(true);
-      // Create form data for image upload
-      const formData = new FormData();
-      formData.append("product", image);
 
-      // Upload image first
-      const uploadResponse = await axios.post(
-        "http://localhost:4000/api/upload",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      // Upload image using our API service
+      const uploadResponse = await productApi.uploadImage(image);
 
-      if (uploadResponse.data.success) {
+      if (uploadResponse.success) {
         // Create product with image URL
         const productData = {
           ...product,
-          image: uploadResponse.data.image_url,
+          image: uploadResponse.image_url,
         };
 
-        // Add product to database
-        const addResponse = await axios.post(
-          "http://localhost:4000/api/add-product",
-          productData,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        // Add product to database using our API service
+        const addResponse = await productApi.addProduct(productData);
 
-        if (addResponse.data.success) {
-          alert("Product Added Successfully!");
+        if (addResponse.success) {
+          alert("Product Added Successfully");
+
           // Reset form
           setProduct({
             name: "",
@@ -97,14 +79,19 @@ const AddProduct = () => {
             old_price: "",
           });
           setImage(null);
+        } else {
+          alert(
+            `Failed to add product: ${addResponse.message || "Unknown error"}`
+          );
         }
+      } else {
+        alert(
+          `Failed to upload image: ${uploadResponse.message || "Unknown error"}`
+        );
       }
     } catch (error) {
       console.error("Error adding product:", error);
-      alert(
-        error.response?.data?.message ||
-          "Error adding product. Please try again."
-      );
+      alert(`Error adding product: ${error.message || "Unknown error"}`);
     } finally {
       setLoading(false);
     }

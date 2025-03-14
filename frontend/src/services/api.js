@@ -1,7 +1,14 @@
 import axios from "axios";
 
 // Base URL for API requests - you can modify this to read from env vars
-const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:4000";
+// For production deployment, the API_BASE_URL will be updated to the production backend URL
+const API_BASE_URL =
+  process.env.REACT_APP_API_URL ||
+  (process.env.NODE_ENV === "production"
+    ? "https://api.your-ecommerce-site.com" // Change this to your actual production API domain
+    : "http://localhost:4000");
+
+console.log("API Base URL:", API_BASE_URL);
 
 // Reusable axios instance with common configuration
 const apiClient = axios.create({

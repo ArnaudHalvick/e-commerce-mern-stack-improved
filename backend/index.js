@@ -22,8 +22,20 @@ const port = process.env.PORT || 4000;
 // Middleware
 const allowedOrigins = [
   process.env.FRONTEND_URL || "http://localhost:3000",
-  "https://your-production-domain.com", // Add your production domain
+  process.env.ADMIN_URL || "http://localhost:5173",
 ];
+
+// For production, uncomment these lines and add your actual domains
+if (process.env.NODE_ENV === "production") {
+  console.log("Running in production mode");
+  // Add production domains if env vars are not set
+  if (!process.env.FRONTEND_URL) {
+    allowedOrigins.push("https://your-ecommerce-site.com");
+  }
+  if (!process.env.ADMIN_URL) {
+    allowedOrigins.push("https://admin.your-ecommerce-site.com");
+  }
+}
 
 app.use(
   cors({
