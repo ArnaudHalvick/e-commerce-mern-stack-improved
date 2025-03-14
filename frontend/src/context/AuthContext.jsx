@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { resetCart } from "../redux/slices/cartSlice";
 import { setUser, clearUser } from "../redux/slices/userSlice";
+import { API_BASE_URL } from "../utils/imageUtils";
 
 export const AuthContext = createContext(null);
 
@@ -42,7 +43,7 @@ const AuthContextProvider = (props) => {
 
       try {
         // Verify token with backend
-        const response = await fetch("http://localhost:4000/api/verify-token", {
+        const response = await fetch(`${API_BASE_URL}/api/verify-token`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -95,7 +96,7 @@ const AuthContextProvider = (props) => {
     setError(null);
 
     try {
-      const response = await fetch("http://localhost:4000/api/login", {
+      const response = await fetch(`${API_BASE_URL}/api/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -132,7 +133,7 @@ const AuthContextProvider = (props) => {
     setError(null);
 
     try {
-      const response = await fetch("http://localhost:4000/api/signup", {
+      const response = await fetch(`${API_BASE_URL}/api/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

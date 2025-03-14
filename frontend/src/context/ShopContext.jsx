@@ -1,5 +1,6 @@
 // Path: frontend/src/context/ShopContext.jsx
 import { createContext, useState, useEffect } from "react";
+import { API_BASE_URL } from "../utils/imageUtils";
 
 export const ShopContext = createContext(null);
 
@@ -16,7 +17,7 @@ const ShopContextProvider = (props) => {
 
     // Fetch all products with basicInfo=true to get only essential fields
     // We don't need reviews here as they're loaded separately on product detail pages
-    fetch("http://localhost:4000/api/all-products?basicInfo=true")
+    fetch(`${API_BASE_URL}/api/all-products?basicInfo=true`)
       .then((res) => {
         if (!res.ok) {
           throw new Error(

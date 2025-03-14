@@ -2,6 +2,7 @@ import { useState, useMemo, useCallback, useContext } from "react";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../../redux/slices/cartSlice";
 import { AuthContext } from "../../../context/AuthContext";
+import { getImageUrl } from "../../../utils/imageUtils";
 
 /**
  * Custom hook for product display logic
@@ -23,18 +24,6 @@ const useProductDisplay = (product) => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(
     product.mainImageIndex || 0
   );
-
-  // Utility to get the base URL from any product image
-  const getBaseUrl = useMemo(() => {
-    if (product.images && product.images.length > 0) {
-      const sampleUrl = product.images[0];
-      const urlParts = sampleUrl.split("/");
-      if (urlParts.length >= 3) {
-        return `${urlParts[0]}//${urlParts[2]}`;
-      }
-    }
-    return "http://localhost:4000";
-  }, [product.images]);
 
   // Handle size selection
   const handleSizeSelect = useCallback((size) => {
@@ -87,7 +76,6 @@ const useProductDisplay = (product) => {
     sizeError,
     selectedImageIndex,
     setSelectedImageIndex,
-    getBaseUrl,
     isAdding,
     handleSizeSelect,
     handleQuantityChange,

@@ -2,9 +2,10 @@
 import "./Popular.css";
 import Item from "../item/Item";
 import { useState, useEffect } from "react";
+import { API_BASE_URL } from "../../utils/imageUtils";
 
 const Popular = () => {
-  const [popular, setPopular] = useState([]);
+  const [popularProducts, setPopularProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -12,8 +13,7 @@ const Popular = () => {
     setLoading(true);
     setError(null);
 
-    // Use optimized API endpoint with basicInfo=true parameter
-    fetch("http://localhost:4000/api/featured-women?basicInfo=true")
+    fetch(`${API_BASE_URL}/api/featured-women?basicInfo=true`)
       .then((res) => {
         if (!res.ok) {
           throw new Error(
@@ -26,9 +26,9 @@ const Popular = () => {
         // Validate and log data for debugging
         if (!Array.isArray(data)) {
           console.warn("API didn't return an array for popular products", data);
-          setPopular([]);
+          setPopularProducts([]);
         } else {
-          setPopular(data);
+          setPopularProducts(data);
         }
         setLoading(false);
       })
@@ -52,7 +52,7 @@ const Popular = () => {
       <h1>Popular For Women</h1>
       <hr />
       <div className="popular-items">
-        {popular.map((item, index) => (
+        {popularProducts.map((item, index) => (
           <Item
             key={item._id || item.id || index}
             id={item.id}

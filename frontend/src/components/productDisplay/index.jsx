@@ -21,7 +21,6 @@ const ProductDisplay = ({ product }) => {
     sizeError,
     selectedImageIndex,
     setSelectedImageIndex,
-    getBaseUrl,
     isAdding,
     handleSizeSelect,
     handleQuantityChange,
@@ -34,7 +33,6 @@ const ProductDisplay = ({ product }) => {
         images={product.images}
         selectedImageIndex={selectedImageIndex}
         setSelectedImageIndex={setSelectedImageIndex}
-        getBaseUrl={getBaseUrl}
       />
 
       <div className="product-display-right">

@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ShopContext } from "../../../context/ShopContext";
+import { API_BASE_URL } from "../../../utils/imageUtils";
 
 /**
  * Custom hook for fetching product data
@@ -28,7 +29,7 @@ const useProductData = (productId, productSlug) => {
         setLoading(true);
         // Use the correct endpoint URL: /api/product/slug/:slug
         fetch(
-          `http://localhost:4000/api/product/slug/${productSlug}?includeReviews=true`
+          `${API_BASE_URL}/api/product/slug/${productSlug}?includeReviews=true`
         )
           .then((res) => {
             if (!res.ok) {
@@ -67,9 +68,7 @@ const useProductData = (productId, productSlug) => {
       else if (productId) {
         setLoading(true);
         // The product ID endpoint is correct: /api/product/:id
-        fetch(
-          `http://localhost:4000/api/product/${productId}?includeReviews=true`
-        )
+        fetch(`${API_BASE_URL}/api/product/${productId}?includeReviews=true`)
           .then((res) => {
             if (!res.ok) {
               throw new Error(

@@ -1,28 +1,19 @@
 import "./Item.css";
 import { Link } from "react-router-dom";
 import { useMemo } from "react";
+import { getImageUrl } from "../../utils/imageUtils";
 
 const Item = (props) => {
   const { images, new_price, old_price, slug, _id, id, name, mainImageIndex } =
     props;
 
-  // Extract the base URL from any product image or use the default API URL
-  const getBaseUrl = useMemo(() => {
+  // Get the main image using our utility function
+  const mainImage = useMemo(() => {
     if (images && images.length > 0) {
-      const sampleUrl = images[0];
-      const urlParts = sampleUrl.split("/");
-      if (urlParts.length >= 3) {
-        return `${urlParts[0]}//${urlParts[2]}`;
-      }
+      return getImageUrl(images[mainImageIndex || 0]);
     }
-    return "http://localhost:4000";
-  }, [images]);
-
-  // Get the main image from images array, or use the first image if available, or fall back to a placeholder
-  const mainImage =
-    images && images.length > 0
-      ? images[mainImageIndex || 0]
-      : `${getBaseUrl}/images/pink-placeholder.png`;
+    return getImageUrl("/images/pink-placeholder.png");
+  }, [images, mainImageIndex]);
 
   // Check if the item has a discount (new_price > 0)
   const hasDiscount = new_price && new_price > 0;

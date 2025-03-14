@@ -15,6 +15,14 @@ const AddProduct = () => {
     old_price: "",
   });
 
+  // Get the API URL from environment variables or fallback to localhost
+  // In some build environments, process might need to be accessed via window
+  const API_URL =
+    (typeof window !== "undefined" &&
+      window.env &&
+      window.env.REACT_APP_API_URL) ||
+    "http://localhost:4000";
+
   const changeHandler = (e) => {
     setProduct({ ...product, [e.target.name]: e.target.value });
   };
@@ -59,7 +67,7 @@ const AddProduct = () => {
 
       // Upload image first
       const uploadResponse = await axios.post(
-        "http://localhost:4000/api/upload",
+        `${API_URL}/api/upload`,
         formData,
         {
           headers: {
@@ -69,7 +77,7 @@ const AddProduct = () => {
       );
 
       if (uploadResponse.data.success) {
-        // Create product with image URL
+        // Create product with image URL - use the relative path returned from the backend
         const productData = {
           ...product,
           image: uploadResponse.data.image_url,
@@ -77,7 +85,7 @@ const AddProduct = () => {
 
         // Add product to database
         const addResponse = await axios.post(
-          "http://localhost:4000/api/add-product",
+          `${API_URL}/api/add-product`,
           productData,
           {
             headers: {

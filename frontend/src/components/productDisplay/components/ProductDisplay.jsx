@@ -5,6 +5,7 @@ import { useContext, useState, useMemo, useCallback, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../../redux/slices/cartSlice";
 import { AuthContext } from "../../../context/AuthContext";
+import { API_BASE_URL } from "../../../utils/imageUtils";
 
 /**
  * Original ProductDisplay component (now located in components directory)
@@ -32,23 +33,16 @@ const ProductDisplay = ({ product }) => {
   const hasDiscount = product.new_price && product.new_price > 0;
 
   // Utility to get the base URL from any product image.
-  const getBaseUrl = useMemo(() => {
-    if (product.images && product.images.length > 0) {
-      const sampleUrl = product.images[0];
-      const urlParts = sampleUrl.split("/");
-      if (urlParts.length >= 3) {
-        return `${urlParts[0]}//${urlParts[2]}`;
-      }
-    }
-    return "http://localhost:4000";
-  }, [product.images]);
+  const getBaseUrl = () => {
+    return API_BASE_URL;
+  };
 
   // Determine the main image based on the selected image index.
   const mainImage = useMemo(() => {
     if (product.images && product.images.length > 0) {
       return product.images[selectedImageIndex];
     }
-    return `${getBaseUrl}/images/pink-placeholder.png`;
+    return `${getBaseUrl()}/images/pink-placeholder.png`;
   }, [product.images, selectedImageIndex, getBaseUrl]);
 
   // Scroll thumbnails to center the selected one
@@ -184,7 +178,7 @@ const ProductDisplay = ({ product }) => {
                 />
               ))
             ) : (
-              <img src={`${getBaseUrl}/images/pink-placeholder.png`} alt="" />
+              <img src={`${getBaseUrl()}/images/pink-placeholder.png`} alt="" />
             )}
           </div>
         </div>

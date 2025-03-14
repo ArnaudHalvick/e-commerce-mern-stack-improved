@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { API_BASE_URL } from "../../../utils/imageUtils";
 
 /**
  * Custom hook for fetching and filtering products by category
@@ -37,48 +38,45 @@ const useCategoryProducts = (category) => {
   const [availableTypes, setAvailableTypes] = useState([]);
 
   // Wrap the filtering and sorting logic in useCallback
-  const applyFiltersAndSort = useCallback(
+  const filterAndSortProducts = useCallback(
     (products) => {
       if (!products || products.length === 0) return;
 
-      let filtered = [...products];
+      let filteredProducts = [...products];
 
-      // Note: No need to filter by category as it's already done by the API
-
-      // Filter by price range
-      const effectiveMax =
-        filters.price.max === 0 ? Infinity : filters.price.max;
-      filtered = filtered.filter((item) => {
+      // Apply price filter
+      const maxPrice = filters.price.max === 0 ? Infinity : filters.price.max;
+      filteredProducts = filteredProducts.filter((item) => {
         const price = item.new_price > 0 ? item.new_price : item.old_price;
-        return price >= filters.price.min && price <= effectiveMax;
+        return price >= filters.price.min && price <= maxPrice;
       });
 
-      // Filter by discount
+      // Apply discount filter
       if (filters.discount) {
-        filtered = filtered.filter(
+        filteredProducts = filteredProducts.filter(
           (item) => item.new_price > 0 && item.new_price < item.old_price
         );
       }
 
-      // Filter by rating
+      // Apply rating filter
       if (filters.rating > 0) {
-        filtered = filtered.filter((item) => {
+        filteredProducts = filteredProducts.filter((item) => {
           const productRating = Number(item.rating || 0);
           return productRating >= filters.rating;
         });
       }
 
-      // Filter by tags
+      // Apply tags filter
       if (filters.tags.length > 0) {
-        filtered = filtered.filter(
+        filteredProducts = filteredProducts.filter(
           (item) =>
             item.tags && filters.tags.some((tag) => item.tags.includes(tag))
         );
       }
 
-      // Filter by types
+      // Apply types filter
       if (filters.types.length > 0) {
-        filtered = filtered.filter(
+        filteredProducts = filteredProducts.filter(
           (item) =>
             item.types &&
             filters.types.some((type) => item.types.includes(type))
@@ -88,31 +86,31 @@ const useCategoryProducts = (category) => {
       // Apply sorting
       switch (sortBy) {
         case "newest":
-          filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+          filteredProducts.sort((a, b) => new Date(b.date) - new Date(a.date));
           break;
         case "price-asc":
-          filtered.sort((a, b) => {
+          filteredProducts.sort((a, b) => {
             const priceA = a.new_price > 0 ? a.new_price : a.old_price;
             const priceB = b.new_price > 0 ? b.new_price : b.old_price;
             return priceA - priceB;
           });
           break;
         case "price-desc":
-          filtered.sort((a, b) => {
+          filteredProducts.sort((a, b) => {
             const priceA = a.new_price > 0 ? a.new_price : a.old_price;
             const priceB = b.new_price > 0 ? b.new_price : b.old_price;
             return priceB - priceA;
           });
           break;
         case "discount":
-          filtered.sort((a, b) => {
+          filteredProducts.sort((a, b) => {
             const discountA = a.old_price - (a.new_price || a.old_price);
             const discountB = b.old_price - (b.new_price || b.old_price);
             return discountB - discountA;
           });
           break;
         case "rating":
-          filtered.sort((a, b) => {
+          filteredProducts.sort((a, b) => {
             const ratingA = Number(a.rating || 0);
             const ratingB = Number(b.rating || 0);
             return ratingB - ratingA;
@@ -123,12 +121,12 @@ const useCategoryProducts = (category) => {
       }
 
       // Calculate total pages
-      setTotalPages(Math.ceil(filtered.length / itemsPerPage));
+      setTotalPages(Math.ceil(filteredProducts.length / itemsPerPage));
 
       // Apply pagination
       const startIndex = (currentPage - 1) * itemsPerPage;
       const endIndex = startIndex + itemsPerPage;
-      const paginatedProducts = filtered.slice(startIndex, endIndex);
+      const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
 
       setDisplayedProducts(paginatedProducts);
     },
@@ -140,9 +138,7 @@ const useCategoryProducts = (category) => {
     setLoading(true);
     setError(null);
 
-    fetch(
-      `http://localhost:4000/api/products/category/${category}?basicInfo=true`
-    )
+    fetch(`${API_BASE_URL}/api/products/category/${category}?basicInfo=true`)
       .then((res) => {
         if (!res.ok) {
           throw new Error(
@@ -168,7 +164,7 @@ const useCategoryProducts = (category) => {
           ]);
 
           // Apply initial filters
-          applyFiltersAndSort(data);
+          filterAndSortProducts(data);
         }
         setLoading(false);
       })
@@ -177,14 +173,14 @@ const useCategoryProducts = (category) => {
         setError(err.message);
         setLoading(false);
       });
-  }, [category, applyFiltersAndSort]);
+  }, [category, filterAndSortProducts]);
 
   // Reapply filters when they change
   useEffect(() => {
     if (allProducts.length > 0) {
-      applyFiltersAndSort(allProducts);
+      filterAndSortProducts(allProducts);
     }
-  }, [allProducts, applyFiltersAndSort]);
+  }, [allProducts, filterAndSortProducts]);
 
   // Handle filter changes
   const handleFilterChange = (filterType, value) => {

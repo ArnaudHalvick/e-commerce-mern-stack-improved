@@ -1,4 +1,5 @@
 import React, { useRef, useCallback, useMemo } from "react";
+import { getImageUrl } from "../../../utils/imageUtils";
 
 /**
  * Component for displaying product images with thumbnails
@@ -20,10 +21,10 @@ const ImageGallery = ({
   // Determine the main image based on the selected image index
   const mainImage = useMemo(() => {
     if (images && images.length > 0) {
-      return images[selectedImageIndex];
+      return getImageUrl(images[selectedImageIndex]);
     }
-    return `${getBaseUrl}/images/pink-placeholder.png`;
-  }, [images, selectedImageIndex, getBaseUrl]);
+    return getImageUrl("/images/pink-placeholder.png");
+  }, [images, selectedImageIndex]);
 
   // Scroll thumbnails to center the selected one
   const scrollToSelectedThumbnail = useCallback(() => {
@@ -65,7 +66,7 @@ const ImageGallery = ({
             images.map((img, index) => (
               <img
                 key={index}
-                src={img}
+                src={getImageUrl(img)}
                 alt=""
                 onClick={() => handleThumbnailClick(index)}
                 className={
@@ -74,7 +75,7 @@ const ImageGallery = ({
               />
             ))
           ) : (
-            <img src={`${getBaseUrl}/images/pink-placeholder.png`} alt="" />
+            <img src={getImageUrl("/images/pink-placeholder.png")} alt="" />
           )}
         </div>
       </div>
