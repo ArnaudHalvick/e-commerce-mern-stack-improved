@@ -176,3 +176,103 @@ As your application grows, consider:
 2. Adding caching (Redis) for frequently accessed data
 3. Implementing database sharding or read replicas
 4. Adopting a microservices architecture for specific functionalities
+
+# Deployment Instructions for E-commerce MERN Stack Application
+
+## Overview
+
+This document outlines the steps to deploy the backend, frontend, and admin applications of the E-commerce MERN stack application to AWS.
+
+### Backend Deployment to Elastic Beanstalk
+
+1. **Sign in to the AWS Management Console**
+
+   - Open your browser and go to [https://console.aws.amazon.com](https://console.aws.amazon.com)
+   - Sign in with your AWS credentials
+
+2. **Navigate to Elastic Beanstalk**
+
+   - In the search bar, type "Elastic Beanstalk" and select it from the services
+
+3. **Create a New Application**
+
+   - Click "Create application"
+   - Enter "ecommerce-mern-app" as the application name
+   - Choose "Node.js" as the platform
+   - Select "Upload your code" and upload the `backend-deploy.zip` file
+   - Click "Create application"
+
+4. **Configure Environment Variables**
+   - After the environment is created, go to "Configuration"
+   - Click on "Software" > "Edit"
+   - Add all the environment variables from your `.env` file:
+     - NODE_ENV=production
+     - MONGODB_URI=your_mongodb_connection_string
+     - ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET, etc.
+   - Save changes
+
+### Frontend Deployment to AWS Amplify
+
+1. **Navigate to AWS Amplify**
+
+   - In the AWS Console search bar, type "Amplify" and select it
+
+2. **Create a New App**
+
+   - Click "Host web app"
+   - Choose "Deploy without Git provider"
+   - Enter "ecommerce-frontend" as the app name
+   - Upload the `frontend-deploy.zip` file
+   - Click "Save and deploy"
+
+3. **Configure Environment Variables**
+   - After the app is created, go to the "Environment variables" section
+   - Add:
+     - REACT_APP_API_URL=https://your-elastic-beanstalk-url.elasticbeanstalk.com
+   - Save
+
+### Admin App Deployment to AWS Amplify
+
+1. **Create a New App in Amplify**
+
+   - Follow the same steps as for the frontend
+   - Enter "ecommerce-admin" as the app name
+   - Upload the `admin-deploy.zip` file
+   - Click "Save and deploy"
+
+2. **Configure Environment Variables**
+   - Add:
+     - VITE_API_URL=https://your-elastic-beanstalk-url.elasticbeanstalk.com
+   - Save
+
+## Important Post-Deployment Steps
+
+1. **Update Backend URLs**
+
+   - After deploying the frontend and admin apps to Amplify, you'll get their URLs
+   - Go to your Elastic Beanstalk environment and update these environment variables:
+     - FRONTEND_URL=https://your-amplify-frontend-url.amplifyapp.com
+     - ADMIN_URL=https://your-amplify-admin-url.amplifyapp.com
+
+2. **Set up Custom Domains (Optional)**
+
+   - In Amplify, go to "Domain management" to set up custom domains
+   - In Elastic Beanstalk, you can set up a custom domain through Route 53
+
+3. **Test Everything**
+   - Make sure all connections work correctly
+   - Test authentication, product listings, cart functionality, etc.
+
+## Monitoring and Maintenance
+
+1. **Set up CloudWatch Alarms**
+
+   - Create alarms for errors and performance issues
+
+2. **Regular Backups**
+
+   - Ensure your MongoDB data is backed up regularly
+
+3. **Check Logs**
+   - Monitor Elastic Beanstalk logs for any backend issues
+   - Monitor Amplify logs for frontend/admin issues
