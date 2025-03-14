@@ -1,16 +1,13 @@
 // backend/models/Product.js
 
 const mongoose = require("mongoose");
+const slugify = require("slugify");
 const { Schema } = mongoose;
 
-// Helper function to generate a slug from a product name
+// Updated slug generator using slugify
 const generateSlug = (name) => {
-  return name
-    .toLowerCase()
-    .replace(/[^\w\s-]/g, "") // Remove special characters
-    .replace(/\s+/g, "-") // Replace spaces with hyphens
-    .replace(/-+/g, "-") // Replace multiple hyphens with a single one
-    .trim(); // Trim leading/trailing whitespace
+  // The options below convert the string to lower case and remove special characters
+  return slugify(name, { lower: true, strict: true });
 };
 
 // Function to ensure slug uniqueness (will be used in pre-save hook)
@@ -59,7 +56,7 @@ const ProductSchema = new mongoose.Schema({
   },
   slug: {
     type: String,
-    required: false, // Changed to false to allow auto-generation during save
+    required: false, // Allow auto-generation during save
     unique: true,
     index: true,
   },
@@ -183,7 +180,7 @@ function arrayLimit(val) {
 ProductSchema.pre("validate", async function (next) {
   if (!this.slug) {
     try {
-      // Generate a base slug from the name
+      // Generate a base slug from the name using slugify
       const baseSlug = generateSlug(this.name);
 
       // Ensure the slug is unique
@@ -199,7 +196,7 @@ ProductSchema.pre("validate", async function (next) {
 ProductSchema.pre("save", async function (next) {
   if (this.isModified("name") && !this.isModified("slug")) {
     try {
-      // Generate a base slug from the name
+      // Generate a base slug from the name using slugify
       const baseSlug = generateSlug(this.name);
 
       // Ensure the slug is unique
