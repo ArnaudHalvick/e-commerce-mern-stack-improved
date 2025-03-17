@@ -23,9 +23,7 @@ const DescriptionBox = ({ product }) => {
   const [activeTab, setActiveTab] = useState("description");
   const dispatch = useDispatch();
 
-  const { bestReviews, loading, error, totalReviews } = useSelector(
-    (state) => state.reviews
-  );
+  const { bestReviews, loading, error } = useSelector((state) => state.reviews);
 
   // Get the review count
   const reviewCount = product && product.reviews ? product.reviews.length : 0;
@@ -59,7 +57,7 @@ const DescriptionBox = ({ product }) => {
       // Fetch counts for star ratings
       dispatch(fetchReviewCounts(product._id));
     }
-  }, [activeTab, product?._id, dispatch, bestReviews.length]);
+  }, [activeTab, product?._id, dispatch, bestReviews]);
 
   return (
     <div className="custom-description-box">
