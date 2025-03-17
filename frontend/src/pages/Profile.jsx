@@ -138,13 +138,12 @@ const Profile = () => {
 
   return (
     <div className="profile-container">
-      <Breadcrumb
-        routes={[{ label: "HOME", path: "/" }, { label: "PROFILE" }]}
-      />
+      <Breadcrumb current="My Profile" />
 
       <div className="profile-content">
-        <h1>Your Profile</h1>
+        <h1 className="profile-title">My Profile</h1>
 
+        {/* Display Messages */}
         {message.text && (
           <div className={`message ${message.type}`}>
             <p>{message.text}</p>
@@ -169,6 +168,7 @@ const Profile = () => {
                 disabled={loading}
               >
                 {loading ? "Sending..." : "Resend Verification Email"}
+                {loading && <span className="loading-spinner"></span>}
               </button>
             )}
           </div>
@@ -178,7 +178,7 @@ const Profile = () => {
           {/* Basic Info Section */}
           <section className="profile-section">
             <div className="section-header">
-              <h2>Basic Information</h2>
+              <h2 className="section-title">Basic Information</h2>
               {!isEditing && (
                 <button
                   className="btn-secondary"
@@ -192,7 +192,9 @@ const Profile = () => {
             {isEditing ? (
               <form onSubmit={handleSubmit}>
                 <div className="form-group">
-                  <label htmlFor="name">Name</label>
+                  <label htmlFor="name" className="form-label">
+                    Name
+                  </label>
                   <input
                     type="text"
                     id="name"
@@ -200,77 +202,96 @@ const Profile = () => {
                     value={formData.name}
                     onChange={handleInputChange}
                     required
+                    className="form-input"
                   />
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="phone">Phone Number</label>
+                  <label htmlFor="phone" className="form-label">
+                    Phone Number
+                  </label>
                   <input
                     type="tel"
                     id="phone"
                     name="phone"
                     value={formData.phone}
                     onChange={handleInputChange}
+                    className="form-input"
                   />
                 </div>
 
-                <h3>Shipping Address</h3>
+                <h3 className="section-title">Shipping Address</h3>
 
                 <div className="form-group">
-                  <label htmlFor="street">Street Address</label>
+                  <label htmlFor="street" className="form-label">
+                    Street Address
+                  </label>
                   <input
                     type="text"
                     id="street"
                     name="address.street"
                     value={formData.address.street}
                     onChange={handleInputChange}
+                    className="form-input"
                   />
                 </div>
 
                 <div className="form-row">
                   <div className="form-group">
-                    <label htmlFor="city">City</label>
+                    <label htmlFor="city" className="form-label">
+                      City
+                    </label>
                     <input
                       type="text"
                       id="city"
                       name="address.city"
                       value={formData.address.city}
                       onChange={handleInputChange}
+                      className="form-input"
                     />
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor="state">State/Province</label>
+                    <label htmlFor="state" className="form-label">
+                      State/Province
+                    </label>
                     <input
                       type="text"
                       id="state"
                       name="address.state"
                       value={formData.address.state}
                       onChange={handleInputChange}
+                      className="form-input"
                     />
                   </div>
                 </div>
 
                 <div className="form-row">
                   <div className="form-group">
-                    <label htmlFor="zipCode">Zip/Postal Code</label>
+                    <label htmlFor="zipCode" className="form-label">
+                      Zip/Postal Code
+                    </label>
                     <input
                       type="text"
                       id="zipCode"
                       name="address.zipCode"
                       value={formData.address.zipCode}
                       onChange={handleInputChange}
+                      className="form-input"
                     />
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor="country">Country</label>
+                    <label htmlFor="country" className="form-label">
+                      Country
+                    </label>
                     <input
                       type="text"
                       id="country"
                       name="address.country"
                       value={formData.address.country}
                       onChange={handleInputChange}
+                      className="form-input"
                     />
                   </div>
                 </div>
@@ -281,7 +302,8 @@ const Profile = () => {
                     className="btn-primary"
                     disabled={loading}
                   >
-                    {loading ? "Saving..." : "Save Changes"}
+                    Save Changes
+                    {loading && <span className="loading-spinner"></span>}
                   </button>
                   <button
                     type="button"
@@ -293,59 +315,71 @@ const Profile = () => {
                 </div>
               </form>
             ) : (
-              <div className="profile-details">
-                <div className="detail-item">
-                  <span className="detail-label">Name:</span>
-                  <span className="detail-value">
-                    {user?.username || "Not provided"}
-                  </span>
+              <>
+                <div className="profile-details">
+                  <div className="detail-item">
+                    <span className="detail-label">Name:</span>
+                    <span className="detail-value">
+                      {user?.username || "Not provided"}
+                    </span>
+                  </div>
+                  <div className="detail-item">
+                    <span className="detail-label">Email:</span>
+                    <span className="detail-value">
+                      {user?.email || "Not provided"}
+                      {user?.isEmailVerified && (
+                        <span className="verified-badge">Verified</span>
+                      )}
+                    </span>
+                  </div>
+                  <div className="detail-item">
+                    <span className="detail-label">Phone:</span>
+                    <span className="detail-value">
+                      {user?.phone || "Not provided"}
+                    </span>
+                  </div>
                 </div>
 
-                <div className="detail-item">
-                  <span className="detail-label">Email:</span>
-                  <span className="detail-value">
-                    {user?.email || "Not provided"}
-                    {user?.isEmailVerified && (
-                      <span className="verified-badge">Verified</span>
-                    )}
-                  </span>
-                </div>
-
-                <div className="detail-item">
-                  <span className="detail-label">Phone:</span>
-                  <span className="detail-value">
-                    {user?.phone || "Not provided"}
-                  </span>
-                </div>
-
-                <h3>Shipping Address</h3>
-
-                {user?.address?.street ? (
+                <h3 className="section-title">Shipping Address</h3>
+                {user?.address &&
+                Object.values(user.address).some((value) => value) ? (
                   <div className="address-details">
-                    <p>{user.address.street}</p>
-                    <p>
-                      {user.address.city}
-                      {user.address.state && `, ${user.address.state}`}{" "}
-                      {user.address.zipCode}
+                    <p className="address-text">
+                      {user.address.street && `${user.address.street}, `}
+                      {user.address.city && `${user.address.city}, `}
+                      {user.address.state && `${user.address.state}, `}
+                      {user.address.zipCode && `${user.address.zipCode}, `}
+                      {user.address.country}
                     </p>
-                    <p>{user.address.country}</p>
                   </div>
                 ) : (
-                  <p className="no-data">No address provided</p>
+                  <p className="no-data">No address information</p>
                 )}
-              </div>
+              </>
             )}
           </section>
 
-          {/* Account Actions */}
+          {/* Account Management Section */}
           <section className="profile-section">
-            <h2>Account Actions</h2>
+            <h2 className="section-title">Account Management</h2>
             <div className="account-actions">
-              <Link to="/cart" className="btn-secondary">
-                View Your Cart
+              <Link to="/change-password" className="btn-secondary">
+                Change Password
               </Link>
-              <button onClick={logout} className="btn-danger">
-                Logout
+              <button
+                className="btn-danger"
+                onClick={() => {
+                  if (
+                    window.confirm(
+                      "Are you sure you want to delete your account? This action cannot be undone."
+                    )
+                  ) {
+                    logout();
+                    navigate("/");
+                  }
+                }}
+              >
+                Delete Account
               </button>
             </div>
           </section>

@@ -19,8 +19,11 @@ const ProductsContent = ({
   return (
     <div className="products-content">
       <div className="offers-filter-bar">
-        <p>
-          <span>Showing {displayRange} </span>of {totalProducts} products
+        <p className="category-filter-text">
+          <span className="category-filter-highlight">
+            Showing {displayRange}{" "}
+          </span>
+          of {totalProducts} products
         </p>
 
         <div className="controls-container">
@@ -28,6 +31,7 @@ const ProductsContent = ({
           <div className="items-per-page">
             Show:
             <select
+              className="items-per-page-select"
               value={itemsPerPage}
               onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
             >
@@ -57,17 +61,34 @@ const ProductsContent = ({
             <img src={dropdown_icon} alt="" />
             {showSortOptions && (
               <div className="sort-options">
-                <div onClick={() => handleSortChange("newest")}>Newest</div>
-                <div onClick={() => handleSortChange("price-asc")}>
+                <div
+                  className="sort-option-item"
+                  onClick={() => handleSortChange("newest")}
+                >
+                  Newest
+                </div>
+                <div
+                  className="sort-option-item"
+                  onClick={() => handleSortChange("price-asc")}
+                >
                   Price: Low to High
                 </div>
-                <div onClick={() => handleSortChange("price-desc")}>
+                <div
+                  className="sort-option-item"
+                  onClick={() => handleSortChange("price-desc")}
+                >
                   Price: High to Low
                 </div>
-                <div onClick={() => handleSortChange("discount")}>
+                <div
+                  className="sort-option-item"
+                  onClick={() => handleSortChange("discount")}
+                >
                   Biggest Discount
                 </div>
-                <div onClick={() => handleSortChange("rating")}>
+                <div
+                  className="sort-option-item"
+                  onClick={() => handleSortChange("rating")}
+                >
                   Highest Rating
                 </div>
               </div>
@@ -94,8 +115,10 @@ const ProductsContent = ({
           ))
         ) : (
           <div className="no-products">
-            <p>No products match your filters.</p>
-            <button onClick={clearAllFilters}>Clear Filters</button>
+            <p className="no-products-text">No products match your filters.</p>
+            <button className="error-button" onClick={clearAllFilters}>
+              Clear Filters
+            </button>
           </div>
         )}
       </div>

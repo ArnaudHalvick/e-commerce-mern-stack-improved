@@ -58,7 +58,7 @@ const Navbar = () => {
     <div className="shop-navbar">
       <Link to="/" className="shop-nav-logo">
         <img src={logo} alt="logo" />
-        <p>SHOPPER</p>
+        <p className="shop-nav-logo-text">SHOPPER</p>
       </Link>
 
       {/* Hamburger Icon for Mobile */}
@@ -66,26 +66,64 @@ const Navbar = () => {
         className="hamburger"
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
       >
-        <span></span>
-        <span></span>
-        <span></span>
+        <span className="hamburger-line"></span>
+        <span className="hamburger-line"></span>
+        <span className="hamburger-line"></span>
       </div>
 
       <ul className={`shop-nav-menu ${isMobileMenuOpen ? "active" : ""}`}>
-        <li onClick={() => handleMenuClick("shop")}>
-          <Link to="/">Home {activeMenu === "shop" && <hr />}</Link>
+        <li
+          className="shop-nav-menu-item"
+          onClick={() => handleMenuClick("shop")}
+        >
+          <Link to="/">
+            Home{" "}
+            {activeMenu === "shop" && (
+              <hr className="shop-nav-menu-indicator" />
+            )}
+          </Link>
         </li>
-        <li onClick={() => handleMenuClick("men")}>
-          <Link to="/men">Men {activeMenu === "men" && <hr />}</Link>
+        <li
+          className="shop-nav-menu-item"
+          onClick={() => handleMenuClick("men")}
+        >
+          <Link to="/men">
+            Men{" "}
+            {activeMenu === "men" && <hr className="shop-nav-menu-indicator" />}
+          </Link>
         </li>
-        <li onClick={() => handleMenuClick("women")}>
-          <Link to="/women">Women {activeMenu === "women" && <hr />}</Link>
+        <li
+          className="shop-nav-menu-item"
+          onClick={() => handleMenuClick("women")}
+        >
+          <Link to="/women">
+            Women{" "}
+            {activeMenu === "women" && (
+              <hr className="shop-nav-menu-indicator" />
+            )}
+          </Link>
         </li>
-        <li onClick={() => handleMenuClick("kids")}>
-          <Link to="/kids">Kids {activeMenu === "kids" && <hr />}</Link>
+        <li
+          className="shop-nav-menu-item"
+          onClick={() => handleMenuClick("kids")}
+        >
+          <Link to="/kids">
+            Kids{" "}
+            {activeMenu === "kids" && (
+              <hr className="shop-nav-menu-indicator" />
+            )}
+          </Link>
         </li>
-        <li onClick={() => handleMenuClick("offers")}>
-          <Link to="/offers">Shop {activeMenu === "offers" && <hr />}</Link>
+        <li
+          className="shop-nav-menu-item"
+          onClick={() => handleMenuClick("offers")}
+        >
+          <Link to="/offers">
+            Shop{" "}
+            {activeMenu === "offers" && (
+              <hr className="shop-nav-menu-indicator" />
+            )}
+          </Link>
         </li>
       </ul>
 
@@ -98,19 +136,29 @@ const Navbar = () => {
             </div>
             {isUserMenuOpen && (
               <div className="user-dropdown">
-                <Link to="/profile" onClick={() => setIsUserMenuOpen(false)}>
+                <Link
+                  to="/profile"
+                  className="user-dropdown-link"
+                  onClick={() => setIsUserMenuOpen(false)}
+                >
                   My Profile
                 </Link>
-                <Link to="/cart" onClick={() => setIsUserMenuOpen(false)}>
+                <Link
+                  to="/cart"
+                  className="user-dropdown-link"
+                  onClick={() => setIsUserMenuOpen(false)}
+                >
                   My Cart
                 </Link>
-                <button onClick={logout}>Logout</button>
+                <button className="user-dropdown-button" onClick={logout}>
+                  Logout
+                </button>
               </div>
             )}
           </div>
         ) : (
           <Link to="/login">
-            <button>Login</button>
+            <button className="shop-nav-button">Login</button>
           </Link>
         )}
         <Link to="/cart">

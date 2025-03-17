@@ -20,7 +20,7 @@
   margin-bottom: 0;
 }
 
-.filter-section h3 {
+.filter-section-title {
   font-size: 1.2rem;
   font-weight: 600;
   margin-bottom: 1rem;
@@ -29,7 +29,7 @@
   align-items: center;
 }
 
-.filter-section h4 {
+.filter-section-subtitle {
   font-size: 1rem;
   font-weight: 500;
   margin-bottom: 0.8rem;
@@ -84,7 +84,7 @@
   padding-left: 25px;
 }
 
-.filter-checkbox input {
+.filter-checkbox-input {
   position: absolute;
   opacity: 0;
   cursor: pointer;
@@ -102,11 +102,11 @@
   border-radius: 3px;
 }
 
-.filter-checkbox:hover input ~ .checkmark {
+.filter-checkbox:hover .filter-checkbox-input ~ .checkmark {
   background-color: #f9f9f9;
 }
 
-.filter-checkbox input:checked ~ .checkmark {
+.filter-checkbox-input:checked ~ .checkmark {
   background-color: #4a00e0;
   border-color: #4a00e0;
 }
@@ -117,7 +117,7 @@
   display: none;
 }
 
-.filter-checkbox input:checked ~ .checkmark:after {
+.filter-checkbox-input:checked ~ .checkmark:after {
   display: block;
 }
 
@@ -137,7 +137,7 @@
   gap: 0.5rem;
 }
 
-.price-inputs input {
+.price-input-field {
   width: 80px;
   padding: 0.5rem;
   border: 1px solid #ccc;
@@ -145,7 +145,7 @@
   font-size: 0.9rem;
 }
 
-.price-inputs span {
+.price-separator {
   color: #555;
 }
 
@@ -197,11 +197,11 @@
     padding: 1rem;
   }
 
-  .filter-section h3 {
+  .filter-section-title {
     font-size: 1.1rem;
   }
 
-  .filter-section h4 {
+  .filter-section-subtitle {
     font-size: 0.95rem;
   }
 
