@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import InfiniteScroll from "react-infinite-scroll-component";
 import ReviewItem from "./ReviewItem";
@@ -9,6 +9,7 @@ import {
   setSortOption,
   closeReviewModal,
   incrementPage,
+  fetchInitialReviews,
 } from "../../../redux/slices/reviewsSlice";
 
 /**
@@ -32,12 +33,19 @@ const ReviewModal = ({ product }) => {
     modalOpen,
   } = useSelector((state) => state.reviews);
 
+  // Track if initial load has happened
+  const [initialLoad, setInitialLoad] = useState(false);
+
   const modalRef = useRef(null);
   const reviewsPerPage = 5;
 
   // Function to fetch more reviews for infinite scrolling
   const fetchMoreData = () => {
     if (loading || !hasMore) return;
+
+    console.log(
+      `Fetching more reviews: page ${currentPage}, rating filter ${ratingFilter}`
+    );
 
     dispatch(
       fetchMoreReviews({
@@ -55,11 +63,13 @@ const ReviewModal = ({ product }) => {
   // Initial fetch when modal opens or filters change
   useEffect(() => {
     if (modalOpen && product?._id) {
-      // Fetch first page of reviews with current filters
+      setInitialLoad(true);
+      console.log(`Initial fetch with rating filter: ${ratingFilter}`);
+
+      // Fetch initial reviews with current filters
       dispatch(
-        fetchMoreReviews({
+        fetchInitialReviews({
           productId: product._id,
-          page: 1,
           limit: reviewsPerPage,
           sort: sortOption,
           ratingFilter,
@@ -92,24 +102,21 @@ const ReviewModal = ({ product }) => {
 
   // Handle rating filter change
   const handleRatingFilter = (rating) => {
-    console.log(`Setting filter to rating: ${rating}`);
-    const numericRating = parseInt(rating);
+    // Make sure we have a valid rating number
+    const newRating = parseInt(rating);
 
-    // Only set filter if it's a valid number
-    if (!isNaN(numericRating)) {
-      dispatch(setRatingFilter(numericRating));
-
-      // Reset to first page when filter changes
-      dispatch(
-        fetchMoreReviews({
-          productId: product._id,
-          page: 1,
-          limit: reviewsPerPage,
-          sort: sortOption,
-          ratingFilter: numericRating === ratingFilter ? 0 : numericRating, // Toggle off if same rating
-        })
-      );
+    if (isNaN(newRating)) {
+      console.error("Invalid rating value:", rating);
+      return;
     }
+
+    // Toggle the filter (if same rating is clicked, clear the filter)
+    const filterToApply = ratingFilter === newRating ? 0 : newRating;
+
+    console.log(`Setting rating filter: ${ratingFilter} → ${filterToApply}`);
+
+    // Update the Redux filter state
+    dispatch(setRatingFilter(filterToApply));
   };
 
   if (!modalOpen) return null;
@@ -141,6 +148,7 @@ const ReviewModal = ({ product }) => {
           <button
             className="close-modal-btn"
             onClick={() => dispatch(closeReviewModal())}
+            aria-label="Close modal"
           >
             ×
           </button>
@@ -158,7 +166,7 @@ const ReviewModal = ({ product }) => {
         </div>
 
         <div id="reviewsContainer" className="modal-reviews-container">
-          {reviews.length === 0 && !loading && !error && (
+          {reviews.length === 0 && initialLoad && !loading && !error && (
             <p className="no-reviews">No reviews match your filter criteria.</p>
           )}
 

@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { reviewsApi } from "../../services/api";
+import axios from "axios";
 
 // Async thunk for fetching initial reviews
 export const fetchInitialReviews = createAsyncThunk(
@@ -15,16 +16,46 @@ export const fetchInitialReviews = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const response = await reviewsApi.getProductReviews(
-        productId,
-        1,
-        limit,
-        sort,
-        ratingFilter,
-        bestRated
+      // Create URL parameters for clean encoding
+      const params = new URLSearchParams();
+      params.append("page", 1); // Initial reviews always start at page 1
+      params.append("limit", limit);
+      params.append("sort", sort);
+
+      // Apply valid rating filters
+      const parsedRating = parseInt(ratingFilter);
+      if (!isNaN(parsedRating) && parsedRating >= 1 && parsedRating <= 5) {
+        params.append("rating", parsedRating);
+        console.log(`Initial reviews: applying rating filter ${parsedRating}`);
+      }
+
+      // Add bestRated parameter if true
+      if (bestRated) {
+        params.append("bestRated", "true");
+      }
+
+      // Construct the URL
+      const url = `/api/reviews/product/${productId}?${params.toString()}`;
+      console.log(`Fetching initial reviews: ${url}`);
+
+      // Use direct axios call to avoid caching issues
+      const response = await axios.get(`http://localhost:4000${url}`, {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+          "auth-token": localStorage.getItem("auth-token"),
+        },
+      });
+
+      console.log(
+        `Received ${response.data.reviews?.length || 0}/${
+          response.data.count
+        } initial reviews`
       );
-      return response;
+
+      return response.data;
     } catch (error) {
+      console.error("Error fetching initial reviews:", error);
       return rejectWithValue(
         typeof error === "string"
           ? error
@@ -42,26 +73,63 @@ export const fetchMoreReviews = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      console.log(`Fetching with filter: ${ratingFilter}`); // Debug log
+      console.log(`Fetching reviews with filter: ${ratingFilter}`);
 
-      // Ensure ratingFilter is properly passed as a number
+      // Create URL parameters object for clean encoding
+      const params = new URLSearchParams();
+      params.append("page", page);
+      params.append("limit", limit);
+      params.append("sort", sort);
+
+      // Apply rating filter if valid
       const parsedRating = parseInt(ratingFilter);
-      const validRatingFilter =
-        !isNaN(parsedRating) && parsedRating > 0 ? parsedRating : 0;
+      if (!isNaN(parsedRating) && parsedRating >= 1 && parsedRating <= 5) {
+        params.append("rating", parsedRating);
+        console.log(`Applied rating filter: ${parsedRating}`);
+      } else {
+        console.log("No rating filter applied");
+      }
 
-      const response = await reviewsApi.getProductReviews(
-        productId,
-        page,
-        limit,
-        sort,
-        validRatingFilter
+      // Construct the URL
+      const url = `/api/reviews/product/${productId}?${params.toString()}`;
+      console.log(`Making direct API request to: ${url}`);
+
+      // Use direct axios call to avoid any caching issues
+      const response = await axios.get(`http://localhost:4000${url}`, {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+          "auth-token": localStorage.getItem("auth-token"),
+        },
+      });
+
+      console.log(
+        `Received ${response.data.reviews?.length || 0}/${
+          response.data.count
+        } reviews`
       );
 
-      // Debug log to verify the response
-      console.log(`Response for rating ${validRatingFilter}:`, response);
+      // Check if the first review (if any) matches the rating filter
+      if (
+        response.data.reviews &&
+        response.data.reviews.length > 0 &&
+        parsedRating >= 1
+      ) {
+        const firstReviewRating = response.data.reviews[0].rating;
+        if (firstReviewRating !== parsedRating) {
+          console.warn(
+            `Warning: First review has rating ${firstReviewRating}, expected ${parsedRating}`
+          );
+        } else {
+          console.log(
+            `Verified: First review has correct rating ${firstReviewRating}`
+          );
+        }
+      }
 
-      return response;
+      return response.data;
     } catch (error) {
+      console.error("Error fetching reviews:", error);
       return rejectWithValue(
         typeof error === "string"
           ? error
@@ -76,39 +144,52 @@ export const fetchReviewCounts = createAsyncThunk(
   "reviews/fetchCounts",
   async (productId, { rejectWithValue }) => {
     try {
-      // Make explicit API calls for each rating to get accurate counts
-      const promises = [1, 2, 3, 4, 5].map(async (rating) => {
+      // Create separate API requests for each rating
+      const countRequests = [1, 2, 3, 4, 5].map(async (rating) => {
+        // For each rating (1-5), make a specific API call using URLSearchParams for clean encoding
+        const params = new URLSearchParams();
+        params.append("page", 1);
+        params.append("limit", 1); // We only need the count, not the actual reviews
+        params.append("rating", rating);
+
+        const url = `/api/reviews/product/${productId}?${params.toString()}`;
+        console.log(`Fetching counts for rating ${rating} with URL: ${url}`);
+
         try {
-          const response = await reviewsApi.getProductReviews(
-            productId,
-            1, // page
-            1, // limit (just need count, not actual reviews)
-            "date-desc",
-            rating // explicitly pass the rating for filtering
-          );
+          // Use direct axios call to avoid any local caching
+          const response = await axios.get(`http://localhost:4000${url}`, {
+            withCredentials: true,
+            headers: {
+              "Content-Type": "application/json",
+              "auth-token": localStorage.getItem("auth-token"),
+            },
+          });
 
-          // Add debug log to verify the response for each rating
-          console.log(`Count for rating ${rating}:`, response.count);
+          // Extract the count from the response
+          const count = response.data?.count || 0;
+          console.log(`Rating ${rating} has ${count} reviews`);
 
-          return { rating, count: response.count };
+          return { rating, count };
         } catch (err) {
-          console.error(`Error fetching count for rating ${rating}:`, err);
-          return { rating, count: 0 }; // Return 0 if there's an error
+          console.error(`Failed to get count for rating ${rating}:`, err);
+          return { rating, count: 0 };
         }
       });
 
-      const results = await Promise.all(promises);
-      console.log("Rating counts results:", results); // For debugging
+      // Wait for all counts to be fetched
+      const countResults = await Promise.all(countRequests);
 
-      // Convert results to an object
-      const counts = results.reduce((acc, { rating, count }) => {
+      // Convert the results to an object
+      const counts = countResults.reduce((acc, { rating, count }) => {
         acc[rating] = count;
         return acc;
       }, {});
 
+      console.log("Final rating counts:", counts);
+
       return counts;
     } catch (error) {
-      console.error("Error fetching rating counts:", error);
+      console.error("Error in fetchReviewCounts:", error);
       return rejectWithValue("Failed to fetch rating counts");
     }
   }
@@ -156,26 +237,29 @@ const reviewsSlice = createSlice({
   reducers: {
     openReviewModal: (state) => {
       state.modalOpen = true;
+      // Reset state for fresh data
+      state.modalReviews = [];
+      state.currentPage = 1;
+      state.hasMore = true;
+      state.error = null;
     },
     closeReviewModal: (state) => {
       state.modalOpen = false;
     },
     setRatingFilter: (state, action) => {
-      const newRating = parseInt(action.payload);
+      const oldFilter = state.ratingFilter;
+      state.ratingFilter = action.payload;
+      state.currentPage = 1; // Reset to first page when filter changes
 
-      // Toggle filter if same rating is selected
-      if (state.ratingFilter === newRating) {
-        state.ratingFilter = 0;
-      } else {
-        state.ratingFilter = newRating;
+      console.log(
+        `Redux: Rating filter changed from ${oldFilter} to ${action.payload}`
+      );
+
+      // Clear reviews when filter changes to prevent showing incorrect data
+      if (oldFilter !== action.payload) {
+        state.modalReviews = [];
+        state.hasMore = true;
       }
-
-      console.log(`Setting rating filter to: ${state.ratingFilter}`);
-
-      // Reset pagination for new filter
-      state.currentPage = 1;
-      state.modalReviews = [];
-      state.hasMore = true;
     },
     setSortOption: (state, action) => {
       state.sortOption = action.payload;
@@ -204,9 +288,24 @@ const reviewsSlice = createSlice({
       })
       .addCase(fetchInitialReviews.fulfilled, (state, action) => {
         state.loading = false;
-        state.bestReviews = action.payload.reviews;
-        state.totalReviews = action.payload.count;
+        // We directly get the data object from axios now
+        const reviews = action.payload.reviews || [];
+
+        // If this is the best reviews request, update bestReviews
+        state.bestReviews = reviews;
+
+        // If modal is open, this is also for the modal, so update modalReviews
+        if (state.modalOpen) {
+          state.modalReviews = reviews;
+        }
+
+        state.totalReviews = action.payload.count || 0;
         state.currentProductId = action.meta.arg.productId;
+        // Reset current page to 1 when initial reviews are loaded
+        state.currentPage = 1;
+        // Set total pages and hasMore
+        state.totalPages = action.payload.totalPages || 0;
+        state.hasMore = state.currentPage < (action.payload.totalPages || 0);
       })
       .addCase(fetchInitialReviews.rejected, (state, action) => {
         state.loading = false;
@@ -221,19 +320,24 @@ const reviewsSlice = createSlice({
       .addCase(fetchMoreReviews.fulfilled, (state, action) => {
         state.loading = false;
 
+        // We directly get the data object from axios now
+        const reviews = action.payload.reviews || [];
+        const totalReviews = action.payload.count || 0;
+        const totalPages = action.payload.totalPages || 0;
+
         // For first page, replace reviews; otherwise append
         if (state.currentPage === 1) {
-          state.modalReviews = action.payload.reviews;
+          state.modalReviews = reviews;
         } else {
-          state.modalReviews = [
-            ...state.modalReviews,
-            ...action.payload.reviews,
-          ];
+          // Avoid duplicates by checking _id
+          const existingIds = new Set(state.modalReviews.map((r) => r._id));
+          const newReviews = reviews.filter((r) => !existingIds.has(r._id));
+          state.modalReviews = [...state.modalReviews, ...newReviews];
         }
 
-        state.totalReviews = action.payload.count;
-        state.totalPages = action.payload.totalPages;
-        state.hasMore = state.currentPage < action.payload.totalPages;
+        state.totalReviews = totalReviews;
+        state.totalPages = totalPages;
+        state.hasMore = state.currentPage < totalPages;
       })
       .addCase(fetchMoreReviews.rejected, (state, action) => {
         state.loading = false;

@@ -160,23 +160,46 @@ export const reviewsApi = {
     bestRated = false
   ) => {
     try {
-      let url = `/api/reviews/product/${productId}?page=${page}&limit=${limit}&sort=${sort}`;
+      // Create a clean params object to ensure proper URL encoding
+      const params = new URLSearchParams();
+      params.append("page", page);
+      params.append("limit", limit);
+      params.append("sort", sort);
 
-      // Add rating filter if provided - ensure rating is properly passed
-      // Only add if ratingFilter is a number > 0
+      // Only add rating if it's valid (1-5)
       const parsedRating = parseInt(ratingFilter);
-      if (!isNaN(parsedRating) && parsedRating > 0) {
-        url += `&rating=${parsedRating}`;
+      if (!isNaN(parsedRating) && parsedRating >= 1 && parsedRating <= 5) {
+        params.append("rating", parsedRating);
+        console.log(`Adding rating filter: ${parsedRating}`);
       }
 
-      // Add best rated parameter if true
+      // Add bestRated if true
       if (bestRated) {
-        url += "&bestRated=true";
+        params.append("bestRated", "true");
       }
 
-      console.log(`Fetching reviews with URL: ${url}`); // For debugging
+      // Construct the URL - using URLSearchParams ensures proper encoding
+      const url = `/api/reviews/product/${productId}?${params.toString()}`;
+      console.log(`Making API request to: ${url}`);
 
+      // Make the API call with axios
       const response = await apiClient.get(url);
+
+      // Log the response summary
+      console.log(
+        `API Response: ${response.data.reviews?.length || 0}/${
+          response.data.count
+        } reviews` +
+          (parsedRating >= 1 && parsedRating <= 5
+            ? ` for rating ${parsedRating}`
+            : "")
+      );
+
+      // Debug: Log the first review's rating to verify filtering
+      if (response.data.reviews && response.data.reviews.length > 0) {
+        console.log(`First review rating: ${response.data.reviews[0].rating}`);
+      }
+
       return response.data;
     } catch (error) {
       console.error("Error fetching reviews:", error);
