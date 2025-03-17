@@ -449,7 +449,7 @@
   white-space: nowrap;
 }
 
-.clear-filter-btn {
+.description-clear-filter-btn {
   padding: 0.3rem 0.6rem;
   background-color: #f5f5f5;
   border: 1px solid #ddd;
@@ -459,23 +459,16 @@
   transition: background-color 0.2s ease;
 }
 
-.clear-filter-btn:hover {
+.description-clear-filter-btn:hover {
   background-color: #e0e0e0;
 }
 
-.sort-options-box {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  white-space: nowrap;
-}
-
-.sort-options-label {
+.description-sort-options-label {
   font-size: 0.9rem;
   color: #666;
 }
 
-.sort-options-select {
+.description-sort-options-select {
   padding: 0.4rem 0.75rem;
   border: 1px solid #ddd;
   border-radius: 0.25rem;

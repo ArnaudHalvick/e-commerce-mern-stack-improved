@@ -164,7 +164,7 @@ const ReviewModal = ({ product }) => {
         ))}
         {ratingFilter > 0 && (
           <button
-            className="clear-filter-btn"
+            className="description-clear-filter-btn"
             onClick={() => handleRatingFilter(0)}
           >
             Clear
@@ -183,12 +183,15 @@ const ReviewModal = ({ product }) => {
           <div className="modal-title-area">
             <h2 className="modal-title">Customer Reviews ({totalReviews})</h2>
             <div className="sort-options-box">
-              <label htmlFor="modal-sort-select" className="sort-options-label">
+              <label
+                htmlFor="modal-sort-select"
+                className="description-sort-options-label"
+              >
                 Sort by:{" "}
               </label>
               <select
                 id="modal-sort-select"
-                className="sort-options-select"
+                className="description-sort-options-select"
                 value={sortOption}
                 onChange={handleSortChange}
               >
