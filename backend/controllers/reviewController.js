@@ -54,6 +54,8 @@ const getProductReviews = async (req, res) => {
       bestRated,
     } = req.query;
 
+    console.log("Request query params:", req.query); // Log request params for debugging
+
     // Calculate skip amount for pagination
     const skip = (parseInt(page) - 1) * parseInt(limit);
 
@@ -99,6 +101,8 @@ const getProductReviews = async (req, res) => {
       }
     }
 
+    console.log("Final MongoDB query:", JSON.stringify(query)); // Log the final query
+
     // Count total reviews for this product with the applied filters
     const totalReviews = await Review.countDocuments(query);
 
@@ -116,6 +120,11 @@ const getProductReviews = async (req, res) => {
 
     // Calculate total pages
     const totalPages = Math.ceil(totalReviews / parseInt(limit));
+
+    // Log the response for debugging
+    console.log(
+      `Found ${reviews.length} reviews with ${totalReviews} total matching the filter`
+    );
 
     res.json({
       success: true,

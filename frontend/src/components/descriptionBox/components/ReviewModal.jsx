@@ -92,7 +92,24 @@ const ReviewModal = ({ product }) => {
 
   // Handle rating filter change
   const handleRatingFilter = (rating) => {
-    dispatch(setRatingFilter(rating));
+    console.log(`Setting filter to rating: ${rating}`);
+    const numericRating = parseInt(rating);
+
+    // Only set filter if it's a valid number
+    if (!isNaN(numericRating)) {
+      dispatch(setRatingFilter(numericRating));
+
+      // Reset to first page when filter changes
+      dispatch(
+        fetchMoreReviews({
+          productId: product._id,
+          page: 1,
+          limit: reviewsPerPage,
+          sort: sortOption,
+          ratingFilter: numericRating === ratingFilter ? 0 : numericRating, // Toggle off if same rating
+        })
+      );
+    }
   };
 
   if (!modalOpen) return null;
@@ -159,8 +176,8 @@ const ReviewModal = ({ product }) => {
             }
             scrollableTarget="reviewsContainer"
           >
-            {reviews.map((review) => (
-              <ReviewItem key={review._id} review={review} />
+            {reviews.map((review, index) => (
+              <ReviewItem key={`${review._id}-${index}`} review={review} />
             ))}
           </InfiniteScroll>
         </div>

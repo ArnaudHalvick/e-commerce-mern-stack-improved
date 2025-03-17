@@ -11,6 +11,12 @@ import star_dull_icon from "../../assets/star_dull_icon.png";
  * @returns {JSX.Element} - Rating filter component
  */
 const ReviewFilterStars = ({ ratingFilter, ratingCounts, onRatingFilter }) => {
+  // Make sure ratingCounts is an object and has expected properties
+  const counts = ratingCounts || { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+
+  // Debug log to verify counts
+  console.log("Rating counts in component:", counts);
+
   return (
     <div className="rating-filters-row">
       {[5, 4, 3, 2, 1].map((rating) => (
@@ -43,7 +49,9 @@ const ReviewFilterStars = ({ ratingFilter, ratingCounts, onRatingFilter }) => {
                 />
               ))}
           </div>
-          <span className="rating-count">({ratingCounts[rating] || 0})</span>
+          <span className="rating-count">
+            ({counts[rating] !== undefined ? counts[rating] : 0})
+          </span>
         </div>
       ))}
       {ratingFilter > 0 && (

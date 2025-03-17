@@ -42,13 +42,24 @@ export const fetchMoreReviews = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
+      console.log(`Fetching with filter: ${ratingFilter}`); // Debug log
+
+      // Ensure ratingFilter is properly passed as a number
+      const parsedRating = parseInt(ratingFilter);
+      const validRatingFilter =
+        !isNaN(parsedRating) && parsedRating > 0 ? parsedRating : 0;
+
       const response = await reviewsApi.getProductReviews(
         productId,
         page,
         limit,
         sort,
-        ratingFilter
+        validRatingFilter
       );
+
+      // Debug log to verify the response
+      console.log(`Response for rating ${validRatingFilter}:`, response);
+
       return response;
     } catch (error) {
       return rejectWithValue(
@@ -67,14 +78,23 @@ export const fetchReviewCounts = createAsyncThunk(
     try {
       // Make explicit API calls for each rating to get accurate counts
       const promises = [1, 2, 3, 4, 5].map(async (rating) => {
-        const response = await reviewsApi.getProductReviews(
-          productId,
-          1, // page
-          1, // limit (just need count, not actual reviews)
-          "date-desc",
-          rating // explicitly pass the rating for filtering
-        );
-        return { rating, count: response.count };
+        try {
+          const response = await reviewsApi.getProductReviews(
+            productId,
+            1, // page
+            1, // limit (just need count, not actual reviews)
+            "date-desc",
+            rating // explicitly pass the rating for filtering
+          );
+
+          // Add debug log to verify the response for each rating
+          console.log(`Count for rating ${rating}:`, response.count);
+
+          return { rating, count: response.count };
+        } catch (err) {
+          console.error(`Error fetching count for rating ${rating}:`, err);
+          return { rating, count: 0 }; // Return 0 if there's an error
+        }
       });
 
       const results = await Promise.all(promises);
@@ -141,9 +161,17 @@ const reviewsSlice = createSlice({
       state.modalOpen = false;
     },
     setRatingFilter: (state, action) => {
+      const newRating = parseInt(action.payload);
+
       // Toggle filter if same rating is selected
-      state.ratingFilter =
-        state.ratingFilter === action.payload ? 0 : action.payload;
+      if (state.ratingFilter === newRating) {
+        state.ratingFilter = 0;
+      } else {
+        state.ratingFilter = newRating;
+      }
+
+      console.log(`Setting rating filter to: ${state.ratingFilter}`);
+
       // Reset pagination for new filter
       state.currentPage = 1;
       state.modalReviews = [];

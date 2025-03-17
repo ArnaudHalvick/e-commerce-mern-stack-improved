@@ -162,9 +162,11 @@ export const reviewsApi = {
     try {
       let url = `/api/reviews/product/${productId}?page=${page}&limit=${limit}&sort=${sort}`;
 
-      // Add rating filter if provided (must be explicitly converted to a number for API)
-      if (ratingFilter && parseInt(ratingFilter) > 0) {
-        url += `&rating=${parseInt(ratingFilter)}`;
+      // Add rating filter if provided - ensure rating is properly passed
+      // Only add if ratingFilter is a number > 0
+      const parsedRating = parseInt(ratingFilter);
+      if (!isNaN(parsedRating) && parsedRating > 0) {
+        url += `&rating=${parsedRating}`;
       }
 
       // Add best rated parameter if true
