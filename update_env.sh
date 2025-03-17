@@ -1,3 +1,20 @@
+#!/bin/bash
+
+# Update frontend .env for production
+cat > frontend/.env << EOL
+# API URL for production
+REACT_APP_API_URL=http://159.65.230.12
+EOL
+
+# Update admin .env for production
+cat > admin/.env << EOL
+# API URL for production
+VITE_API_URL=http://159.65.230.12
+EOL
+
+# Update backend CORS settings in index.js by directly editing the file
+echo "Updating CORS settings in backend/index.js"
+cat > backend/index.js.new << EOL
 // backend/index.js
 
 require("dotenv").config(); // Load environment variables from .env file
@@ -90,5 +107,11 @@ app.listen(port, (error) => {
     console.error("Error starting server:", error);
     process.exit(1);
   }
-  console.log();
+  console.log(`Server running on port ${port}`);
 });
+EOL
+
+# Replace the old file with the new one
+mv backend/index.js.new backend/index.js
+
+echo "Environment files updated successfully for IP: 159.65.230.12" 
