@@ -29,9 +29,6 @@ const ReviewFilterStars = ({ ratingFilter, ratingCounts, onRatingFilter }) => {
 
   const counts = ensureValidCounts();
 
-  // Check if we have any valid counts to display
-  const hasValidCounts = Object.values(counts).some((count) => count > 0);
-
   return (
     <div className="rating-filters-row">
       {[5, 4, 3, 2, 1].map((rating) => {
