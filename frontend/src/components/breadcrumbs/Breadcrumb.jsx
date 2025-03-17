@@ -15,7 +15,7 @@ import React from "react";
 const Breadcrumb = ({ routes = [] }) => {
   // If no routes provided, show at least HOME
   if (!routes || routes.length === 0) {
-    routes = [{ label: "HOME", path: "/" }];
+    routes = [{ label: "Home", path: "/" }];
   }
 
   return (

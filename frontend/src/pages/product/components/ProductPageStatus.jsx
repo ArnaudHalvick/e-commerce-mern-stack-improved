@@ -19,9 +19,8 @@ const ProductPageStatus = ({ loading, error }) => {
     <div>
       <Breadcrumb
         routes={[
-          { label: "HOME", path: "/" },
-          { label: "SHOP", path: "/" },
-          { label: loading ? "LOADING PRODUCT" : "PRODUCT ERROR" },
+          { label: "Home", path: "/" },
+          { label: loading ? "Loading Product" : "Product Error" },
         ]}
       />
 

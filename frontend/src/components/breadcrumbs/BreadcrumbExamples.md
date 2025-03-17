@@ -9,7 +9,7 @@ import Breadcrumb from "../components/breadcrumbs/breadcrumb";
 
 // Simple breadcrumb with just HOME and current page
 <Breadcrumb
-  routes={[{ label: "HOME", path: "/" }, { label: "CURRENT PAGE" }]}
+  routes={[{ label: "Home", path: "/" }, { label: "CURRENT PAGE" }]}
 />;
 ```
 
@@ -21,8 +21,7 @@ import Breadcrumb from "../components/breadcrumbs/breadcrumb";
 // Product page breadcrumb with category and product name
 <Breadcrumb
   routes={[
-    { label: "HOME", path: "/" },
-    { label: "SHOP", path: "/" },
+    { label: "Home", path: "/" },
     { label: product.category, path: `/${product.category.toLowerCase()}` },
     { label: product.name },
   ]}
@@ -35,13 +34,7 @@ import Breadcrumb from "../components/breadcrumbs/breadcrumb";
 import Breadcrumb from "../components/breadcrumbs/breadcrumb";
 
 // Category page breadcrumb
-<Breadcrumb
-  routes={[
-    { label: "HOME", path: "/" },
-    { label: "SHOP", path: "/" },
-    { label: category },
-  ]}
-/>;
+<Breadcrumb routes={[{ label: "Home", path: "/" }, { label: category }]} />;
 ```
 
 ## Cart Page Example
@@ -50,13 +43,7 @@ import Breadcrumb from "../components/breadcrumbs/breadcrumb";
 import Breadcrumb from "../components/breadcrumbs/breadcrumb";
 
 // Cart page breadcrumb
-<Breadcrumb
-  routes={[
-    { label: "HOME", path: "/" },
-    { label: "SHOP", path: "/" },
-    { label: "CART" },
-  ]}
-/>;
+<Breadcrumb routes={[{ label: "Home", path: "/" }, { label: "Cart" }]} />;
 ```
 
 ## Auth Page Example
@@ -67,7 +54,7 @@ import Breadcrumb from "../components/breadcrumbs/breadcrumb";
 // Auth page breadcrumb
 <Breadcrumb
   routes={[
-    { label: "HOME", path: "/" },
+    { label: "Home", path: "/" },
     { label: state }, // state could be "Login" or "Signup"
   ]}
 />;

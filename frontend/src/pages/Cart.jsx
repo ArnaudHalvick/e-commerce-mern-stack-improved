@@ -12,13 +12,7 @@ import "./CSS/Cart.css";
 const Cart = () => {
   return (
     <>
-      <Breadcrumb
-        routes={[
-          { label: "HOME", path: "/" },
-          { label: "SHOP", path: "/" },
-          { label: "CART" },
-        ]}
-      />
+      <Breadcrumb routes={[{ label: "Home", path: "/" }, { label: "Cart" }]} />
       <h1 className="cart-page-title">Your Shopping Cart</h1>
       <CartItems />
     </>

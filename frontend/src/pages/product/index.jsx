@@ -30,9 +30,8 @@ const Product = () => {
       <div>
         <Breadcrumb
           routes={[
-            { label: "HOME", path: "/" },
-            { label: "SHOP", path: "/" },
-            { label: "PRODUCT NOT FOUND" },
+            { label: "Home", path: "/" },
+            { label: "Product Not Found" },
           ]}
         />
         <EmptyState
@@ -60,8 +59,7 @@ const Product = () => {
     <div>
       <Breadcrumb
         routes={[
-          { label: "HOME", path: "/" },
-          { label: "SHOP", path: "/" },
+          { label: "Home", path: "/" },
           {
             label: product.category,
             path: `/${product.category.toLowerCase()}`,

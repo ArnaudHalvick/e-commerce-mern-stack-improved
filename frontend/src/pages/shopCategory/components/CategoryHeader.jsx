@@ -10,13 +10,7 @@ import Breadcrumb from "../../../components/breadcrumbs/Breadcrumb";
  */
 const CategoryHeader = ({ category, banner }) => (
   <>
-    <Breadcrumb
-      routes={[
-        { label: "HOME", path: "/" },
-        { label: "SHOP", path: "/" },
-        { label: category },
-      ]}
-    />
+    <Breadcrumb routes={[{ label: "Home", path: "/" }, { label: category }]} />
     <img
       className="category-banner"
       src={banner}
