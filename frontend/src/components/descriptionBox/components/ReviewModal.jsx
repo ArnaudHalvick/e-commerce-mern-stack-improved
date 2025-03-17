@@ -13,6 +13,26 @@ import {
 } from "../../../redux/slices/reviewsSlice";
 
 /**
+ * Skeleton loader for review items
+ * @returns {JSX.Element} - Skeleton review component
+ */
+const ReviewSkeleton = () => {
+  return (
+    <div className="review-skeleton">
+      <div className="review-skeleton-header">
+        <div className="review-skeleton-user"></div>
+        <div className="review-skeleton-stars"></div>
+      </div>
+      <div className="review-skeleton-content">
+        <div className="review-skeleton-line"></div>
+        <div className="review-skeleton-line"></div>
+        <div className="review-skeleton-line short"></div>
+      </div>
+    </div>
+  );
+};
+
+/**
  * Modal component for viewing all reviews
  * @param {object} props - Component props
  * @param {object} props.product - Product object
@@ -43,10 +63,6 @@ const ReviewModal = ({ product }) => {
   const fetchMoreData = () => {
     if (loading || !hasMore) return;
 
-    console.log(
-      `Fetching more reviews: page ${currentPage}, rating filter ${ratingFilter}`
-    );
-
     dispatch(
       fetchMoreReviews({
         productId: product._id,
@@ -64,7 +80,6 @@ const ReviewModal = ({ product }) => {
   useEffect(() => {
     if (modalOpen && product?._id) {
       setInitialLoad(true);
-      console.log(`Initial fetch with rating filter: ${ratingFilter}`);
 
       // Fetch initial reviews with current filters
       dispatch(
@@ -122,17 +137,21 @@ const ReviewModal = ({ product }) => {
     const newRating = parseInt(rating);
 
     if (isNaN(newRating)) {
-      console.error("Invalid rating value:", rating);
       return;
     }
 
     // Toggle the filter (if same rating is clicked, clear the filter)
     const filterToApply = ratingFilter === newRating ? 0 : newRating;
 
-    console.log(`Setting rating filter: ${ratingFilter} → ${filterToApply}`);
-
     // Update the Redux filter state
     dispatch(setRatingFilter(filterToApply));
+  };
+
+  // Function to render skeleton loaders
+  const renderSkeletons = () => {
+    return Array(3)
+      .fill(0)
+      .map((_, index) => <ReviewSkeleton key={index} />);
   };
 
   if (!modalOpen) return null;
@@ -183,6 +202,10 @@ const ReviewModal = ({ product }) => {
         </div>
 
         <div id="reviewsContainer" className="modal-reviews-container">
+          {/* Show skeletons during initial loading */}
+          {loading && reviews.length === 0 && renderSkeletons()}
+
+          {/* Show "no reviews" message only when we're sure there are none */}
           {reviews.length === 0 && initialLoad && !loading && !error && (
             <p className="no-reviews">No reviews match your filter criteria.</p>
           )}

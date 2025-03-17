@@ -54,8 +54,6 @@ const getProductReviews = async (req, res) => {
       bestRated,
     } = req.query;
 
-    console.log("Request query params:", req.query); // Log request params for debugging
-
     // Calculate skip amount for pagination
     const skip = (parseInt(page) - 1) * parseInt(limit);
 
@@ -97,11 +95,8 @@ const getProductReviews = async (req, res) => {
       // Make sure rating is a valid number between 1-5
       if (!isNaN(parsedRating) && parsedRating >= 1 && parsedRating <= 5) {
         query.rating = parsedRating;
-        console.log(`Filtering by rating: ${parsedRating}`);
       }
     }
-
-    console.log("Final MongoDB query:", JSON.stringify(query)); // Log the final query
 
     // Count total reviews for this product with the applied filters
     const totalReviews = await Review.countDocuments(query);
@@ -121,11 +116,6 @@ const getProductReviews = async (req, res) => {
     // Calculate total pages
     const totalPages = Math.ceil(totalReviews / parseInt(limit));
 
-    // Log the response for debugging
-    console.log(
-      `Found ${reviews.length} reviews with ${totalReviews} total matching the filter`
-    );
-
     res.json({
       success: true,
       count: totalReviews,
@@ -134,7 +124,6 @@ const getProductReviews = async (req, res) => {
       reviews,
     });
   } catch (error) {
-    console.error("Error fetching reviews:", error);
     res.status(500).json({
       success: false,
       message: "Server error",

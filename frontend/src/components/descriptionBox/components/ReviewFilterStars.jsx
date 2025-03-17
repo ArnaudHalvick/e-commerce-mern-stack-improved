@@ -32,12 +32,6 @@ const ReviewFilterStars = ({ ratingFilter, ratingCounts, onRatingFilter }) => {
   // Check if we have any valid counts to display
   const hasValidCounts = Object.values(counts).some((count) => count > 0);
 
-  if (!hasValidCounts) {
-    console.warn("No valid review counts available");
-  } else {
-    console.log("Display counts:", counts);
-  }
-
   return (
     <div className="rating-filters-row">
       {[5, 4, 3, 2, 1].map((rating) => {

@@ -38,13 +38,14 @@ const DescriptionBox = ({ product }) => {
   // Fetch best reviews and review counts when the product changes or the active tab changes to reviews
   useEffect(() => {
     if (activeTab === "reviews" && product?._id) {
-      // Fetch initial best reviews
+      // Fetch initial best reviews - always use ratingFilter: 0 for the initial reviews
+      // to ensure they are not affected by modal filters
       dispatch(
         fetchInitialReviews({
           productId: product._id,
           limit: 5,
           sort: "rating-desc",
-          ratingFilter: 0,
+          ratingFilter: 0, // Always use 0 here, not from Redux state
           bestRated: true,
         })
       );

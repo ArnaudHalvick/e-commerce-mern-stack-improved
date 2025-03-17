@@ -26,7 +26,6 @@ export const fetchInitialReviews = createAsyncThunk(
       const parsedRating = parseInt(ratingFilter);
       if (!isNaN(parsedRating) && parsedRating >= 1 && parsedRating <= 5) {
         params.append("rating", parsedRating);
-        console.log(`Initial reviews: applying rating filter ${parsedRating}`);
       }
 
       // Add bestRated parameter if true
@@ -36,7 +35,6 @@ export const fetchInitialReviews = createAsyncThunk(
 
       // Construct the URL
       const url = `/api/reviews/product/${productId}?${params.toString()}`;
-      console.log(`Fetching initial reviews: ${url}`);
 
       // Use direct axios call to avoid caching issues
       const response = await axios.get(`http://localhost:4000${url}`, {
@@ -47,15 +45,8 @@ export const fetchInitialReviews = createAsyncThunk(
         },
       });
 
-      console.log(
-        `Received ${response.data.reviews?.length || 0}/${
-          response.data.count
-        } initial reviews`
-      );
-
       return response.data;
     } catch (error) {
-      console.error("Error fetching initial reviews:", error);
       return rejectWithValue(
         typeof error === "string"
           ? error
@@ -73,8 +64,6 @@ export const fetchMoreReviews = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      console.log(`Fetching reviews with filter: ${ratingFilter}`);
-
       // Create URL parameters object for clean encoding
       const params = new URLSearchParams();
       params.append("page", page);
@@ -85,14 +74,10 @@ export const fetchMoreReviews = createAsyncThunk(
       const parsedRating = parseInt(ratingFilter);
       if (!isNaN(parsedRating) && parsedRating >= 1 && parsedRating <= 5) {
         params.append("rating", parsedRating);
-        console.log(`Applied rating filter: ${parsedRating}`);
-      } else {
-        console.log("No rating filter applied");
       }
 
       // Construct the URL
       const url = `/api/reviews/product/${productId}?${params.toString()}`;
-      console.log(`Making direct API request to: ${url}`);
 
       // Use direct axios call to avoid any caching issues
       const response = await axios.get(`http://localhost:4000${url}`, {
@@ -103,33 +88,8 @@ export const fetchMoreReviews = createAsyncThunk(
         },
       });
 
-      console.log(
-        `Received ${response.data.reviews?.length || 0}/${
-          response.data.count
-        } reviews`
-      );
-
-      // Check if the first review (if any) matches the rating filter
-      if (
-        response.data.reviews &&
-        response.data.reviews.length > 0 &&
-        parsedRating >= 1
-      ) {
-        const firstReviewRating = response.data.reviews[0].rating;
-        if (firstReviewRating !== parsedRating) {
-          console.warn(
-            `Warning: First review has rating ${firstReviewRating}, expected ${parsedRating}`
-          );
-        } else {
-          console.log(
-            `Verified: First review has correct rating ${firstReviewRating}`
-          );
-        }
-      }
-
       return response.data;
     } catch (error) {
-      console.error("Error fetching reviews:", error);
       return rejectWithValue(
         typeof error === "string"
           ? error
@@ -153,7 +113,6 @@ export const fetchReviewCounts = createAsyncThunk(
         params.append("rating", rating);
 
         const url = `/api/reviews/product/${productId}?${params.toString()}`;
-        console.log(`Fetching counts for rating ${rating} with URL: ${url}`);
 
         try {
           // Use direct axios call to avoid any local caching
@@ -167,11 +126,9 @@ export const fetchReviewCounts = createAsyncThunk(
 
           // Extract the count from the response
           const count = response.data?.count || 0;
-          console.log(`Rating ${rating} has ${count} reviews`);
 
           return { rating, count };
         } catch (err) {
-          console.error(`Failed to get count for rating ${rating}:`, err);
           return { rating, count: 0 };
         }
       });
@@ -185,11 +142,8 @@ export const fetchReviewCounts = createAsyncThunk(
         return acc;
       }, {});
 
-      console.log("Final rating counts:", counts);
-
       return counts;
     } catch (error) {
-      console.error("Error in fetchReviewCounts:", error);
       return rejectWithValue("Failed to fetch rating counts");
     }
   }
@@ -245,15 +199,13 @@ const reviewsSlice = createSlice({
     },
     closeReviewModal: (state) => {
       state.modalOpen = false;
+      // Reset rating filter to 0 when modal closes
+      state.ratingFilter = 0;
     },
     setRatingFilter: (state, action) => {
       const oldFilter = state.ratingFilter;
       state.ratingFilter = action.payload;
       state.currentPage = 1; // Reset to first page when filter changes
-
-      console.log(
-        `Redux: Rating filter changed from ${oldFilter} to ${action.payload}`
-      );
 
       // Clear reviews when filter changes to prevent showing incorrect data
       if (oldFilter !== action.payload) {
@@ -273,6 +225,7 @@ const reviewsSlice = createSlice({
       return {
         ...initialState,
         currentProductId: state.currentProductId,
+        ratingFilter: 0, // Explicitly reset to ensure initial reviews are unfiltered
       };
     },
     incrementPage: (state) => {
