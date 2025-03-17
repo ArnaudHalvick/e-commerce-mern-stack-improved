@@ -89,9 +89,14 @@ const getProductReviews = async (req, res) => {
     // Build query based on filters
     const query = { product: productId };
 
-    // Add rating filter if provided - ensure it's parsed as an integer
-    if (rating && !isNaN(parseInt(rating))) {
-      query.rating = parseInt(rating);
+    // Add rating filter if provided - ensure it's properly parsed as an integer
+    if (rating) {
+      const parsedRating = parseInt(rating);
+      // Make sure rating is a valid number between 1-5
+      if (!isNaN(parsedRating) && parsedRating >= 1 && parsedRating <= 5) {
+        query.rating = parsedRating;
+        console.log(`Filtering by rating: ${parsedRating}`);
+      }
     }
 
     // Count total reviews for this product with the applied filters

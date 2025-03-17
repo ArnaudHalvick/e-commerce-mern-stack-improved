@@ -162,8 +162,8 @@ export const reviewsApi = {
     try {
       let url = `/api/reviews/product/${productId}?page=${page}&limit=${limit}&sort=${sort}`;
 
-      // Add rating filter if provided - ensure it's a number
-      if (ratingFilter > 0 && !isNaN(parseInt(ratingFilter))) {
+      // Add rating filter if provided (must be explicitly converted to a number for API)
+      if (ratingFilter && parseInt(ratingFilter) > 0) {
         url += `&rating=${parseInt(ratingFilter)}`;
       }
 
@@ -171,6 +171,8 @@ export const reviewsApi = {
       if (bestRated) {
         url += "&bestRated=true";
       }
+
+      console.log(`Fetching reviews with URL: ${url}`); // For debugging
 
       const response = await apiClient.get(url);
       return response.data;

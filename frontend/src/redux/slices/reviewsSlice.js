@@ -65,14 +65,20 @@ export const fetchReviewCounts = createAsyncThunk(
   "reviews/fetchCounts",
   async (productId, { rejectWithValue }) => {
     try {
-      // Make API calls to get counts for each rating
-      const promises = [1, 2, 3, 4, 5].map((rating) =>
-        reviewsApi
-          .getProductReviews(productId, 1, 1, "date-desc", rating)
-          .then((data) => ({ rating, count: data.count }))
-      );
+      // Make explicit API calls for each rating to get accurate counts
+      const promises = [1, 2, 3, 4, 5].map(async (rating) => {
+        const response = await reviewsApi.getProductReviews(
+          productId,
+          1, // page
+          1, // limit (just need count, not actual reviews)
+          "date-desc",
+          rating // explicitly pass the rating for filtering
+        );
+        return { rating, count: response.count };
+      });
 
       const results = await Promise.all(promises);
+      console.log("Rating counts results:", results); // For debugging
 
       // Convert results to an object
       const counts = results.reduce((acc, { rating, count }) => {
@@ -82,6 +88,7 @@ export const fetchReviewCounts = createAsyncThunk(
 
       return counts;
     } catch (error) {
+      console.error("Error fetching rating counts:", error);
       return rejectWithValue("Failed to fetch rating counts");
     }
   }
