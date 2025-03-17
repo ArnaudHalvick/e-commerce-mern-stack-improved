@@ -46,7 +46,13 @@ const addReview = async (req, res) => {
 const getProductReviews = async (req, res) => {
   try {
     const { productId } = req.params;
-    const { page = 1, limit = 5, sort = "date-desc" } = req.query;
+    const {
+      page = 1,
+      limit = 5,
+      sort = "date-desc",
+      rating,
+      bestRated,
+    } = req.query;
 
     // Calculate skip amount for pagination
     const skip = (parseInt(page) - 1) * parseInt(limit);
@@ -80,11 +86,24 @@ const getProductReviews = async (req, res) => {
       });
     }
 
-    // Count total reviews for this product
-    const totalReviews = await Review.countDocuments({ product: productId });
+    // Build query based on filters
+    const query = { product: productId };
+
+    // Add rating filter if provided - ensure it's parsed as an integer
+    if (rating && !isNaN(parseInt(rating))) {
+      query.rating = parseInt(rating);
+    }
+
+    // Count total reviews for this product with the applied filters
+    const totalReviews = await Review.countDocuments(query);
+
+    // If bestRated is true, sort by rating in descending order
+    if (bestRated === "true") {
+      sortOption = { rating: -1 };
+    }
 
     // Get paginated and sorted reviews
-    const reviews = await Review.find({ product: productId })
+    const reviews = await Review.find(query)
       .populate("user", "name") // Only get required user fields, no avatar
       .sort(sortOption)
       .skip(skip)

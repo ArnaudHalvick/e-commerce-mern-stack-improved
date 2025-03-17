@@ -147,18 +147,32 @@ export const reviewsApi = {
    * @param {number} page - Page number for pagination
    * @param {number} limit - Number of reviews per page
    * @param {string} sort - Sort option (date-desc, date-asc, rating-desc, rating-asc)
+   * @param {number} ratingFilter - Optional filter for ratings (1-5, 0 for all)
+   * @param {boolean} bestRated - If true, returns the best rated reviews first
    * @returns {Promise} - Promise that resolves to reviews data
    */
   getProductReviews: async (
     productId,
     page = 1,
     limit = 5,
-    sort = "date-desc"
+    sort = "date-desc",
+    ratingFilter = 0,
+    bestRated = false
   ) => {
     try {
-      const response = await apiClient.get(
-        `/api/reviews/product/${productId}?page=${page}&limit=${limit}&sort=${sort}`
-      );
+      let url = `/api/reviews/product/${productId}?page=${page}&limit=${limit}&sort=${sort}`;
+
+      // Add rating filter if provided - ensure it's a number
+      if (ratingFilter > 0 && !isNaN(parseInt(ratingFilter))) {
+        url += `&rating=${parseInt(ratingFilter)}`;
+      }
+
+      // Add best rated parameter if true
+      if (bestRated) {
+        url += "&bestRated=true";
+      }
+
+      const response = await apiClient.get(url);
       return response.data;
     } catch (error) {
       console.error("Error fetching reviews:", error);
