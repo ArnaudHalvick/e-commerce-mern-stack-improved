@@ -17,7 +17,7 @@
 }
 
 .item-container img:hover {
-  transform: scale(1.03);
+  transform: scale(1.01);
 }
 
 .item-container p {
@@ -65,6 +65,6 @@
 }
 
 .item-container:hover {
-  transform: scale(1.05);
+  transform: scale(1.01);
   transition: 0.6s;
 }
