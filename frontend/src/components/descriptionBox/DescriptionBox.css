@@ -330,6 +330,7 @@
   z-index: 1000;
   overflow-y: auto;
   padding: 1rem;
+  touch-action: none; /* Prevent touch events outside the modal */
 }
 
 .review-modal {
@@ -342,6 +343,7 @@
   flex-direction: column;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   position: relative;
+  overflow: hidden; /* Ensure content doesn't overflow the modal */
 }
 
 .modal-header {
@@ -477,9 +479,11 @@
 }
 
 .modal-reviews-container {
-  padding: 1.5rem;
+  padding: 1rem 1.5rem;
+  flex-grow: 1;
   overflow-y: auto;
-  max-height: 65vh;
+  max-height: 60vh; /* Limit height to ensure modal fits viewport */
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -539,4 +543,12 @@
     max-height: 60vh;
     padding: 1rem;
   }
+}
+
+/* Prevent scrolling when modal is open */
+body.modal-open {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  height: 100%;
 }

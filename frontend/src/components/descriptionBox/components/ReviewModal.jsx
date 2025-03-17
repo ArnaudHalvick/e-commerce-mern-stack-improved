@@ -78,6 +78,22 @@ const ReviewModal = ({ product }) => {
     }
   }, [modalOpen, product?._id, sortOption, ratingFilter, dispatch]);
 
+  // Add body class when modal opens to prevent scrolling and clean up when it closes
+  useEffect(() => {
+    if (modalOpen) {
+      // Add class to body to prevent scrolling
+      document.body.classList.add("modal-open");
+    } else {
+      // Remove class when modal closes
+      document.body.classList.remove("modal-open");
+    }
+
+    // Clean up when component unmounts
+    return () => {
+      document.body.classList.remove("modal-open");
+    };
+  }, [modalOpen]);
+
   // Close modal when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
