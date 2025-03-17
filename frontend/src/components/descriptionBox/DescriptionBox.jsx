@@ -38,22 +38,28 @@ const DescriptionBox = ({ product }) => {
   // Fetch best reviews and review counts when the product changes or the active tab changes to reviews
   useEffect(() => {
     if (activeTab === "reviews" && product?._id) {
-      // Fetch initial best reviews - always use ratingFilter: 0 for the initial reviews
-      // to ensure they are not affected by modal filters
-      dispatch(
-        fetchInitialReviews({
-          productId: product._id,
-          limit: 5,
-          sort: "rating-desc",
-          ratingFilter: 0, // Always use 0 here, not from Redux state
-          bestRated: true,
-        })
-      );
+      // Check if we already have initial best reviews
+      const alreadyHasBestReviews = bestReviews && bestReviews.length > 0;
+
+      // Only fetch initial best reviews if we don't have them yet
+      if (!alreadyHasBestReviews) {
+        // Fetch initial best reviews - always use ratingFilter: 0 for the initial reviews
+        // to ensure they are not affected by modal filters
+        dispatch(
+          fetchInitialReviews({
+            productId: product._id,
+            limit: 5,
+            sort: "rating-desc",
+            ratingFilter: 0, // Always use 0 here, not from Redux state
+            bestRated: true,
+          })
+        );
+      }
 
       // Fetch counts for star ratings
       dispatch(fetchReviewCounts(product._id));
     }
-  }, [activeTab, product?._id, dispatch]);
+  }, [activeTab, product?._id, dispatch, bestReviews.length]);
 
   return (
     <div className="custom-description-box">
@@ -72,7 +78,7 @@ const DescriptionBox = ({ product }) => {
           }`}
           onClick={() => setActiveTab("reviews")}
         >
-          Reviews ({totalReviews || reviewCount})
+          Reviews ({reviewCount})
         </div>
       </div>
 
@@ -85,7 +91,7 @@ const DescriptionBox = ({ product }) => {
             reviews={bestReviews}
             loading={loading}
             error={error}
-            totalReviews={totalReviews}
+            reviewCount={reviewCount}
           />
           <ReviewModal product={product} />
         </>

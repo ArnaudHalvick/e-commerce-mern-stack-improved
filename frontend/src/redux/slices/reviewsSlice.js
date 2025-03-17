@@ -152,6 +152,8 @@ export const fetchReviewCounts = createAsyncThunk(
 const initialState = {
   // Best reviews for product page
   bestReviews: [],
+  // Initial best reviews that never change
+  initialBestReviews: [],
   // Modal reviews with infinite scroll
   modalReviews: [],
 
@@ -201,6 +203,10 @@ const reviewsSlice = createSlice({
       state.modalOpen = false;
       // Reset rating filter to 0 when modal closes
       state.ratingFilter = 0;
+      // Restore best reviews to initial values
+      if (state.initialBestReviews.length > 0) {
+        state.bestReviews = [...state.initialBestReviews];
+      }
     },
     setRatingFilter: (state, action) => {
       const oldFilter = state.ratingFilter;
@@ -221,11 +227,16 @@ const reviewsSlice = createSlice({
       state.hasMore = true;
     },
     resetReviewsState: (state) => {
-      // Reset everything except currentProductId
+      // Reset everything except currentProductId and initialBestReviews
       return {
         ...initialState,
         currentProductId: state.currentProductId,
         ratingFilter: 0, // Explicitly reset to ensure initial reviews are unfiltered
+        initialBestReviews: state.initialBestReviews,
+        bestReviews:
+          state.initialBestReviews.length > 0
+            ? [...state.initialBestReviews]
+            : [],
       };
     },
     incrementPage: (state) => {
@@ -244,12 +255,16 @@ const reviewsSlice = createSlice({
         // We directly get the data object from axios now
         const reviews = action.payload.reviews || [];
 
-        // If this is the best reviews request, update bestReviews
-        state.bestReviews = reviews;
-
-        // If modal is open, this is also for the modal, so update modalReviews
-        if (state.modalOpen) {
+        // If bestRated is true, this is for the initial best reviews that should never change
+        if (action.meta.arg.bestRated) {
+          state.bestReviews = reviews;
+          state.initialBestReviews = reviews;
+        } else if (state.modalOpen) {
+          // If modal is open, this is for the modal only
           state.modalReviews = reviews;
+        } else {
+          // For other cases, just update bestReviews
+          state.bestReviews = reviews;
         }
 
         state.totalReviews = action.payload.count || 0;

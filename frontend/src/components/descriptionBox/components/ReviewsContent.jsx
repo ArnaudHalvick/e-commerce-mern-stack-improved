@@ -13,7 +13,7 @@ import { openReviewModal } from "../../../redux/slices/reviewsSlice";
  * @param {number} props.totalReviews - Total number of reviews
  * @returns {JSX.Element} - Reviews content component
  */
-const ReviewsContent = ({ product, reviews, loading, error, totalReviews }) => {
+const ReviewsContent = ({ reviews, loading, error, reviewCount }) => {
   const dispatch = useDispatch();
 
   const handleOpenModal = () => {
@@ -47,7 +47,7 @@ const ReviewsContent = ({ product, reviews, loading, error, totalReviews }) => {
       )}
 
       {/* See All Reviews Button */}
-      {!loading && !error && reviews.length > 0 && totalReviews > 5 && (
+      {!loading && !error && reviews.length > 0 && reviewCount > 5 && (
         <div className="see-all-reviews">
           <button className="see-all-button" onClick={handleOpenModal}>
             See All Reviews

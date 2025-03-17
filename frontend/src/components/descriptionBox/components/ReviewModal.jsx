@@ -88,6 +88,7 @@ const ReviewModal = ({ product }) => {
           limit: reviewsPerPage,
           sort: sortOption,
           ratingFilter,
+          bestRated: false,
         })
       );
     }
