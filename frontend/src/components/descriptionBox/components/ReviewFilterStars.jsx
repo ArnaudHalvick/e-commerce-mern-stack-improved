@@ -77,11 +77,6 @@ const ReviewFilterStars = ({ ratingFilter, ratingCounts, onRatingFilter }) => {
                     className="filter-star"
                   />
                 ))}
-              {isActive && (
-                <span className="active-filter-indicator" aria-hidden="true">
-                  ✓
-                </span>
-              )}
             </div>
             <span className="rating-count" data-rating={rating}>
               ({counts[rating]})

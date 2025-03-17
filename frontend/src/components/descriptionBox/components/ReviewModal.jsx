@@ -127,24 +127,25 @@ const ReviewModal = ({ product }) => {
         <div className="modal-header">
           <div className="modal-title-area">
             <h2 className="modal-title">Customer Reviews ({totalReviews})</h2>
-            <div className="sort-options-box">
-              <label
-                htmlFor="modal-sort-select"
-                className="description-sort-options-label"
-              >
-                Sort by:{" "}
-              </label>
-              <select
-                id="modal-sort-select"
-                className="description-sort-options-select"
-                value={sortOption}
-                onChange={handleSortChange}
-              >
-                <option value="date-desc">Latest</option>
-                <option value="date-asc">Oldest</option>
-              </select>
-            </div>
           </div>
+          <div className="sort-options-box">
+            <label
+              htmlFor="modal-sort-select"
+              className="description-sort-options-label"
+            >
+              Sort by:{" "}
+            </label>
+            <select
+              id="modal-sort-select"
+              className="description-sort-options-select"
+              value={sortOption}
+              onChange={handleSortChange}
+            >
+              <option value="date-desc">Latest</option>
+              <option value="date-asc">Oldest</option>
+            </select>
+          </div>
+
           <button
             className="close-modal-btn"
             onClick={() => dispatch(closeReviewModal())}
