@@ -3,6 +3,7 @@ import "./AddProduct.css";
 import axios from "axios";
 import upload_area from "../../assets/admin_assets/upload_area.svg";
 import { useState } from "react";
+import { getApiUrl } from "../../utils/apiUtils";
 
 const AddProduct = () => {
   const [image, setImage] = useState(null);
@@ -14,14 +15,6 @@ const AddProduct = () => {
     new_price: "",
     old_price: "",
   });
-
-  // Get the API URL from environment variables or fallback to localhost
-  // In some build environments, process might need to be accessed via window
-  const API_URL =
-    (typeof window !== "undefined" &&
-      window.env &&
-      window.env.REACT_APP_API_URL) ||
-    "http://localhost:4000";
 
   const changeHandler = (e) => {
     setProduct({ ...product, [e.target.name]: e.target.value });
@@ -65,16 +58,15 @@ const AddProduct = () => {
       const formData = new FormData();
       formData.append("product", image);
 
+      // Use the new utility function for proper URL construction
+      const uploadUrl = getApiUrl("upload");
+
       // Upload image first
-      const uploadResponse = await axios.post(
-        `${API_URL}/api/upload`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const uploadResponse = await axios.post(uploadUrl, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       if (uploadResponse.data.success) {
         // Create product with image URL - use the relative path returned from the backend
@@ -83,16 +75,15 @@ const AddProduct = () => {
           image: uploadResponse.data.image_url,
         };
 
+        // Use the new utility function for proper URL construction
+        const addUrl = getApiUrl("add-product");
+
         // Add product to database
-        const addResponse = await axios.post(
-          `${API_URL}/api/add-product`,
-          productData,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const addResponse = await axios.post(addUrl, productData, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
 
         if (addResponse.data.success) {
           alert("Product Added Successfully!");
@@ -120,50 +111,21 @@ const AddProduct = () => {
 
   return (
     <div className="product-form">
+      <h1>Add Product</h1>
       <div className="product-form__field">
-        <p>Product Name</p>
         <input
           type="text"
           name="name"
-          placeholder="Enter Product Name"
           value={product.name}
           onChange={changeHandler}
+          placeholder="Product name"
           required
         />
       </div>
-      <div className="product-form__price-container">
-        <div className="product-form__field">
-          <p>Original Price</p>
-          <input
-            type="number"
-            name="old_price"
-            placeholder="Enter Original Price"
-            value={product.old_price}
-            onChange={changeHandler}
-            min="0"
-            step="0.01"
-            required
-          />
-        </div>
-        <div className="product-form__field">
-          <p>Offer Price</p>
-          <input
-            type="number"
-            name="new_price"
-            placeholder="Enter Offer Price"
-            value={product.new_price}
-            onChange={changeHandler}
-            min="0"
-            step="0.01"
-            required
-          />
-        </div>
-      </div>
+
       <div className="product-form__field">
-        <p>Product Category</p>
         <select
           name="category"
-          className="product-form__category-select"
           value={product.category}
           onChange={changeHandler}
           required
@@ -173,6 +135,35 @@ const AddProduct = () => {
           <option value="kids">Kids</option>
         </select>
       </div>
+
+      <div className="product-form__price-fields">
+        <div className="product-form__field">
+          <input
+            type="number"
+            name="old_price"
+            value={product.old_price}
+            onChange={changeHandler}
+            placeholder="Old Price"
+            min="0"
+            step="0.01"
+            required
+          />
+        </div>
+
+        <div className="product-form__field">
+          <input
+            type="number"
+            name="new_price"
+            value={product.new_price}
+            onChange={changeHandler}
+            placeholder="New Price"
+            min="0"
+            step="0.01"
+            required
+          />
+        </div>
+      </div>
+
       <div className="product-form__field">
         <label htmlFor="file-input" className="product-form__upload-label">
           <img

@@ -1,6 +1,7 @@
 // Path: admin/src/components/listProduct/ListProduct.jsx
 import { useState, useEffect } from "react";
 import "./ListProduct.css";
+import { getApiUrl, getImageUrl } from "../../utils/apiUtils";
 
 // TODO: Rework the layout, need to use table with all info in a line with responsive design for smaller screens
 // Also implement product editing
@@ -13,11 +14,16 @@ const ListProduct = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch("http://localhost:4000/api/all-products");
+        // Use the new utility function for proper URL construction
+        const apiUrl = getApiUrl("all-products");
+        console.log("Fetching products from:", apiUrl);
+
+        const response = await fetch(apiUrl);
         const data = await response.json();
         setProducts(data);
         setLoading(false);
       } catch (err) {
+        console.error("Error fetching products:", err);
         setError(err + "/" + "Failed to fetch products");
         setLoading(false);
       }
@@ -29,16 +35,16 @@ const ListProduct = () => {
   const handleDelete = async (productId, name) => {
     if (window.confirm(`Are you sure you want to delete ${name}?`)) {
       try {
-        const response = await fetch(
-          "http://localhost:4000/api/remove-product",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ id: productId }),
-          }
-        );
+        // Use the new utility function for proper URL construction
+        const apiUrl = getApiUrl("remove-product");
+
+        const response = await fetch(apiUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ id: productId }),
+        });
         const data = await response.json();
 
         if (data.success) {
@@ -55,46 +61,45 @@ const ListProduct = () => {
   if (error) return <div className="error">{error}</div>;
 
   return (
-    <div className="list-product-container">
-      <h2>Product List</h2>
-      <div className="products-grid">
-        {products.map((product) => (
-          <div key={product._id || product.id} className="product-card">
-            <div className="product-image">
-              <img
-                src={
-                  product.images && product.images.length > 0
-                    ? product.images[product.mainImageIndex || 0]
-                    : ""
-                }
-                alt={product.name}
-              />
-            </div>
-            <div className="product-info">
-              <h3>{product.name}</h3>
-              {product.slug && <p className="slug">Slug: {product.slug}</p>}
-              <p className="price">
-                <span className="old-price">${product.old_price}</span>
-                <span className="new-price">${product.new_price}</span>
-              </p>
-              <p className="category">Category: {product.category}</p>
-              <p className="date">
-                Added: {new Date(product.date).toLocaleDateString()}
-              </p>
-            </div>
-            <div className="product-actions">
-              <button className="edit-btn">Edit</button>
-              <button
-                className="delete-btn"
-                onClick={() =>
-                  handleDelete(product._id || product.id, product.name)
-                }
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        ))}
+    <div className="list-product">
+      <h1>All Products</h1>
+      <div className="list-product-format-main">
+        <p>Products</p>
+        <p>Title</p>
+        <p>Old Price</p>
+        <p>New Price</p>
+        <p>Category</p>
+        <p>Remove</p>
+      </div>
+      <div className="list-product-allproducts">
+        <hr />
+        {products.length === 0 ? (
+          <p className="no-products">No products found</p>
+        ) : (
+          products.map((product, index) => {
+            return (
+              <div key={index} className="list-product-format">
+                <img
+                  src={getImageUrl(
+                    product.images ? product.images[0] : product.image
+                  )}
+                  alt={product.name}
+                  className="list-product-image"
+                />
+                <p>{product.name}</p>
+                <p>${product.old_price}</p>
+                <p>${product.new_price}</p>
+                <p>{product.category}</p>
+                <button
+                  className="list-product-remove"
+                  onClick={() => handleDelete(product._id, product.name)}
+                >
+                  <img src="/cross.png" alt="delete" />
+                </button>
+              </div>
+            );
+          })
+        )}
       </div>
     </div>
   );

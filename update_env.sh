@@ -1,15 +1,18 @@
 #!/bin/bash
 
+# Define the production URL
+PROD_URL="http://159.65.230.12"
+
 # Update frontend .env for production
 cat > frontend/.env << EOL
 # API URL for production
-REACT_APP_API_URL=http://159.65.230.12
+REACT_APP_API_URL=${PROD_URL}
 EOL
 
 # Update admin .env for production
 cat > admin/.env << EOL
 # API URL for production
-VITE_API_URL=http://159.65.230.12
+VITE_API_URL=${PROD_URL}
 EOL
 
 # Update backend CORS settings in index.js by directly editing the file
@@ -36,11 +39,15 @@ const reviewRoutes = require("./routes/reviewRoutes");
 const app = express();
 const port = process.env.PORT || 4000;
 
+// Set public URL based on environment
+const publicUrl = process.env.PUBLIC_URL || "${PROD_URL}";
+
 // Middleware
 const allowedOrigins = [
-  "http://159.65.230.12", 
-  "http://159.65.230.12:8080",
+  "${PROD_URL}", 
+  "${PROD_URL}:8080",
   "http://localhost:3000",
+  "http://localhost:8080",
   "http://localhost",
   process.env.FRONTEND_URL || "http://localhost:3000"
 ];
@@ -70,6 +77,12 @@ connectDB();
 
 // Serve static files
 app.use("/images", express.static(path.join(__dirname, "upload/images")));
+
+// Expose the public URL for asset generation
+app.use((req, res, next) => {
+  res.locals.publicUrl = publicUrl;
+  next();
+});
 
 // Health check route
 app.get("/api/health", (req, res) => {
@@ -107,11 +120,12 @@ app.listen(port, (error) => {
     console.error("Error starting server:", error);
     process.exit(1);
   }
-  console.log(`Server running on port ${port}`);
+  console.log(\`Server running on port \${port} in \${process.env.NODE_ENV} mode\`);
+  console.log(\`Public URL: \${publicUrl}\`);
 });
 EOL
 
 # Replace the old file with the new one
 mv backend/index.js.new backend/index.js
 
-echo "Environment files updated successfully for IP: 159.65.230.12" 
+echo "Environment files updated successfully for production URL: ${PROD_URL}" 

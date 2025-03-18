@@ -20,6 +20,7 @@ services:
       - SMTP_PASSWORD=${SMTP_PASSWORD}
       - SMTP_FROM_EMAIL=${SMTP_FROM_EMAIL}
       - FRONTEND_URL=http://159.65.230.12
+      - PUBLIC_URL=http://159.65.230.12
     volumes:
       - ./backend/upload:/app/upload
     networks:
@@ -32,7 +33,7 @@ services:
     build: ./frontend
     restart: always
     environment:
-      - REACT_APP_API_URL=http://159.65.230.12/api
+      - REACT_APP_API_URL=http://159.65.230.12
     depends_on:
       - backend
     networks:
@@ -45,7 +46,7 @@ services:
     build: ./admin
     restart: always
     environment:
-      - VITE_API_URL=http://159.65.230.12/api
+      - VITE_API_URL=http://159.65.230.12
     depends_on:
       - backend
     networks:
