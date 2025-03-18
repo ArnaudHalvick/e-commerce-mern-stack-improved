@@ -16,7 +16,7 @@ import Auth from "./pages/auth";
 import Offers from "./pages/offers";
 import NotFound from "./pages/notFound";
 import { VerifyEmail, VerifyPending } from "./pages/verification";
-import Profile from "./pages/profile/Profile";
+import Profile from "./pages/profile/index.jsx";
 
 // Assets
 import men_banner from "./components/assets/banner_mens.png";

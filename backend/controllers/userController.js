@@ -295,6 +295,71 @@ const updateProfile = async (req, res) => {
     // Find the user
     const user = await User.findById(req.user.id);
 
+    // Validate address if provided
+    if (address) {
+      const requiredFields = ["street", "city", "state", "zipCode", "country"];
+      const missingFields = [];
+
+      for (const field of requiredFields) {
+        if (!address[field] || address[field].trim() === "") {
+          missingFields.push(field);
+        }
+      }
+
+      if (missingFields.length > 0) {
+        return res.status(400).json({
+          success: false,
+          message: `All address fields are required. Missing: ${missingFields.join(
+            ", "
+          )}`,
+        });
+      }
+
+      // Phone validation
+      if (phone && !/^[0-9]{10,15}$/.test(phone)) {
+        return res.status(400).json({
+          success: false,
+          message: "Phone number must contain 10-15 digits",
+        });
+      }
+
+      // Basic validation for address fields
+      if (address.street && address.street.length < 3) {
+        return res.status(400).json({
+          success: false,
+          message: "Street address must be at least 3 characters long",
+        });
+      }
+
+      if (address.city && address.city.length < 2) {
+        return res.status(400).json({
+          success: false,
+          message: "City must be at least 2 characters long",
+        });
+      }
+
+      if (address.state && address.state.length < 2) {
+        return res.status(400).json({
+          success: false,
+          message: "State must be at least 2 characters long",
+        });
+      }
+
+      if (address.zipCode && !/^[0-9a-zA-Z\-\s]{3,10}$/.test(address.zipCode)) {
+        return res.status(400).json({
+          success: false,
+          message: "Please enter a valid zip/postal code",
+        });
+      }
+
+      if (address.country && address.country.length < 2) {
+        return res.status(400).json({
+          success: false,
+          message: "Country must be at least 2 characters long",
+        });
+      }
+    }
+
     // Update fields if provided
     if (name) user.name = name;
     if (phone) user.phone = phone;
@@ -313,6 +378,7 @@ const updateProfile = async (req, res) => {
       user: {
         id: user._id,
         name: user.name,
+        username: user.name, // Add username field for consistency
         email: user.email,
         phone: user.phone,
         address: user.address,
@@ -321,6 +387,15 @@ const updateProfile = async (req, res) => {
       message: "Profile updated successfully",
     });
   } catch (error) {
+    // Check if this is a validation error
+    if (error.name === "ValidationError") {
+      const messages = Object.values(error.errors).map((val) => val.message);
+      return res.status(400).json({
+        success: false,
+        message: messages.join(", "),
+      });
+    }
+
     res.status(500).json({
       success: false,
       message: "Server error",

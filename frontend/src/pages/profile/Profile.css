@@ -413,3 +413,28 @@
     transform: rotate(360deg);
   }
 }
+
+/* Add this to the existing CSS file */
+
+.field-error {
+  color: #e74c3c;
+  font-size: 0.85rem;
+  margin-top: 5px;
+  margin-bottom: 0;
+  font-weight: 500;
+}
+
+.form-input.error {
+  border-color: #e74c3c;
+}
+
+/* Make sure required fields are marked visually */
+.form-label::after {
+  content: " *";
+  color: #e74c3c;
+}
+
+/* Ensure the actual * we added in the JSX doesn't show */
+.form-label span.required {
+  display: none;
+}

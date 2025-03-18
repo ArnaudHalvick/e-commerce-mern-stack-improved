@@ -44,22 +44,59 @@ const UserSchema = new mongoose.Schema({
   },
   phone: {
     type: String,
+    validate: {
+      validator: function (v) {
+        return /^[0-9]{10,15}$/.test(v);
+      },
+      message: (props) =>
+        `${props.value} is not a valid phone number. It should have 10-15 digits.`,
+    },
   },
   address: {
     street: {
       type: String,
+      validate: {
+        validator: function (v) {
+          return v && v.length >= 3;
+        },
+        message: (props) => "Street address must be at least 3 characters long",
+      },
     },
     city: {
       type: String,
+      validate: {
+        validator: function (v) {
+          return v && v.length >= 2;
+        },
+        message: (props) => "City must be at least 2 characters long",
+      },
     },
     state: {
       type: String,
+      validate: {
+        validator: function (v) {
+          return v && v.length >= 2;
+        },
+        message: (props) => "State must be at least 2 characters long",
+      },
     },
     zipCode: {
       type: String,
+      validate: {
+        validator: function (v) {
+          return /^[0-9a-zA-Z\-\s]{3,10}$/.test(v);
+        },
+        message: (props) => "Please enter a valid zip/postal code",
+      },
     },
     country: {
       type: String,
+      validate: {
+        validator: function (v) {
+          return v && v.length >= 2;
+        },
+        message: (props) => "Country must be at least 2 characters long",
+      },
     },
   },
   cartData: {

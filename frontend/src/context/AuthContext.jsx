@@ -28,6 +28,36 @@ const AuthContextProvider = (props) => {
     };
   };
 
+  // Fetch complete user profile data
+  const fetchUserProfile = async () => {
+    try {
+      const token = localStorage.getItem("auth-token");
+      if (!token) return null;
+
+      const response = await fetch(`${API_BASE_URL}/api/me`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "auth-token": token,
+        },
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        const normalizedUser = normalizeUserData(data.user);
+        setUserState(normalizedUser);
+        dispatch(setUser(normalizedUser));
+        return normalizedUser;
+      }
+
+      return null;
+    } catch (err) {
+      console.error("Fetch profile error:", err);
+      return null;
+    }
+  };
+
   // Check if user is authenticated on load
   useEffect(() => {
     const checkAuthStatus = async () => {
@@ -60,6 +90,9 @@ const AuthContextProvider = (props) => {
           dispatch(setUser(normalizedUser));
           setIsAuthenticated(true);
           setAccountDisabled(false);
+
+          // Fetch complete profile data
+          await fetchUserProfile();
         } else {
           // Check if account is disabled
           if (
@@ -122,6 +155,10 @@ const AuthContextProvider = (props) => {
         setUserState(normalizedUser);
         dispatch(setUser(normalizedUser));
         setIsAuthenticated(true);
+
+        // Fetch complete profile data
+        await fetchUserProfile();
+
         navigate("/");
         return { success: true };
       } else {
@@ -218,6 +255,7 @@ const AuthContextProvider = (props) => {
     login,
     signup,
     logout,
+    fetchUserProfile,
   };
 
   return (
