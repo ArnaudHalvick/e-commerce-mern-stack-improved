@@ -1,3 +1,5 @@
+// Path: frontend/src/services/api.js
+
 import axios from "axios";
 
 // Base URL for API requests - you can modify this to read from env vars

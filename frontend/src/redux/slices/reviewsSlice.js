@@ -1,5 +1,6 @@
+// Path: frontend/src/redux/slices/reviewsSlice.js
+
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { reviewsApi } from "../../services/api";
 import axios from "axios";
 
 // Async thunk for fetching initial reviews
