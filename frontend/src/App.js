@@ -11,13 +11,12 @@ import ErrorBoundary from "./components/errorHandling/ErrorBoundary";
 import Shop from "./pages/Shop";
 import ShopCategory from "./pages/shopCategory";
 import Product from "./pages/product";
-import Cart from "./pages/Cart";
+import Cart from "./pages/cart/Cart";
 import Auth from "./pages/auth";
 import Offers from "./pages/offers";
-import NotFound from "./pages/NotFound";
-import VerifyEmail from "./pages/VerifyEmail";
-import Profile from "./pages/Profile";
-import VerifyPending from "./pages/VerifyPending";
+import NotFound from "./pages/notFound";
+import { VerifyEmail, VerifyPending } from "./pages/verification";
+import Profile from "./pages/profile/Profile";
 
 // Assets
 import men_banner from "./components/assets/banner_mens.png";

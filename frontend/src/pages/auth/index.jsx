@@ -10,7 +10,7 @@ import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
 import useAuthForm from "./hooks/useAuthForm";
 
 // Styles
-import "../CSS/Auth.css";
+import "./Auth.css";
 
 /**
  * Auth page component that handles user login and signup

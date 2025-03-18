@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { requestEmailVerification } from "../redux/slices/userSlice";
+import { requestEmailVerification } from "../../redux/slices/userSlice";
 
 // Components
-import Breadcrumb from "../components/breadcrumbs/Breadcrumb";
+import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
 
 // CSS
-import "./CSS/VerifyEmail.css";
+import "./VerifyEmail.css";
 
 /**
  * Verification pending page - shown after registration

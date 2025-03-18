@@ -4,15 +4,15 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   verifyEmail,
   requestEmailVerification,
-} from "../redux/slices/userSlice";
+} from "../../redux/slices/userSlice";
 import { useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../../context/AuthContext";
 
 // Components
-import Breadcrumb from "../components/breadcrumbs/Breadcrumb";
+import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
 
 // CSS
-import "./CSS/VerifyEmail.css";
+import "./VerifyEmail.css";
 
 /**
  * Email verification page

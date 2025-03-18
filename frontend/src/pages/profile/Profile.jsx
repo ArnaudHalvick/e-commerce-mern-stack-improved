@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../../context/AuthContext";
 import {
   updateUserProfile,
   requestEmailVerification,
   changePassword,
   disableAccount,
   resetPasswordChanged,
-} from "../redux/slices/userSlice";
+} from "../../redux/slices/userSlice";
 
 // Components
-import Breadcrumb from "../components/breadcrumbs/Breadcrumb";
+import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
 
 // CSS
-import "./CSS/Profile.css";
+import "./Profile.css";
 
 /**
  * User profile page component

@@ -9,7 +9,7 @@ import FilterSidebar from "../../components/filterSidebar/FilterSidebar";
 import useCategoryProducts from "./hooks/useCategoryProducts";
 
 // Styles
-import "../CSS/ShopCategory.css";
+import "./ShopCategory.css";
 import "../../components/errorHandling/LoadingIndicator.css";
 
 /**

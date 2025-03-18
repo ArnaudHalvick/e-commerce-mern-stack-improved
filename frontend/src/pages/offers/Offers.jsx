@@ -13,7 +13,7 @@ import {
 import { useOffersData } from "./hooks";
 
 // Styles
-import "../CSS/Offers.css";
+import "./Offers.css";
 
 /**
  * Main Offers page component that displays special offers and deals

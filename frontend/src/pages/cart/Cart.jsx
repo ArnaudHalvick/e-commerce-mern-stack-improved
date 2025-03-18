@@ -3,11 +3,11 @@
 import React, { memo } from "react";
 
 // Internal Components
-import CartItems from "../components/cartItems";
-import Breadcrumb from "../components/breadcrumbs/Breadcrumb";
+import CartItems from "../../components/cartItems";
+import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
 
 // Styles and Assets
-import "./CSS/Cart.css";
+import "./Cart.css";
 
 const Cart = () => {
   return (
