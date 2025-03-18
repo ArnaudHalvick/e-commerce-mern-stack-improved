@@ -246,6 +246,12 @@ const useOffersData = () => {
   // Handle page change
   const handlePageChange = (page) => {
     setCurrentPage(page);
+    // Find the target element on the page
+    const targetElement = document.querySelector(".offers-main-content");
+    if (targetElement) {
+      // Smoothly scroll the target element into view
+      targetElement.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   };
 
   // Handle items per page change
