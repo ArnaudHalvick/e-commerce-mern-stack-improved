@@ -30,6 +30,56 @@ export const updateUserProfile = createAsyncThunk(
   }
 );
 
+// Async thunk for changing password
+export const changePassword = createAsyncThunk(
+  "user/changePassword",
+  async ({ currentPassword, newPassword }, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem("auth-token");
+      const response = await axios.put(
+        `${API_BASE_URL}/api/change-password`,
+        { currentPassword, newPassword },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "auth-token": token,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to change password"
+      );
+    }
+  }
+);
+
+// Async thunk for disabling account
+export const disableAccount = createAsyncThunk(
+  "user/disableAccount",
+  async (_, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem("auth-token");
+      const response = await axios.put(
+        `${API_BASE_URL}/api/disable-account`,
+        {},
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "auth-token": token,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to disable account"
+      );
+    }
+  }
+);
+
 // Async thunk for requesting email verification
 export const requestEmailVerification = createAsyncThunk(
   "user/requestVerification",
@@ -73,6 +123,8 @@ const userSlice = createSlice({
     verificationRequested: false,
     loading: false,
     error: null,
+    passwordChanged: false,
+    accountDisabled: false,
   },
   reducers: {
     setUser: (state, action) => {
@@ -83,9 +135,14 @@ const userSlice = createSlice({
       state.profile = null;
       state.isEmailVerified = false;
       state.verificationRequested = false;
+      state.passwordChanged = false;
+      state.accountDisabled = false;
     },
     clearError: (state) => {
       state.error = null;
+    },
+    resetPasswordChanged: (state) => {
+      state.passwordChanged = false;
     },
   },
   extraReducers: (builder) => {
@@ -100,6 +157,34 @@ const userSlice = createSlice({
         state.loading = false;
       })
       .addCase(updateUserProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // Handle changePassword
+      .addCase(changePassword.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.passwordChanged = false;
+      })
+      .addCase(changePassword.fulfilled, (state) => {
+        state.loading = false;
+        state.passwordChanged = true;
+      })
+      .addCase(changePassword.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // Handle disableAccount
+      .addCase(disableAccount.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(disableAccount.fulfilled, (state) => {
+        state.loading = false;
+        state.accountDisabled = true;
+        state.profile = null;
+      })
+      .addCase(disableAccount.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
@@ -132,5 +217,6 @@ const userSlice = createSlice({
   },
 });
 
-export const { setUser, clearUser, clearError } = userSlice.actions;
+export const { setUser, clearUser, clearError, resetPasswordChanged } =
+  userSlice.actions;
 export default userSlice.reducer;

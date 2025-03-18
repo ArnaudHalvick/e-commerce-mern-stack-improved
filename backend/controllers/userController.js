@@ -190,6 +190,14 @@ const loginUser = async (req, res) => {
       });
     }
 
+    // Check if the account is disabled
+    if (user.disabled) {
+      return res.status(403).json({
+        success: false,
+        message: "Your account has been disabled. Please contact support.",
+      });
+    }
+
     const isPasswordMatched = await user.comparePassword(password);
     if (!isPasswordMatched) {
       return res.status(401).json({
@@ -302,8 +310,87 @@ const updateProfile = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      user,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        address: user.address,
+        isEmailVerified: user.isEmailVerified,
+      },
       message: "Profile updated successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
+    });
+  }
+};
+
+// Change password
+const changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide both current and new password",
+      });
+    }
+
+    // Find the user with password
+    const user = await User.findById(req.user.id).select("+password");
+
+    // Check if current password is correct
+    const isPasswordMatched = await user.comparePassword(currentPassword);
+    if (!isPasswordMatched) {
+      return res.status(401).json({
+        success: false,
+        message: "Current password is incorrect",
+      });
+    }
+
+    // Set the new password
+    user.password = newPassword;
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Password changed successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
+    });
+  }
+};
+
+// Disable account
+const disableAccount = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+
+    // Set disabled flag to true
+    user.disabled = true;
+
+    // Clear refresh token - effectively logging the user out
+    user.refreshToken = undefined;
+
+    await user.save();
+
+    res.cookie("refreshToken", null, {
+      expires: new Date(Date.now()),
+      httpOnly: true,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Account disabled successfully",
     });
   } catch (error) {
     res.status(500).json({
@@ -559,4 +646,6 @@ module.exports = {
   requestVerification,
   verifyEmail,
   verifyToken,
+  changePassword,
+  disableAccount,
 };

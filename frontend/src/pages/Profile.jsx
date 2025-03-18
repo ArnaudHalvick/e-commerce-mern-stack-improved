@@ -6,6 +6,9 @@ import { AuthContext } from "../context/AuthContext";
 import {
   updateUserProfile,
   requestEmailVerification,
+  changePassword,
+  disableAccount,
+  resetPasswordChanged,
 } from "../redux/slices/userSlice";
 
 // Components
@@ -26,7 +29,9 @@ const Profile = () => {
   } = useContext(AuthContext);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, error } = useSelector((state) => state.user);
+  const { loading, error, passwordChanged } = useSelector(
+    (state) => state.user
+  );
 
   const [formData, setFormData] = useState({
     name: "",
@@ -39,9 +44,17 @@ const Profile = () => {
       country: "",
     },
   });
+
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+
   const [message, setMessage] = useState({ text: "", type: "" });
   const [verificationRequested, setVerificationRequested] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
 
   // Initialize form data with user profile data
   useEffect(() => {
@@ -67,6 +80,23 @@ const Profile = () => {
     }
   }, [isAuthenticated, authLoading, navigate]);
 
+  // Reset form and show success message when password is changed
+  useEffect(() => {
+    if (passwordChanged) {
+      setPasswordData({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
+      setIsChangingPassword(false);
+      setMessage({
+        text: "Password changed successfully!",
+        type: "success",
+      });
+      dispatch(resetPasswordChanged());
+    }
+  }, [passwordChanged, dispatch]);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
@@ -88,6 +118,14 @@ const Profile = () => {
     }
   };
 
+  const handlePasswordInputChange = (e) => {
+    const { name, value } = e.target;
+    setPasswordData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage({ text: "", type: "" });
@@ -104,6 +142,62 @@ const Profile = () => {
         text: err || "Failed to update profile. Please try again.",
         type: "error",
       });
+    }
+  };
+
+  const handlePasswordSubmit = async (e) => {
+    e.preventDefault();
+    setMessage({ text: "", type: "" });
+
+    // Validate passwords
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      setMessage({
+        text: "New passwords do not match",
+        type: "error",
+      });
+      return;
+    }
+
+    if (passwordData.newPassword.length < 8) {
+      setMessage({
+        text: "Password must be at least 8 characters long",
+        type: "error",
+      });
+      return;
+    }
+
+    try {
+      await dispatch(
+        changePassword({
+          currentPassword: passwordData.currentPassword,
+          newPassword: passwordData.newPassword,
+        })
+      ).unwrap();
+      // Success message and reset will be handled by the useEffect
+    } catch (err) {
+      setMessage({
+        text: err || "Failed to change password. Please try again.",
+        type: "error",
+      });
+    }
+  };
+
+  const handleDisableAccount = async () => {
+    if (
+      window.confirm(
+        "Are you sure you want to disable your account? You won't be able to log in until an administrator re-enables it."
+      )
+    ) {
+      try {
+        await dispatch(disableAccount()).unwrap();
+        logout();
+        navigate("/");
+      } catch (err) {
+        setMessage({
+          text: err || "Failed to disable account. Please try again.",
+          type: "error",
+        });
+      }
     }
   };
 
@@ -359,27 +453,101 @@ const Profile = () => {
             )}
           </section>
 
+          {/* Change Password Section */}
+          <section className="profile-section">
+            <div className="section-header">
+              <h2 className="section-title">Password Management</h2>
+              {!isChangingPassword && (
+                <button
+                  className="btn-secondary"
+                  onClick={() => setIsChangingPassword(true)}
+                >
+                  Change Password
+                </button>
+              )}
+            </div>
+
+            {isChangingPassword && (
+              <form onSubmit={handlePasswordSubmit}>
+                <div className="form-group">
+                  <label htmlFor="currentPassword" className="form-label">
+                    Current Password
+                  </label>
+                  <input
+                    type="password"
+                    id="currentPassword"
+                    name="currentPassword"
+                    value={passwordData.currentPassword}
+                    onChange={handlePasswordInputChange}
+                    required
+                    className="form-input"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="newPassword" className="form-label">
+                    New Password
+                  </label>
+                  <input
+                    type="password"
+                    id="newPassword"
+                    name="newPassword"
+                    value={passwordData.newPassword}
+                    onChange={handlePasswordInputChange}
+                    required
+                    minLength="8"
+                    className="form-input"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="confirmPassword" className="form-label">
+                    Confirm New Password
+                  </label>
+                  <input
+                    type="password"
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    value={passwordData.confirmPassword}
+                    onChange={handlePasswordInputChange}
+                    required
+                    minLength="8"
+                    className="form-input"
+                  />
+                </div>
+
+                <div className="form-actions">
+                  <button
+                    type="submit"
+                    className="btn-primary"
+                    disabled={loading}
+                  >
+                    Update Password
+                    {loading && <span className="loading-spinner"></span>}
+                  </button>
+                  <button
+                    type="button"
+                    className="btn-secondary"
+                    onClick={() => setIsChangingPassword(false)}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            )}
+          </section>
+
           {/* Account Management Section */}
           <section className="profile-section">
             <h2 className="section-title">Account Management</h2>
             <div className="account-actions">
-              <Link to="/change-password" className="btn-secondary">
-                Change Password
-              </Link>
               <button
                 className="btn-danger"
-                onClick={() => {
-                  if (
-                    window.confirm(
-                      "Are you sure you want to delete your account? This action cannot be undone."
-                    )
-                  ) {
-                    logout();
-                    navigate("/");
-                  }
-                }}
+                onClick={handleDisableAccount}
+                disabled={loading}
               >
-                Delete Account
+                Disable Account
+                {loading && <span className="loading-spinner"></span>}
               </button>
             </div>
           </section>

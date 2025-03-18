@@ -18,4 +18,8 @@ router.get("/me", isAuthenticated, userController.getUserProfile);
 router.put("/profile", isAuthenticated, userController.updateProfile);
 router.get("/verify-token", isAuthenticated, userController.verifyToken);
 
+// New profile management routes
+router.put("/change-password", isAuthenticated, userController.changePassword);
+router.put("/disable-account", isAuthenticated, userController.disableAccount);
+
 module.exports = router;

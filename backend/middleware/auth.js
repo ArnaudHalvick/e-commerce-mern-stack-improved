@@ -22,7 +22,25 @@ const isAuthenticated = async (req, res, next) => {
 
     const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
 
-    req.user = await User.findById(decoded.id);
+    const user = await User.findById(decoded.id);
+
+    // Check if user exists
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "User not found or token is invalid",
+      });
+    }
+
+    // Check if account is disabled
+    if (user.disabled) {
+      return res.status(403).json({
+        success: false,
+        message: "Your account has been disabled",
+      });
+    }
+
+    req.user = user;
     next();
   } catch (error) {
     if (error.name === "JsonWebTokenError") {
@@ -62,6 +80,14 @@ const verifyRefreshToken = async (req, res, next) => {
       return res.status(401).json({
         success: false,
         message: "Invalid refresh token",
+      });
+    }
+
+    // Check if account is disabled
+    if (user.disabled) {
+      return res.status(403).json({
+        success: false,
+        message: "Your account has been disabled",
       });
     }
 

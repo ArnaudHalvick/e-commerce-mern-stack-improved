@@ -79,6 +79,43 @@ const authApi = {
   },
 
   /**
+   * Change the current user's password
+   * @param {string} currentPassword - Current password
+   * @param {string} newPassword - New password
+   * @returns {Promise} - Promise that resolves to password change response
+   */
+  changePassword: async (currentPassword, newPassword) => {
+    try {
+      const response = await apiClient.put("/api/change-password", {
+        currentPassword,
+        newPassword,
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Change password error:", error);
+      throw (
+        error.response?.data || error.message || "Failed to change password"
+      );
+    }
+  },
+
+  /**
+   * Disable the current user's account
+   * @returns {Promise} - Promise that resolves to account disabling response
+   */
+  disableAccount: async () => {
+    try {
+      const response = await apiClient.put("/api/disable-account");
+      return response.data;
+    } catch (error) {
+      console.error("Disable account error:", error);
+      throw (
+        error.response?.data || error.message || "Failed to disable account"
+      );
+    }
+  },
+
+  /**
    * Request email verification
    * @param {string} email - Email to verify
    * @returns {Promise} - Promise that resolves to verification request response

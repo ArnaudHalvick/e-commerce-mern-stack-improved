@@ -38,6 +38,10 @@ const UserSchema = new mongoose.Schema({
   emailVerificationExpiry: {
     type: Date,
   },
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
   phone: {
     type: String,
   },

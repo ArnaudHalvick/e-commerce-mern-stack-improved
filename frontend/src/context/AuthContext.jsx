@@ -12,6 +12,7 @@ const AuthContextProvider = (props) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [accountDisabled, setAccountDisabled] = useState(false);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -58,14 +59,22 @@ const AuthContextProvider = (props) => {
           setUserState(normalizedUser);
           dispatch(setUser(normalizedUser));
           setIsAuthenticated(true);
+          setAccountDisabled(false);
         } else {
+          // Check if account is disabled
+          if (
+            response.status === 403 &&
+            data.message === "Your account has been disabled"
+          ) {
+            setAccountDisabled(true);
+            setError("Your account has been disabled. Please contact support.");
+          }
+
           // Token is invalid
           localStorage.removeItem("auth-token");
           setIsAuthenticated(false);
           setUserState(null);
           dispatch(clearUser());
-          // Don't show error for normal auth flow
-          setError(null);
         }
       } catch (err) {
         console.error("Auth verification error:", err);
@@ -94,6 +103,7 @@ const AuthContextProvider = (props) => {
   const login = async (email, password) => {
     setLoading(true);
     setError(null);
+    setAccountDisabled(false);
 
     try {
       const response = await fetch(`${API_BASE_URL}/api/login`, {
@@ -115,6 +125,20 @@ const AuthContextProvider = (props) => {
         navigate("/");
         return { success: true };
       } else {
+        // Check if account is disabled
+        if (
+          response.status === 403 &&
+          data.message === "Your account has been disabled"
+        ) {
+          setAccountDisabled(true);
+          setError("Your account has been disabled. Please contact support.");
+          return {
+            success: false,
+            message: data.message,
+            accountDisabled: true,
+          };
+        }
+
         setError(data.message || "Login failed");
         return { success: false, message: data.message };
       }
@@ -190,6 +214,7 @@ const AuthContextProvider = (props) => {
     isAuthenticated,
     loading,
     error,
+    accountDisabled,
     login,
     signup,
     logout,
