@@ -159,7 +159,6 @@ const useOffersData = () => {
           setAllProducts([]);
           setDisplayedProducts([]);
         } else {
-          console.log("Received product data sample:", data.slice(0, 3));
           setAllProducts(data);
           setAvailableTags([
             ...new Set(data.flatMap((item) => item.tags || [])),
