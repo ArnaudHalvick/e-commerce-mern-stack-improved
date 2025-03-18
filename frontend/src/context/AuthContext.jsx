@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { resetCart } from "../redux/slices/cartSlice";
@@ -20,16 +20,14 @@ const AuthContextProvider = (props) => {
   // Helper function to normalize user data
   const normalizeUserData = (userData) => {
     if (!userData) return null;
-
-    // Ensure we have a username property (backend uses 'name')
     return {
       ...userData,
       username: userData.name || userData.username,
     };
   };
 
-  // Fetch complete user profile data
-  const fetchUserProfile = async () => {
+  // Memoized fetchUserProfile function
+  const fetchUserProfile = useCallback(async () => {
     try {
       const token = localStorage.getItem("auth-token");
       if (!token) return null;
@@ -56,7 +54,7 @@ const AuthContextProvider = (props) => {
       console.error("Fetch profile error:", err);
       return null;
     }
-  };
+  }, [dispatch]);
 
   // Check if user is authenticated on load
   useEffect(() => {
@@ -94,7 +92,6 @@ const AuthContextProvider = (props) => {
           // Fetch complete profile data
           await fetchUserProfile();
         } else {
-          // Check if account is disabled
           if (
             response.status === 403 &&
             data.message === "Your account has been disabled"
@@ -102,8 +99,6 @@ const AuthContextProvider = (props) => {
             setAccountDisabled(true);
             setError("Your account has been disabled. Please contact support.");
           }
-
-          // Token is invalid
           localStorage.removeItem("auth-token");
           setIsAuthenticated(false);
           setUserState(null);
@@ -111,12 +106,11 @@ const AuthContextProvider = (props) => {
         }
       } catch (err) {
         console.error("Auth verification error:", err);
-        // If it's a network error or server issue, don't logout user immediately
-        // This prevents logout on temporary network issues
         if (
           err.message === "Failed to fetch" ||
           err.message.includes("Network")
         ) {
+          // Optionally handle network errors
         } else {
           localStorage.removeItem("auth-token");
           setIsAuthenticated(false);
@@ -130,7 +124,7 @@ const AuthContextProvider = (props) => {
     };
 
     checkAuthStatus();
-  }, [dispatch]);
+  }, [dispatch, fetchUserProfile]);
 
   // Login function
   const login = async (email, password) => {
@@ -162,7 +156,6 @@ const AuthContextProvider = (props) => {
         navigate("/");
         return { success: true };
       } else {
-        // Check if account is disabled
         if (
           response.status === 403 &&
           data.message === "Your account has been disabled"
@@ -175,7 +168,6 @@ const AuthContextProvider = (props) => {
             accountDisabled: true,
           };
         }
-
         setError(data.message || "Login failed");
         return { success: false, message: data.message };
       }
@@ -205,7 +197,6 @@ const AuthContextProvider = (props) => {
       const data = await response.json();
 
       if (response.ok && data.success) {
-        // Don't set auth state if verification is required
         if (!data.requiresVerification) {
           localStorage.setItem("auth-token", data.accessToken);
           const normalizedUser = normalizeUserData(data.user);
@@ -213,8 +204,6 @@ const AuthContextProvider = (props) => {
           dispatch(setUser(normalizedUser));
           setIsAuthenticated(true);
         }
-
-        // Return the full response
         return {
           success: true,
           requiresVerification: data.requiresVerification,
@@ -239,7 +228,6 @@ const AuthContextProvider = (props) => {
     localStorage.removeItem("auth-token");
     setUserState(null);
     setIsAuthenticated(false);
-    // Reset cart state when user logs out
     dispatch(resetCart());
     dispatch(clearUser());
     navigate("/");
