@@ -119,12 +119,7 @@ export const verifyPasswordChange = createAsyncThunk(
   "user/verifyPasswordChange",
   async (token, { rejectWithValue }) => {
     try {
-      // Log the token and URL for debugging
-      console.log("Verifying password change with token:", token);
-
-      // The correct endpoint is "verify-password-change" (without "users/")
       const url = getApiUrl(`verify-password-change?token=${token}`);
-      console.log("API URL:", url);
 
       const response = await axios.get(url);
       return response.data;

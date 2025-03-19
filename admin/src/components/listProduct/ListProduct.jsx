@@ -16,7 +16,6 @@ const ListProduct = () => {
       try {
         // Use the new utility function for proper URL construction
         const apiUrl = getApiUrl("all-products");
-        console.log("Fetching products from:", apiUrl);
 
         const response = await fetch(apiUrl);
         const data = await response.json();

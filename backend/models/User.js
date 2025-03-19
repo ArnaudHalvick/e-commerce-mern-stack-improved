@@ -150,7 +150,6 @@ UserSchema.pre("save", async function (next) {
   // Normalize email address
   if (this.isModified("email")) {
     this.normalizedEmail = normalizeEmail(this.email);
-    console.log(`Email normalized to: ${this.normalizedEmail}`);
   }
 
   // Hash password if modified
@@ -161,14 +160,11 @@ UserSchema.pre("save", async function (next) {
       this.password.length === 60 &&
       this.password.startsWith("$2")
     ) {
-      console.log("Password already hashed, skipping hash");
       return next();
     }
 
     try {
-      console.log("Hashing password in pre-save middleware");
       this.password = await bcrypt.hash(this.password, 12);
-      console.log("Password hashed successfully");
     } catch (error) {
       console.error("Error hashing password:", error);
       return next(error);
@@ -202,18 +198,11 @@ UserSchema.methods.generateEmailVerificationToken = function () {
   // Generate a random token with more entropy
   const verificationToken = crypto.randomBytes(32).toString("hex");
 
-  // Log the original token for debugging
-  console.log(`Original verification token generated: ${verificationToken}`);
-
   // Hash and set to emailVerificationToken
   this.emailVerificationToken = crypto
     .createHash("sha256")
     .update(verificationToken)
     .digest("hex");
-
-  console.log(
-    `Hashed token stored in database: ${this.emailVerificationToken}`
-  );
 
   // Set token expiry (24 hours)
   this.emailVerificationExpiry = Date.now() + 24 * 60 * 60 * 1000;
@@ -226,18 +215,11 @@ UserSchema.methods.generatePasswordChangeToken = function () {
   // Generate a random token
   const changeToken = crypto.randomBytes(32).toString("hex");
 
-  // Log for debugging
-  console.log(`Original password change token generated: ${changeToken}`);
-
   // Hash and set to passwordChangeToken
   this.passwordChangeToken = crypto
     .createHash("sha256")
     .update(changeToken)
     .digest("hex");
-
-  console.log(
-    `Hashed password change token stored in database: ${this.passwordChangeToken}`
-  );
 
   // Set token expiry (24 hours instead of 1 hour)
   this.passwordChangeExpiry = Date.now() + 24 * 60 * 60 * 1000;

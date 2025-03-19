@@ -28,7 +28,6 @@ const NewCollection = () => {
           console.warn("API didn't return an array for new collection", data);
           setNewCollection([]);
         } else {
-          console.log(`Loaded ${data.length} new collection items`);
           setNewCollection(data);
         }
         setLoading(false);

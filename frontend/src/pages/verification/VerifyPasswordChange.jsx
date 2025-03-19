@@ -29,9 +29,6 @@ const VerifyPasswordChange = () => {
     const verifyPasswordChangeToken = async () => {
       // Skip if we already attempted verification (prevents duplicate attempts)
       if (verificationAttempted.current) {
-        console.log(
-          "Verification already attempted, skipping duplicate execution"
-        );
         return;
       }
 

@@ -33,7 +33,6 @@ const reviewsApi = {
       const parsedRating = parseInt(ratingFilter);
       if (!isNaN(parsedRating) && parsedRating >= 1 && parsedRating <= 5) {
         params.append("rating", parsedRating);
-        console.log(`Adding rating filter: ${parsedRating}`);
       }
 
       // Add bestRated if true
@@ -43,24 +42,12 @@ const reviewsApi = {
 
       // Construct the URL - using URLSearchParams ensures proper encoding
       const url = `/api/reviews/product/${productId}?${params.toString()}`;
-      console.log(`Making API request to: ${url}`);
 
       // Make the API call with axios
       const response = await apiClient.get(url);
 
-      // Log the response summary
-      console.log(
-        `API Response: ${response.data.reviews?.length || 0}/${
-          response.data.count
-        } reviews` +
-          (parsedRating >= 1 && parsedRating <= 5
-            ? ` for rating ${parsedRating}`
-            : "")
-      );
-
       // Debug: Log the first review's rating to verify filtering
       if (response.data.reviews && response.data.reviews.length > 0) {
-        console.log(`First review rating: ${response.data.reviews[0].rating}`);
       }
 
       return response.data;

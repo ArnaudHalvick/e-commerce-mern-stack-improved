@@ -11,15 +11,6 @@ const nodemailer = require("nodemailer");
  */
 const sendEmail = async (options) => {
   try {
-    // Log email settings
-    console.log("Email configuration:");
-    console.log(`SMTP_HOST: ${process.env.SMTP_HOST}`);
-    console.log(`SMTP_PORT: ${process.env.SMTP_PORT}`);
-    console.log(`SMTP_USER: ${process.env.SMTP_USER ? "****" : "Not set"}`);
-    console.log(
-      `SMTP_PASSWORD: ${process.env.SMTP_PASSWORD ? "****" : "Not set"}`
-    );
-
     // Check if SMTP credentials are set
     if (!process.env.SMTP_USER || !process.env.SMTP_PASSWORD) {
       console.error(
@@ -41,7 +32,6 @@ const sendEmail = async (options) => {
 
     // Verify connection configuration
     await transporter.verify();
-    console.log("SMTP connection verified successfully");
 
     // Create HTML version if not provided but text is
     let htmlContent = options.html;
@@ -66,11 +56,8 @@ const sendEmail = async (options) => {
       html: htmlContent, // HTML version
     };
 
-    console.log(`Sending email to: ${options.email}`);
-
     // Send email
     const info = await transporter.sendMail(mailOptions);
-    console.log(`Email sent: ${info.messageId}`);
 
     return info;
   } catch (error) {
