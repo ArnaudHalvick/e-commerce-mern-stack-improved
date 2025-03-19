@@ -6,7 +6,11 @@ const express = require("express");
 const path = require("path");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const morgan = require("morgan");
 const connectDB = require("./config/db");
+const AppError = require("./utils/AppError");
+const globalErrorHandler = require("./utils/errorHandler");
+const logger = require("./utils/logger");
 
 // Import routes
 const productRoutes = require("./routes/productRoutes");
@@ -21,12 +25,16 @@ const port = process.env.PORT || 4000;
 
 // Middleware
 const allowedOrigins = [
-  "http://159.65.230.12", 
+  "http://159.65.230.12",
   "http://159.65.230.12:8080",
   "http://localhost:3000",
   "http://localhost",
-  process.env.FRONTEND_URL || "http://localhost:3000"
+  process.env.FRONTEND_URL || "http://localhost:3000",
 ];
+
+// Configure Morgan for HTTP request logging
+const morganFormat = process.env.NODE_ENV === "production" ? "combined" : "dev";
+app.use(morgan(morganFormat, { stream: logger.stream }));
 
 app.use(
   cors({
@@ -66,29 +74,39 @@ app.use("/api/cart", cartRoutes);
 app.use("/api", uploadRoutes);
 app.use("/api/reviews", reviewRoutes);
 
-// 404 handler
-app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    message: "API endpoint not found",
-  });
+// 404 handler - unhandled routes
+app.all("*", (req, res, next) => {
+  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 
-// Error handler
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({
-    success: false,
-    message: "Internal server error",
-    error: process.env.NODE_ENV === "development" ? err.message : undefined,
-  });
-});
+// Global error handling middleware
+app.use(globalErrorHandler);
 
 // Start server
-app.listen(port, (error) => {
+const server = app.listen(port, (error) => {
   if (error) {
     console.error("Error starting server:", error);
     process.exit(1);
   }
-  console.log();
+  logger.info(`Server running on port ${port}`);
+});
+
+// Handling Uncaught Exceptions
+process.on("uncaughtException", (err) => {
+  logger.error("UNCAUGHT EXCEPTION! �� Shutting down...", {
+    error: err.message,
+    stack: err.stack,
+  });
+  process.exit(1);
+});
+
+// Handling Unhandled Promise Rejections
+process.on("unhandledRejection", (err) => {
+  logger.error("UNHANDLED REJECTION! 💥 Shutting down...", {
+    error: err.message,
+    stack: err.stack,
+  });
+  server.close(() => {
+    process.exit(1);
+  });
 });
