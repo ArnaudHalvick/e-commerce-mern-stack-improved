@@ -15,7 +15,11 @@ import Cart from "./pages/cart/Cart";
 import Auth from "./pages/auth";
 import Offers from "./pages/offers";
 import NotFound from "./pages/notFound";
-import { VerifyEmail, VerifyPending } from "./pages/verification";
+import {
+  VerifyEmail,
+  VerifyPending,
+  VerifyPasswordChange,
+} from "./pages/verification";
 import Profile from "./pages/profile/index.jsx";
 
 // Assets
@@ -66,9 +70,14 @@ function App() {
           {/* User Account Routes */}
           <Route path="/cart" element={<Cart />} />
           <Route path="/login" element={<Auth />} />
+          <Route path="/signup" element={<Auth initialState="Signup" />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="/verify-pending" element={<VerifyPending />} />
+          <Route
+            path="/verify-password-change"
+            element={<VerifyPasswordChange />}
+          />
 
           {/* 404 Route - Must be the last route */}
           <Route path="*" element={<NotFound />} />

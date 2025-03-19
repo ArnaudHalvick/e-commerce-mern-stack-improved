@@ -1,5 +1,5 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 // Components
 import LoginForm from "./components/LoginForm";
@@ -14,8 +14,12 @@ import "./Auth.css";
 
 /**
  * Auth page component that handles user login and signup
+ * @param {Object} props - Component props
+ * @param {string} props.initialState - Initial state to show ("Login" or "Signup")
  */
-const Auth = () => {
+const Auth = ({ initialState = "Login" }) => {
+  const navigate = useNavigate();
+
   const {
     state,
     formData,
@@ -26,7 +30,23 @@ const Auth = () => {
     switchState,
     changeHandler,
     handleSubmit,
+    setInitialState,
   } = useAuthForm();
+
+  // Effect to handle initial state
+  useEffect(() => {
+    if (initialState === "Signup") {
+      setInitialState("Signup");
+    }
+  }, [initialState, setInitialState]);
+
+  // Effect to handle email verification needed redirect after login
+  useEffect(() => {
+    // This will be triggered when email verification is needed after login
+    if (error?.emailVerificationNeeded) {
+      navigate("/verify-pending");
+    }
+  }, [error, navigate]);
 
   return (
     <div className="auth-container">
@@ -59,7 +79,10 @@ const Auth = () => {
             {state === "Signup"
               ? "Already have an account? "
               : "Don't have an account? "}
-            <Link to="/login" onClick={switchState}>
+            <Link
+              to={state === "Signup" ? "/login" : "/signup"}
+              onClick={switchState}
+            >
               {state === "Signup" ? "Sign in" : "Sign up"}
             </Link>
           </p>

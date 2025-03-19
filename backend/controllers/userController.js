@@ -3,9 +3,10 @@
 const User = require("../models/User");
 const crypto = require("crypto");
 const sendEmail = require("../utils/sendEmail");
+const bcrypt = require("bcryptjs");
 
 // Helper function to send tokens
-const sendTokens = (user, statusCode, res) => {
+const sendTokens = (user, statusCode, res, additionalData = {}) => {
   const accessToken = user.generateAccessToken();
   const refreshToken = user.generateRefreshToken();
 
@@ -22,19 +23,22 @@ const sendTokens = (user, statusCode, res) => {
     secure: process.env.NODE_ENV === "production",
   };
 
+  const responseData = {
+    success: true,
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      isEmailVerified: user.isEmailVerified,
+    },
+    accessToken,
+    ...additionalData,
+  };
+
   res
     .status(statusCode)
     .cookie("refreshToken", refreshToken, options)
-    .json({
-      success: true,
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        isEmailVerified: user.isEmailVerified,
-      },
-      accessToken,
-    });
+    .json(responseData);
 };
 
 // User registration
@@ -206,17 +210,13 @@ const loginUser = async (req, res) => {
       });
     }
 
-    // Check if email is verified
-    if (!user.isEmailVerified) {
-      return res.status(403).json({
-        success: false,
-        message: "Please verify your email before logging in",
-        requiresVerification: true,
-        email: user.email,
-      });
-    }
+    // Don't block login for unverified email, just flag it
+    // The frontend will handle redirecting to a verification page
+    const additionalData = !user.isEmailVerified
+      ? { emailVerificationNeeded: true }
+      : {};
 
-    sendTokens(user, 200, res);
+    sendTokens(user, 200, res, additionalData);
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -428,14 +428,84 @@ const changePassword = async (req, res) => {
       });
     }
 
-    // Set the new password
-    user.password = newPassword;
-    await user.save();
+    // Instead of setting password directly, store in pendingPassword and send verification email
+    // We don't hash the password here - it will be hashed during verification when assigned to the password field
+    user.pendingPassword = newPassword;
+    console.log(`Storing plain text pending password for user: ${user.email}`);
 
-    res.status(200).json({
-      success: true,
-      message: "Password changed successfully",
-    });
+    // Generate password change token
+    const changeToken = user.generatePasswordChangeToken();
+    await user.save({ validateBeforeSave: false });
+
+    // Create verification URL
+    const verificationUrl = `${
+      process.env.FRONTEND_URL || "http://localhost:3000"
+    }/verify-password-change?token=${changeToken}`;
+
+    // Send verification email
+    try {
+      await sendEmail({
+        email: user.email,
+        subject: "Confirm Your Password Change",
+        html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px;">
+          <div style="text-align: center; margin-bottom: 20px;">
+            <h1 style="color: #f85606;">Password Change Request</h1>
+          </div>
+          
+          <p>Hello ${user.name},</p>
+          
+          <p>We received a request to change your password. To confirm this change, please click the button below:</p>
+          
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${verificationUrl}" style="background-color: #f85606; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block; font-weight: bold;">Confirm Password Change</a>
+          </div>
+          
+          <p>If you didn't request this change, please ignore this email or contact support immediately.</p>
+          
+          <p>This link will expire in 24 hours for security reasons.</p>
+          
+          <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0; text-align: center; color: #666; font-size: 12px;">
+            <p>Best regards,<br>The E-Commerce Team</p>
+          </div>
+        </div>
+        `,
+        message: `
+Hello ${user.name},
+
+We received a request to change your password. To confirm this change, please click the following link:
+${verificationUrl}
+
+If you didn't request this change, please ignore this email or contact support immediately.
+
+This link will expire in 24 hours for security reasons.
+
+Best regards,
+The E-Commerce Team
+        `,
+      });
+
+      return res.status(200).json({
+        success: true,
+        message:
+          "Verification email sent. Please check your email to confirm password change.",
+      });
+    } catch (error) {
+      console.error("Email sending error:", error);
+
+      // Reset verification token
+      user.passwordChangeToken = undefined;
+      user.passwordChangeExpiry = undefined;
+      user.pendingPassword = undefined;
+      await user.save({ validateBeforeSave: false });
+
+      return res.status(500).json({
+        success: false,
+        message: "Could not send verification email. Please try again later.",
+        error:
+          process.env.NODE_ENV === "development" ? error.message : undefined,
+      });
+    }
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -711,6 +781,138 @@ const verifyToken = async (req, res) => {
   }
 };
 
+// Verify password change
+const verifyPasswordChange = async (req, res) => {
+  try {
+    const { token } = req.query;
+
+    if (!token) {
+      return res.status(400).json({
+        success: false,
+        message: "Password change verification token is required",
+      });
+    }
+
+    // Track processed tokens for idempotency
+    if (!global.processedPasswordTokens) {
+      global.processedPasswordTokens = {};
+    }
+
+    // Function to cleanup old tokens (older than 1 hour)
+    const cleanupOldTokens = () => {
+      const currentTime = Date.now();
+      const oneHour = 60 * 60 * 1000;
+
+      Object.keys(global.processedPasswordTokens).forEach((token) => {
+        if (
+          currentTime - global.processedPasswordTokens[token].timestamp >
+          oneHour
+        ) {
+          delete global.processedPasswordTokens[token];
+        }
+      });
+    };
+
+    // Run cleanup periodically
+    cleanupOldTokens();
+
+    console.log(`Received token for verification: ${token}`);
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+    console.log(`Hashed token: ${hashedToken}`);
+
+    // Check if this token has already been processed
+    if (global.processedPasswordTokens[hashedToken]) {
+      console.log("Token already processed, returning cached response");
+      return res
+        .status(global.processedPasswordTokens[hashedToken].status)
+        .json(global.processedPasswordTokens[hashedToken].data);
+    }
+
+    try {
+      const user = await User.findOne({
+        passwordChangeToken: hashedToken,
+        passwordChangeExpiry: { $gt: Date.now() },
+      }).select("+pendingPassword");
+
+      if (!user) {
+        console.log("Invalid or expired token");
+        // Store in processed tokens cache
+        global.processedPasswordTokens[hashedToken] = {
+          status: 400,
+          data: {
+            status: "error",
+            message: "Invalid or expired token",
+          },
+          timestamp: Date.now(),
+        };
+        return res.status(400).json({
+          status: "error",
+          message: "Invalid or expired token",
+        });
+      }
+
+      console.log(`User found: ${user.email}`);
+      console.log(
+        `Setting password field to pending password value: ${user.pendingPassword.substring(
+          0,
+          3
+        )}***`
+      );
+
+      // Apply the pending password (which is plaintext) to password field
+      // The pre-save middleware will hash it
+      user.password = user.pendingPassword;
+
+      // Clear the verification data
+      user.pendingPassword = undefined;
+      user.passwordChangeToken = undefined;
+      user.passwordChangeExpiry = undefined;
+
+      await user.save();
+      console.log(`User saved with new password`);
+
+      // Store successful response in processed tokens cache
+      global.processedPasswordTokens[hashedToken] = {
+        status: 200,
+        data: {
+          status: "success",
+          message: "Password changed successfully",
+        },
+        timestamp: Date.now(),
+      };
+
+      res.status(200).json({
+        status: "success",
+        message: "Password changed successfully",
+      });
+    } catch (error) {
+      console.error("Error in verifyPasswordChange:", error);
+
+      // Store error response in processed tokens cache
+      global.processedPasswordTokens[hashedToken] = {
+        status: 500,
+        data: {
+          status: "error",
+          message: error.message,
+        },
+        timestamp: Date.now(),
+      };
+
+      res.status(500).json({
+        status: "error",
+        message: error.message,
+      });
+    }
+  } catch (error) {
+    console.error("Password change verification error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
@@ -723,4 +925,5 @@ module.exports = {
   verifyToken,
   changePassword,
   disableAccount,
+  verifyPasswordChange,
 };

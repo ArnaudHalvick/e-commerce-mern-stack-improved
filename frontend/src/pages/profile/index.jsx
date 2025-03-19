@@ -38,9 +38,8 @@ const Profile = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, error, passwordChanged } = useSelector(
-    (state) => state.user
-  );
+  const { loading, error, passwordChanged, passwordChangePending } =
+    useSelector((state) => state.user);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -120,13 +119,39 @@ const Profile = () => {
         confirmPassword: "",
       });
       setIsChangingPassword(false);
-      setMessage({
-        text: "Password changed successfully!",
-        type: "success",
-      });
+
+      if (passwordChangePending) {
+        setMessage({
+          text: "Verification email sent. Please check your email to confirm password change.",
+          type: "success",
+        });
+      } else {
+        setMessage({
+          text: "Password changed successfully!",
+          type: "success",
+        });
+      }
+
       dispatch(resetPasswordChanged());
     }
-  }, [passwordChanged, dispatch]);
+  }, [passwordChanged, passwordChangePending, dispatch]);
+
+  // Add a useEffect to check for query parameters
+  useEffect(() => {
+    const queryParams = new URLSearchParams(window.location.search);
+    const tokenExpired = queryParams.get("tokenExpired");
+
+    if (tokenExpired === "true") {
+      setMessage({
+        text: "Your password change request has expired. Please request a new password change.",
+        type: "error",
+      });
+
+      // Remove the query parameter from the URL without refreshing the page
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, document.title, newUrl);
+    }
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

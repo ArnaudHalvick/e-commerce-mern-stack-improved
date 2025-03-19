@@ -11,6 +11,7 @@ router.post("/login", userController.loginUser);
 router.post("/refresh-token", verifyRefreshToken, userController.refreshToken);
 router.post("/request-verification", userController.requestVerification);
 router.get("/verify-email", userController.verifyEmail);
+router.get("/verify-password-change", userController.verifyPasswordChange);
 
 // Protected routes
 router.get("/logout", isAuthenticated, userController.logoutUser);

@@ -57,7 +57,7 @@
 
 .shop-nav-button {
   outline: none;
-  width: 8rem;
+  width: 6rem;
   height: 2.5rem;
   border-radius: 2rem;
   border: 0.0625rem solid #7a7a7a;
@@ -66,6 +66,7 @@
   font-weight: 500;
   background-color: white;
   cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .shop-nav-button:active {
@@ -169,6 +170,35 @@
 .user-dropdown-button {
   color: #ff6e6e;
   font-weight: 500;
+}
+
+/* Auth buttons container */
+.auth-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Login button styling */
+.login-btn {
+  border-color: #171717;
+  background-color: white;
+  color: #171717;
+}
+
+.login-btn:hover {
+  background-color: #f5f5f5;
+}
+
+/* Signup button styling */
+.signup-btn {
+  border-color: #ff6e6e;
+  background-color: #ff6e6e;
+  color: white;
+}
+
+.signup-btn:hover {
+  background-color: #ff5757;
+  border-color: #ff5757;
 }
 
 /* Responsive styles */
@@ -299,5 +329,32 @@
 
   .user-dropdown {
     right: -1.5rem;
+  }
+}
+
+/* Responsive styles for auth buttons */
+@media (max-width: 768px) {
+  .auth-buttons {
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+
+  .shop-nav-button {
+    width: 5rem;
+    font-size: 0.85rem;
+    height: 2.2rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .auth-buttons {
+    flex-direction: row;
+    gap: 0.25rem;
+  }
+
+  .shop-nav-button {
+    width: 4.5rem;
+    font-size: 0.75rem;
+    height: 2rem;
   }
 }

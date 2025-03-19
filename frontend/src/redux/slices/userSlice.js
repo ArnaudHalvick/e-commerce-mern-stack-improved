@@ -41,7 +41,12 @@ export const changePassword = createAsyncThunk(
           },
         }
       );
-      return response.data;
+
+      // Return response data including the verification message
+      return {
+        ...response.data,
+        passwordChangePending: true, // Flag to indicate password change is pending verification
+      };
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Failed to change password"
@@ -109,6 +114,49 @@ export const verifyEmail = createAsyncThunk(
   }
 );
 
+// Async thunk for verifying password change
+export const verifyPasswordChange = createAsyncThunk(
+  "user/verifyPasswordChange",
+  async (token, { rejectWithValue }) => {
+    try {
+      // Log the token and URL for debugging
+      console.log("Verifying password change with token:", token);
+
+      // The correct endpoint is "verify-password-change" (without "users/")
+      const url = getApiUrl(`verify-password-change?token=${token}`);
+      console.log("API URL:", url);
+
+      const response = await axios.get(url);
+      return response.data;
+    } catch (error) {
+      console.error("Password verification error:", error.response || error);
+
+      // Check if there's a structured error response
+      if (error.response && error.response.data) {
+        const errorData = error.response.data;
+
+        // Return tokenExpired flag if present
+        if (errorData.tokenExpired) {
+          return rejectWithValue({
+            message:
+              errorData.message ||
+              "Token has expired. Please request a new password change.",
+            tokenExpired: true,
+          });
+        }
+
+        return rejectWithValue({
+          message: errorData.message || "Failed to verify password change",
+        });
+      }
+
+      return rejectWithValue({
+        message: "Failed to verify password change. Please try again later.",
+      });
+    }
+  }
+);
+
 const userSlice = createSlice({
   name: "user",
   initialState: {
@@ -118,6 +166,7 @@ const userSlice = createSlice({
     loading: false,
     error: null,
     passwordChanged: false,
+    passwordChangePending: false,
     accountDisabled: false,
   },
   reducers: {
@@ -130,6 +179,7 @@ const userSlice = createSlice({
       state.isEmailVerified = false;
       state.verificationRequested = false;
       state.passwordChanged = false;
+      state.passwordChangePending = false;
       state.accountDisabled = false;
     },
     clearError: (state) => {
@@ -137,6 +187,7 @@ const userSlice = createSlice({
     },
     resetPasswordChanged: (state) => {
       state.passwordChanged = false;
+      state.passwordChangePending = false;
     },
   },
   extraReducers: (builder) => {
@@ -159,14 +210,18 @@ const userSlice = createSlice({
         state.loading = true;
         state.error = null;
         state.passwordChanged = false;
+        state.passwordChangePending = false;
       })
-      .addCase(changePassword.fulfilled, (state) => {
+      .addCase(changePassword.fulfilled, (state, action) => {
         state.loading = false;
         state.passwordChanged = true;
+        state.passwordChangePending =
+          action.payload.passwordChangePending || false;
       })
       .addCase(changePassword.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+        state.passwordChangePending = false;
       })
       // Handle disableAccount
       .addCase(disableAccount.pending, (state) => {
@@ -205,6 +260,20 @@ const userSlice = createSlice({
         state.loading = false;
       })
       .addCase(verifyEmail.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // Handle verifyPasswordChange
+      .addCase(verifyPasswordChange.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(verifyPasswordChange.fulfilled, (state) => {
+        state.loading = false;
+        state.passwordChanged = true;
+        state.passwordChangePending = false;
+      })
+      .addCase(verifyPasswordChange.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

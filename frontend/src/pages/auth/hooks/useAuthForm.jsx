@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useCallback } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
@@ -18,6 +18,13 @@ const useAuthForm = () => {
   const { login, signup, loading, error } = useContext(AuthContext);
   const navigate = useNavigate();
 
+  // Allow parent component to set the initial state
+  const setInitialState = useCallback((newState) => {
+    if (newState === "Login" || newState === "Signup") {
+      setState(newState);
+    }
+  }, []);
+
   const switchState = () => {
     setState((prevState) => (prevState === "Signup" ? "Login" : "Signup"));
   };
@@ -35,7 +42,10 @@ const useAuthForm = () => {
     }
 
     if (state === "Login") {
-      await login(formData.email, formData.password);
+      const loginResult = await login(formData.email, formData.password);
+
+      // Email verification needed is handled at the Auth component level
+      // by watching the error.emailVerificationNeeded property
     } else {
       const result = await signup(formData);
 
@@ -59,6 +69,7 @@ const useAuthForm = () => {
     switchState,
     changeHandler,
     handleSubmit,
+    setInitialState,
   };
 };
 

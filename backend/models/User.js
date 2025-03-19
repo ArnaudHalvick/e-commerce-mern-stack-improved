@@ -38,6 +38,16 @@ const UserSchema = new mongoose.Schema({
   emailVerificationExpiry: {
     type: Date,
   },
+  passwordChangeToken: {
+    type: String,
+  },
+  passwordChangeExpiry: {
+    type: Date,
+  },
+  pendingPassword: {
+    type: String,
+    select: false,
+  },
   disabled: {
     type: Boolean,
     default: false,
@@ -112,9 +122,13 @@ const UserSchema = new mongoose.Schema({
 // Hash password before saving
 UserSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
+    console.log("Password not modified, skipping hash");
     return next();
   }
+
+  console.log("Hashing password in pre-save middleware");
   this.password = await bcrypt.hash(this.password, 12);
+  console.log("Password hashed successfully");
   next();
 });
 
@@ -159,6 +173,30 @@ UserSchema.methods.generateEmailVerificationToken = function () {
   this.emailVerificationExpiry = Date.now() + 24 * 60 * 60 * 1000;
 
   return verificationToken;
+};
+
+// Generate password change verification token
+UserSchema.methods.generatePasswordChangeToken = function () {
+  // Generate a random token
+  const changeToken = crypto.randomBytes(32).toString("hex");
+
+  // Log for debugging
+  console.log(`Original password change token generated: ${changeToken}`);
+
+  // Hash and set to passwordChangeToken
+  this.passwordChangeToken = crypto
+    .createHash("sha256")
+    .update(changeToken)
+    .digest("hex");
+
+  console.log(
+    `Hashed password change token stored in database: ${this.passwordChangeToken}`
+  );
+
+  // Set token expiry (24 hours instead of 1 hour)
+  this.passwordChangeExpiry = Date.now() + 24 * 60 * 60 * 1000;
+
+  return changeToken;
 };
 
 module.exports = mongoose.model("Users", UserSchema);

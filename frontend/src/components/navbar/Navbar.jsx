@@ -157,9 +157,14 @@ const Navbar = () => {
             )}
           </div>
         ) : (
-          <Link to="/login">
-            <button className="shop-nav-button">Login</button>
-          </Link>
+          <div className="auth-buttons">
+            <Link to="/login">
+              <button className="shop-nav-button login-btn">Login</button>
+            </Link>
+            <Link to="/signup">
+              <button className="shop-nav-button signup-btn">Signup</button>
+            </Link>
+          </div>
         )}
         <Link to="/cart">
           <img className="cart-icon" src={cart_icon} alt="cart" />

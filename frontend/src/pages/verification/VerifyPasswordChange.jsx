@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
-import { getApiUrl } from "../../utils/imageUtils";
+import { useDispatch, useSelector } from "react-redux";
+import { verifyPasswordChange } from "../../redux/slices/userSlice";
+import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
 
 // Styles
-import "./VerifyEmail.css"; // Reusing the same styles
+import "./VerifyEmail.css";
 
 /**
  * VerifyPasswordChange component for handling password change verification
@@ -14,13 +15,30 @@ const VerifyPasswordChange = () => {
     loading: true,
     success: false,
     message: "Verifying your password change request...",
+    tokenExpired: false,
   });
+
+  // Use a ref to track if verification was already attempted
+  const verificationAttempted = useRef(false);
 
   const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { loading, error } = useSelector((state) => state.user);
 
   useEffect(() => {
-    const verifyPasswordChange = async () => {
+    const verifyPasswordChangeToken = async () => {
+      // Skip if we already attempted verification (prevents duplicate attempts)
+      if (verificationAttempted.current) {
+        console.log(
+          "Verification already attempted, skipping duplicate execution"
+        );
+        return;
+      }
+
+      // Mark that we've attempted verification
+      verificationAttempted.current = true;
+
       try {
         // Get token from URL
         const queryParams = new URLSearchParams(location.search);
@@ -32,47 +50,64 @@ const VerifyPasswordChange = () => {
             success: false,
             message:
               "Missing verification token. Please check your email link.",
+            tokenExpired: false,
           });
           return;
         }
 
-        // Send verification request
-        const response = await axios.get(
-          getApiUrl(`users/verify-password-change?token=${token}`)
-        );
+        // Dispatch the action to verify password change
+        const result = await dispatch(verifyPasswordChange(token)).unwrap();
 
         setVerificationStatus({
           loading: false,
           success: true,
-          message: response.data.message || "Password changed successfully!",
+          message: result.message || "Password changed successfully!",
+          tokenExpired: false,
         });
       } catch (error) {
         console.error("Verification error:", error);
+
+        // Check if token expired
+        const isTokenExpired =
+          error && typeof error === "object" && error.tokenExpired;
+
         setVerificationStatus({
           loading: false,
           success: false,
           message:
-            error.response?.data?.message ||
-            "Verification failed. Please try again.",
+            error?.message || error || "Verification failed. Please try again.",
+          tokenExpired: isTokenExpired,
         });
       }
     };
 
-    verifyPasswordChange();
-  }, [location.search]);
+    verifyPasswordChangeToken();
+  }, [location.search, dispatch]);
 
   const handleRedirect = () => {
-    // Redirect to login or profile based on verification status
-    if (verificationStatus.success) {
+    // If verification failed due to expired token, go to profile to request a new change
+    if (verificationStatus.tokenExpired) {
+      navigate("/profile?tokenExpired=true");
+    }
+    // If verification succeeded, go to login page
+    else if (verificationStatus.success) {
       navigate("/login");
-    } else {
-      // If verification failed, go to profile page to try again
+    }
+    // For other errors, go to profile page
+    else {
       navigate("/profile");
     }
   };
 
   return (
     <div className="verification-container">
+      <Breadcrumb
+        routes={[
+          { label: "HOME", path: "/" },
+          { label: "VERIFY PASSWORD CHANGE" },
+        ]}
+      />
+
       <div className="verification-card">
         <div
           className={`verification-icon ${
@@ -101,6 +136,13 @@ const VerifyPasswordChange = () => {
         </h2>
 
         <p className="verification-message">{verificationStatus.message}</p>
+
+        {verificationStatus.tokenExpired && (
+          <p className="verification-submessage">
+            Your password change token has expired. Please return to your
+            profile and request a new password change.
+          </p>
+        )}
 
         {!verificationStatus.loading && (
           <button className="verification-button" onClick={handleRedirect}>
