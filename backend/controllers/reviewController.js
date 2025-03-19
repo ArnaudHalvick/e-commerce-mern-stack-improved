@@ -2,261 +2,277 @@ const Review = require("../models/Review");
 const Product = require("../models/Product");
 const Cart = require("../models/Cart");
 const User = require("../models/User");
+const catchAsync = require("../utils/catchAsync");
+const AppError = require("../utils/AppError");
 
 // Add a new review (only if user has purchased the product)
-const addReview = async (req, res) => {
-  try {
-    const { userId, productId, rating, content } = req.body;
+const addReview = catchAsync(async (req, res, next) => {
+  const { userId, productId, rating, content } = req.body;
 
-    // Check if user has purchased the product
-    const cart = await Cart.findOne({
-      user_id: userId,
-      products: { $elemMatch: { product_id: productId } },
-      ordered: true, // Only count completed orders
-    });
-
-    const verifiedPurchase = !!cart;
-
-    // Allow review even if not purchased (for portfolio purposes), but mark it as non-verified
-    const review = new Review({
-      user: userId,
-      product: productId,
-      rating,
-      content,
-      verifiedPurchase,
-    });
-
-    await review.save();
-
-    res.status(201).json({
-      success: true,
-      review,
-      message: "Review added successfully",
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Server error",
-      error: error.message,
-    });
+  if (!productId) {
+    return next(new AppError("Product ID is required", 400));
   }
-};
+
+  if (!rating) {
+    return next(new AppError("Rating is required", 400));
+  }
+
+  // Validate product exists
+  const product = await Product.findById(productId);
+  if (!product) {
+    return next(new AppError("Product not found", 404));
+  }
+
+  // Check if user has purchased the product
+  const cart = await Cart.findOne({
+    user_id: userId,
+    products: { $elemMatch: { product_id: productId } },
+    ordered: true, // Only count completed orders
+  });
+
+  const verifiedPurchase = !!cart;
+
+  // Allow review even if not purchased (for portfolio purposes), but mark it as non-verified
+  const review = new Review({
+    user: userId,
+    product: productId,
+    rating,
+    content,
+    verifiedPurchase,
+  });
+
+  await review.save();
+
+  res.status(201).json({
+    success: true,
+    review,
+    message: "Review added successfully",
+  });
+});
 
 // Get all reviews for a product with pagination and sorting
-const getProductReviews = async (req, res) => {
-  try {
-    const { productId } = req.params;
-    const {
-      page = 1,
-      limit = 5,
-      sort = "date-desc",
-      rating,
-      bestRated,
-    } = req.query;
+const getProductReviews = catchAsync(async (req, res, next) => {
+  const { productId } = req.params;
+  const {
+    page = 1,
+    limit = 5,
+    sortBy = "createdAt",
+    sortOrder = "desc",
+    verified = "all",
+  } = req.query;
 
-    // Calculate skip amount for pagination
-    const skip = (parseInt(page) - 1) * parseInt(limit);
-
-    // Determine sort order
-    let sortOption = {};
-    switch (sort) {
-      case "date-desc":
-        sortOption = { date: -1 };
-        break;
-      case "date-asc":
-        sortOption = { date: 1 };
-        break;
-      case "rating-desc":
-        sortOption = { rating: -1 };
-        break;
-      case "rating-asc":
-        sortOption = { rating: 1 };
-        break;
-      default:
-        sortOption = { date: -1 }; // Default to most recent first
-    }
-
-    // Check if product exists
-    const productExists = await Product.findById(productId);
-
-    if (!productExists) {
-      return res.status(404).json({
-        success: false,
-        message: "Product not found",
-      });
-    }
-
-    // Build query based on filters
-    const query = { product: productId };
-
-    // Add rating filter if provided - ensure it's properly parsed as an integer
-    if (rating) {
-      const parsedRating = parseInt(rating);
-      // Make sure rating is a valid number between 1-5
-      if (!isNaN(parsedRating) && parsedRating >= 1 && parsedRating <= 5) {
-        query.rating = parsedRating;
-      }
-    }
-
-    // Count total reviews for this product with the applied filters
-    const totalReviews = await Review.countDocuments(query);
-
-    // If bestRated is true, sort by rating in descending order
-    if (bestRated === "true") {
-      sortOption = { rating: -1 };
-    }
-
-    // Get paginated and sorted reviews
-    const reviews = await Review.find(query)
-      .populate("user", "name") // Only get required user fields, no avatar
-      .sort(sortOption)
-      .skip(skip)
-      .limit(parseInt(limit));
-
-    // Calculate total pages
-    const totalPages = Math.ceil(totalReviews / parseInt(limit));
-
-    res.json({
-      success: true,
-      count: totalReviews,
-      totalPages,
-      currentPage: parseInt(page),
-      reviews,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Server error",
-      error: error.message,
-      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
-    });
+  if (!productId) {
+    return next(new AppError("Product ID is required", 400));
   }
-};
 
-// Get a specific review
-const getReview = async (req, res) => {
-  try {
-    const { reviewId } = req.params;
+  // Calculate skip value for pagination
+  const skip = (parseInt(page) - 1) * parseInt(limit);
 
-    const review = await Review.findById(reviewId)
-      .populate("user", "name")
-      .populate("product", "name images id");
-
-    if (!review) {
-      return res.status(404).json({
-        success: false,
-        message: "Review not found",
-      });
-    }
-
-    res.json({
-      success: true,
-      review,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Server error",
-      error: error.message,
-    });
+  // Validate product exists
+  const product = await Product.findById(productId);
+  if (!product) {
+    return next(new AppError("Product not found", 404));
   }
-};
+
+  // Build query
+  let query = { product: productId };
+
+  // Filter by verified purchase if requested
+  if (verified !== "all") {
+    query.verifiedPurchase = verified === "true";
+  }
+
+  // Build sort object
+  const sort = {};
+  sort[sortBy] = sortOrder === "asc" ? 1 : -1;
+
+  // Count total reviews matching the query
+  const totalReviews = await Review.countDocuments(query);
+
+  // Fetch reviews with pagination, sorting, and populate user data
+  const reviews = await Review.find(query)
+    .sort(sort)
+    .skip(skip)
+    .limit(parseInt(limit))
+    .populate("user", "name avatar");
+
+  // Calculate average rating
+  const ratingSum = await Review.aggregate([
+    { $match: { product: product._id } },
+    { $group: { _id: null, avgRating: { $avg: "$rating" } } },
+  ]);
+
+  const averageRating = ratingSum.length > 0 ? ratingSum[0].avgRating : 0;
+
+  // Get rating distribution (count of 1-star, 2-star, etc.)
+  const ratingDistribution = await Review.aggregate([
+    { $match: { product: product._id } },
+    { $group: { _id: "$rating", count: { $sum: 1 } } },
+    { $sort: { _id: 1 } },
+  ]);
+
+  // Build the distribution object with all ratings from 1-5
+  const distribution = {};
+  for (let i = 1; i <= 5; i++) {
+    const ratingObj = ratingDistribution.find((r) => r._id === i);
+    distribution[i] = ratingObj ? ratingObj.count : 0;
+  }
+
+  // Send response with reviews, pagination info, and rating data
+  res.status(200).json({
+    success: true,
+    reviews,
+    pagination: {
+      page: parseInt(page),
+      limit: parseInt(limit),
+      totalReviews,
+      totalPages: Math.ceil(totalReviews / parseInt(limit)),
+    },
+    ratings: {
+      average: averageRating,
+      distribution,
+    },
+  });
+});
+
+// Get a single review
+const getReview = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+
+  const review = await Review.findById(id).populate("user", "name avatar");
+
+  if (!review) {
+    return next(new AppError("Review not found", 404));
+  }
+
+  res.status(200).json({
+    success: true,
+    review,
+  });
+});
 
 // Update a review
-const updateReview = async (req, res) => {
-  try {
-    const { reviewId } = req.params;
-    const { rating, content } = req.body;
+const updateReview = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+  const { rating, content } = req.body;
 
-    const review = await Review.findById(reviewId);
+  const review = await Review.findById(id);
 
-    if (!review) {
-      return res.status(404).json({
-        success: false,
-        message: "Review not found",
-      });
-    }
+  if (!review) {
+    return next(new AppError("Review not found", 404));
+  }
 
-    // Optional: Check if the user updating is the owner of the review
-    // if (review.user.toString() !== req.user.id) {
-    //   return res.status(401).json({
-    //     success: false,
-    //     message: "Not authorized to update this review"
-    //   });
-    // }
+  // Check if the user is the owner of the review
+  if (review.user.toString() !== req.user.id && !req.user.isAdmin) {
+    return next(new AppError("Not authorized to update this review", 403));
+  }
 
-    // Update the review
-    review.rating = rating || review.rating;
-    review.content = content || review.content;
+  // Update fields if provided
+  if (rating !== undefined) review.rating = rating;
+  if (content !== undefined) review.content = content;
 
-    await review.save();
+  // Save the updated review
+  review.edited = true;
+  review.editedAt = Date.now();
+  await review.save();
 
-    res.json({
-      success: true,
-      review,
-      message: "Review updated successfully",
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Server error",
-      error: error.message,
+  // If the rating was updated, recalculate the product's average rating
+  if (rating !== undefined) {
+    const ratingSum = await Review.aggregate([
+      { $match: { product: review.product } },
+      { $group: { _id: null, avgRating: { $avg: "$rating" } } },
+    ]);
+
+    const averageRating = ratingSum.length > 0 ? ratingSum[0].avgRating : 0;
+
+    // Update the product with the new rating
+    await Product.findByIdAndUpdate(review.product, {
+      rating: averageRating,
     });
   }
-};
+
+  res.status(200).json({
+    success: true,
+    review,
+    message: "Review updated successfully",
+  });
+});
 
 // Delete a review
-const deleteReview = async (req, res) => {
-  try {
-    const { reviewId } = req.params;
+const deleteReview = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
 
-    const review = await Review.findById(reviewId);
+  const review = await Review.findById(id);
 
-    if (!review) {
-      return res.status(404).json({
-        success: false,
-        message: "Review not found",
-      });
-    }
-
-    // Optional: Check if the user deleting is the owner of the review
-    // if (review.user.toString() !== req.user.id) {
-    //   return res.status(401).json({
-    //     success: false,
-    //     message: "Not authorized to delete this review"
-    //   });
-    // }
-
-    await review.remove();
-
-    res.json({
-      success: true,
-      message: "Review deleted successfully",
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Server error",
-      error: error.message,
-    });
+  if (!review) {
+    return next(new AppError("Review not found", 404));
   }
-};
 
-// Mark a review as helpful - let's keep it simple since we don't have this field
-const markReviewHelpful = async (req, res) => {
-  try {
-    return res.status(501).json({
-      success: false,
-      message: "Marking reviews as helpful is not yet implemented",
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Server error",
-      error: error.message,
-    });
+  // Check if the user is the owner of the review or an admin
+  if (review.user.toString() !== req.user.id && !req.user.isAdmin) {
+    return next(new AppError("Not authorized to delete this review", 403));
   }
-};
+
+  // Store the product ID for rating recalculation
+  const productId = review.product;
+
+  // Delete the review
+  await Review.findByIdAndDelete(id);
+
+  // Recalculate the product's average rating
+  const ratingSum = await Review.aggregate([
+    { $match: { product: productId } },
+    { $group: { _id: null, avgRating: { $avg: "$rating" } } },
+  ]);
+
+  const averageRating = ratingSum.length > 0 ? ratingSum[0].avgRating : 0;
+
+  // Update the product with the new rating
+  await Product.findByIdAndUpdate(productId, {
+    rating: averageRating,
+  });
+
+  res.status(200).json({
+    success: true,
+    message: "Review deleted successfully",
+  });
+});
+
+// Mark a review as helpful
+const markReviewHelpful = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+  const userId = req.user.id;
+
+  const review = await Review.findById(id);
+
+  if (!review) {
+    return next(new AppError("Review not found", 404));
+  }
+
+  // Check if the user has already marked this review as helpful
+  const alreadyMarked = review.helpfulVotes.includes(userId);
+
+  if (alreadyMarked) {
+    // If already marked, remove the vote
+    review.helpfulVotes = review.helpfulVotes.filter(
+      (id) => id.toString() !== userId
+    );
+  } else {
+    // Otherwise, add the vote
+    review.helpfulVotes.push(userId);
+  }
+
+  await review.save();
+
+  res.status(200).json({
+    success: true,
+    helpful: !alreadyMarked,
+    helpfulCount: review.helpfulVotes.length,
+    message: alreadyMarked
+      ? "Helpful vote removed"
+      : "Review marked as helpful",
+  });
+});
 
 module.exports = {
   addReview,
