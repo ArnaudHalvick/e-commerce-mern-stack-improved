@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
+const { normalizeEmail } = require("../utils/emailNormalizer");
 
 const UserSchema = new mongoose.Schema({
   name: {
@@ -18,6 +19,12 @@ const UserSchema = new mongoose.Schema({
     unique: true,
     lowercase: true,
     match: [/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, "Please enter a valid email"],
+  },
+  normalizedEmail: {
+    type: String,
+    unique: true,
+    lowercase: true,
+    sparse: true, // Allow null/undefined values to avoid unique constraint errors
   },
   password: {
     type: String,
@@ -70,7 +77,7 @@ const UserSchema = new mongoose.Schema({
     type: String,
     validate: {
       validator: function (v) {
-        return /^[0-9]{10,15}$/.test(v);
+        return !v || /^[0-9]{10,15}$/.test(v);
       },
       message: (props) =>
         `${props.value} is not a valid phone number. It should have 10-15 digits.`,
@@ -81,7 +88,7 @@ const UserSchema = new mongoose.Schema({
       type: String,
       validate: {
         validator: function (v) {
-          return v && v.length >= 3;
+          return !v || v.length >= 3;
         },
         message: (props) => "Street address must be at least 3 characters long",
       },
@@ -90,7 +97,7 @@ const UserSchema = new mongoose.Schema({
       type: String,
       validate: {
         validator: function (v) {
-          return v && v.length >= 2;
+          return !v || v.length >= 2;
         },
         message: (props) => "City must be at least 2 characters long",
       },
@@ -99,7 +106,7 @@ const UserSchema = new mongoose.Schema({
       type: String,
       validate: {
         validator: function (v) {
-          return v && v.length >= 2;
+          return !v || v.length >= 2;
         },
         message: (props) => "State must be at least 2 characters long",
       },
@@ -108,7 +115,7 @@ const UserSchema = new mongoose.Schema({
       type: String,
       validate: {
         validator: function (v) {
-          return /^[0-9a-zA-Z\-\s]{3,10}$/.test(v);
+          return !v || /^[0-9a-zA-Z\-\s]{3,10}$/.test(v);
         },
         message: (props) => "Please enter a valid zip/postal code",
       },
@@ -117,7 +124,7 @@ const UserSchema = new mongoose.Schema({
       type: String,
       validate: {
         validator: function (v) {
-          return v && v.length >= 2;
+          return !v || v.length >= 2;
         },
         message: (props) => "Country must be at least 2 characters long",
       },
@@ -133,16 +140,41 @@ const UserSchema = new mongoose.Schema({
   },
 });
 
-// Hash password before saving
+// Pre-save middleware to normalize email and hash password
 UserSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) {
-    console.log("Password not modified, skipping hash");
+  // Skip this middleware if only refreshToken is being modified
+  if (this.$locals && this.$locals.skipPasswordHashing) {
     return next();
   }
 
-  console.log("Hashing password in pre-save middleware");
-  this.password = await bcrypt.hash(this.password, 12);
-  console.log("Password hashed successfully");
+  // Normalize email address
+  if (this.isModified("email")) {
+    this.normalizedEmail = normalizeEmail(this.email);
+    console.log(`Email normalized to: ${this.normalizedEmail}`);
+  }
+
+  // Hash password if modified
+  if (this.isModified("password")) {
+    // Check if password already looks like a hash (60 chars, bcrypt format)
+    if (
+      this.password &&
+      this.password.length === 60 &&
+      this.password.startsWith("$2")
+    ) {
+      console.log("Password already hashed, skipping hash");
+      return next();
+    }
+
+    try {
+      console.log("Hashing password in pre-save middleware");
+      this.password = await bcrypt.hash(this.password, 12);
+      console.log("Password hashed successfully");
+    } catch (error) {
+      console.error("Error hashing password:", error);
+      return next(error);
+    }
+  }
+
   next();
 });
 

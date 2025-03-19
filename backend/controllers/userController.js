@@ -4,15 +4,19 @@ const User = require("../models/User");
 const crypto = require("crypto");
 const sendEmail = require("../utils/sendEmail");
 const bcrypt = require("bcryptjs");
+const { normalizeEmail } = require("../utils/emailNormalizer");
 
 // Helper function to send tokens
 const sendTokens = (user, statusCode, res, additionalData = {}) => {
   const accessToken = user.generateAccessToken();
   const refreshToken = user.generateRefreshToken();
 
-  // Save refresh token to user
+  // Save refresh token to user without triggering password hash
   user.refreshToken = refreshToken;
-  user.save();
+
+  // Mark to skip password hashing since we're only updating the refresh token
+  user.$locals = { skipPasswordHashing: true };
+  user.save({ validateBeforeSave: false });
 
   // Options for cookie
   const options = {
@@ -44,60 +48,33 @@ const sendTokens = (user, statusCode, res, additionalData = {}) => {
 // User registration
 const registerUser = async (req, res) => {
   try {
-    const { username, email, password, passwordConfirm } = req.body;
+    const { username, email, password } = req.body;
 
-    if (!username || !email || !password || !passwordConfirm) {
-      return res.status(400).json({
-        success: false,
-        message: "Please provide all required fields",
-      });
-    }
+    // Validation is handled by express-validator middleware
+    console.log(`Registering user: ${email}`);
 
-    // Check if passwords match
-    if (password !== passwordConfirm) {
-      return res.status(400).json({
-        success: false,
-        message: "Passwords do not match",
-      });
-    }
-
-    // Validate password strength manually
-    const hasUppercase = /[A-Z]/.test(password);
-    const hasNumber = /[0-9]/.test(password);
-    const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
-    const isLongEnough = password.length >= 8;
-
-    if (!isLongEnough || !hasUppercase || !hasNumber || !hasSpecial) {
-      return res.status(400).json({
-        success: false,
-        message:
-          "Password must be at least 8 characters long and contain at least 1 uppercase letter, 1 number, and 1 special character",
-      });
-    }
-
-    let user = await User.findOne({ email });
-    if (user) {
-      return res.status(400).json({
-        success: false,
-        message: "User already exists",
-      });
-    }
-
+    // Create a cart
     let cart = {};
     for (let i = 0; i < 300; i++) {
       cart[i] = 0;
     }
 
-    user = await User.create({
+    // Create user with cart data
+    const user = new User({
       name: username,
       email,
       password,
       cartData: cart,
+      // normalizedEmail is set in the pre-save middleware
     });
 
     // Generate email verification token
     const verificationToken = user.generateEmailVerificationToken();
+
+    // Save the user
     await user.save();
+
+    console.log(`User created with normalized email: ${user.normalizedEmail}`);
 
     // Create verification URL
     const verificationUrl = `${
@@ -105,8 +82,6 @@ const registerUser = async (req, res) => {
     }/verify-email?token=${verificationToken}`;
 
     console.log(`Generated verification URL: ${verificationUrl}`);
-    console.log(`Verification token: ${verificationToken}`);
-    console.log(`Hashed token in DB: ${user.emailVerificationToken}`);
 
     // Send verification email with improved HTML
     try {
@@ -141,7 +116,6 @@ const registerUser = async (req, res) => {
           </div>
         </div>
         `,
-        // Plain text fallback
         message: `
 Hello ${username},
 
@@ -201,48 +175,59 @@ const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    if (!email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: "Please provide email and password",
-      });
-    }
+    // Normalize email for consistent lookup (even though it's normalized by validator)
+    const normalizedEmailForLookup = normalizeEmail(email);
+    console.log(
+      `Login attempt for normalized email: ${normalizedEmailForLookup}`
+    );
 
-    const user = await User.findOne({ email }).select("+password");
+    // Find user by normalized email
+    const user = await User.findOne({
+      normalizedEmail: normalizedEmailForLookup,
+    }).select("+password");
+
     if (!user) {
+      console.log(
+        `Login failed: No user found with normalized email ${normalizedEmailForLookup}`
+      );
       return res.status(401).json({
         success: false,
         message: "Invalid email or password",
       });
     }
 
-    // Check if the account is disabled
+    // Check if account is disabled
     if (user.disabled) {
+      console.log(`Login failed: Account is disabled for ${user.email}`);
       return res.status(403).json({
         success: false,
         message: "Your account has been disabled. Please contact support.",
       });
     }
 
+    // Validate password
     const isPasswordMatched = await user.comparePassword(password);
     if (!isPasswordMatched) {
+      console.log(`Login failed: Password does not match for ${user.email}`);
       return res.status(401).json({
         success: false,
         message: "Invalid email or password",
       });
     }
 
+    console.log(`Login successful for ${user.email}`);
+
     // Don't block login for unverified email, just flag it
-    // The frontend will handle redirecting to a verification page
     const additionalData = !user.isEmailVerified
       ? { emailVerificationNeeded: true }
       : {};
 
     sendTokens(user, 200, res, additionalData);
   } catch (error) {
+    console.error("Login error:", error);
     res.status(500).json({
       success: false,
-      message: "Server error",
+      message: "Server error during login",
       error: error.message,
     });
   }
