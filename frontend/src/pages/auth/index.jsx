@@ -50,11 +50,13 @@ const Auth = ({ initialState = "Login" }) => {
   }, [error, navigate]);
 
   return (
-    <div className="auth-container">
+    <div className="auth-page">
       <Breadcrumb routes={[{ label: "HOME", path: "/" }, { label: state }]} />
-      <div className="loginsignup">
-        <div className="signup-container">
-          <h1>{state === "Signup" ? "Create Account" : "Login"}</h1>
+      <div className="auth-page__content">
+        <div className="auth-page__container">
+          <h1 className="auth-page__title">
+            {state === "Signup" ? "Create Account" : "Login"}
+          </h1>
 
           {state === "Login" ? (
             <LoginForm
@@ -77,11 +79,12 @@ const Auth = ({ initialState = "Login" }) => {
             />
           )}
 
-          <p className="signup-login">
+          <p className="auth-page__switch">
             {state === "Signup"
               ? "Already have an account? "
               : "Don't have an account? "}
             <Link
+              className="auth-page__switch-link"
               to={state === "Signup" ? "/login" : "/signup"}
               onClick={switchState}
             >

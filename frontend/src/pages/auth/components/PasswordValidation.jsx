@@ -23,23 +23,57 @@ const PasswordValidation = ({
 
   return (
     <div className="password-validation-feedback">
-      <h4>Password requirements:</h4>
-      <ul>
-        <li className={validLength ? "valid" : "invalid"}>
-          <span className="validation-icon">{validLength ? "✓" : "✕"}</span>
+      <h4 className="password-validation-feedback__title">
+        Password requirements:
+      </h4>
+      <ul className="password-validation-feedback__list">
+        <li
+          className={`password-validation-feedback__item ${
+            validLength
+              ? "password-validation-feedback__item--valid"
+              : "password-validation-feedback__item--invalid"
+          }`}
+        >
+          <span className="password-validation-feedback__icon">
+            {validLength ? "✓" : "✕"}
+          </span>
           <span>At least 8 characters long</span>
         </li>
-        <li className={hasNumber ? "valid" : "invalid"}>
-          <span className="validation-icon">{hasNumber ? "✓" : "✕"}</span>
+        <li
+          className={`password-validation-feedback__item ${
+            hasNumber
+              ? "password-validation-feedback__item--valid"
+              : "password-validation-feedback__item--invalid"
+          }`}
+        >
+          <span className="password-validation-feedback__icon">
+            {hasNumber ? "✓" : "✕"}
+          </span>
           <span>Contains at least 1 number</span>
         </li>
-        <li className={specialChar ? "valid" : "invalid"}>
-          <span className="validation-icon">{specialChar ? "✓" : "✕"}</span>
+        <li
+          className={`password-validation-feedback__item ${
+            specialChar
+              ? "password-validation-feedback__item--valid"
+              : "password-validation-feedback__item--invalid"
+          }`}
+        >
+          <span className="password-validation-feedback__icon">
+            {specialChar ? "✓" : "✕"}
+          </span>
           <span>Contains at least 1 special character</span>
         </li>
         {confirmPassword && (
-          <li className={match ? "valid" : "invalid"}>
-            <span className="validation-icon">{match ? "✓" : "✕"}</span>
+          <li
+            className={`password-validation-feedback__item ${
+              match
+                ? "password-validation-feedback__item--valid"
+                : "password-validation-feedback__item--invalid"
+            }`}
+          >
+            <span className="password-validation-feedback__icon">
+              {match ? "✓" : "✕"}
+            </span>
             <span>Passwords match</span>
           </li>
         )}

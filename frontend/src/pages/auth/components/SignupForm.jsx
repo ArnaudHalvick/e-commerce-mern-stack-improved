@@ -31,9 +31,10 @@ const SignupForm = ({
   const showValidation = formData.password.length > 0;
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div className="signup-fields">
+    <form className="auth-form" onSubmit={handleSubmit}>
+      <div className="auth-form__fields">
         <input
+          className="auth-form__input"
           type="text"
           placeholder="Your name"
           name="username"
@@ -43,6 +44,7 @@ const SignupForm = ({
           autoComplete="name"
         />
         <input
+          className="auth-form__input"
           type="email"
           placeholder="Email address"
           name="email"
@@ -52,59 +54,68 @@ const SignupForm = ({
           autoComplete="email"
         />
 
-        <div className="password-fields">
-          <input
-            type="password"
-            placeholder="Password"
-            name="password"
-            value={formData.password}
-            onChange={changeHandler}
-            required
-            autoComplete="new-password"
-            className={validationStarted ? "validation-active" : ""}
-            aria-describedby="password-validation"
-          />
+        <input
+          className={`auth-form__input ${
+            validationStarted ? "auth-form__input--validation-active" : ""
+          }`}
+          type="password"
+          placeholder="Password"
+          name="password"
+          value={formData.password}
+          onChange={changeHandler}
+          required
+          autoComplete="new-password"
+          aria-describedby="password-validation"
+        />
 
-          <input
-            type="password"
-            placeholder="Confirm password"
-            name="confirmPassword"
-            value={formData.confirmPassword}
-            onChange={changeHandler}
-            required
-            autoComplete="new-password"
-            className={
-              formData.confirmPassword ? (match ? "match" : "no-match") : ""
-            }
-            aria-describedby="password-match-validation"
-          />
+        <input
+          className={`auth-form__input ${
+            formData.confirmPassword
+              ? match
+                ? "auth-form__input--match"
+                : "auth-form__input--no-match"
+              : ""
+          }`}
+          type="password"
+          placeholder="Confirm password"
+          name="confirmPassword"
+          value={formData.confirmPassword}
+          onChange={changeHandler}
+          required
+          autoComplete="new-password"
+          aria-describedby="password-match-validation"
+        />
 
-          <PasswordValidation
-            validLength={validLength}
-            hasNumber={hasNumber}
-            specialChar={specialChar}
-            match={match}
-            showFeedback={showValidation}
-            confirmPassword={formData.confirmPassword}
-          />
-        </div>
+        <PasswordValidation
+          validLength={validLength}
+          hasNumber={hasNumber}
+          specialChar={specialChar}
+          match={match}
+          showFeedback={showValidation}
+          confirmPassword={formData.confirmPassword}
+        />
       </div>
 
-      {error && <p className="auth-error">{error}</p>}
+      {error && <p className="auth-form__error">{error}</p>}
 
-      <button type="submit" disabled={loading}>
+      <button
+        className="auth-form__submit-btn"
+        type="submit"
+        disabled={loading}
+      >
         {loading ? "Loading..." : "Create Account"}
       </button>
 
-      <div className="signup-agree">
+      <div className="auth-form__terms">
         <input
+          className="auth-form__checkbox"
           type="checkbox"
           name="terms"
           id="terms"
           checked={termsAccepted}
           onChange={() => setTermsAccepted(!termsAccepted)}
         />
-        <p>
+        <p className="auth-form__terms-text">
           By creating an account, I agree to the Terms of Service and Privacy
           Policy
         </p>

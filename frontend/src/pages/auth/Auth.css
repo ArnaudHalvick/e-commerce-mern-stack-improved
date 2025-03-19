@@ -1,12 +1,12 @@
 /* Path: frontend/src/pages/CSS/Auth.css */
-.auth-container {
+.auth-page {
   width: 100%;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
-.loginsignup {
+.auth-page__content {
   width: 100%;
   flex: 1;
   background-color: #f5f5f5;
@@ -16,7 +16,7 @@
   margin-top: 1rem;
 }
 
-.signup-container {
+.auth-page__container {
   width: 37.5rem;
   background-color: white;
   margin: auto;
@@ -26,21 +26,40 @@
   transition: transform 0.2s ease;
 }
 
-.signup-container h1 {
+.auth-page__title {
   margin: 20px 0px;
   color: #333;
   font-size: 2rem;
   text-align: center;
 }
 
-.signup-fields {
+.auth-page__switch {
+  margin-top: 1.25rem;
+  text-align: center;
+  color: #5c5c5c;
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+
+.auth-page__switch-link {
+  color: #ff4141;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* Auth form styles */
+.auth-form {
+  width: 100%;
+}
+
+.auth-form__fields {
   display: flex;
   flex-direction: column;
   gap: 1.8rem;
   margin-top: 1.85rem;
 }
 
-.signup-fields input {
+.auth-form__input {
   height: 4.5rem;
   width: 100%;
   padding-left: 1.25rem;
@@ -52,12 +71,25 @@
   transition: border-color 0.2s ease;
 }
 
-.signup-fields input:focus {
+.auth-form__input:focus {
   border-color: #ff4141;
   box-shadow: 0 0 0 2px rgba(255, 65, 65, 0.1);
 }
 
-.signup-container button {
+.auth-form__input--validation-active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(248, 86, 6, 0.2);
+}
+
+.auth-form__input--match {
+  border-color: #28a745;
+}
+
+.auth-form__input--no-match {
+  border-color: #dc3545;
+}
+
+.auth-form__submit-btn {
   width: 100%;
   height: 4.5rem;
   color: white;
@@ -71,25 +103,22 @@
   transition: background-color 0.2s ease;
 }
 
-.signup-container button:hover {
+.auth-form__submit-btn:hover {
   background-color: #ff2c2c;
 }
 
-.signup-login {
-  margin-top: 1.25rem;
-  text-align: center;
-  color: #5c5c5c;
-  font-size: 1.125rem;
-  font-weight: 500;
-}
-
-.signup-login a {
+.auth-form__error {
   color: #ff4141;
-  cursor: pointer;
-  font-weight: 600;
+  background-color: #fff0f0;
+  padding: 0.8rem 1rem;
+  border-radius: 6px;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  border-left: 3px solid #ff4141;
+  text-align: left;
 }
 
-.signup-agree {
+.auth-form__terms {
   display: flex;
   align-items: center;
   gap: 1.25rem;
@@ -102,24 +131,17 @@
   border-radius: 8px;
 }
 
-.signup-agree input[type="checkbox"] {
+.auth-form__checkbox {
   width: 20px;
   height: 20px;
   accent-color: #ff4141;
 }
 
-.auth-error {
-  color: #ff4141;
-  background-color: #fff0f0;
-  padding: 0.8rem 1rem;
-  border-radius: 6px;
-  margin-top: 1rem;
-  font-size: 0.9rem;
-  border-left: 3px solid #ff4141;
-  text-align: left;
+.auth-form__terms-text {
+  margin: 0;
 }
 
-/* Password validation styling */
+/* Password validation styles */
 .password-validation-feedback {
   background-color: #f8f9fa;
   border-radius: 4px;
@@ -128,82 +150,60 @@
   font-size: 0.9rem;
 }
 
-.password-validation-feedback h4 {
+.password-validation-feedback__title {
   margin: 0 0 8px 0;
   font-size: 1rem;
   color: #333;
 }
 
-.password-validation-feedback ul {
+.password-validation-feedback__list {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-.password-validation-feedback li {
+.password-validation-feedback__item {
   display: flex;
   align-items: center;
   margin-bottom: 6px;
   transition: color 0.3s ease;
 }
 
-.password-validation-feedback li.valid {
+.password-validation-feedback__item--valid {
   color: #28a745;
 }
 
-.password-validation-feedback li.invalid {
+.password-validation-feedback__item--invalid {
   color: #dc3545;
 }
 
-.validation-icon {
+.password-validation-feedback__icon {
   display: inline-block;
   width: 20px;
   margin-right: 8px;
   font-weight: bold;
 }
 
-/* Password fields group */
-.password-fields {
-  position: relative;
-  width: 100%;
-}
-
-.password-fields input {
-  width: 100%;
-}
-
-.password-match-error {
-  color: #dc3545;
-  font-size: 0.8rem;
-  margin-top: 4px;
-}
-
-/* Style when password field is focused with validation active */
-.signup-fields input:focus.validation-active {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 2px rgba(248, 86, 6, 0.2);
-}
-
 /* Responsive styles */
 @media (max-width: 768px) {
-  .signup-container {
+  .auth-page__container {
     width: 90%;
     padding: 2rem;
   }
 
-  .signup-fields {
+  .auth-form__fields {
     gap: 1.2rem;
   }
 
-  .signup-container h1 {
+  .auth-page__title {
     font-size: 1.5rem;
   }
 
-  .signup-container button {
+  .auth-form__submit-btn {
     font-size: 1.2rem;
   }
 
-  .loginsignup {
+  .auth-page__content {
     margin-top: 0.7rem;
   }
 
@@ -211,11 +211,11 @@
     padding: 8px 12px;
   }
 
-  .password-validation-feedback h4 {
+  .password-validation-feedback__title {
     font-size: 0.9rem;
   }
 
-  .password-validation-feedback li {
+  .password-validation-feedback__item {
     font-size: 0.8rem;
   }
 }

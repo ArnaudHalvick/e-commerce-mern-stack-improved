@@ -17,9 +17,10 @@ const LoginForm = ({
   error,
   handleSubmit,
 }) => (
-  <form onSubmit={handleSubmit}>
-    <div className="signup-fields">
+  <form className="auth-form" onSubmit={handleSubmit}>
+    <div className="auth-form__fields">
       <input
+        className="auth-form__input"
         type="email"
         placeholder="Email address"
         name="email"
@@ -29,6 +30,7 @@ const LoginForm = ({
         autoComplete="email"
       />
       <input
+        className="auth-form__input"
         type="password"
         placeholder="Password"
         name="password"
@@ -38,8 +40,8 @@ const LoginForm = ({
         autoComplete="current-password"
       />
     </div>
-    {error && <p className="auth-error">{error}</p>}
-    <button type="submit" disabled={loading}>
+    {error && <p className="auth-form__error">{error}</p>}
+    <button className="auth-form__submit-btn" type="submit" disabled={loading}>
       {loading ? "Loading..." : "Login"}
     </button>
   </form>
