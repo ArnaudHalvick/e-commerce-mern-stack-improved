@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { verifyPasswordChange } from "../../redux/slices/userSlice";
 import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
 
@@ -24,7 +24,6 @@ const VerifyPasswordChange = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { loading, error } = useSelector((state) => state.user);
 
   useEffect(() => {
     const verifyPasswordChangeToken = async () => {
