@@ -1,6 +1,7 @@
 import { useState, useContext, useCallback } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import usePasswordValidation from "./usePasswordValidation";
 
 /**
  * Custom hook for Auth form handling
@@ -13,10 +14,22 @@ const useAuthForm = () => {
     username: "",
     email: "",
     password: "",
+    confirmPassword: "",
   });
   const [termsAccepted, setTermsAccepted] = useState(false);
   const { login, signup, loading, error } = useContext(AuthContext);
   const navigate = useNavigate();
+
+  // Password validation
+  const {
+    isValid: passwordValid,
+    validLength,
+    hasNumber,
+    specialChar,
+    match,
+    validationStarted,
+    errors: passwordErrors,
+  } = usePasswordValidation(formData.password, formData.confirmPassword);
 
   // Allow parent component to set the initial state
   const setInitialState = useCallback((newState) => {
@@ -36,18 +49,46 @@ const useAuthForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (state === "Signup" && !termsAccepted) {
-      alert("Please accept the terms and conditions");
-      return;
-    }
+    if (state === "Signup") {
+      if (!termsAccepted) {
+        alert("Please accept the terms and conditions");
+        return;
+      }
 
-    if (state === "Login") {
-      const loginResult = await login(formData.email, formData.password);
+      // Check password validation
+      if (!passwordValid) {
+        // Filter for only errors that apply
+        const activeErrors = passwordErrors.filter((error) => {
+          if (error.includes("match") && !formData.confirmPassword) {
+            return false;
+          }
+          return true;
+        });
 
-      // Email verification needed is handled at the Auth component level
-      // by watching the error.emailVerificationNeeded property
-    } else {
-      const result = await signup(formData);
+        if (activeErrors.length > 0) {
+          alert(
+            `Please fix the following password issues:\n${activeErrors.join(
+              "\n"
+            )}`
+          );
+          return;
+        }
+      }
+
+      // Check if passwords match
+      if (formData.password !== formData.confirmPassword) {
+        alert("Passwords do not match");
+        return;
+      }
+
+      // Prepare data for signup by removing confirmPassword field
+      const signupData = {
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+      };
+
+      const result = await signup(signupData);
 
       // Check if signup requires email verification
       if (result && result.success && result.requiresVerification) {
@@ -56,6 +97,9 @@ const useAuthForm = () => {
           state: { email: formData.email },
         });
       }
+    } else {
+      const loginResult = await login(formData.email, formData.password);
+      // Email verification needed is handled at the Auth component level
     }
   };
 
@@ -65,6 +109,14 @@ const useAuthForm = () => {
     termsAccepted,
     loading,
     error,
+    passwordValidation: {
+      validLength,
+      hasNumber,
+      specialChar,
+      match,
+      validationStarted,
+      isValid: passwordValid,
+    },
     setTermsAccepted,
     switchState,
     changeHandler,

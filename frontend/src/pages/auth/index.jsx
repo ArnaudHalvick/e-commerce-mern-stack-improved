@@ -26,6 +26,7 @@ const Auth = ({ initialState = "Login" }) => {
     termsAccepted,
     loading,
     error,
+    passwordValidation,
     setTermsAccepted,
     switchState,
     changeHandler,
@@ -72,6 +73,7 @@ const Auth = ({ initialState = "Login" }) => {
               handleSubmit={handleSubmit}
               termsAccepted={termsAccepted}
               setTermsAccepted={setTermsAccepted}
+              passwordValidation={passwordValidation}
             />
           )}
 
