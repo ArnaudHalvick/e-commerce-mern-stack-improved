@@ -24,8 +24,14 @@ const SignupForm = ({
   setTermsAccepted,
   passwordValidation,
 }) => {
-  const { validLength, hasNumber, specialChar, match, validationStarted } =
-    passwordValidation || {};
+  const {
+    validLength,
+    hasNumber,
+    hasUppercase,
+    specialChar,
+    match,
+    validationStarted,
+  } = passwordValidation || {};
 
   // Only show validation feedback when user has started typing a password
   const showValidation = formData.password.length > 0;
@@ -89,6 +95,7 @@ const SignupForm = ({
         <PasswordValidation
           validLength={validLength}
           hasNumber={hasNumber}
+          hasUppercase={hasUppercase}
           specialChar={specialChar}
           match={match}
           showFeedback={showValidation}

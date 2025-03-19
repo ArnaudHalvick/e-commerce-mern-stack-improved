@@ -186,12 +186,18 @@ const AuthContextProvider = (props) => {
     setError(null);
 
     try {
+      // Make sure we're passing the passwordConfirm property that backend expects
+      const signupData = {
+        ...userData,
+        passwordConfirm: userData.passwordConfirm,
+      };
+
       const response = await fetch(`${API_BASE_URL}/api/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(userData),
+        body: JSON.stringify(signupData),
       });
 
       const data = await response.json();

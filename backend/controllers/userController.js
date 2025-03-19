@@ -44,12 +44,34 @@ const sendTokens = (user, statusCode, res, additionalData = {}) => {
 // User registration
 const registerUser = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, email, password, passwordConfirm } = req.body;
 
-    if (!username || !email || !password) {
+    if (!username || !email || !password || !passwordConfirm) {
       return res.status(400).json({
         success: false,
         message: "Please provide all required fields",
+      });
+    }
+
+    // Check if passwords match
+    if (password !== passwordConfirm) {
+      return res.status(400).json({
+        success: false,
+        message: "Passwords do not match",
+      });
+    }
+
+    // Validate password strength manually
+    const hasUppercase = /[A-Z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+    const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+    const isLongEnough = password.length >= 8;
+
+    if (!isLongEnough || !hasUppercase || !hasNumber || !hasSpecial) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Password must be at least 8 characters long and contain at least 1 uppercase letter, 1 number, and 1 special character",
       });
     }
 
@@ -407,12 +429,37 @@ const updateProfile = async (req, res) => {
 // Change password
 const changePassword = async (req, res) => {
   try {
-    const { currentPassword, newPassword } = req.body;
+    const { currentPassword, newPassword, newPasswordConfirm } = req.body;
 
-    if (!currentPassword || !newPassword) {
+    if (!currentPassword || !newPassword || !newPasswordConfirm) {
       return res.status(400).json({
         success: false,
-        message: "Please provide both current and new password",
+        message:
+          "Please provide current password, new password and password confirmation",
+      });
+    }
+
+    // Check if new passwords match
+    if (newPassword !== newPasswordConfirm) {
+      return res.status(400).json({
+        success: false,
+        message: "New passwords do not match",
+      });
+    }
+
+    // Validate new password strength
+    const hasUppercase = /[A-Z]/.test(newPassword);
+    const hasNumber = /[0-9]/.test(newPassword);
+    const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(
+      newPassword
+    );
+    const isLongEnough = newPassword.length >= 8;
+
+    if (!isLongEnough || !hasUppercase || !hasNumber || !hasSpecial) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Password must be at least 8 characters long and contain at least 1 uppercase letter, 1 number, and 1 special character",
       });
     }
 

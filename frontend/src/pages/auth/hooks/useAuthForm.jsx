@@ -25,6 +25,7 @@ const useAuthForm = () => {
     isValid: passwordValid,
     validLength,
     hasNumber,
+    hasUppercase,
     specialChar,
     match,
     validationStarted,
@@ -81,11 +82,12 @@ const useAuthForm = () => {
         return;
       }
 
-      // Prepare data for signup by removing confirmPassword field
+      // Prepare data for signup including passwordConfirm
       const signupData = {
         username: formData.username,
         email: formData.email,
         password: formData.password,
+        passwordConfirm: formData.confirmPassword,
       };
 
       const result = await signup(signupData);
@@ -112,6 +114,7 @@ const useAuthForm = () => {
     passwordValidation: {
       validLength,
       hasNumber,
+      hasUppercase,
       specialChar,
       match,
       validationStarted,

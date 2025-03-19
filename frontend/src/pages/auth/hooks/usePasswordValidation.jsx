@@ -11,6 +11,7 @@ const usePasswordValidation = (password, confirmPassword) => {
   // Validation states
   const [validLength, setValidLength] = useState(false);
   const [hasNumber, setHasNumber] = useState(false);
+  const [hasUppercase, setHasUppercase] = useState(false);
   const [specialChar, setSpecialChar] = useState(false);
   const [match, setMatch] = useState(false);
   const [validationStarted, setValidationStarted] = useState(false);
@@ -20,6 +21,7 @@ const usePasswordValidation = (password, confirmPassword) => {
     debounce((password) => {
       setValidLength(password.length >= 8);
       setHasNumber(/\d/.test(password));
+      setHasUppercase(/[A-Z]/.test(password));
       setSpecialChar(/[!@#$%^&*(),.?":{}|<>]/.test(password));
       setValidationStarted(true);
     }, 300),
@@ -40,7 +42,13 @@ const usePasswordValidation = (password, confirmPassword) => {
   }, [password, confirmPassword, validatePassword, validateMatch]);
 
   // Combine validation results
-  const isValid = validLength && match && validationStarted;
+  const isValid =
+    validLength &&
+    hasNumber &&
+    hasUppercase &&
+    specialChar &&
+    match &&
+    validationStarted;
 
   // Prepare error messages
   const getErrors = () => {
@@ -51,6 +59,9 @@ const usePasswordValidation = (password, confirmPassword) => {
 
     if (!hasNumber && validationStarted)
       errors.push("Password must contain at least 1 number");
+
+    if (!hasUppercase && validationStarted)
+      errors.push("Password must contain at least 1 uppercase letter");
 
     if (!specialChar && validationStarted)
       errors.push("Password must contain at least 1 special character");
@@ -64,6 +75,7 @@ const usePasswordValidation = (password, confirmPassword) => {
     isValid,
     validLength,
     hasNumber,
+    hasUppercase,
     specialChar,
     match,
     validationStarted,

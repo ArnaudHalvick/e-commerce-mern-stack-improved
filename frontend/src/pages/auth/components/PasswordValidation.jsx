@@ -6,6 +6,7 @@ import React from "react";
  * @param {Object} props - Component props
  * @param {boolean} props.validLength - If password meets length requirements
  * @param {boolean} props.hasNumber - If password contains a number
+ * @param {boolean} props.hasUppercase - If password contains an uppercase letter
  * @param {boolean} props.specialChar - If password contains a special character
  * @param {boolean} props.match - If passwords match
  * @param {boolean} props.showFeedback - If validation feedback should be displayed
@@ -13,6 +14,7 @@ import React from "react";
 const PasswordValidation = ({
   validLength,
   hasNumber,
+  hasUppercase,
   specialChar,
   match,
   showFeedback,
@@ -50,6 +52,18 @@ const PasswordValidation = ({
             {hasNumber ? "✓" : "✕"}
           </span>
           <span>Contains at least 1 number</span>
+        </li>
+        <li
+          className={`password-validation-feedback__item ${
+            hasUppercase
+              ? "password-validation-feedback__item--valid"
+              : "password-validation-feedback__item--invalid"
+          }`}
+        >
+          <span className="password-validation-feedback__icon">
+            {hasUppercase ? "✓" : "✕"}
+          </span>
+          <span>Contains at least 1 uppercase letter</span>
         </li>
         <li
           className={`password-validation-feedback__item ${
