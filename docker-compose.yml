@@ -23,6 +23,7 @@ services:
       - PUBLIC_URL=http://159.65.230.12:4000
     volumes:
       - ./backend/upload:/app/upload
+      - ./backend/logs:/app/logs
     networks:
       - app-network
     ports:

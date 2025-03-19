@@ -11,6 +11,9 @@ RUN npm ci --only=production
 # Copy application code
 COPY . .
 
+# Create and set permissions for logs directory
+RUN mkdir -p /app/logs && chmod 777 /app/logs
+
 # Expose the port the app runs on
 EXPOSE 4000
 
