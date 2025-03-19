@@ -2,7 +2,6 @@
 
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { cartApi } from "../../services/api";
-import { API_BASE_URL, getApiUrl } from "../../utils/imageUtils";
 
 // Helper function to calculate cart totals
 const calculateCartTotals = (items) => {
@@ -275,9 +274,6 @@ const cartSlice = createSlice({
         );
 
         if (existingItem) {
-          // Store the old quantity for potential rollback
-          const oldQuantity = existingItem.quantity;
-
           // Update the quantity
           existingItem.quantity = quantity;
 
