@@ -43,8 +43,18 @@ export const joinUrl = (baseUrl, path) => {
  * @returns {string} The full API URL
  */
 export const getApiUrl = (path) => {
-  // Add the api prefix if not already present
-  const apiPath = path.startsWith("api/") ? path : `api/${path}`;
+  // Check if the base URL already contains /api
+  const baseHasApi = API_BASE_URL.includes("/api");
+
+  // Remove "api/" prefix from path if the base already has /api
+  let apiPath = path;
+  if (baseHasApi && path.startsWith("api/")) {
+    apiPath = path.substring(4);
+  } else if (!baseHasApi && !path.startsWith("api/")) {
+    // Add the api prefix if not already present and base doesn't have it
+    apiPath = `api/${path}`;
+  }
+
   return joinUrl(
     API_BASE_URL,
     apiPath.startsWith("/") ? apiPath : `/${apiPath}`

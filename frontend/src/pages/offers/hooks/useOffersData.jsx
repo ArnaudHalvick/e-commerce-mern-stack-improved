@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { API_BASE_URL } from "../../../utils/imageUtils";
+import { API_BASE_URL, getApiUrl } from "../../../utils/imageUtils";
 
 /**
  * Custom hook for fetching, filtering, and sorting products on the offers page
@@ -144,7 +144,7 @@ const useOffersData = () => {
     setLoading(true);
     setError(null);
 
-    fetch(`${API_BASE_URL}/api/all-products?basicInfo=true`)
+    fetch(getApiUrl("all-products?basicInfo=true"))
       .then((res) => {
         if (!res.ok) {
           throw new Error(

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { API_BASE_URL } from "../../../utils/imageUtils";
+import { API_BASE_URL, getApiUrl } from "../../../utils/imageUtils";
 
 /**
  * Custom hook for fetching and filtering products by category
@@ -138,7 +138,7 @@ const useCategoryProducts = (category) => {
     setLoading(true);
     setError(null);
 
-    fetch(`${API_BASE_URL}/api/products/category/${category}?basicInfo=true`)
+    fetch(getApiUrl(`products/category/${category}?basicInfo=true`))
       .then((res) => {
         if (!res.ok) {
           throw new Error(

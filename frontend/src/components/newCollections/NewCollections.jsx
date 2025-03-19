@@ -2,7 +2,7 @@
 import "./NewCollections.css";
 import Item from "../item/Item";
 import { useState, useEffect } from "react";
-import { API_BASE_URL } from "../../utils/imageUtils";
+import { API_BASE_URL, getApiUrl } from "../../utils/imageUtils";
 
 const NewCollection = () => {
   const [newCollection, setNewCollection] = useState([]);
@@ -13,7 +13,7 @@ const NewCollection = () => {
     setLoading(true);
     setError(null);
 
-    fetch(`${API_BASE_URL}/api/newcollection`)
+    fetch(getApiUrl("newcollection"))
       .then((res) => {
         if (!res.ok) {
           throw new Error(

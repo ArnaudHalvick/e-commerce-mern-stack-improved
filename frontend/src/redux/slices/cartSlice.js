@@ -2,10 +2,7 @@
 
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { cartApi } from "../../services/api";
-import { API_BASE_URL } from "../../utils/imageUtils";
-
-// API endpoints
-const API_URL = `${API_BASE_URL}/api`;
+import { API_BASE_URL, getApiUrl } from "../../utils/imageUtils";
 
 // Helper function to calculate cart totals
 const calculateCartTotals = (items) => {
