@@ -16,11 +16,12 @@ router.post("/signup", validateRegistration, userController.registerUser);
 router.post("/login", validateLogin, userController.loginUser);
 router.post("/refresh-token", verifyRefreshToken, userController.refreshToken);
 router.post("/request-verification", userController.requestVerification);
-router.get("/verify-email", userController.verifyEmail);
-router.get("/verify-password-change", userController.verifyPasswordChange);
+router.get("/verify-email/:token", userController.verifyEmail);
+router.post("/forgot-password", userController.forgotPassword);
+router.post("/reset-password", userController.resetPassword);
 
 // Protected routes
-router.get("/logout", isAuthenticated, userController.logoutUser);
+router.post("/logout", isAuthenticated, userController.logoutUser);
 router.get("/me", isAuthenticated, userController.getUserProfile);
 router.put(
   "/profile",
