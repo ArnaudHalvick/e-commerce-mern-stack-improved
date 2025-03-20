@@ -57,17 +57,17 @@ export const fetchInitialReviews = createAsyncThunk(
   }
 );
 
-// Async thunk for fetching more reviews (pagination)
+// Async thunk for fetching more reviews (for infinite scrolling)
 export const fetchMoreReviews = createAsyncThunk(
   "reviews/fetchMore",
   async (
-    { productId, page, limit = 5, sort, ratingFilter },
+    { productId, offset = 0, limit = 5, sort, ratingFilter },
     { rejectWithValue }
   ) => {
     try {
       // Create URL parameters object for clean encoding
       const params = new URLSearchParams();
-      params.append("page", page);
+      params.append("page", Math.floor(offset / limit) + 1); // Convert offset to page number
       params.append("limit", limit);
       params.append("sort", sort);
 
@@ -145,10 +145,11 @@ const initialState = {
   // Modal reviews with infinite scroll
   modalReviews: [],
 
-  // Pagination state
-  currentPage: 1,
-  totalPages: 0,
-  hasMore: true,
+  // Current offset for infinite scroll
+  currentOffset: 0,
+
+  // Total number of reviews
+  totalReviews: 0,
 
   // Filter and sort state
   sortOption: "date-desc",
@@ -163,13 +164,11 @@ const initialState = {
     5: 0,
   },
 
-  // Total number of reviews
-  totalReviews: 0,
-
   // UI state
   loading: false,
   error: null,
   modalOpen: false,
+  hasMore: true,
 
   // Current product ID
   currentProductId: null,
@@ -183,7 +182,7 @@ const reviewsSlice = createSlice({
       state.modalOpen = true;
       // Reset state for fresh data
       state.modalReviews = [];
-      state.currentPage = 1;
+      state.currentOffset = 0;
       state.hasMore = true;
       state.error = null;
     },
@@ -199,19 +198,19 @@ const reviewsSlice = createSlice({
     setRatingFilter: (state, action) => {
       const oldFilter = state.ratingFilter;
       state.ratingFilter = action.payload;
-      state.currentPage = 1; // Reset to first page when filter changes
 
       // Clear reviews when filter changes to prevent showing incorrect data
       if (oldFilter !== action.payload) {
         state.modalReviews = [];
+        state.currentOffset = 0;
         state.hasMore = true;
       }
     },
     setSortOption: (state, action) => {
       state.sortOption = action.payload;
-      // Reset pagination for new sort
-      state.currentPage = 1;
+      // Reset for new sort
       state.modalReviews = [];
+      state.currentOffset = 0;
       state.hasMore = true;
     },
     resetReviewsState: (state) => {
@@ -227,8 +226,8 @@ const reviewsSlice = createSlice({
             : [],
       };
     },
-    incrementPage: (state) => {
-      state.currentPage += 1;
+    incrementOffset: (state, action) => {
+      state.currentOffset += action.payload || 5; // Default to incrementing by 5
     },
   },
   extraReducers: (builder) => {
@@ -250,25 +249,25 @@ const reviewsSlice = createSlice({
         } else if (state.modalOpen) {
           // If modal is open, this is for the modal only
           state.modalReviews = reviews;
+          state.currentOffset = reviews.length;
         } else {
           // For other cases, just update bestReviews
           state.bestReviews = reviews;
         }
 
-        state.totalReviews = action.payload.count || 0;
+        // Parse totalReviews from pagination data
+        state.totalReviews = action.payload.pagination?.totalReviews || 0;
         state.currentProductId = action.meta.arg.productId;
-        // Reset current page to 1 when initial reviews are loaded
-        state.currentPage = 1;
-        // Set total pages and hasMore
-        state.totalPages = action.payload.totalPages || 0;
-        state.hasMore = state.currentPage < (action.payload.totalPages || 0);
+
+        // Determine if there are more reviews to load
+        state.hasMore = reviews.length < state.totalReviews;
       })
       .addCase(fetchInitialReviews.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to fetch reviews";
       })
 
-      // Fetch more reviews (pagination for modal)
+      // Fetch more reviews (for infinite scroll)
       .addCase(fetchMoreReviews.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -278,27 +277,26 @@ const reviewsSlice = createSlice({
 
         // We directly get the data object from axios now
         const reviews = action.payload.reviews || [];
-        const totalReviews = action.payload.count || 0;
-        const totalPages = action.payload.totalPages || 0;
+        const totalReviews = action.payload.pagination?.totalReviews || 0;
 
-        // For first page, replace reviews; otherwise append
-        if (state.currentPage === 1) {
-          state.modalReviews = reviews;
-        } else {
-          // Avoid duplicates by checking _id
-          const existingIds = new Set(state.modalReviews.map((r) => r._id));
-          const newReviews = reviews.filter((r) => !existingIds.has(r._id));
-          state.modalReviews = [...state.modalReviews, ...newReviews];
-        }
+        // Avoid duplicates by checking _id
+        const existingIds = new Set(state.modalReviews.map((r) => r._id));
+        const newReviews = reviews.filter((r) => !existingIds.has(r._id));
 
+        // Add new reviews to the existing ones
+        state.modalReviews = [...state.modalReviews, ...newReviews];
+
+        // Update offset and total
+        state.currentOffset = state.modalReviews.length;
         state.totalReviews = totalReviews;
-        state.totalPages = totalPages;
-        state.hasMore = state.currentPage < totalPages;
+
+        // Determine if there are more reviews to load
+        state.hasMore = state.modalReviews.length < totalReviews;
       })
       .addCase(fetchMoreReviews.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to fetch more reviews";
-        state.hasMore = false;
+        state.hasMore = false; // No more to fetch if there was an error
       })
 
       // Fetch rating counts
@@ -314,7 +312,7 @@ export const {
   setRatingFilter,
   setSortOption,
   resetReviewsState,
-  incrementPage,
+  incrementOffset,
 } = reviewsSlice.actions;
 
 export default reviewsSlice.reducer;

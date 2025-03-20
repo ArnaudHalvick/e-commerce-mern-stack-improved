@@ -487,6 +487,21 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  scrollbar-width: thin;
+  scrollbar-color: #ccc transparent;
+}
+
+.modal-reviews-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-reviews-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modal-reviews-container::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 4px;
 }
 
 /* Infinite Scroll Styles */
@@ -495,6 +510,7 @@
   padding: 1rem;
   font-style: italic;
   color: #888;
+  margin: 1rem 0;
 }
 
 .reviews-end-message {

@@ -8,7 +8,7 @@ import {
   setRatingFilter,
   setSortOption,
   closeReviewModal,
-  incrementPage,
+  incrementOffset,
   fetchInitialReviews,
 } from "../../../redux/slices/reviewsSlice";
 
@@ -44,7 +44,7 @@ const ReviewModal = ({ product }) => {
     modalReviews: reviews,
     loading,
     error,
-    currentPage,
+    currentOffset,
     hasMore,
     totalReviews,
     sortOption,
@@ -56,6 +56,9 @@ const ReviewModal = ({ product }) => {
   // Track if initial load has happened
   const [initialLoad, setInitialLoad] = useState(false);
 
+  // Flag to track if we've already pre-loaded the next batch
+  const [preloaded, setPreloaded] = useState(false);
+
   const modalRef = useRef(null);
   const reviewsPerPage = 5;
 
@@ -66,20 +69,19 @@ const ReviewModal = ({ product }) => {
     dispatch(
       fetchMoreReviews({
         productId: product._id,
-        page: currentPage,
+        offset: currentOffset,
         limit: reviewsPerPage,
         sort: sortOption,
         ratingFilter,
       })
     );
-
-    dispatch(incrementPage());
   };
 
   // Initial fetch when modal opens or filters change
   useEffect(() => {
     if (modalOpen && product?._id) {
       setInitialLoad(true);
+      setPreloaded(false);
 
       // Fetch initial reviews with current filters
       dispatch(
@@ -93,6 +95,44 @@ const ReviewModal = ({ product }) => {
       );
     }
   }, [modalOpen, product?._id, sortOption, ratingFilter, dispatch]);
+
+  // Pre-load next batch of reviews after initial load
+  useEffect(() => {
+    // Only pre-load if we have initial reviews, are not currently loading,
+    // have more to load, and haven't preloaded yet
+    if (
+      reviews.length > 0 &&
+      !loading &&
+      hasMore &&
+      !preloaded &&
+      initialLoad
+    ) {
+      setPreloaded(true);
+
+      // Pre-load the next batch
+      dispatch(
+        fetchMoreReviews({
+          productId: product._id,
+          offset: currentOffset,
+          limit: reviewsPerPage,
+          sort: sortOption,
+          ratingFilter,
+        })
+      );
+    }
+  }, [
+    reviews.length,
+    loading,
+    hasMore,
+    preloaded,
+    initialLoad,
+    dispatch,
+    product?._id,
+    currentOffset,
+    reviewsPerPage,
+    sortOption,
+    ratingFilter,
+  ]);
 
   // Add body class when modal opens to prevent scrolling and clean up when it closes
   useEffect(() => {
@@ -227,7 +267,9 @@ const ReviewModal = ({ product }) => {
             dataLength={reviews.length}
             next={fetchMoreData}
             hasMore={hasMore}
-            loader={<div className="reviews-loader">Loading...</div>}
+            loader={
+              <div className="reviews-loader">Loading more reviews...</div>
+            }
             endMessage={
               reviews.length > 0 && (
                 <p className="reviews-end-message">You've seen all reviews</p>
