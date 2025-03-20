@@ -13,7 +13,7 @@ const router = express.Router();
 
 // Public routes - no authentication required
 // GET all reviews for a product
-router.get("/product/:productId", getProductReviews);
+router.get("/products/:productId", getProductReviews);
 
 // GET a single review
 router.get("/:reviewId", getReview);

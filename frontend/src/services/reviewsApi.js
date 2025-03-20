@@ -41,7 +41,7 @@ const reviewsApi = {
       }
 
       // Construct the URL - using URLSearchParams ensures proper encoding
-      const url = `/api/reviews/product/${productId}?${params.toString()}`;
+      const url = `/api/reviews/products/${productId}?${params.toString()}`;
 
       // Make the API call with axios
       const response = await apiClient.get(url);

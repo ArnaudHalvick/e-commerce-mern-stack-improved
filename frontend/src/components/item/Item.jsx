@@ -25,9 +25,9 @@ const Item = (props) => {
     if (slug) {
       return `/products/${slug}`;
     } else if (mongoId) {
-      return `/product/${mongoId}`;
+      return `/products/${mongoId}`;
     } else if (id) {
-      return `/product/${id}`;
+      return `/products/${id}`;
     } else {
       console.warn("Product without slug or id:", { images, slug, _id, id });
       return `/`;

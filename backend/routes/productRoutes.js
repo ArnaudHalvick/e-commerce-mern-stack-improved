@@ -16,8 +16,11 @@ router.get(
   "/products/category/:category",
   productController.getProductsByCategory
 );
-router.get("/product/slug/:slug", productController.getProductBySlug);
-router.get("/product/:id", productController.getProductById);
+
+// New routes with plural 'products' (to match frontend expectations)
+router.get("/products/slug/:slug", productController.getProductBySlug);
+router.get("/products/:id", productController.getProductById);
+
 router.get(
   "/related-products/:category/:productId?/:productSlug?",
   productController.getRelatedProducts

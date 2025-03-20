@@ -40,7 +40,7 @@ const useProductData = (productId, productSlug) => {
             return res.json();
           })
           .then((data) => {
-            setProduct(data.product); // Extract the product from response
+            setProduct(data.product);
             setLoading(false);
           })
           .catch((err) => {
@@ -83,7 +83,7 @@ const useProductData = (productId, productSlug) => {
               navigate(`/products/${data.product.slug}`, { replace: true });
               return;
             }
-            setProduct(data.product); // Extract the product from response
+            setProduct(data.product);
             setLoading(false);
           })
           .catch((err) => {

@@ -35,7 +35,7 @@ export const fetchInitialReviews = createAsyncThunk(
       }
 
       // Construct the URL
-      const url = `/api/reviews/product/${productId}?${params.toString()}`;
+      const url = `/api/reviews/products/${productId}?${params.toString()}`;
 
       // Use direct axios call to avoid caching issues
       const response = await axios.get(`http://localhost:4000${url}`, {
@@ -78,7 +78,7 @@ export const fetchMoreReviews = createAsyncThunk(
       }
 
       // Construct the URL
-      const url = `/api/reviews/product/${productId}?${params.toString()}`;
+      const url = `/api/reviews/products/${productId}?${params.toString()}`;
 
       // Use direct axios call to avoid any caching issues
       const response = await axios.get(`http://localhost:4000${url}`, {
@@ -113,7 +113,7 @@ export const fetchReviewCounts = createAsyncThunk(
         params.append("limit", 1); // We only need the count, not the actual reviews
         params.append("rating", rating);
 
-        const url = `/api/reviews/product/${productId}?${params.toString()}`;
+        const url = `/api/reviews/products/${productId}?${params.toString()}`;
 
         try {
           // Use direct axios call to avoid any local caching
