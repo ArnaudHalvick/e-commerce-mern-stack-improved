@@ -87,7 +87,7 @@ const Profile = () => {
 
   // Initialize form data with user profile data
   useEffect(() => {
-    if (user && !isEditing) {
+    if (user) {
       setFormData({
         name: user.username || user.name || "",
         phone: user.phone || "",
@@ -100,7 +100,7 @@ const Profile = () => {
         },
       });
     }
-  }, [user, isEditing]);
+  }, [user]); // Only depend on user, not isEditing
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -187,12 +187,19 @@ const Profile = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (e, customFormData = null) => {
+    // If e is an event, prevent default
+    if (e && e.preventDefault) {
+      e.preventDefault();
+    }
+
     setMessage({ text: "", type: "" });
 
-    // Validate all address fields
-    if (!validateAddressFields(formData)) {
+    // Use the custom form data if provided, otherwise use the full formData
+    const dataToSubmit = customFormData || formData;
+
+    // Validate fields
+    if (!validateAddressFields(dataToSubmit)) {
       setMessage({
         text: "Please fix the errors in the form",
         type: "error",
@@ -201,18 +208,41 @@ const Profile = () => {
     }
 
     try {
-      const response = await dispatch(updateUserProfile(formData)).unwrap();
+      const response = await dispatch(updateUserProfile(dataToSubmit)).unwrap();
+
       // Store the updated user data
       setUpdatedUserData(response);
 
       // Also refresh the user data in the AuthContext
       await fetchUserProfile();
 
+      // Update the form data with the latest response
+      // Include only fields present in the response to avoid overwriting existing fields
+      setFormData((prev) => {
+        const newFormData = { ...prev };
+
+        if (response.name) newFormData.name = response.name;
+        if (response.phone !== undefined)
+          newFormData.phone = response.phone || "";
+
+        // Update address if it's in the response
+        if (response.address) {
+          newFormData.address = {
+            street: response.address.street || "",
+            city: response.address.city || "",
+            state: response.address.state || "",
+            zipCode: response.address.zipCode || "",
+            country: response.address.country || "",
+          };
+        }
+
+        return newFormData;
+      });
+
       setMessage({
         text: "Profile updated successfully!",
         type: "success",
       });
-      setIsEditing(false);
     } catch (err) {
       setMessage({
         text: err || "Failed to update profile. Please try again.",
@@ -326,8 +356,6 @@ const Profile = () => {
         <div className="profile-sections">
           {/* Basic Info Section */}
           <ProfileInfo
-            isEditing={isEditing}
-            setIsEditing={setIsEditing}
             formData={formData}
             handleInputChange={handleInputChange}
             handleSubmit={handleSubmit}
@@ -339,25 +367,23 @@ const Profile = () => {
             displayName={displayName}
           />
 
-          <div>
-            {/* Password Management Section */}
-            <PasswordManager
-              isChangingPassword={isChangingPassword}
-              setIsChangingPassword={setIsChangingPassword}
-              passwordData={passwordData}
-              handlePasswordInputChange={handlePasswordInputChange}
-              handlePasswordSubmit={handlePasswordSubmit}
-              loading={loading}
-              changingPassword={loadingStates?.changingPassword}
-            />
+          {/* Password Management Section */}
+          <PasswordManager
+            isChangingPassword={isChangingPassword}
+            setIsChangingPassword={setIsChangingPassword}
+            passwordData={passwordData}
+            handlePasswordInputChange={handlePasswordInputChange}
+            handlePasswordSubmit={handlePasswordSubmit}
+            loading={loading}
+            changingPassword={loadingStates?.changingPassword}
+          />
 
-            {/* Account Management Section */}
-            <AccountManager
-              handleDisableAccount={handleDisableAccount}
-              loading={loading}
-              disablingAccount={loadingStates?.disablingAccount}
-            />
-          </div>
+          {/* Account Management Section */}
+          <AccountManager
+            handleDisableAccount={handleDisableAccount}
+            loading={loading}
+            disablingAccount={loadingStates?.disablingAccount}
+          />
         </div>
       </div>
     </div>

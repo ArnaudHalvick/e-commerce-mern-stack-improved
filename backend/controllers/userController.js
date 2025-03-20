@@ -220,6 +220,8 @@ const getUserProfile = catchAsync(async (req, res, next) => {
       id: user._id,
       name: user.name,
       email: user.email,
+      phone: user.phone,
+      address: user.address,
       isEmailVerified: user.isEmailVerified,
       profileImage: user.profileImage,
     },
@@ -228,7 +230,7 @@ const getUserProfile = catchAsync(async (req, res, next) => {
 
 // Update user profile
 const updateProfile = catchAsync(async (req, res, next) => {
-  const { name } = req.body;
+  const { name, phone, address } = req.body;
 
   if (!name) {
     return next(new AppError("Name is required", 400));
@@ -243,6 +245,22 @@ const updateProfile = catchAsync(async (req, res, next) => {
   // Update user data
   user.name = name;
 
+  // Update phone if provided
+  if (phone !== undefined) {
+    user.phone = phone;
+  }
+
+  // Update address if provided
+  if (address) {
+    user.address = {
+      street: address.street || "",
+      city: address.city || "",
+      state: address.state || "",
+      zipCode: address.zipCode || "",
+      country: address.country || "",
+    };
+  }
+
   // Handle profile image if provided
   if (req.body.profileImage) {
     user.profileImage = req.body.profileImage;
@@ -256,6 +274,8 @@ const updateProfile = catchAsync(async (req, res, next) => {
       id: user._id,
       name: user.name,
       email: user.email,
+      phone: user.phone,
+      address: user.address,
       isEmailVerified: user.isEmailVerified,
       profileImage: user.profileImage,
     },
