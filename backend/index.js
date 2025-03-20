@@ -18,6 +18,7 @@ const userRoutes = require("./routes/userRoutes");
 const cartRoutes = require("./routes/cartRoutes");
 const uploadRoutes = require("./routes/uploadRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
+const errorDemoRoutes = require("./routes/errorDemoRoutes");
 
 // Initialize express app
 const app = express();
@@ -73,6 +74,7 @@ app.use("/api", productRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api", uploadRoutes);
 app.use("/api/reviews", reviewRoutes);
+app.use("/api/error-demo", errorDemoRoutes);
 
 // 404 handler - unhandled routes
 app.all("*", (req, res, next) => {
@@ -93,7 +95,7 @@ const server = app.listen(port, (error) => {
 
 // Handling Uncaught Exceptions
 process.on("uncaughtException", (err) => {
-  logger.error("UNCAUGHT EXCEPTION! �� Shutting down...", {
+  logger.error("UNCAUGHT EXCEPTION!  Shutting down...", {
     error: err.message,
     stack: err.stack,
   });
