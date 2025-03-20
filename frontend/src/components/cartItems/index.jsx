@@ -25,7 +25,7 @@ const CartItems = () => {
     return (
       <div className="loading-container">
         <div className="loading-spinner"></div>
-        <p>Loading your cart...</p>
+        <p className="loading-message">Loading your cart...</p>
       </div>
     );
   }

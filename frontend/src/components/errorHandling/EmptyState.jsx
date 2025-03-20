@@ -26,8 +26,8 @@ const EmptyState = ({
     <div className={`empty-state-container ${className}`}>
       <div className="empty-state-icon">{icon}</div>
       <div className="empty-state-content">
-        <h2>{title}</h2>
-        <p>{message}</p>
+        <h2 className="empty-state-content-title">{title}</h2>
+        <p className="empty-state-content-text">{message}</p>
 
         {actions.length > 0 && (
           <div className="empty-state-actions">

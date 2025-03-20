@@ -12,7 +12,7 @@ const Spinner = ({ message = "Loading...", size = "medium" }) => {
   return (
     <div className="spinner-container">
       <div className={`spinner spinner-${size}`}></div>
-      {message && <p className="spinner-message">{message}</p>}
+      {message && <div className="spinner-message">{message}</div>}
     </div>
   );
 };

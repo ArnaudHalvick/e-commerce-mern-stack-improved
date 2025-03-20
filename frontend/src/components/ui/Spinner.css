@@ -3,10 +3,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
   width: 100%;
   height: 100%;
-  min-height: 200px;
 }
 
 .spinner {
@@ -35,7 +33,6 @@
 }
 
 .spinner-message {
-  margin-top: 1rem;
   color: #888;
   font-size: 0.95rem;
   text-align: center;

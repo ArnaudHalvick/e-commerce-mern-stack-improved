@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useError } from "../../context/ErrorContext";
 import api from "../../utils/axiosConfig";
 import "./ErrorStyles.css";
-
+import Spinner from "../ui/Spinner";
 /**
  * Error Demonstration Component
  * Shows how to use the error handling system
@@ -165,16 +165,18 @@ const YourComponent = () => {
       // Use our configured axios instance
       await api.post('/api/data', formData);
       showSuccess('Data submitted successfully!');
-    } catch (error) {
-      // Error is already formatted by our interceptor
-      showError(error.message);
-    }
-  };
-
-  // Rest of your component...
-}`}
+      } catch (error) {
+        // Error is already formatted by our interceptor
+        showError(error.message);
+        }
+        };
+        
+        // Rest of your component...
+        }`}
         </pre>
       </div>
+      <div>Loading Spinner test</div>
+      <Spinner message="Loading..." size="medium" />
     </div>
   );
 };

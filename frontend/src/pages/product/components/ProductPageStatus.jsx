@@ -27,7 +27,7 @@ const ProductPageStatus = ({ loading, error }) => {
       {loading && (
         <div className="loading-container">
           <div className="loading-spinner"></div>
-          <p>Loading product details...</p>
+          <p className="loading-message">Loading product details...</p>
         </div>
       )}
 

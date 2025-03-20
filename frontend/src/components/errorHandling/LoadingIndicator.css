@@ -9,7 +9,7 @@
   text-align: center;
 }
 
-.loading-container p {
+.loading-message {
   margin-top: 1.5rem;
   font-size: 1.1rem;
   color: #555;
@@ -54,7 +54,7 @@
   border-width: 4px;
 }
 
-.loading-overlay p {
+.loading-overlay-message {
   margin-top: 1rem;
   font-size: 0.9rem;
   color: #555;

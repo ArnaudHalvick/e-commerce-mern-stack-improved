@@ -38,17 +38,17 @@ class ErrorBoundary extends Component {
       return (
         <div className="error-container">
           <div className="error-content">
-            <h1>Oops! Something went wrong</h1>
-            <p>
+            <h1 className="error-title">Oops! Something went wrong</h1>
+            <p className="error-text">
               We're sorry, but we encountered an error while processing your
               request.
             </p>
 
             {this.props.showDetails && this.state.error && (
               <div className="error-details">
-                <h3>Error Details:</h3>
-                <p>{this.state.error.toString()}</p>
-                <pre>
+                <h3 className="error-details-title">Error Details:</h3>
+                <p className="error-text">{this.state.error.toString()}</p>
+                <pre className="error-details-code">
                   {this.state.errorInfo && this.state.errorInfo.componentStack}
                 </pre>
               </div>

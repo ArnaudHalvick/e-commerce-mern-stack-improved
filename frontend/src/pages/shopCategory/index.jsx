@@ -48,7 +48,7 @@ const ShopCategory = (props) => {
         <CategoryHeader category={props.category} banner={props.banner} />
         <div className="loading-container">
           <div className="loading-spinner"></div>
-          <p className="loading-text">Loading products...</p>
+          <p className="loading-message">Loading products...</p>
         </div>
       </div>
     );
@@ -60,7 +60,7 @@ const ShopCategory = (props) => {
         <CategoryHeader category={props.category} banner={props.banner} />
         <div className="error-container">
           <h2 className="error-title">Error Loading Products</h2>
-          <p className="error-message">{error}</p>
+          <p className="error-text">{error}</p>
           <button
             className="error-button"
             onClick={() => window.location.reload()}
