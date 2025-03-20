@@ -74,18 +74,17 @@ const registerUser = catchAsync(async (req, res, next) => {
     return next(new AppError("User with this email already exists", 400));
   }
 
-  // Generate email verification token
-  const emailVerificationToken = crypto.randomBytes(20).toString("hex");
-  const emailVerificationExpires = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
-
   // Create new user
   const user = await User.create({
     name: username,
     email: normalizedEmail,
     password,
-    emailVerificationToken,
-    emailVerificationExpires,
   });
+
+  // Generate email verification token using the model method
+  const emailVerificationToken = user.generateEmailVerificationToken();
+
+  await user.save({ validateBeforeSave: false });
 
   // Create verification URL
   const verificationURL = createVerificationUrl(emailVerificationToken);
@@ -109,7 +108,7 @@ const registerUser = catchAsync(async (req, res, next) => {
   } catch (error) {
     // If email sending fails, remove emailVerificationToken and expiry
     user.emailVerificationToken = undefined;
-    user.emailVerificationExpires = undefined;
+    user.emailVerificationExpiry = undefined;
     await user.save({ validateBeforeSave: false });
 
     return next(
@@ -448,22 +447,26 @@ const requestVerification = catchAsync(async (req, res, next) => {
   const user = await User.findOne({ email: normalizedEmail });
 
   if (!user) {
+    logger.warn(`Verification request for non-existent email: ${email}`);
     return next(new AppError("No user found with this email", 404));
   }
 
   if (user.isEmailVerified) {
+    logger.info(`Verification request for already verified email: ${email}`);
     return next(new AppError("Email is already verified", 400));
   }
 
-  // Generate email verification token
-  const emailVerificationToken = crypto.randomBytes(20).toString("hex");
-  user.emailVerificationToken = emailVerificationToken;
-  user.emailVerificationExpires = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
+  // Generate email verification token using the model method
+  const emailVerificationToken = user.generateEmailVerificationToken();
+  logger.info(
+    `Generated verification token for user: ${user._id}, email: ${email}`
+  );
 
   await user.save({ validateBeforeSave: false });
 
   // Create verification URL
   const verificationURL = createVerificationUrl(emailVerificationToken);
+  logger.debug(`Verification URL created: ${verificationURL}`);
 
   // Generate email HTML using the template
   const htmlEmail = generateVerificationEmail(verificationURL);
@@ -482,7 +485,7 @@ const requestVerification = catchAsync(async (req, res, next) => {
   } catch (error) {
     // If email sending fails, remove emailVerificationToken and expiry
     user.emailVerificationToken = undefined;
-    user.emailVerificationExpires = undefined;
+    user.emailVerificationExpiry = undefined;
     await user.save({ validateBeforeSave: false });
 
     return next(
@@ -503,13 +506,19 @@ const verifyEmail = catchAsync(async (req, res, next) => {
     return next(new AppError("Verification token is required", 400));
   }
 
-  // Find user by verification token
+  // Hash the token before searching in the database
+  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
+  // Find user by verification token (which is stored as a hash in the database)
   const user = await User.findOne({
-    emailVerificationToken: token,
-    emailVerificationExpires: { $gt: Date.now() },
+    emailVerificationToken: hashedToken,
+    emailVerificationExpiry: { $gt: Date.now() },
   });
 
   if (!user) {
+    logger.error(
+      `Invalid token verification attempt: ${token}, hashed as: ${hashedToken}`
+    );
     return next(new AppError("Invalid or expired verification token", 400));
   }
 
@@ -525,7 +534,7 @@ const verifyEmail = catchAsync(async (req, res, next) => {
   // Update user verification status
   user.isEmailVerified = true;
   user.emailVerificationToken = undefined;
-  user.emailVerificationExpires = undefined;
+  user.emailVerificationExpiry = undefined;
 
   await user.save({ validateBeforeSave: false });
 
