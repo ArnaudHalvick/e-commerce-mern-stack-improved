@@ -2,6 +2,7 @@ import { useState, useContext, useCallback } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import usePasswordValidation from "./usePasswordValidation";
+import { useError } from "../../../context/ErrorContext";
 
 /**
  * Custom hook for Auth form handling
@@ -19,6 +20,7 @@ const useAuthForm = () => {
   const [termsAccepted, setTermsAccepted] = useState(false);
   const { login, signup, loading, error } = useContext(AuthContext);
   const navigate = useNavigate();
+  const { showError } = useError();
 
   // Password validation
   const {
@@ -52,7 +54,7 @@ const useAuthForm = () => {
 
     if (state === "Signup") {
       if (!termsAccepted) {
-        alert("Please accept the terms and conditions");
+        showError("Please accept the terms and conditions");
         return;
       }
 
@@ -67,7 +69,7 @@ const useAuthForm = () => {
         });
 
         if (activeErrors.length > 0) {
-          alert(
+          showError(
             `Please fix the following password issues:\n${activeErrors.join(
               "\n"
             )}`
@@ -78,7 +80,7 @@ const useAuthForm = () => {
 
       // Check if passwords match
       if (formData.password !== formData.confirmPassword) {
-        alert("Passwords do not match");
+        showError("Passwords do not match");
         return;
       }
 

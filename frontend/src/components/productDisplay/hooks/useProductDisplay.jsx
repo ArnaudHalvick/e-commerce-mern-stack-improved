@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { addToCart } from "../../../redux/slices/cartSlice";
 import { AuthContext } from "../../../context/AuthContext";
 import { getImageUrl } from "../../../utils/imageUtils";
+import { useError } from "../../../context/ErrorContext";
 
 /**
  * Custom hook for product display logic
@@ -13,6 +14,7 @@ import { getImageUrl } from "../../../utils/imageUtils";
 const useProductDisplay = (product) => {
   const dispatch = useDispatch();
   const { isAuthenticated } = useContext(AuthContext);
+  const { showError } = useError();
   const [isAdding, setIsAdding] = useState(false);
 
   // State for selected size and quantity
@@ -58,7 +60,7 @@ const useProductDisplay = (product) => {
       );
       setTimeout(() => setIsAdding(false), 1000);
     } else {
-      alert("Please login to add items to cart");
+      showError("Please login to add items to cart");
       setIsAdding(false);
     }
   }, [
@@ -68,6 +70,7 @@ const useProductDisplay = (product) => {
     isAdding,
     quantity,
     selectedSize,
+    showError,
   ]);
 
   return {

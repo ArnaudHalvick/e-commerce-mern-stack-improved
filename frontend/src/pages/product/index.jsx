@@ -55,14 +55,19 @@ const Product = () => {
     );
   }
 
+  // Create safe category path, defaulting to an empty string if category is undefined
+  const categoryPath = product.category
+    ? `/${product.category.toLowerCase()}`
+    : "/";
+
   return (
     <div>
       <Breadcrumb
         routes={[
           { label: "Home", path: "/" },
           {
-            label: product.category,
-            path: `/${product.category.toLowerCase()}`,
+            label: product.category || "Products",
+            path: categoryPath,
           },
           { label: product.name },
         ]}

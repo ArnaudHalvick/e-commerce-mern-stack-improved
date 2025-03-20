@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { addToCart } from "../../../redux/slices/cartSlice";
 import { AuthContext } from "../../../context/AuthContext";
 import { API_BASE_URL } from "../../../utils/imageUtils";
+import { useError } from "../../../context/ErrorContext";
 
 /**
  * Original ProductDisplay component (now located in components directory)
@@ -16,6 +17,7 @@ import { API_BASE_URL } from "../../../utils/imageUtils";
 const ProductDisplay = ({ product }) => {
   const dispatch = useDispatch();
   const { isAuthenticated } = useContext(AuthContext);
+  const { showError } = useError();
   const [isAdding, setIsAdding] = useState(false);
   const thumbnailsContainerRef = useRef(null);
 
@@ -139,7 +141,7 @@ const ProductDisplay = ({ product }) => {
       );
       setTimeout(() => setIsAdding(false), 1000);
     } else {
-      alert("Please login to add items to cart");
+      showError("Please login to add items to cart");
       setIsAdding(false);
     }
   }, [
@@ -149,6 +151,7 @@ const ProductDisplay = ({ product }) => {
     isAdding,
     quantity,
     selectedSize,
+    showError,
   ]);
 
   return (
