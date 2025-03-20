@@ -2,6 +2,7 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import EmptyState from "../../../components/errorHandling/EmptyState";
 import Breadcrumb from "../../../components/breadcrumbs/Breadcrumb";
+import Spinner from "../../../components/ui/Spinner";
 import "../../../components/errorHandling/LoadingIndicator.css";
 
 /**
@@ -26,8 +27,11 @@ const ProductPageStatus = ({ loading, error }) => {
 
       {loading && (
         <div className="loading-container">
-          <div className="loading-spinner"></div>
-          <p className="loading-message">Loading product details...</p>
+          <Spinner
+            message="Loading product details..."
+            size="medium"
+            className="product-page-spinner"
+          />
         </div>
       )}
 

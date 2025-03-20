@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { verifyPasswordChange } from "../../redux/slices/userSlice";
 import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
+import Spinner from "../../components/ui/Spinner";
 
 // Styles
 import "./VerifyEmail.css";
@@ -115,7 +116,7 @@ const VerifyPasswordChange = () => {
           }`}
         >
           {verificationStatus.loading ? (
-            <div className="spinner"></div>
+            <Spinner size="small" showMessage={false} />
           ) : verificationStatus.success ? (
             <span>✓</span>
           ) : (

@@ -7,38 +7,41 @@
   height: 100%;
 }
 
-.spinner {
+/* Use a more specific class name to avoid conflicts */
+.spinner-container .spinner {
   border-radius: 50%;
   border-top: 2px solid transparent;
   border-right: 2px solid transparent;
   border-bottom: 2px solid transparent;
   border-left: 2px solid var(--color-primary, #ff4141);
-  animation: spin 1s linear infinite;
+  animation: spinner-rotate 1s linear infinite;
 }
 
-.spinner-small {
+.spinner-container .spinner-small {
   width: 24px;
   height: 24px;
 }
 
-.spinner-medium {
+.spinner-container .spinner-medium {
   width: 40px;
   height: 40px;
 }
 
-.spinner-large {
+.spinner-container .spinner-large {
   width: 60px;
   height: 60px;
   border-width: 3px;
 }
 
-.spinner-message {
+.spinner-container .spinner-message {
+  margin-top: 0.75rem;
   color: #888;
   font-size: 0.95rem;
   text-align: center;
 }
 
-@keyframes spin {
+/* Rename animation to avoid conflicts */
+@keyframes spinner-rotate {
   0% {
     transform: rotate(0deg);
   }

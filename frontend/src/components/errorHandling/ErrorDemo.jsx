@@ -68,7 +68,7 @@ const ErrorDemo = () => {
       </p>
 
       <div className="error-demo-section">
-        <h3>1. Toast Notifications</h3>
+        <h3 className="error-demo-section.h3">1. Toast Notifications</h3>
         <div className="error-demo-form">
           <div className="form-group">
             <label htmlFor="message">Message:</label>
@@ -150,6 +150,10 @@ const ErrorDemo = () => {
           Throw Runtime Error
         </button>
       </div>
+      <div className="error-demo-section">
+        <h3 className="error-demo-section.h3">Loading Spinner Test</h3>
+        <Spinner message="Loading..." size="medium" />
+      </div>
 
       <div className="error-demo-code">
         <h3>Usage Example:</h3>
@@ -175,8 +179,6 @@ const YourComponent = () => {
         }`}
         </pre>
       </div>
-      <div>Loading Spinner test</div>
-      <Spinner message="Loading..." size="medium" />
     </div>
   );
 };

@@ -10,6 +10,7 @@ import { AuthContext } from "../../context/AuthContext";
 
 // Components
 import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
+import Spinner from "../../components/ui/Spinner";
 
 // CSS
 import "./VerifyEmail.css";
@@ -128,9 +129,11 @@ const VerifyEmail = () => {
         <h1>Email Verification</h1>
 
         {loading ? (
-          <div className="loading-spinner">
-            <p>Verifying your email...</p>
-          </div>
+          <Spinner
+            message="Verifying your email..."
+            size="medium"
+            className="verify-email-spinner"
+          />
         ) : (
           <div
             className={`verification-message ${

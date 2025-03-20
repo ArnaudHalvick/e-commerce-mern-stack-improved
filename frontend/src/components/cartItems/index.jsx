@@ -3,6 +3,7 @@ import { CartItem, CartTotals, PromoCodeSection } from "./components";
 import useCart from "./hooks/useCart";
 import EmptyState from "../errorHandling/EmptyState";
 import "../errorHandling/LoadingIndicator.css";
+import Spinner from "../ui/Spinner";
 
 /**
  * Cart display component showing all items in cart and totals
@@ -24,8 +25,11 @@ const CartItems = () => {
   if (loading && items.length === 0) {
     return (
       <div className="loading-container">
-        <div className="loading-spinner"></div>
-        <p className="loading-message">Loading your cart...</p>
+        <Spinner
+          message="Loading your cart..."
+          size="medium"
+          className="cart-page-spinner"
+        />
       </div>
     );
   }

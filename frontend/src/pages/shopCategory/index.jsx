@@ -4,6 +4,7 @@ import React from "react";
 import CategoryHeader from "./components/CategoryHeader";
 import ProductsContent from "./components/ProductsContent";
 import FilterSidebar from "../../components/filterSidebar/FilterSidebar";
+import Spinner from "../../components/ui/Spinner";
 
 // Hooks
 import useCategoryProducts from "./hooks/useCategoryProducts";
@@ -47,8 +48,11 @@ const ShopCategory = (props) => {
       <div className="product-category-container">
         <CategoryHeader category={props.category} banner={props.banner} />
         <div className="loading-container">
-          <div className="loading-spinner"></div>
-          <p className="loading-message">Loading products...</p>
+          <Spinner
+            message="Loading products..."
+            size="medium"
+            className="category-page-spinner"
+          />
         </div>
       </div>
     );

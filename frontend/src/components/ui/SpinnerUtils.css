@@ -1,0 +1,58 @@
+/* Loading Container */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 40vh;
+  padding: 2rem;
+  text-align: center;
+}
+
+/* Inline Spinner */
+.inline-spinner {
+  display: inline-flex;
+  margin-left: 0.5rem;
+  height: auto !important;
+}
+
+.inline-spinner .spinner {
+  margin: 0;
+}
+
+/* Button with spinner */
+.btn-loading {
+  position: relative;
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+.btn-loading .inline-spinner {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Full Page Loader */
+.full-page-loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.85);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Animation durations */
+.animation-fast .spinner {
+  animation-duration: 0.5s;
+}
+
+.animation-slow .spinner {
+  animation-duration: 1.5s;
+}
