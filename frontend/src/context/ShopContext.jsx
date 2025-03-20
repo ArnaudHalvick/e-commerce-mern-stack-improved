@@ -1,6 +1,6 @@
 // Path: frontend/src/context/ShopContext.jsx
 import { createContext, useState, useEffect } from "react";
-import { API_BASE_URL } from "../utils/imageUtils";
+import { API_BASE_URL } from "../utils/apiUtils";
 
 export const ShopContext = createContext(null);
 

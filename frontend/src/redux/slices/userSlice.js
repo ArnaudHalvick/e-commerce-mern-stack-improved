@@ -2,7 +2,7 @@
 
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { getApiUrl } from "../../utils/imageUtils";
+import { getApiUrl } from "../../utils/apiUtils";
 
 // Async thunk for updating user profile
 export const updateUserProfile = createAsyncThunk(

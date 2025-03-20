@@ -5,7 +5,7 @@ import { useContext, useState, useMemo, useCallback, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../../redux/slices/cartSlice";
 import { AuthContext } from "../../../context/AuthContext";
-import { API_BASE_URL } from "../../../utils/imageUtils";
+import { API_BASE_URL } from "../../../utils/apiUtils";
 import { useError } from "../../../context/ErrorContext";
 
 /**

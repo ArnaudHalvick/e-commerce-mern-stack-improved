@@ -1,65 +1,8 @@
 /**
- * Utility functions for handling image URLs
+ * Utility functions for handling image URLs and processing
  */
 
-// Get the base API URL from environment variables or fallback to localhost
-export const API_BASE_URL =
-  process.env.REACT_APP_API_URL || "http://localhost:4000";
-
-/**
- * Gets the base URL without the /api suffix
- * @returns {string} The base URL for assets
- */
-export const getBaseUrl = () => {
-  // Remove '/api' from the end if it exists
-  return API_BASE_URL.endsWith("/api")
-    ? API_BASE_URL.slice(0, -4)
-    : API_BASE_URL;
-};
-
-/**
- * Joins URL segments correctly, handling slashes appropriately
- * @param {string} baseUrl - The base URL
- * @param {string} path - The path to append
- * @returns {string} The properly joined URL
- */
-export const joinUrl = (baseUrl, path) => {
-  if (!baseUrl) return path;
-  if (!path) return baseUrl;
-
-  // Normalize base URL - remove trailing slash if exists
-  const normalizedBase = baseUrl.endsWith("/") ? baseUrl.slice(0, -1) : baseUrl;
-
-  // Normalize path - ensure it starts with a slash
-  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
-
-  // Join them with exactly one slash
-  return `${normalizedBase}${normalizedPath}`;
-};
-
-/**
- * Creates an API URL by joining the base URL with an API path
- * @param {string} path - The API endpoint path (e.g. "products" or "auth/login")
- * @returns {string} The full API URL
- */
-export const getApiUrl = (path) => {
-  // Check if the base URL already contains /api
-  const baseHasApi = API_BASE_URL.includes("/api");
-
-  // Remove "api/" prefix from path if the base already has /api
-  let apiPath = path;
-  if (baseHasApi && path.startsWith("api/")) {
-    apiPath = path.substring(4);
-  } else if (!baseHasApi && !path.startsWith("api/")) {
-    // Add the api prefix if not already present and base doesn't have it
-    apiPath = `api/${path}`;
-  }
-
-  return joinUrl(
-    API_BASE_URL,
-    apiPath.startsWith("/") ? apiPath : `/${apiPath}`
-  );
-};
+import { getBaseUrl, joinUrl } from "./apiUtils";
 
 /**
  * Converts a relative image path to an absolute URL
@@ -105,4 +48,19 @@ export const getRelativeImagePath = (imageUrl) => {
     console.error("Error extracting relative image path:", error);
     return imageUrl; // Return as is if parsing fails
   }
+};
+
+/**
+ * Gets a placeholder image URL when actual image is not available
+ * @param {string} type - Type of placeholder ('product', 'avatar', etc.)
+ * @returns {string} URL to the placeholder image
+ */
+export const getPlaceholderImage = (type = "product") => {
+  const placeholders = {
+    product: "/images/pink-placeholder.png",
+    avatar: "/images/avatar-placeholder.png",
+    banner: "/images/banner-placeholder.png",
+  };
+
+  return getImageUrl(placeholders[type] || placeholders.product);
 };

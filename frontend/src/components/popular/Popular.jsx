@@ -2,7 +2,7 @@
 import "./Popular.css";
 import Item from "../item/Item";
 import { useState, useEffect } from "react";
-import { API_BASE_URL, getApiUrl } from "../../utils/imageUtils";
+import { getApiUrl } from "../../utils/apiUtils";
 
 const Popular = () => {
   const [popularProducts, setPopularProducts] = useState([]);

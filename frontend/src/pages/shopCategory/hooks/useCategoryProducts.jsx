@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { API_BASE_URL, getApiUrl } from "../../../utils/imageUtils";
+import { getApiUrl } from "../../../utils/apiUtils";
 
 /**
  * Custom hook for fetching and filtering products by category

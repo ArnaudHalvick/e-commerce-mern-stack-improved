@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ShopContext } from "../../../context/ShopContext";
-import { API_BASE_URL } from "../../../utils/imageUtils";
+import { API_BASE_URL } from "../../../utils/apiUtils";
 
 /**
  * Custom hook for fetching product data

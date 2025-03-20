@@ -2,7 +2,7 @@
 import "./NewCollections.css";
 import Item from "../item/Item";
 import { useState, useEffect } from "react";
-import { getApiUrl } from "../../utils/imageUtils";
+import { getApiUrl } from "../../utils/apiUtils";
 
 const NewCollection = () => {
   const [newCollection, setNewCollection] = useState([]);

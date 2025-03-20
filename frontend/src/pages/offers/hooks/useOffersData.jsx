@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { API_BASE_URL, getApiUrl } from "../../../utils/imageUtils";
+import { API_BASE_URL, getApiUrl } from "../../../utils/apiUtils";
 
 /**
  * Custom hook for fetching, filtering, and sorting products on the offers page

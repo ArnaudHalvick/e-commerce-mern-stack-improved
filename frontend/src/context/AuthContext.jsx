@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { resetCart } from "../redux/slices/cartSlice";
 import { setUser, clearUser } from "../redux/slices/userSlice";
-import { API_BASE_URL } from "../utils/imageUtils";
+import { API_BASE_URL } from "../utils/apiUtils";
 
 export const AuthContext = createContext(null);
 

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import "./RelatedProducts.css";
 import Item from "../item/Item";
 import { useParams } from "react-router-dom";
-import { API_BASE_URL } from "../../utils/imageUtils";
+import { API_BASE_URL } from "../../utils/apiUtils";
 
 const RelatedProducts = ({ product }) => {
   const [relatedProducts, setRelatedProducts] = useState([]);
