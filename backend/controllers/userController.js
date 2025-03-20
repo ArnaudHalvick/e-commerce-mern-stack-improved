@@ -3,10 +3,15 @@
 const User = require("../models/User");
 const crypto = require("crypto");
 const sendEmail = require("../utils/sendEmail");
-const bcrypt = require("bcryptjs");
 const { normalizeEmail } = require("../utils/emailNormalizer");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/AppError");
+const logger = require("../utils/logger");
+const {
+  generateVerificationEmail,
+  generatePasswordResetEmail,
+  generatePasswordChangeNotification,
+} = require("../utils/emailTemplates/authEmails");
 
 // Helper function to send tokens
 const sendTokens = (user, statusCode, res, additionalData = {}) => {
@@ -79,26 +84,23 @@ const registerUser = catchAsync(async (req, res, next) => {
   });
 
   // Create verification URL
-  const verificationURL = `${process.env.FRONTEND_URL}/verify-email/${emailVerificationToken}`;
+  const verificationURL = `${process.env.FRONTEND_URL}/verify-email?token=${emailVerificationToken}`;
 
-  // Compose email message
-  const message = `
-    <h1>Email Verification</h1>
-    <p>Please click the link below to verify your email address:</p>
-    <a href="${verificationURL}" target="_blank">Verify Email</a>
-    <p>If you did not sign up for our service, please ignore this email.</p>
-  `;
+  // Generate email HTML using the template
+  const htmlEmail = generateVerificationEmail(verificationURL);
 
   try {
     await sendEmail({
       email: user.email,
       subject: "Email Verification",
-      message,
+      html: htmlEmail,
     });
 
-    // Send response with token
+    // Send response with token and requiresVerification flag
     sendTokens(user, 201, res, {
       message: "Registration successful. Please verify your email.",
+      requiresVerification: true,
+      email: user.email,
     });
   } catch (error) {
     // If email sending fails, remove emailVerificationToken and expiry
@@ -319,21 +321,14 @@ const forgotPassword = catchAsync(async (req, res, next) => {
   // Create reset URL
   const resetURL = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
 
-  // Compose email message
-  const message = `
-    <h1>Password Reset</h1>
-    <p>You requested a password reset for your account.</p>
-    <p>Please click the link below to reset your password:</p>
-    <a href="${resetURL}" target="_blank">Reset Password</a>
-    <p>If you did not request a password reset, please ignore this email.</p>
-    <p>This link will expire in 15 minutes.</p>
-  `;
+  // Generate email HTML using the template
+  const htmlEmail = generatePasswordResetEmail(resetURL);
 
   try {
     await sendEmail({
       email: user.email,
       subject: "Password Reset Request",
-      message,
+      html: htmlEmail,
     });
 
     res.status(200).json({
@@ -379,6 +374,20 @@ const resetPassword = catchAsync(async (req, res, next) => {
   user.resetPasswordExpire = undefined;
 
   await user.save();
+
+  // Send password change notification email
+  try {
+    const htmlEmail = generatePasswordChangeNotification(user.name);
+
+    await sendEmail({
+      email: user.email,
+      subject: "Password Changed Successfully",
+      html: htmlEmail,
+    });
+  } catch (error) {
+    // Don't block the password reset process if email fails
+    logger.error("Failed to send password change notification:", error);
+  }
 
   // Send tokens
   sendTokens(user, 200, res, {
@@ -450,21 +459,16 @@ const requestVerification = catchAsync(async (req, res, next) => {
   await user.save({ validateBeforeSave: false });
 
   // Create verification URL
-  const verificationURL = `${process.env.FRONTEND_URL}/verify-email/${emailVerificationToken}`;
+  const verificationURL = `${process.env.FRONTEND_URL}/verify-email?token=${emailVerificationToken}`;
 
-  // Compose email message
-  const message = `
-    <h1>Email Verification</h1>
-    <p>Please click the link below to verify your email address:</p>
-    <a href="${verificationURL}" target="_blank">Verify Email</a>
-    <p>If you did not sign up for our service, please ignore this email.</p>
-  `;
+  // Generate email HTML using the template
+  const htmlEmail = generateVerificationEmail(verificationURL);
 
   try {
     await sendEmail({
       email: user.email,
       subject: "Email Verification",
-      message,
+      html: htmlEmail,
     });
 
     res.status(200).json({
@@ -488,7 +492,8 @@ const requestVerification = catchAsync(async (req, res, next) => {
 
 // Verify email
 const verifyEmail = catchAsync(async (req, res, next) => {
-  const { token } = req.params;
+  // Get token from params or query
+  const token = req.params.token || req.query.token;
 
   if (!token) {
     return next(new AppError("Verification token is required", 400));
@@ -502,6 +507,15 @@ const verifyEmail = catchAsync(async (req, res, next) => {
 
   if (!user) {
     return next(new AppError("Invalid or expired verification token", 400));
+  }
+
+  // Check if email is already verified
+  if (user.isEmailVerified) {
+    return res.status(200).json({
+      success: true,
+      message: "Email already verified",
+      alreadyVerified: true,
+    });
   }
 
   // Update user verification status

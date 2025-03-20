@@ -17,6 +17,7 @@ router.post("/login", validateLogin, userController.loginUser);
 router.post("/refresh-token", verifyRefreshToken, userController.refreshToken);
 router.post("/request-verification", userController.requestVerification);
 router.get("/verify-email/:token", userController.verifyEmail);
+router.get("/verify-email", userController.verifyEmail);
 router.post("/forgot-password", userController.forgotPassword);
 router.post("/reset-password", userController.resetPassword);
 

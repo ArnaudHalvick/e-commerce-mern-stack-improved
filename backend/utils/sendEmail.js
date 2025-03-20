@@ -1,19 +1,20 @@
 const nodemailer = require("nodemailer");
+const logger = require("./logger");
 
 /**
  * Send an email
  * @param {Object} options - Email options
  * @param {string} options.email - Recipient email
  * @param {string} options.subject - Email subject
- * @param {string} options.message - Email message
- * @param {string} options.html - Optional HTML content
+ * @param {string} options.message - Email plain text message
+ * @param {string} options.html - HTML content of the email
  * @returns {Promise} - Promise that resolves when email is sent
  */
 const sendEmail = async (options) => {
   try {
     // Check if SMTP credentials are set
     if (!process.env.SMTP_USER || !process.env.SMTP_PASSWORD) {
-      console.error(
+      logger.error(
         "SMTP credentials are not configured. Please set SMTP_USER and SMTP_PASSWORD in .env file."
       );
       throw new Error("SMTP credentials are not configured");
@@ -27,17 +28,28 @@ const sendEmail = async (options) => {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASSWORD,
       },
-      debug: true, // Enable debug logs
+      debug: process.env.NODE_ENV !== "production", // Only enable debug in non-production environments
     });
 
     // Verify connection configuration
     await transporter.verify();
 
-    // Create HTML version if not provided but text is
-    let htmlContent = options.html;
-    if (!htmlContent && options.message) {
+    // Determine content of email - prioritize HTML if provided
+    let htmlContent = options.html || null;
+    let textContent = options.message || null;
+
+    // If only HTML is provided, generate text version
+    if (htmlContent && !textContent) {
+      // Simple HTML to text conversion (removing HTML tags)
+      textContent = htmlContent
+        .replace(/<[^>]*>?/gm, "")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+    // If only text is provided but no HTML, create basic HTML
+    else if (textContent && !htmlContent) {
       // Convert plain text to basic HTML with clickable links
-      htmlContent = options.message
+      htmlContent = textContent
         .replace(/\n/g, "<br>")
         .replace(
           /(https?:\/\/[^\s]+)/g,
@@ -52,16 +64,19 @@ const sendEmail = async (options) => {
       }>`,
       to: options.email,
       subject: options.subject,
-      text: options.message, // Plain text version
-      html: htmlContent, // HTML version
     };
+
+    // Add content to mail options
+    if (textContent) mailOptions.text = textContent;
+    if (htmlContent) mailOptions.html = htmlContent;
 
     // Send email
     const info = await transporter.sendMail(mailOptions);
+    logger.info(`Email sent to ${options.email}: ${info.messageId}`);
 
     return info;
   } catch (error) {
-    console.error("Error sending email:", error);
+    logger.error("Error sending email:", error);
     throw error;
   }
 };
