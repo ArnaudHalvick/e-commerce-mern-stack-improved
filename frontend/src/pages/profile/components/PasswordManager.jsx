@@ -10,6 +10,7 @@ const PasswordManager = ({
   handlePasswordInputChange,
   handlePasswordSubmit,
   loading,
+  changingPassword,
 }) => {
   return (
     <section className="profile-section">
@@ -75,8 +76,12 @@ const PasswordManager = ({
           </div>
 
           <div className="form-actions">
-            <button type="submit" className="btn-primary" disabled={loading}>
-              {loading ? "Updating..." : "Update Password"}
+            <button
+              type="submit"
+              className="btn-primary"
+              disabled={changingPassword}
+            >
+              {changingPassword ? "Updating..." : "Update Password"}
             </button>
             <button
               type="button"

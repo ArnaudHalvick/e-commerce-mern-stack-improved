@@ -8,6 +8,7 @@ const EmailVerification = ({
   verificationRequested,
   handleResendVerification,
   loading,
+  sendingVerification,
 }) => {
   if (!user || user.isEmailVerified) {
     return null;
@@ -27,9 +28,9 @@ const EmailVerification = ({
         <button
           className="btn-primary"
           onClick={handleResendVerification}
-          disabled={loading}
+          disabled={sendingVerification}
         >
-          {loading ? "Sending..." : "Resend Verification Email"}
+          {sendingVerification ? "Sending..." : "Resend Verification Email"}
         </button>
       )}
     </div>

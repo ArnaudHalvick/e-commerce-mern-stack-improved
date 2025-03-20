@@ -38,7 +38,7 @@ const Profile = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, error, passwordChanged, passwordChangePending } =
+  const { loading, passwordChanged, passwordChangePending, loadingStates } =
     useSelector((state) => state.user);
 
   const [formData, setFormData] = useState({
@@ -72,7 +72,6 @@ const Profile = () => {
     validateAddressFields,
     validatePasswordChange,
     clearFieldError,
-    resetFieldErrors,
   } = useProfileValidation();
 
   // Fetch complete profile when component mounts
@@ -277,10 +276,6 @@ const Profile = () => {
     try {
       await dispatch(requestEmailVerification(user.email)).unwrap();
       setVerificationRequested(true);
-      setMessage({
-        text: "Verification email has been sent!",
-        type: "success",
-      });
     } catch (err) {
       setMessage({
         text: err || "Failed to send verification email. Please try again.",
@@ -325,6 +320,7 @@ const Profile = () => {
           verificationRequested={verificationRequested}
           handleResendVerification={handleResendVerification}
           loading={loading}
+          sendingVerification={loadingStates?.sendingVerification}
         />
 
         <div className="profile-sections">
@@ -336,6 +332,7 @@ const Profile = () => {
             handleInputChange={handleInputChange}
             handleSubmit={handleSubmit}
             loading={loading}
+            updatingProfile={loadingStates?.updatingProfile}
             fieldErrors={fieldErrors}
             setFieldErrors={setFieldErrors}
             displayUserData={displayUserData}
@@ -351,12 +348,14 @@ const Profile = () => {
               handlePasswordInputChange={handlePasswordInputChange}
               handlePasswordSubmit={handlePasswordSubmit}
               loading={loading}
+              changingPassword={loadingStates?.changingPassword}
             />
 
             {/* Account Management Section */}
             <AccountManager
               handleDisableAccount={handleDisableAccount}
               loading={loading}
+              disablingAccount={loadingStates?.disablingAccount}
             />
           </div>
         </div>

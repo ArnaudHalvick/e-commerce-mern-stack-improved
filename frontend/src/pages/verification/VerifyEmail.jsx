@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
   verifyEmail,
   requestEmailVerification,
@@ -24,7 +24,9 @@ const VerifyEmail = () => {
   const dispatch = useDispatch();
   const { isAuthenticated } = useContext(AuthContext);
 
-  const { loading } = useSelector((state) => state.user);
+  // Use a separate state for token verification loading
+  const [verifyingToken, setVerifyingToken] = useState(!!token);
+
   const [verificationStatus, setVerificationStatus] = useState({
     message: "Verifying your email...",
     success: false,
@@ -42,6 +44,7 @@ const VerifyEmail = () => {
     // Only attempt verification if there's a token
     if (token) {
       const verify = async () => {
+        setVerifyingToken(true);
         try {
           const result = await dispatch(verifyEmail(token)).unwrap();
 
@@ -73,6 +76,8 @@ const VerifyEmail = () => {
             success: false,
             expired: isExpired,
           });
+        } finally {
+          setVerifyingToken(false);
         }
       };
 
@@ -83,6 +88,7 @@ const VerifyEmail = () => {
           "No verification token found. Please check your email for a valid verification link.",
         success: false,
       });
+      setVerifyingToken(false);
     }
   }, [token, dispatch]);
 
@@ -109,6 +115,7 @@ const VerifyEmail = () => {
         ...resendForm,
         loading: false,
         success: true,
+        email: "", // Clear email after successful send
       });
     } catch (err) {
       setResendForm({
@@ -128,7 +135,7 @@ const VerifyEmail = () => {
       <div className="verify-email-content">
         <h1>Email Verification</h1>
 
-        {loading ? (
+        {verifyingToken ? (
           <Spinner
             message="Verifying your email..."
             size="medium"
@@ -162,10 +169,10 @@ const VerifyEmail = () => {
               <div className="error-actions">
                 {resendForm.success ? (
                   <div className="resend-success">
-                    <p>
-                      A new verification email has been sent! Please check your
-                      inbox.
-                    </p>
+                    <p>Verification email sent! Please check your inbox.</p>
+                    <Link to="/login" className="btn-secondary mt-3">
+                      Return to Login
+                    </Link>
                   </div>
                 ) : (
                   <>
@@ -189,6 +196,7 @@ const VerifyEmail = () => {
                             setResendForm({
                               ...resendForm,
                               email: e.target.value,
+                              error: null, // Clear error on change
                             })
                           }
                           placeholder="Enter your email"
@@ -214,10 +222,6 @@ const VerifyEmail = () => {
                     </form>
                   </>
                 )}
-
-                <Link to="/login" className="btn-secondary mt-3">
-                  Return to Login
-                </Link>
               </div>
             )}
           </div>

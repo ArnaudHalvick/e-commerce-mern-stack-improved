@@ -10,6 +10,7 @@ const ProfileInfo = ({
   handleInputChange,
   handleSubmit,
   loading,
+  updatingProfile,
   fieldErrors,
   setFieldErrors,
   displayUserData,
@@ -160,8 +161,12 @@ const ProfileInfo = ({
           </div>
 
           <div className="form-actions">
-            <button type="submit" className="btn-primary" disabled={loading}>
-              {loading ? "Saving..." : "Save Changes"}
+            <button
+              type="submit"
+              className="btn-primary"
+              disabled={updatingProfile}
+            >
+              {updatingProfile ? "Saving..." : "Save Changes"}
             </button>
             <button
               type="button"

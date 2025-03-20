@@ -159,6 +159,13 @@ const userSlice = createSlice({
     isEmailVerified: false,
     verificationRequested: false,
     loading: false,
+    loadingStates: {
+      verifyingEmail: false,
+      sendingVerification: false,
+      disablingAccount: false,
+      changingPassword: false,
+      updatingProfile: false,
+    },
     error: null,
     passwordChanged: false,
     passwordChangePending: false,
@@ -176,6 +183,14 @@ const userSlice = createSlice({
       state.passwordChanged = false;
       state.passwordChangePending = false;
       state.accountDisabled = false;
+      state.loading = false;
+      state.loadingStates = {
+        verifyingEmail: false,
+        sendingVerification: false,
+        disablingAccount: false,
+        changingPassword: false,
+        updatingProfile: false,
+      };
     },
     clearError: (state) => {
       state.error = null;
@@ -190,86 +205,104 @@ const userSlice = createSlice({
       // Handle updateUserProfile
       .addCase(updateUserProfile.pending, (state) => {
         state.loading = true;
+        state.loadingStates.updatingProfile = true;
         state.error = null;
       })
       .addCase(updateUserProfile.fulfilled, (state, action) => {
         state.profile = action.payload;
         state.loading = false;
+        state.loadingStates.updatingProfile = false;
       })
       .addCase(updateUserProfile.rejected, (state, action) => {
         state.loading = false;
+        state.loadingStates.updatingProfile = false;
         state.error = action.payload;
       })
       // Handle changePassword
       .addCase(changePassword.pending, (state) => {
         state.loading = true;
+        state.loadingStates.changingPassword = true;
         state.error = null;
         state.passwordChanged = false;
         state.passwordChangePending = false;
       })
       .addCase(changePassword.fulfilled, (state, action) => {
         state.loading = false;
+        state.loadingStates.changingPassword = false;
         state.passwordChanged = true;
         state.passwordChangePending =
           action.payload.passwordChangePending || false;
       })
       .addCase(changePassword.rejected, (state, action) => {
         state.loading = false;
+        state.loadingStates.changingPassword = false;
         state.error = action.payload;
         state.passwordChangePending = false;
       })
       // Handle disableAccount
       .addCase(disableAccount.pending, (state) => {
         state.loading = true;
+        state.loadingStates.disablingAccount = true;
         state.error = null;
       })
       .addCase(disableAccount.fulfilled, (state) => {
         state.loading = false;
+        state.loadingStates.disablingAccount = false;
         state.accountDisabled = true;
         state.profile = null;
       })
       .addCase(disableAccount.rejected, (state, action) => {
         state.loading = false;
+        state.loadingStates.disablingAccount = false;
         state.error = action.payload;
       })
       // Handle requestEmailVerification
       .addCase(requestEmailVerification.pending, (state) => {
         state.loading = true;
+        state.loadingStates.sendingVerification = true;
         state.error = null;
       })
       .addCase(requestEmailVerification.fulfilled, (state) => {
         state.verificationRequested = true;
         state.loading = false;
+        state.loadingStates.sendingVerification = false;
       })
       .addCase(requestEmailVerification.rejected, (state, action) => {
         state.loading = false;
+        state.loadingStates.sendingVerification = false;
         state.error = action.payload;
       })
       // Handle verifyEmail
       .addCase(verifyEmail.pending, (state) => {
         state.loading = true;
+        state.loadingStates.verifyingEmail = true;
         state.error = null;
       })
       .addCase(verifyEmail.fulfilled, (state) => {
         state.isEmailVerified = true;
         state.loading = false;
+        state.loadingStates.verifyingEmail = false;
       })
       .addCase(verifyEmail.rejected, (state, action) => {
         state.loading = false;
+        state.loadingStates.verifyingEmail = false;
         state.error = action.payload;
       })
       // Handle verifyPasswordChange
       .addCase(verifyPasswordChange.pending, (state) => {
         state.loading = true;
+        state.loadingStates.changingPassword = true;
         state.error = null;
       })
       .addCase(verifyPasswordChange.fulfilled, (state) => {
         state.loading = false;
+        state.loadingStates.changingPassword = false;
         state.passwordChanged = true;
         state.passwordChangePending = false;
       })
       .addCase(verifyPasswordChange.rejected, (state, action) => {
         state.loading = false;
+        state.loadingStates.changingPassword = false;
         state.error = action.payload;
       });
   },
