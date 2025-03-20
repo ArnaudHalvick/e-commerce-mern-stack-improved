@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 // Components
 import LoginForm from "./components/LoginForm";
@@ -19,6 +19,7 @@ import "./Auth.css";
  */
 const Auth = ({ initialState = "Login" }) => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const {
     state,
@@ -40,6 +41,16 @@ const Auth = ({ initialState = "Login" }) => {
       setInitialState("Signup");
     }
   }, [initialState, setInitialState]);
+
+  // Effect to update state based on URL path changes
+  useEffect(() => {
+    const path = location.pathname;
+    if (path === "/login") {
+      setInitialState("Login");
+    } else if (path === "/signup") {
+      setInitialState("Signup");
+    }
+  }, [location.pathname, setInitialState]);
 
   // Effect to handle email verification needed redirect after login
   useEffect(() => {
