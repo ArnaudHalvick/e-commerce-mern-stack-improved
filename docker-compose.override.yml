@@ -1,4 +1,4 @@
-# // path: docker-compose.override.yml
+version: "3"
 
 services:
   # Backend service
@@ -9,9 +9,6 @@ services:
       - PUBLIC_URL=http://localhost:4000
     ports:
       - "4000:4000"
-    volumes:
-      - ./backend:/app
-      - /app/node_modules
 
   # Frontend service
   frontend:
@@ -25,4 +22,4 @@ services:
     environment:
       - VITE_API_URL=http://localhost:4000
     ports:
-      - "8080:80"
+      - "8080:80" 

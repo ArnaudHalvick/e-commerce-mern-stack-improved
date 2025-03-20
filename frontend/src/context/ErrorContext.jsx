@@ -13,32 +13,38 @@ export const ErrorProvider = ({ children }) => {
   const [toasts, setToasts] = useState([]);
 
   /**
-   * Add a toast notification
-   * @param {string} message - The message to display
-   * @param {string} type - The type of toast (error, warning, success, info)
-   * @param {number} duration - How long to show the toast in ms
-   */
-  const addToast = useCallback((message, type = "error", duration = 5000) => {
-    const id = Date.now();
-    setToasts((prevToasts) => [...prevToasts, { id, message, type, duration }]);
-
-    // Auto-remove toast after duration
-    if (duration !== Infinity) {
-      setTimeout(() => {
-        removeToast(id);
-      }, duration);
-    }
-
-    return id;
-  }, []);
-
-  /**
    * Remove a specific toast by ID
    * @param {number} id - The ID of the toast to remove
    */
   const removeToast = useCallback((id) => {
     setToasts((prevToasts) => prevToasts.filter((toast) => toast.id !== id));
   }, []);
+
+  /**
+   * Add a toast notification
+   * @param {string} message - The message to display
+   * @param {string} type - The type of toast (error, warning, success, info)
+   * @param {number} duration - How long to show the toast in ms
+   */
+  const addToast = useCallback(
+    (message, type = "error", duration = 5000) => {
+      const id = Date.now();
+      setToasts((prevToasts) => [
+        ...prevToasts,
+        { id, message, type, duration },
+      ]);
+
+      // Auto-remove toast after duration
+      if (duration !== Infinity) {
+        setTimeout(() => {
+          removeToast(id);
+        }, duration);
+      }
+
+      return id;
+    },
+    [removeToast]
+  );
 
   /**
    * Show an error toast
