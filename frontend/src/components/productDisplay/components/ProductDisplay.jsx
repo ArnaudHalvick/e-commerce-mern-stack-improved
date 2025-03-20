@@ -35,9 +35,9 @@ const ProductDisplay = ({ product }) => {
   const hasDiscount = product.new_price && product.new_price > 0;
 
   // Utility to get the base URL from any product image.
-  const getBaseUrl = () => {
+  const getBaseUrl = useCallback(() => {
     return API_BASE_URL;
-  };
+  }, []);
 
   // Determine the main image based on the selected image index.
   const mainImage = useMemo(() => {
