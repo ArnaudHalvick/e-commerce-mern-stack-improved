@@ -14,8 +14,8 @@ const authApi = {
       const response = await apiClient.post("/api/signup", userData);
       return response.data;
     } catch (error) {
-      console.error("Registration error:", error);
-      throw error.response?.data || error.message || "Registration failed";
+      // Let the error interceptor handle formatting, just rethrow
+      throw error;
     }
   },
 
@@ -30,8 +30,8 @@ const authApi = {
       const response = await apiClient.post("/api/login", { email, password });
       return response.data;
     } catch (error) {
-      console.error("Login error:", error);
-      throw error.response?.data || error.message || "Login failed";
+      // Let the error interceptor handle formatting, just rethrow
+      throw error;
     }
   },
 
@@ -44,8 +44,8 @@ const authApi = {
       const response = await apiClient.get("/api/logout");
       return response.data;
     } catch (error) {
-      console.error("Logout error:", error);
-      throw error.response?.data || error.message || "Logout failed";
+      // Let the error interceptor handle formatting, just rethrow
+      throw error;
     }
   },
 
@@ -58,8 +58,8 @@ const authApi = {
       const response = await apiClient.get("/api/me");
       return response.data;
     } catch (error) {
-      console.error("Get profile error:", error);
-      throw error.response?.data || error.message || "Failed to get profile";
+      // Let the error interceptor handle formatting, just rethrow
+      throw error;
     }
   },
 
@@ -73,8 +73,8 @@ const authApi = {
       const response = await apiClient.put("/api/profile", profileData);
       return response.data;
     } catch (error) {
-      console.error("Update profile error:", error);
-      throw error.response?.data || error.message || "Failed to update profile";
+      // Let the error interceptor handle formatting, just rethrow
+      throw error;
     }
   },
 
@@ -92,10 +92,8 @@ const authApi = {
       });
       return response.data;
     } catch (error) {
-      console.error("Change password error:", error);
-      throw (
-        error.response?.data || error.message || "Failed to change password"
-      );
+      // Let the error interceptor handle formatting, just rethrow
+      throw error;
     }
   },
 
@@ -108,10 +106,8 @@ const authApi = {
       const response = await apiClient.put("/api/disable-account");
       return response.data;
     } catch (error) {
-      console.error("Disable account error:", error);
-      throw (
-        error.response?.data || error.message || "Failed to disable account"
-      );
+      // Let the error interceptor handle formatting, just rethrow
+      throw error;
     }
   },
 
@@ -127,10 +123,8 @@ const authApi = {
       });
       return response.data;
     } catch (error) {
-      console.error("Verification request error:", error);
-      throw (
-        error.response?.data || error.message || "Verification request failed"
-      );
+      // Let the error interceptor handle formatting, just rethrow
+      throw error;
     }
   },
 
@@ -144,10 +138,8 @@ const authApi = {
       const response = await apiClient.get(`/api/verify-email?token=${token}`);
       return response.data;
     } catch (error) {
-      console.error("Email verification error:", error);
-      throw (
-        error.response?.data || error.message || "Email verification failed"
-      );
+      // Let the error interceptor handle formatting, just rethrow
+      throw error;
     }
   },
 };
