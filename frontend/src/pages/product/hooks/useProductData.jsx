@@ -27,9 +27,9 @@ const useProductData = (productId, productSlug) => {
       // If we have a product slug, we can directly fetch the detailed product
       if (productSlug) {
         setLoading(true);
-        // Use the correct endpoint URL: /api/product/slug/:slug
+        // Updated to use plural 'products' endpoint
         fetch(
-          `${API_BASE_URL}/api/product/slug/${productSlug}?includeReviews=true`
+          `${API_BASE_URL}/api/products/slug/${productSlug}?includeReviews=true`
         )
           .then((res) => {
             if (!res.ok) {
@@ -40,7 +40,7 @@ const useProductData = (productId, productSlug) => {
             return res.json();
           })
           .then((data) => {
-            setProduct(data);
+            setProduct(data.product); // Extract the product from response
             setLoading(false);
           })
           .catch((err) => {
@@ -67,8 +67,8 @@ const useProductData = (productId, productSlug) => {
       // If we have a product ID, fetch by ID
       else if (productId) {
         setLoading(true);
-        // The product ID endpoint is correct: /api/product/:id
-        fetch(`${API_BASE_URL}/api/product/${productId}?includeReviews=true`)
+        // Updated to use plural 'products' endpoint
+        fetch(`${API_BASE_URL}/api/products/${productId}?includeReviews=true`)
           .then((res) => {
             if (!res.ok) {
               throw new Error(
@@ -79,11 +79,11 @@ const useProductData = (productId, productSlug) => {
           })
           .then((data) => {
             // If product has a slug, redirect to the slug URL for better SEO
-            if (data.slug) {
-              navigate(`/products/${data.slug}`, { replace: true });
+            if (data.product && data.product.slug) {
+              navigate(`/products/${data.product.slug}`, { replace: true });
               return;
             }
-            setProduct(data);
+            setProduct(data.product); // Extract the product from response
             setLoading(false);
           })
           .catch((err) => {
