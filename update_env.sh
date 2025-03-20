@@ -15,6 +15,21 @@ cat > admin/.env << EOL
 VITE_API_URL=${PROD_URL}
 EOL
 
+# Update backend .env file for production
+cat > backend/.env << EOL
+# Environment
+NODE_ENV=production
+
+# Database credentials are loaded via docker-compose from environment variables
+
+# URLs
+FRONTEND_URL=${PROD_URL}
+PUBLIC_URL=${PROD_URL}
+
+# Port configuration
+PORT=4000
+EOL
+
 # Update backend CORS settings in index.js by directly editing the file
 echo "Updating CORS settings in backend/index.js"
 cat > backend/index.js.new << EOL

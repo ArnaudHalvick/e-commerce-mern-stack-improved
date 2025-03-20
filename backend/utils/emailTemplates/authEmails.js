@@ -3,6 +3,8 @@
  * This module contains all email templates related to authentication
  */
 
+const { getFrontendUrl, joinUrl } = require("../urlUtils");
+
 /**
  * Generate HTML for email verification email
  * @param {string} verificationURL - The verification URL to include in the email
@@ -209,6 +211,8 @@ const generatePasswordResetEmail = (resetURL) => {
  * @returns {string} - HTML content for email
  */
 const generatePasswordChangeNotification = (name) => {
+  const loginUrl = joinUrl(getFrontendUrl(), "login");
+
   return `
 <!DOCTYPE html>
 <html>
@@ -291,9 +295,7 @@ const generatePasswordChangeNotification = (name) => {
     <p>If you did not make this change, please contact our support team immediately as your account may have been compromised.</p>
     
     <p style="text-align: center;">
-      <a href="${
-        process.env.FRONTEND_URL
-      }/login" class="btn-login" target="_blank">Login to Your Account</a>
+      <a href="${loginUrl}" class="btn-login" target="_blank">Login to Your Account</a>
     </p>
     
     <div class="footer">

@@ -12,6 +12,10 @@ const {
   generatePasswordResetEmail,
   generatePasswordChangeNotification,
 } = require("../utils/emailTemplates/authEmails");
+const {
+  createVerificationUrl,
+  createPasswordResetUrl,
+} = require("../utils/urlUtils");
 
 // Helper function to send tokens
 const sendTokens = (user, statusCode, res, additionalData = {}) => {
@@ -84,7 +88,7 @@ const registerUser = catchAsync(async (req, res, next) => {
   });
 
   // Create verification URL
-  const verificationURL = `${process.env.FRONTEND_URL}/verify-email?token=${emailVerificationToken}`;
+  const verificationURL = createVerificationUrl(emailVerificationToken);
 
   // Generate email HTML using the template
   const htmlEmail = generateVerificationEmail(verificationURL);
@@ -319,7 +323,7 @@ const forgotPassword = catchAsync(async (req, res, next) => {
   await user.save({ validateBeforeSave: false });
 
   // Create reset URL
-  const resetURL = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+  const resetURL = createPasswordResetUrl(resetToken);
 
   // Generate email HTML using the template
   const htmlEmail = generatePasswordResetEmail(resetURL);
@@ -459,7 +463,7 @@ const requestVerification = catchAsync(async (req, res, next) => {
   await user.save({ validateBeforeSave: false });
 
   // Create verification URL
-  const verificationURL = `${process.env.FRONTEND_URL}/verify-email?token=${emailVerificationToken}`;
+  const verificationURL = createVerificationUrl(emailVerificationToken);
 
   // Generate email HTML using the template
   const htmlEmail = generateVerificationEmail(verificationURL);

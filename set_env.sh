@@ -71,6 +71,23 @@ EOF
     echo "# API URL for development" > admin/.env.development
     echo "VITE_API_URL=http://localhost:4000" >> admin/.env.development
     
+    # Update backend .env file for development
+    backup_file "backend/.env"
+    echo "# Environment" > backend/.env
+    echo "NODE_ENV=development" >> backend/.env
+    echo "" >> backend/.env
+    echo "# Frontend URL for development" >> backend/.env
+    echo "FRONTEND_URL=http://localhost:3000" >> backend/.env
+    echo "PUBLIC_URL=http://localhost:4000" >> backend/.env
+    echo "" >> backend/.env
+    echo "# Port" >> backend/.env
+    echo "PORT=4000" >> backend/.env
+    
+    # Append any existing credentials from backup if available
+    if [ -f "backend/.env.bak" ]; then
+        grep -E "(DB_|MONGODB_|TOKEN_|COOKIE_|SMTP_)" backend/.env.bak >> backend/.env
+    fi
+    
     echo "Development environment setup complete."
 else
     echo "Setting production environment variables..."
@@ -81,7 +98,9 @@ else
         echo "Removed docker-compose.override.yml"
     fi
     
-    # Production environment setup - you may add more here if needed
+    # Run the update_env.sh script for production setup
+    ./update_env.sh
+    
     echo "Production environment setup complete."
 fi
 
