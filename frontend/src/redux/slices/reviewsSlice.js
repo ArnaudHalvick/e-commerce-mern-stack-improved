@@ -10,9 +10,9 @@ export const fetchInitialReviews = createAsyncThunk(
     {
       productId,
       limit = 5,
-      sort = "rating-desc",
+      sort = "date-desc",
       ratingFilter = 0,
-      bestRated = true,
+      bestRated = false,
     },
     { rejectWithValue }
   ) => {
@@ -105,45 +105,32 @@ export const fetchReviewCounts = createAsyncThunk(
   "reviews/fetchCounts",
   async (productId, { rejectWithValue }) => {
     try {
-      // Create separate API requests for each rating
-      const countRequests = [1, 2, 3, 4, 5].map(async (rating) => {
-        // For each rating (1-5), make a specific API call using URLSearchParams for clean encoding
-        const params = new URLSearchParams();
-        params.append("page", 1);
-        params.append("limit", 1); // We only need the count, not the actual reviews
-        params.append("rating", rating);
+      // Instead of making separate requests for each rating, just get all reviews data once
+      const params = new URLSearchParams();
+      params.append("page", 1);
+      params.append("limit", 1); // We only need the count data, not all reviews
 
-        const url = `/api/reviews/products/${productId}?${params.toString()}`;
+      const url = `/api/reviews/products/${productId}?${params.toString()}`;
 
-        try {
-          // Use direct axios call to avoid any local caching
-          const response = await axios.get(`http://localhost:4000${url}`, {
-            withCredentials: true,
-            headers: {
-              "Content-Type": "application/json",
-              "auth-token": localStorage.getItem("auth-token"),
-            },
-          });
-
-          // Extract the count from the response
-          const count = response.data?.count || 0;
-
-          return { rating, count };
-        } catch (err) {
-          return { rating, count: 0 };
-        }
+      // Use direct axios call to get the review data which includes distribution
+      const response = await axios.get(`http://localhost:4000${url}`, {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+          "auth-token": localStorage.getItem("auth-token"),
+        },
       });
 
-      // Wait for all counts to be fetched
-      const countResults = await Promise.all(countRequests);
+      // Extract the distribution from the response
+      const distribution = response.data?.ratings?.distribution || {
+        1: 0,
+        2: 0,
+        3: 0,
+        4: 0,
+        5: 0,
+      };
 
-      // Convert the results to an object
-      const counts = countResults.reduce((acc, { rating, count }) => {
-        acc[rating] = count;
-        return acc;
-      }, {});
-
-      return counts;
+      return distribution;
     } catch (error) {
       return rejectWithValue("Failed to fetch rating counts");
     }

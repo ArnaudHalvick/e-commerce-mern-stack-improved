@@ -33,23 +33,22 @@ const DescriptionBox = ({ product }) => {
     dispatch(resetReviewsState());
   }, [product?._id, dispatch]);
 
-  // Fetch best reviews and review counts when the product changes or the active tab changes to reviews
+  // Fetch latest reviews and review counts when the product changes or the active tab changes to reviews
   useEffect(() => {
     if (activeTab === "reviews" && product?._id) {
-      // Check if we already have initial best reviews
-      const alreadyHasBestReviews = bestReviews && bestReviews.length > 0;
+      // Check if we already have initial reviews
+      const alreadyHasInitialReviews = bestReviews && bestReviews.length > 0;
 
-      // Only fetch initial best reviews if we don't have them yet
-      if (!alreadyHasBestReviews) {
-        // Fetch initial best reviews - always use ratingFilter: 0 for the initial reviews
-        // to ensure they are not affected by modal filters
+      // Only fetch initial latest reviews if we don't have them yet
+      if (!alreadyHasInitialReviews) {
+        // Fetch initial latest reviews - using date-desc sort to get the most recent ones
         dispatch(
           fetchInitialReviews({
             productId: product._id,
             limit: 5,
-            sort: "rating-desc",
-            ratingFilter: 0, // Always use 0 here, not from Redux state
-            bestRated: true,
+            sort: "date-desc", // Changed from rating-desc to date-desc to get latest reviews
+            ratingFilter: 0,
+            bestRated: false, // Changed from true to false since we're not fetching best rated reviews
           })
         );
       }

@@ -23,7 +23,7 @@ const ReviewsContent = ({ reviews, loading, error, reviewCount }) => {
   return (
     <div className="custom-reviews-content">
       <div className="reviews-header">
-        <h2 className="reviews-header-title">Customer Reviews</h2>
+        <h2 className="reviews-header-title">Latest Reviews</h2>
       </div>
 
       {/* Loading and Error States */}
@@ -37,7 +37,7 @@ const ReviewsContent = ({ reviews, loading, error, reviewCount }) => {
         </p>
       )}
 
-      {/* Top Reviews List */}
+      {/* Latest Reviews List */}
       {!loading && !error && reviews.length > 0 && (
         <div className="reviews-list">
           {reviews.map((review) => (
@@ -47,10 +47,10 @@ const ReviewsContent = ({ reviews, loading, error, reviewCount }) => {
       )}
 
       {/* See All Reviews Button */}
-      {!loading && !error && reviews.length > 0 && reviewCount > 5 && (
+      {!loading && !error && reviewCount > 5 && (
         <div className="see-all-reviews">
           <button className="see-all-button" onClick={handleOpenModal}>
-            See All Reviews
+            See All Reviews ({reviewCount})
           </button>
         </div>
       )}

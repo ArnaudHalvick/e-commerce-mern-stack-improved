@@ -155,6 +155,14 @@ const ReviewModal = ({ product }) => {
       .map((_, index) => <ReviewSkeleton key={index} />);
   };
 
+  // Calculate the actual reviews count to display
+  // If we have a specific rating filter active, show count for that filter
+  // Otherwise show total reviews count
+  const displayReviewCount =
+    ratingFilter > 0 && ratingCounts
+      ? ratingCounts[ratingFilter] || 0
+      : totalReviews;
+
   if (!modalOpen) return null;
 
   return (
@@ -162,7 +170,9 @@ const ReviewModal = ({ product }) => {
       <div className="review-modal" ref={modalRef}>
         <div className="modal-header">
           <div className="modal-title-area">
-            <h2 className="modal-title">Customer Reviews ({totalReviews})</h2>
+            <h2 className="modal-title">
+              Customer Reviews ({displayReviewCount})
+            </h2>
           </div>
           <div className="sort-options-box">
             <label

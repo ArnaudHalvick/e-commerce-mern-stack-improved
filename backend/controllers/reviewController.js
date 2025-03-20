@@ -56,9 +56,9 @@ const getProductReviews = catchAsync(async (req, res, next) => {
   const {
     page = 1,
     limit = 5,
-    sortBy = "createdAt",
-    sortOrder = "desc",
-    verified = "all",
+    sort = "date-desc",
+    rating = 0,
+    bestRated = false,
   } = req.query;
 
   if (!productId) {
@@ -77,21 +77,43 @@ const getProductReviews = catchAsync(async (req, res, next) => {
   // Build query
   let query = { product: productId };
 
-  // Filter by verified purchase if requested
-  if (verified !== "all") {
-    query.verifiedPurchase = verified === "true";
+  // Filter by rating if provided and valid
+  const parsedRating = parseInt(rating);
+  if (!isNaN(parsedRating) && parsedRating >= 1 && parsedRating <= 5) {
+    query.rating = parsedRating;
   }
 
-  // Build sort object
-  const sort = {};
-  sort[sortBy] = sortOrder === "asc" ? 1 : -1;
+  // Parse the sort parameter
+  let sortOptions = {};
+
+  // Handle the combined sort parameter (e.g., "date-desc", "rating-asc")
+  if (sort) {
+    const [sortField, sortDirection] = sort.split("-");
+
+    // Map frontend sort field names to database field names
+    const fieldMapping = {
+      date: "date",
+      rating: "rating",
+    };
+
+    const dbField = fieldMapping[sortField] || "date";
+    sortOptions[dbField] = sortDirection === "asc" ? 1 : -1;
+  } else {
+    // Default sort by date descending
+    sortOptions.date = -1;
+  }
+
+  // If bestRated is true, override the sort to be by rating descending
+  if (bestRated === "true") {
+    sortOptions = { rating: -1 };
+  }
 
   // Count total reviews matching the query
   const totalReviews = await Review.countDocuments(query);
 
   // Fetch reviews with pagination, sorting, and populate user data
   const reviews = await Review.find(query)
-    .sort(sort)
+    .sort(sortOptions)
     .skip(skip)
     .limit(parseInt(limit))
     .populate("user", "name avatar");
