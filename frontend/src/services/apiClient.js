@@ -211,4 +211,12 @@ export const cancelPendingRequests = (
   cancelTokenSource.cancel(message);
 };
 
+// Add event listener for logout events
+if (typeof window !== "undefined") {
+  window.addEventListener("user:logout", () => {
+    cancelPendingRequests("User initiated logout");
+    console.log("Canceled all pending API requests due to logout");
+  });
+}
+
 export default apiClient;

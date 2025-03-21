@@ -46,7 +46,7 @@ const Profile = () => {
   const { loading, passwordChanged, passwordChangePending, loadingStates } =
     useSelector((state) => state.user);
 
-  // Get validation rules from backend
+  // Get validation rules from backend using our hooks
   const profileValidation = useSchemaValidation("profile");
   const passwordValidation = useSchemaValidation("password");
 
@@ -74,7 +74,6 @@ const Profile = () => {
   const [updatedUserData, setUpdatedUserData] = useState(null);
   const [fieldErrors, setFieldErrors] = useState({});
   const [emailVerificationStatus, setEmailVerificationStatus] = useState(null);
-  const [validationSchema, setValidationSchema] = useState(null);
 
   // Fetch complete profile when component mounts
   useEffect(() => {
@@ -86,30 +85,14 @@ const Profile = () => {
       }
     };
 
-    // Fetch validation schema from backend
-    const fetchValidationSchema = async () => {
-      try {
-        if (!isMounted) return;
-        const response = await apiClient.get("/api/validation/profile");
-        if (isMounted) {
-          setValidationSchema(response.data);
-        }
-      } catch (error) {
-        if (isMounted && !error.isLoggedOut) {
-          showError("Failed to load validation rules");
-        }
-      }
-    };
-
-    // Call both functions
-    fetchValidationSchema();
+    // Call function
     getCompleteProfile();
 
     // Cleanup function
     return () => {
       isMounted = false;
     };
-  }, [isAuthenticated, fetchUserProfile, showError]);
+  }, [isAuthenticated, fetchUserProfile]);
 
   // Initialize form data with user profile data
   useEffect(() => {
@@ -157,8 +140,6 @@ const Profile = () => {
 
       // Clean up timer on unmount
       return () => clearTimeout(timerId);
-
-      dispatch(resetPasswordChanged());
     }
   }, [passwordChanged, dispatch]);
 
@@ -194,16 +175,39 @@ const Profile = () => {
         },
       });
 
-      // Validate nested field
-      validateField(parent, child, value);
+      // Validate nested field using our hook
+      const fullFieldName = `${parent}.${child}`;
+      const error = profileValidation.validateField(fullFieldName, value);
+      updateFieldError(parent, child, error);
     } else {
       setFormData({
         ...formData,
         [name]: value,
       });
 
-      // Validate regular field
-      validateField(name, null, value);
+      // Validate regular field using our hook
+      const error = profileValidation.validateField(name, value);
+      updateFieldError(name, null, error);
+    }
+  };
+
+  // Helper to update field errors state
+  const updateFieldError = (fieldName, childName, errorMessage) => {
+    if (childName) {
+      // For nested fields
+      setFieldErrors((prev) => ({
+        ...prev,
+        [fieldName]: {
+          ...prev[fieldName],
+          [childName]: errorMessage,
+        },
+      }));
+    } else {
+      // For regular fields
+      setFieldErrors((prev) => ({
+        ...prev,
+        [fieldName]: errorMessage,
+      }));
     }
   };
 
@@ -231,183 +235,22 @@ const Profile = () => {
     }
   };
 
-  // Add this function for field-level validation
-  const validateField = (fieldName, childName = null, value) => {
-    // Skip validation if we don't have validation rules
-    if (!validationSchema) return;
-
-    let fieldRules = validationSchema[fieldName];
-    let fieldValue = value;
-    let errorMessage = null;
-
-    // Handle nested field validation
-    if (childName && fieldRules) {
-      fieldRules = fieldRules[childName];
-
-      // Initialize nested errors object if needed
-      if (!fieldErrors[fieldName]) {
-        setFieldErrors((prev) => ({
-          ...prev,
-          [fieldName]: {},
-        }));
-      }
-    }
-
-    // Skip if no validation rules for this field
-    if (!fieldRules) return;
-
-    // Check required fields
-    if (fieldRules.required && (!fieldValue || fieldValue.trim() === "")) {
-      errorMessage = fieldRules.requiredMessage || `${fieldName} is required`;
-    }
-    // Check minimum length
-    else if (fieldRules.minLength && fieldValue.length < fieldRules.minLength) {
-      errorMessage =
-        fieldRules.message ||
-        `${fieldName} must be at least ${fieldRules.minLength} characters`;
-    }
-    // Check maximum length
-    else if (fieldRules.maxLength && fieldValue.length > fieldRules.maxLength) {
-      errorMessage =
-        fieldRules.message ||
-        `${fieldName} cannot exceed ${fieldRules.maxLength} characters`;
-    }
-    // Check pattern
-    else if (fieldRules.pattern) {
-      const pattern = new RegExp(fieldRules.pattern);
-      if (!pattern.test(fieldValue)) {
-        errorMessage = fieldRules.message || `Invalid ${fieldName} format`;
-      }
-    }
-
-    // Update error state
-    if (childName) {
-      // For nested fields
-      setFieldErrors((prev) => ({
-        ...prev,
-        [fieldName]: {
-          ...prev[fieldName],
-          [childName]: errorMessage,
-        },
-      }));
-    } else {
-      // For regular fields
-      setFieldErrors((prev) => ({
-        ...prev,
-        [fieldName]: errorMessage,
-      }));
-    }
-  };
-
   // Validate form before submission
   const validateForm = (data) => {
-    // Skip validation if we don't have validation rules
-    if (!validationSchema) return true;
+    // Use the hook's validateForm method
+    if (profileValidation.schema) {
+      const errors = profileValidation.validateForm(data);
+      const hasErrors = Object.keys(errors).length > 0;
 
-    let isValid = true;
-    const errors = {};
-
-    // Process each field in the form data
-    Object.entries(data).forEach(([fieldName, fieldValue]) => {
-      // Skip validation for the address object - we'll do that separately
-      if (fieldName === "address") return;
-
-      const fieldRules = validationSchema[fieldName];
-      if (!fieldRules) return;
-
-      // Check required fields
-      if (
-        fieldRules.required &&
-        (!fieldValue || fieldValue.toString().trim() === "")
-      ) {
-        errors[fieldName] =
-          fieldRules.requiredMessage || `${fieldName} is required`;
-        isValid = false;
+      if (hasErrors) {
+        setFieldErrors(errors);
+        return false;
       }
-      // Check minimum length
-      else if (
-        fieldRules.minLength &&
-        fieldValue.length < fieldRules.minLength
-      ) {
-        errors[fieldName] =
-          fieldRules.message ||
-          `${fieldName} must be at least ${fieldRules.minLength} characters`;
-        isValid = false;
-      }
-      // Check maximum length
-      else if (
-        fieldRules.maxLength &&
-        fieldValue.length > fieldRules.maxLength
-      ) {
-        errors[fieldName] =
-          fieldRules.message ||
-          `${fieldName} cannot exceed ${fieldRules.maxLength} characters`;
-        isValid = false;
-      }
-      // Check pattern
-      else if (fieldRules.pattern) {
-        const pattern = new RegExp(fieldRules.pattern);
-        if (fieldValue && !pattern.test(fieldValue)) {
-          errors[fieldName] =
-            fieldRules.message || `Invalid ${fieldName} format`;
-          isValid = false;
-        }
-      }
-    });
-
-    // Validate address fields if present
-    if (data.address && validationSchema.address) {
-      errors.address = {};
-      let addressValid = true;
-
-      Object.entries(data.address).forEach(([addressField, addressValue]) => {
-        const addressRules = validationSchema.address[addressField];
-        if (!addressRules) return;
-
-        // Validate each address field
-        if (
-          addressRules.required &&
-          (!addressValue || addressValue.trim() === "")
-        ) {
-          errors.address[addressField] =
-            addressRules.requiredMessage || `${addressField} is required`;
-          addressValid = false;
-        } else if (
-          addressRules.minLength &&
-          addressValue.length < addressRules.minLength
-        ) {
-          errors.address[addressField] =
-            addressRules.message ||
-            `${addressField} must be at least ${addressRules.minLength} characters`;
-          addressValid = false;
-        } else if (
-          addressRules.maxLength &&
-          addressValue.length > addressRules.maxLength
-        ) {
-          errors.address[addressField] =
-            addressRules.message ||
-            `${addressField} cannot exceed ${addressRules.maxLength} characters`;
-          addressValid = false;
-        } else if (addressRules.pattern) {
-          const pattern = new RegExp(addressRules.pattern);
-          if (addressValue && !pattern.test(addressValue)) {
-            errors.address[addressField] =
-              addressRules.message || `Invalid ${addressField} format`;
-            addressValid = false;
-          }
-        }
-      });
-
-      // If all address fields are valid, remove the address errors object
-      if (addressValid) {
-        delete errors.address;
-      } else {
-        isValid = false;
-      }
+      return true;
     }
 
-    setFieldErrors(errors);
-    return isValid;
+    // If we don't have validation schema yet, allow submission
+    return true;
   };
 
   // Handle form submission
@@ -447,23 +290,12 @@ const Profile = () => {
     if (passwordValidation.schema) {
       const errors = {};
 
-      // Validate each field individually
-      Object.keys(passwordData).forEach((field) => {
-        const error = passwordValidation.validateField(
-          field,
-          passwordData[field]
-        );
-        if (error) errors[field] = error;
-      });
-
-      // Special validation for confirmPassword
-      if (passwordData.newPassword !== passwordData.confirmPassword) {
-        errors.confirmPassword = "Passwords do not match";
-      }
+      // Use the hook's validateForm method
+      const validationErrors = passwordValidation.validateForm(passwordData);
 
       // If we have validation errors, show them and stop
-      if (Object.keys(errors).length > 0) {
-        setFieldErrors(errors);
+      if (Object.keys(validationErrors).length > 0) {
+        setFieldErrors(validationErrors);
         return;
       }
     }
@@ -502,10 +334,24 @@ const Profile = () => {
   // Handle Account Management
   const handleLogout = useCallback(async () => {
     try {
+      // Cancel any pending API requests before logging out
+      if (typeof window !== "undefined") {
+        const event = new CustomEvent("user:logout");
+        window.dispatchEvent(event);
+      }
+
+      // Clear field errors and other local state
+      setFieldErrors({});
+      setMessage({ text: "", type: "" });
+
+      // Perform logout
       await logout();
       navigate("/");
     } catch (error) {
+      console.error("Logout error:", error);
       // Even if there's an error, still clear local state
+      setFieldErrors({});
+      setMessage({ text: "", type: "" });
       logout();
       navigate("/");
     }
@@ -585,7 +431,7 @@ const Profile = () => {
           {/* Email Management */}
           <EmailManager
             user={displayUserData}
-            validationSchema={validationSchema}
+            validationSchema={profileValidation.schema}
             setEmailVerificationStatus={setEmailVerificationStatus}
           />
 
@@ -600,7 +446,7 @@ const Profile = () => {
             setFieldErrors={setFieldErrors}
             displayUserData={displayUserData}
             displayName={displayName}
-            validationSchema={validationSchema}
+            validationSchema={profileValidation.schema}
           />
 
           {/* Password Management */}
