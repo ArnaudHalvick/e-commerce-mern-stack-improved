@@ -247,6 +247,7 @@ const Profile = () => {
 
     // Validate the form
     if (!validateForm(dataToSubmit)) {
+      showError("Please fix the validation errors before submitting");
       return;
     }
 
@@ -281,6 +282,7 @@ const Profile = () => {
       // If we have validation errors, show them and stop
       if (Object.keys(validationErrors).length > 0) {
         setFieldErrors(validationErrors);
+        showError("Please fix the validation errors before submitting");
         return;
       }
     }
@@ -383,7 +385,9 @@ const Profile = () => {
 
       {/* Show loading state */}
       {authLoading ? (
-        <Spinner size="large" message="Loading your profile..." />
+        <div className="profile-loading">
+          <Spinner size="large" message="Loading your profile..." />
+        </div>
       ) : (
         <>
           {/* Email Verification Alert - if user's email is not verified */}
@@ -426,12 +430,15 @@ const Profile = () => {
             isChangingPassword={isChangingPassword}
             setIsChangingPassword={setIsChangingPassword}
             loading={loading}
-            changingPassword={loadingStates.changingPassword}
+            changingPassword={loadingStates?.changingPassword}
             validationSchema={passwordValidation.schema}
           />
 
           {/* Account Management (Disable Account) */}
-          <AccountManager handleDisableAccount={handleDisableAccount} />
+          <AccountManager
+            handleDisableAccount={handleDisableAccount}
+            disablingAccount={loadingStates?.disablingAccount}
+          />
         </>
       )}
     </div>

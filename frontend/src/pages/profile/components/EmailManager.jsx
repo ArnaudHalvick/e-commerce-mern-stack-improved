@@ -26,6 +26,7 @@ const EmailManager = ({ user, validationSchema, showSuccess, showError }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [emailData, setEmailData] = useState({ email: "" });
   const [fieldError, setFieldError] = useState(null);
+  const [isFormValid, setIsFormValid] = useState(false);
 
   // Set initial email data when user data is available
   useEffect(() => {
@@ -34,6 +35,18 @@ const EmailManager = ({ user, validationSchema, showSuccess, showError }) => {
     }
   }, [user]);
 
+  // Validate form whenever email data or errors change
+  useEffect(() => {
+    // Form is valid if email is valid and different from current email
+    const isValid =
+      !fieldError &&
+      emailData.email &&
+      emailData.email.trim() !== "" &&
+      emailData.email !== user?.email;
+
+    setIsFormValid(isValid);
+  }, [emailData, fieldError, user]);
+
   const handleEmailChange = (e) => {
     setEmailData({ email: e.target.value });
     // Clear any previous field error
@@ -41,17 +54,20 @@ const EmailManager = ({ user, validationSchema, showSuccess, showError }) => {
 
     // Validate email on change to provide immediate feedback
     if (e.target.value && e.target.value.trim() !== "") {
-      validateEmail(e.target.value, false);
+      validateEmail(e.target.value, true);
     }
   };
 
   const validateEmail = (email, setError = true) => {
+    let errorMessage = null;
+
     // Skip validation if we don't have validation rules
     if (!validationSchema?.email) {
       // Fallback to basic email validation if schema not available
       if (email && !isValidEmail(email)) {
+        errorMessage = "Please enter a valid email address";
         if (setError) {
-          setFieldError("Please enter a valid email address");
+          setFieldError(errorMessage);
         }
         return false;
       }
@@ -60,10 +76,10 @@ const EmailManager = ({ user, validationSchema, showSuccess, showError }) => {
 
     // Check if email is required
     if (validationSchema.email.required && (!email || email.trim() === "")) {
+      errorMessage =
+        validationSchema.email.requiredMessage || "Email is required";
       if (setError) {
-        setFieldError(
-          validationSchema.email.requiredMessage || "Email is required"
-        );
+        setFieldError(errorMessage);
       }
       return false;
     }
@@ -73,10 +89,10 @@ const EmailManager = ({ user, validationSchema, showSuccess, showError }) => {
       try {
         const pattern = new RegExp(validationSchema.email.pattern);
         if (!pattern.test(email)) {
+          errorMessage =
+            validationSchema.email.message || "Invalid email format";
           if (setError) {
-            setFieldError(
-              validationSchema.email.message || "Invalid email format"
-            );
+            setFieldError(errorMessage);
           }
           return false;
         }
@@ -84,28 +100,33 @@ const EmailManager = ({ user, validationSchema, showSuccess, showError }) => {
         console.error("Invalid regex pattern:", error);
         // Fallback to basic validation if regex is invalid
         if (!isValidEmail(email)) {
+          errorMessage = "Please enter a valid email address";
           if (setError) {
-            setFieldError("Please enter a valid email address");
+            setFieldError(errorMessage);
           }
           return false;
         }
       }
     }
 
+    // Check if email is same as current
+    if (email === user?.email) {
+      errorMessage = "New email must be different from your current email";
+      if (setError) {
+        setFieldError(errorMessage);
+      }
+      return false;
+    }
+
     return true;
   };
 
-  const handleEmailSubmit = async (e) => {
+  const handleEmailSubmitWithValidation = async (e) => {
     e.preventDefault();
 
-    // Validate email before submission
-    if (!validateEmail(emailData.email)) {
-      return;
-    }
-
-    // Don't submit if email hasn't changed
-    if (emailData.email === user?.email) {
-      setFieldError("New email must be different from your current email");
+    // If form is not valid, show error and prevent submission
+    if (!isFormValid) {
+      displayError("Please fix the validation errors before submitting");
       return;
     }
 
@@ -140,6 +161,7 @@ const EmailManager = ({ user, validationSchema, showSuccess, showError }) => {
             onClick={() => setIsEditing(true)}
             tabIndex="0"
             aria-label="Edit email address"
+            disabled={loadingStates?.requestingEmailChange}
           >
             Edit
           </button>
@@ -170,7 +192,7 @@ const EmailManager = ({ user, validationSchema, showSuccess, showError }) => {
         </div>
       ) : (
         <form
-          onSubmit={handleEmailSubmit}
+          onSubmit={handleEmailSubmitWithValidation}
           className="profile-email-form"
           noValidate
         >
@@ -211,17 +233,14 @@ const EmailManager = ({ user, validationSchema, showSuccess, showError }) => {
           <div className="profile-form-actions">
             <button
               type="submit"
-              className="profile-btn-primary"
-              disabled={loadingStates?.requestingEmailChange}
+              className={
+                isFormValid ? "profile-btn-primary" : "profile-btn-disabled"
+              }
+              disabled={loadingStates?.requestingEmailChange || !isFormValid}
             >
-              {loadingStates?.requestingEmailChange ? (
-                <>
-                  <Spinner size="small" message="" showMessage={false} />
-                  Sending Verification...
-                </>
-              ) : (
-                "Request Email Change"
-              )}
+              {loadingStates?.requestingEmailChange
+                ? "Sending Verification..."
+                : "Request Email Change"}
             </button>
             <button
               type="button"

@@ -26,11 +26,15 @@ const EmailVerification = ({
         </p>
       ) : (
         <button
-          className="profile-btn-primary"
+          className={
+            sendingVerification ? "profile-btn-disabled" : "profile-btn-primary"
+          }
           onClick={handleResendVerification}
-          disabled={sendingVerification}
+          disabled={loading || sendingVerification}
         >
-          {sendingVerification ? "Sending..." : "Resend Verification Email"}
+          {sendingVerification
+            ? "Sending Verification Email..."
+            : "Resend Verification Email"}
         </button>
       )}
     </div>

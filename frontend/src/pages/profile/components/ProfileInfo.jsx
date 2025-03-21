@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Spinner from "../../../components/ui/Spinner";
+import { useError } from "../../../context/ErrorContext";
 
 /**
  * ProfileInfo component for displaying and editing user's basic information
@@ -17,8 +18,64 @@ const ProfileInfo = ({
   displayName,
   validationSchema,
 }) => {
+  const { showError } = useError();
   const [isEditingBasicInfo, setIsEditingBasicInfo] = useState(false);
   const [isEditingAddress, setIsEditingAddress] = useState(false);
+  const [isBasicInfoValid, setIsBasicInfoValid] = useState(false);
+  const [isAddressValid, setIsAddressValid] = useState(false);
+
+  // Validate basic info form when data or errors change
+  useEffect(() => {
+    if (!validationSchema || !formData) {
+      setIsBasicInfoValid(false);
+      return;
+    }
+
+    // Check if required fields have values
+    const requiredFields = Object.keys(validationSchema).filter(
+      (key) => validationSchema[key]?.required && key !== "address"
+    );
+
+    // Check if all required fields have values
+    const hasAllRequiredFields = requiredFields.every(
+      (field) => formData[field] && formData[field].trim() !== ""
+    );
+
+    // Check if there are any field errors (excluding address errors)
+    const hasFieldErrors =
+      fieldErrors &&
+      Object.keys(fieldErrors).some(
+        (key) => fieldErrors[key] && key !== "address"
+      );
+
+    setIsBasicInfoValid(hasAllRequiredFields && !hasFieldErrors);
+  }, [formData, fieldErrors, validationSchema]);
+
+  // Validate address form when data or errors change
+  useEffect(() => {
+    if (!validationSchema?.address || !formData?.address) {
+      setIsAddressValid(false);
+      return;
+    }
+
+    // Check if required address fields have values
+    const requiredAddressFields = Object.keys(validationSchema.address).filter(
+      (key) => validationSchema.address[key]?.required
+    );
+
+    // Check if all required address fields have values
+    const hasAllRequiredFields = requiredAddressFields.every(
+      (field) =>
+        formData.address[field] && formData.address[field].trim() !== ""
+    );
+
+    // Check if there are any address field errors
+    const hasAddressErrors =
+      fieldErrors?.address &&
+      Object.keys(fieldErrors.address).some((key) => fieldErrors.address[key]);
+
+    setIsAddressValid(hasAllRequiredFields && !hasAddressErrors);
+  }, [formData, fieldErrors, validationSchema]);
 
   // Enhance this method to check for nested fields in the address
   const getInputClass = (fieldName, isNested = false) => {
@@ -74,8 +131,15 @@ const ProfileInfo = ({
     return attributes;
   };
 
-  const handleBasicInfoSubmit = (e) => {
+  const handleBasicInfoSubmitWithValidation = (e) => {
     e.preventDefault();
+
+    // If form is not valid, show error and prevent submission
+    if (!isBasicInfoValid) {
+      showError("Please fix the validation errors before submitting");
+      return;
+    }
+
     // Only submit name and phone, don't include address at all
     const basicInfoData = {
       name: formData.name,
@@ -85,8 +149,15 @@ const ProfileInfo = ({
     setIsEditingBasicInfo(false);
   };
 
-  const handleAddressSubmit = (e) => {
+  const handleAddressSubmitWithValidation = (e) => {
     e.preventDefault();
+
+    // If form is not valid, show error and prevent submission
+    if (!isAddressValid) {
+      showError("Please fix the validation errors before submitting");
+      return;
+    }
+
     // Keep name and phone as is, only update address
     const addressData = {
       name: displayUserData?.name || formData.name,
@@ -109,6 +180,7 @@ const ProfileInfo = ({
               onClick={() => setIsEditingBasicInfo(true)}
               tabIndex="0"
               aria-label="Edit basic information"
+              disabled={loading || updatingProfile}
             >
               Edit
             </button>
@@ -116,7 +188,7 @@ const ProfileInfo = ({
         </div>
 
         {isEditingBasicInfo ? (
-          <form onSubmit={handleBasicInfoSubmit} noValidate>
+          <form onSubmit={handleBasicInfoSubmitWithValidation} noValidate>
             <div className="profile-form-group">
               <label htmlFor="name" className="profile-form-label">
                 Name{" "}
@@ -130,10 +202,11 @@ const ProfileInfo = ({
                 name="name"
                 value={formData.name}
                 onChange={handleInputChange}
-                required
+                required={validationSchema?.name?.required}
                 className={getInputClass("name")}
                 aria-invalid={fieldErrors?.name ? "true" : "false"}
                 aria-describedby={fieldErrors?.name ? "name-error" : undefined}
+                disabled={loading || updatingProfile}
                 {...getValidationAttributes("name")}
               />
               {fieldErrors?.name && (
@@ -162,6 +235,7 @@ const ProfileInfo = ({
                 aria-describedby={
                   fieldErrors?.phone ? "phone-error" : undefined
                 }
+                disabled={loading || updatingProfile}
                 {...getValidationAttributes("phone")}
               />
               {fieldErrors?.phone && (
@@ -178,17 +252,14 @@ const ProfileInfo = ({
             <div className="profile-form-actions">
               <button
                 type="submit"
-                className="profile-btn-primary"
-                disabled={updatingProfile}
+                className={
+                  isBasicInfoValid
+                    ? "profile-btn-primary"
+                    : "profile-btn-disabled"
+                }
+                disabled={loading || updatingProfile || !isBasicInfoValid}
               >
-                {updatingProfile ? (
-                  <>
-                    <Spinner size="small" message="" showMessage={false} />
-                    Saving...
-                  </>
-                ) : (
-                  "Save Changes"
-                )}
+                {updatingProfile ? "Saving..." : "Save Changes"}
               </button>
               <button
                 type="button"
@@ -197,6 +268,7 @@ const ProfileInfo = ({
                   setIsEditingBasicInfo(false);
                   setFieldErrors({});
                 }}
+                disabled={loading || updatingProfile}
               >
                 Cancel
               </button>
@@ -228,6 +300,7 @@ const ProfileInfo = ({
               onClick={() => setIsEditingAddress(true)}
               tabIndex="0"
               aria-label="Edit shipping address"
+              disabled={loading || updatingProfile}
             >
               Edit
             </button>
@@ -235,7 +308,7 @@ const ProfileInfo = ({
         </div>
 
         {isEditingAddress ? (
-          <form onSubmit={handleAddressSubmit} noValidate>
+          <form onSubmit={handleAddressSubmitWithValidation} noValidate>
             <div className="profile-address-form">
               <div className="profile-form-group">
                 <label htmlFor="street" className="profile-form-label">
@@ -253,6 +326,7 @@ const ProfileInfo = ({
                   aria-describedby={
                     fieldErrors?.address?.street ? "street-error" : undefined
                   }
+                  disabled={loading || updatingProfile}
                   {...getValidationAttributes("address.street", true)}
                 />
                 {fieldErrors?.address?.street && (
@@ -283,6 +357,7 @@ const ProfileInfo = ({
                     aria-describedby={
                       fieldErrors?.address?.city ? "city-error" : undefined
                     }
+                    disabled={loading || updatingProfile}
                     {...getValidationAttributes("address.city", true)}
                   />
                   {fieldErrors?.address?.city && (
@@ -313,6 +388,7 @@ const ProfileInfo = ({
                     aria-describedby={
                       fieldErrors?.address?.state ? "state-error" : undefined
                     }
+                    disabled={loading || updatingProfile}
                     {...getValidationAttributes("address.state", true)}
                   />
                   {fieldErrors?.address?.state && (
@@ -348,6 +424,7 @@ const ProfileInfo = ({
                         ? "zipCode-error"
                         : undefined
                     }
+                    disabled={loading || updatingProfile}
                     {...getValidationAttributes("address.zipCode", true)}
                   />
                   {fieldErrors?.address?.zipCode && (
@@ -381,6 +458,7 @@ const ProfileInfo = ({
                         ? "country-error"
                         : undefined
                     }
+                    disabled={loading || updatingProfile}
                     {...getValidationAttributes("address.country", true)}
                   />
                   {fieldErrors?.address?.country && (
@@ -398,25 +476,27 @@ const ProfileInfo = ({
               <div className="profile-form-actions">
                 <button
                   type="submit"
-                  className="profile-btn-primary"
-                  disabled={updatingProfile}
+                  className={
+                    isAddressValid
+                      ? "profile-btn-primary"
+                      : "profile-btn-disabled"
+                  }
+                  disabled={loading || updatingProfile || !isAddressValid}
                 >
-                  {updatingProfile ? (
-                    <>
-                      <Spinner size="small" message="" showMessage={false} />
-                      Saving...
-                    </>
-                  ) : (
-                    "Save Address"
-                  )}
+                  {updatingProfile ? "Saving..." : "Save Address"}
                 </button>
                 <button
                   type="button"
                   className="profile-btn-secondary"
                   onClick={() => {
                     setIsEditingAddress(false);
-                    setFieldErrors({});
+                    // Reset address form errors
+                    setFieldErrors((prev) => ({
+                      ...prev,
+                      address: {},
+                    }));
                   }}
+                  disabled={loading || updatingProfile}
                 >
                   Cancel
                 </button>
@@ -425,21 +505,37 @@ const ProfileInfo = ({
           </form>
         ) : (
           <div className="profile-address-container">
-            {displayUserData?.address?.street ? (
+            {displayUserData?.address?.street ||
+            displayUserData?.address?.city ||
+            displayUserData?.address?.state ||
+            displayUserData?.address?.zipCode ||
+            displayUserData?.address?.country ? (
               <div className="profile-address-details">
-                <div className="profile-address-line">
-                  {displayUserData.address.street}
-                </div>
-                <div className="profile-address-line">
-                  {displayUserData.address.zipCode &&
-                    `${displayUserData.address.zipCode}, `}
-                  {displayUserData.address.city}
-                </div>
-                <div className="profile-address-line">
-                  {displayUserData.address.state &&
-                    `${displayUserData.address.state}, `}
-                  {displayUserData.address.country}
-                </div>
+                <p className="profile-address-text">
+                  {displayUserData?.address?.street && (
+                    <span className="profile-address-line">
+                      {displayUserData.address.street}
+                      <br />
+                    </span>
+                  )}
+                  {displayUserData?.address?.city && (
+                    <>
+                      {displayUserData.address.city}
+                      {displayUserData?.address?.state && (
+                        <>, {displayUserData.address.state}</>
+                      )}
+                      {displayUserData?.address?.zipCode && (
+                        <> {displayUserData.address.zipCode}</>
+                      )}
+                      <br />
+                    </>
+                  )}
+                  {displayUserData?.address?.country && (
+                    <span className="profile-address-line">
+                      {displayUserData.address.country}
+                    </span>
+                  )}
+                </p>
               </div>
             ) : (
               <p className="profile-no-data">No shipping address provided</p>

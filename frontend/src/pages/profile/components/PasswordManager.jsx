@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useError } from "../../../context/ErrorContext";
 import Spinner from "../../../components/ui/Spinner";
 
 /**
@@ -16,6 +17,33 @@ const PasswordManager = ({
   fieldErrors,
   validationSchema,
 }) => {
+  const { showError } = useError();
+  const [isFormValid, setIsFormValid] = useState(false);
+
+  // Validate form whenever password data or field errors change
+  useEffect(() => {
+    // Check if we have validation schema and data
+    if (!validationSchema || !passwordData) {
+      setIsFormValid(false);
+      return;
+    }
+
+    // Check if any field is empty
+    const hasEmptyField = Object.values(passwordData).some((val) => !val);
+
+    // Check if there are any field errors
+    const hasFieldErrors =
+      fieldErrors &&
+      Object.keys(fieldErrors).some(
+        (key) =>
+          fieldErrors[key] &&
+          ["currentPassword", "newPassword", "confirmPassword"].includes(key)
+      );
+
+    // Form is valid if all fields have values and there are no errors
+    setIsFormValid(!hasEmptyField && !hasFieldErrors);
+  }, [passwordData, fieldErrors, validationSchema]);
+
   // Function to determine input class based on validation state
   const getInputClass = (fieldName) => {
     if (!fieldErrors) return "profile-form-input";
@@ -84,6 +112,20 @@ const PasswordManager = ({
     return `Password must be ${requirements.join(" and include ")}.`;
   };
 
+  // Handle form submission with validation
+  const handleSubmitWithValidation = (e) => {
+    e.preventDefault();
+
+    // If form is not valid, show error and prevent submission
+    if (!isFormValid) {
+      showError("Please fix the validation errors before submitting");
+      return;
+    }
+
+    // Proceed with submission
+    handlePasswordSubmit(e);
+  };
+
   return (
     <section className="profile-section">
       <div className="profile-section-header">
@@ -94,6 +136,7 @@ const PasswordManager = ({
             onClick={() => setIsChangingPassword(true)}
             tabIndex="0"
             aria-label="Change password"
+            disabled={loading || changingPassword}
           >
             Change Password
           </button>
@@ -102,7 +145,7 @@ const PasswordManager = ({
 
       {isChangingPassword && (
         <form
-          onSubmit={handlePasswordSubmit}
+          onSubmit={handleSubmitWithValidation}
           noValidate
           className="profile-password-form"
         >
@@ -124,6 +167,7 @@ const PasswordManager = ({
                   ? "currentPassword-error"
                   : undefined
               }
+              disabled={loading || changingPassword}
               {...getValidationAttributes("currentPassword")}
             />
             {fieldErrors?.currentPassword && (
@@ -155,6 +199,7 @@ const PasswordManager = ({
                   ? "newPassword-error"
                   : "newPassword-requirements"
               }
+              disabled={loading || changingPassword}
               {...getValidationAttributes("newPassword")}
             />
             {fieldErrors?.newPassword && (
@@ -192,6 +237,7 @@ const PasswordManager = ({
                   ? "confirmPassword-error"
                   : undefined
               }
+              disabled={loading || changingPassword}
               {...getValidationAttributes("confirmPassword")}
             />
             {fieldErrors?.confirmPassword && (
@@ -208,17 +254,14 @@ const PasswordManager = ({
           <div className="profile-form-actions">
             <button
               type="submit"
-              className="profile-btn-primary"
-              disabled={loading || changingPassword}
+              className={
+                isFormValid ? "profile-btn-primary" : "profile-btn-disabled"
+              }
+              disabled={loading || changingPassword || !isFormValid}
             >
-              {loading || changingPassword ? (
-                <>
-                  <Spinner size="small" message="" showMessage={false} />
-                  Changing...
-                </>
-              ) : (
-                "Change Password"
-              )}
+              {loading || changingPassword
+                ? "Changing Password..."
+                : "Change Password"}
             </button>
             <button
               type="button"
