@@ -480,10 +480,10 @@ const Profile = () => {
     }
   };
 
-  // Displayed user data (either the updated data or the original user data)
+  // Show either the fetched user data or the updated one
   const displayUserData = updatedUserData || user;
-  // Display name (try to use name or fallback to username)
-  const displayName = displayUserData?.name || displayUserData?.username || "";
+  const displayName =
+    displayUserData?.username || displayUserData?.name || "User";
 
   return (
     <div className="profile-container">
@@ -500,12 +500,16 @@ const Profile = () => {
         <>
           {/* Status Messages */}
           {message.text && (
-            <div className={`form-message ${message.type}`}>{message.text}</div>
+            <div className={`profile-form-message ${message.type}`}>
+              {message.text}
+            </div>
           )}
 
           {/* Verification Status Messages */}
           {emailVerificationStatus && (
-            <div className={`form-message ${emailVerificationStatus.type}`}>
+            <div
+              className={`profile-form-message ${emailVerificationStatus.type}`}
+            >
               {emailVerificationStatus.message}
             </div>
           )}

@@ -129,16 +129,16 @@ const EmailManager = ({
   };
 
   const getInputClass = () => {
-    return fieldError ? "form-input error" : "form-input";
+    return fieldError ? "profile-form-input error" : "profile-form-input";
   };
 
   return (
     <section className="profile-section email-manager-section">
-      <div className="section-header">
-        <h2 className="section-title">Email Management</h2>
+      <div className="profile-section-header">
+        <h2 className="profile-section-title">Email Management</h2>
         {!isEditing && (
           <button
-            className="btn-secondary"
+            className="profile-btn-secondary"
             onClick={() => setIsEditing(true)}
             tabIndex="0"
             aria-label="Edit email address"
@@ -149,27 +149,38 @@ const EmailManager = ({
       </div>
 
       {!isEditing ? (
-        <div className="profile-details">
-          <div className="detail-item">
-            <span className="detail-label">Email:</span>
-            <span className="detail-value">
-              {user?.email || "Not provided"}
-              {user?.isEmailVerified && (
-                <span className="verified-badge">Verified</span>
-              )}
-              {!user?.isEmailVerified && (
-                <span className="unverified-badge">Unverified</span>
+        <div className="profile-profile-details">
+          <div className="profile-detail-item">
+            <span className="profile-detail-label">Email:</span>
+            <span className="profile-detail-value">
+              {user?.email}
+              {user?.isEmailVerified ? (
+                <span className="profile-verified-badge">Verified</span>
+              ) : (
+                <span className="profile-unverified-badge">Unverified</span>
               )}
             </span>
           </div>
+          {emailChangePending && (
+            <div className="profile-verification-message success">
+              <p>
+                Email change request pending. Please check your inbox to verify
+                the new email address.
+              </p>
+            </div>
+          )}
         </div>
       ) : (
-        <form onSubmit={handleEmailSubmit} noValidate className="email-form">
-          <div className="form-group">
-            <label htmlFor="email" className="form-label">
-              Email Address
+        <form
+          onSubmit={handleEmailSubmit}
+          className="profile-email-form"
+          noValidate
+        >
+          <div className="profile-form-group">
+            <label htmlFor="email" className="profile-form-label">
+              Email Address{" "}
               {validationSchema?.email?.required && (
-                <span className="required">*</span>
+                <span className="profile-required">*</span>
               )}
             </label>
             <input
@@ -182,51 +193,47 @@ const EmailManager = ({
               className={getInputClass()}
               aria-invalid={fieldError ? "true" : "false"}
               aria-describedby={fieldError ? "email-error" : undefined}
-              // Don't use pattern attribute directly - it can cause browser validation conflicts
-              // pattern={validationSchema?.email?.pattern}
-              title={
-                validationSchema?.email?.message ||
-                "Please enter a valid email address"
-              }
-              onBlur={() => validateEmail(emailData.email)}
+              disabled={loadingStates?.requestingEmailChange}
             />
             {fieldError && (
-              <div className="field-error" id="email-error" role="alert">
+              <div
+                className="profile-field-error"
+                id="email-error"
+                role="alert"
+              >
                 {fieldError}
               </div>
             )}
-            <p className="form-note">
-              After changing your email, a verification link will be sent to the
-              new address. Your email will only be updated after verification.
+            <p className="profile-form-note">
+              A verification link will be sent to the new email address. The
+              change will not take effect until you verify the new email.
             </p>
           </div>
 
-          <div className="form-actions">
+          <div className="profile-form-actions">
             <button
               type="submit"
-              className="btn-primary"
-              disabled={
-                loadingStates?.updatingProfile ||
-                emailData.email === user?.email
-              }
+              className="profile-btn-primary"
+              disabled={loadingStates?.requestingEmailChange}
             >
-              {loadingStates?.updatingProfile ? (
+              {loadingStates?.requestingEmailChange ? (
                 <>
                   <Spinner size="small" message="" showMessage={false} />
                   Sending Verification...
                 </>
               ) : (
-                "Save Email"
+                "Request Email Change"
               )}
             </button>
             <button
               type="button"
-              className="btn-secondary"
+              className="profile-btn-secondary"
               onClick={() => {
                 setIsEditing(false);
-                setFieldError(null);
                 setEmailData({ email: user?.email || "" });
+                setFieldError(null);
               }}
+              disabled={loadingStates?.requestingEmailChange}
             >
               Cancel
             </button>

@@ -15,18 +15,18 @@ const EmailVerification = ({
   }
 
   return (
-    <div className="verification-alert">
+    <div className="profile-verification-alert">
       <p>
         Your email is not verified. Please verify your email to access all
         features.
       </p>
       {verificationRequested ? (
-        <p className="verification-sent">
+        <p className="profile-verification-sent">
           Verification email sent! Please check your inbox.
         </p>
       ) : (
         <button
-          className="btn-primary"
+          className="profile-btn-primary"
           onClick={handleResendVerification}
           disabled={sendingVerification}
         >

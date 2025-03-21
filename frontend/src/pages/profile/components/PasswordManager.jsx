@@ -18,8 +18,10 @@ const PasswordManager = ({
 }) => {
   // Function to determine input class based on validation state
   const getInputClass = (fieldName) => {
-    if (!fieldErrors) return "form-input";
-    return fieldErrors[fieldName] ? "form-input error" : "form-input";
+    if (!fieldErrors) return "profile-form-input";
+    return fieldErrors[fieldName]
+      ? "profile-form-input error"
+      : "profile-form-input";
   };
 
   // Get validation attributes for a field
@@ -56,11 +58,11 @@ const PasswordManager = ({
 
   return (
     <section className="profile-section">
-      <div className="section-header">
-        <h2 className="section-title">Password Management</h2>
+      <div className="profile-section-header">
+        <h2 className="profile-section-title">Password Management</h2>
         {!isChangingPassword && (
           <button
-            className="btn-secondary"
+            className="profile-btn-secondary"
             onClick={() => setIsChangingPassword(true)}
             tabIndex="0"
             aria-label="Change password"
@@ -71,9 +73,13 @@ const PasswordManager = ({
       </div>
 
       {isChangingPassword && (
-        <form onSubmit={handlePasswordSubmit} noValidate>
-          <div className="form-group">
-            <label htmlFor="currentPassword" className="form-label">
+        <form
+          onSubmit={handlePasswordSubmit}
+          noValidate
+          className="profile-password-form"
+        >
+          <div className="profile-form-group">
+            <label htmlFor="currentPassword" className="profile-form-label">
               Current Password
             </label>
             <input
@@ -94,7 +100,7 @@ const PasswordManager = ({
             />
             {fieldErrors?.currentPassword && (
               <p
-                className="field-error"
+                className="profile-field-error"
                 id="currentPassword-error"
                 role="alert"
               >
@@ -103,8 +109,8 @@ const PasswordManager = ({
             )}
           </div>
 
-          <div className="form-group">
-            <label htmlFor="newPassword" className="form-label">
+          <div className="profile-form-group">
+            <label htmlFor="newPassword" className="profile-form-label">
               New Password
             </label>
             <input
@@ -122,11 +128,15 @@ const PasswordManager = ({
               {...getValidationAttributes("newPassword")}
             />
             {fieldErrors?.newPassword && (
-              <p className="field-error" id="newPassword-error" role="alert">
+              <p
+                className="profile-field-error"
+                id="newPassword-error"
+                role="alert"
+              >
                 {fieldErrors.newPassword}
               </p>
             )}
-            <p className="password-requirements">
+            <p className="profile-password-requirements">
               Password must be at least{" "}
               {validationSchema?.newPassword?.minLength || 8} characters long
               and include at least one uppercase letter, one number, and one
@@ -134,8 +144,8 @@ const PasswordManager = ({
             </p>
           </div>
 
-          <div className="form-group">
-            <label htmlFor="confirmPassword" className="form-label">
+          <div className="profile-form-group">
+            <label htmlFor="confirmPassword" className="profile-form-label">
               Confirm New Password
             </label>
             <input
@@ -156,7 +166,7 @@ const PasswordManager = ({
             />
             {fieldErrors?.confirmPassword && (
               <p
-                className="field-error"
+                className="profile-field-error"
                 id="confirmPassword-error"
                 role="alert"
               >
@@ -165,21 +175,26 @@ const PasswordManager = ({
             )}
           </div>
 
-          <div className="form-actions">
-            <button type="submit" className="btn-primary" disabled={loading}>
-              {loading ? (
+          <div className="profile-form-actions">
+            <button
+              type="submit"
+              className="profile-btn-primary"
+              disabled={loading || changingPassword}
+            >
+              {loading || changingPassword ? (
                 <>
                   <Spinner size="small" message="" showMessage={false} />
-                  Updating...
+                  Changing...
                 </>
               ) : (
-                "Update Password"
+                "Change Password"
               )}
             </button>
             <button
               type="button"
-              className="btn-secondary"
+              className="profile-btn-secondary"
               onClick={() => setIsChangingPassword(false)}
+              disabled={loading || changingPassword}
             >
               Cancel
             </button>

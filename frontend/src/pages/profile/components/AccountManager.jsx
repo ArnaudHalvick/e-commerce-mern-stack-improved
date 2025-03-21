@@ -7,10 +7,10 @@ import Spinner from "../../../components/ui/Spinner";
 const AccountManager = ({ handleDisableAccount, disablingAccount }) => {
   return (
     <section className="profile-section">
-      <h2 className="section-title">Account Management</h2>
-      <div className="account-actions">
+      <h2 className="profile-section-title">Account Management</h2>
+      <div className="profile-account-actions">
         <button
-          className="btn-danger"
+          className="profile-btn-danger"
           onClick={handleDisableAccount}
           disabled={disablingAccount}
           tabIndex="0"

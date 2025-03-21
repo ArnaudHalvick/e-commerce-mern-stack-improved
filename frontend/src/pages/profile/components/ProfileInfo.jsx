@@ -25,10 +25,12 @@ const ProfileInfo = ({
     if (isNested) {
       const [parent, child] = fieldName.split(".");
       return fieldErrors[parent] && fieldErrors[parent][child]
-        ? "form-input error"
-        : "form-input";
+        ? "profile-form-input error"
+        : "profile-form-input";
     }
-    return fieldErrors[fieldName] ? "form-input error" : "form-input";
+    return fieldErrors[fieldName]
+      ? "profile-form-input error"
+      : "profile-form-input";
   };
 
   // Get validation attributes for a field
@@ -100,11 +102,11 @@ const ProfileInfo = ({
   return (
     <section className="profile-section">
       {/* Basic Information Section */}
-      <div className="section-header">
-        <h2 className="section-title">Basic Information</h2>
+      <div className="profile-section-header">
+        <h2 className="profile-section-title">Basic Information</h2>
         {!isEditingBasicInfo && !isEditingAddress && (
           <button
-            className="btn-secondary"
+            className="profile-btn-secondary"
             onClick={() => setIsEditingBasicInfo(true)}
             tabIndex="0"
             aria-label="Edit basic information"
@@ -116,11 +118,11 @@ const ProfileInfo = ({
 
       {isEditingBasicInfo ? (
         <form onSubmit={handleBasicInfoSubmit} noValidate>
-          <div className="form-group">
-            <label htmlFor="name" className="form-label">
+          <div className="profile-form-group">
+            <label htmlFor="name" className="profile-form-label">
               Name{" "}
               {validationSchema?.name?.required && (
-                <span className="required">*</span>
+                <span className="profile-required">*</span>
               )}
             </label>
             <input
@@ -136,14 +138,14 @@ const ProfileInfo = ({
               {...getValidationAttributes("name")}
             />
             {fieldErrors?.name && (
-              <div className="field-error" id="name-error" role="alert">
+              <div className="profile-field-error" id="name-error" role="alert">
                 {fieldErrors.name}
               </div>
             )}
           </div>
 
-          <div className="form-group">
-            <label htmlFor="phone" className="form-label">
+          <div className="profile-form-group">
+            <label htmlFor="phone" className="profile-form-label">
               Phone
             </label>
             <input
@@ -158,16 +160,20 @@ const ProfileInfo = ({
               {...getValidationAttributes("phone")}
             />
             {fieldErrors?.phone && (
-              <div className="field-error" id="phone-error" role="alert">
+              <div
+                className="profile-field-error"
+                id="phone-error"
+                role="alert"
+              >
                 {fieldErrors.phone}
               </div>
             )}
           </div>
 
-          <div className="form-actions">
+          <div className="profile-form-actions">
             <button
               type="submit"
-              className="btn-primary"
+              className="profile-btn-primary"
               disabled={updatingProfile}
             >
               {updatingProfile ? (
@@ -181,7 +187,7 @@ const ProfileInfo = ({
             </button>
             <button
               type="button"
-              className="btn-secondary"
+              className="profile-btn-secondary"
               onClick={() => {
                 setIsEditingBasicInfo(false);
                 setFieldErrors({});
@@ -192,14 +198,14 @@ const ProfileInfo = ({
           </div>
         </form>
       ) : (
-        <div className="profile-details">
-          <div className="detail-item">
-            <span className="detail-label">Name:</span>
-            <span className="detail-value">{displayName}</span>
+        <div className="profile-profile-details">
+          <div className="profile-detail-item">
+            <span className="profile-detail-label">Name:</span>
+            <span className="profile-detail-value">{displayName}</span>
           </div>
-          <div className="detail-item">
-            <span className="detail-label">Phone:</span>
-            <span className="detail-value">
+          <div className="profile-detail-item">
+            <span className="profile-detail-label">Phone:</span>
+            <span className="profile-detail-value">
               {displayUserData?.phone || "Not provided"}
             </span>
           </div>
@@ -207,12 +213,12 @@ const ProfileInfo = ({
       )}
 
       {/* Shipping Address Section */}
-      <div className="shipping-address-section">
-        <div className="section-header">
-          <h2 className="section-title">Shipping Address</h2>
+      <div className="profile-shipping-address-section">
+        <div className="profile-section-header">
+          <h2 className="profile-section-title">Shipping Address</h2>
           {!isEditingBasicInfo && !isEditingAddress && (
             <button
-              className="btn-secondary"
+              className="profile-btn-secondary"
               onClick={() => setIsEditingAddress(true)}
               tabIndex="0"
               aria-label="Edit shipping address"
@@ -224,9 +230,9 @@ const ProfileInfo = ({
 
         {isEditingAddress ? (
           <form onSubmit={handleAddressSubmit} noValidate>
-            <div className="address-form">
-              <div className="form-group">
-                <label htmlFor="street" className="form-label">
+            <div className="profile-address-form">
+              <div className="profile-form-group">
+                <label htmlFor="street" className="profile-form-label">
                   Street Address
                 </label>
                 <input
@@ -244,15 +250,19 @@ const ProfileInfo = ({
                   {...getValidationAttributes("address.street", true)}
                 />
                 {fieldErrors?.address?.street && (
-                  <div className="field-error" id="street-error" role="alert">
+                  <div
+                    className="profile-field-error"
+                    id="street-error"
+                    role="alert"
+                  >
                     {fieldErrors.address.street}
                   </div>
                 )}
               </div>
 
-              <div className="address-form-row">
-                <div className="form-group">
-                  <label htmlFor="city" className="form-label">
+              <div className="profile-form-row">
+                <div className="profile-form-group">
+                  <label htmlFor="city" className="profile-form-label">
                     City
                   </label>
                   <input
@@ -270,14 +280,18 @@ const ProfileInfo = ({
                     {...getValidationAttributes("address.city", true)}
                   />
                   {fieldErrors?.address?.city && (
-                    <div className="field-error" id="city-error" role="alert">
+                    <div
+                      className="profile-field-error"
+                      id="city-error"
+                      role="alert"
+                    >
                       {fieldErrors.address.city}
                     </div>
                   )}
                 </div>
 
-                <div className="form-group">
-                  <label htmlFor="state" className="form-label">
+                <div className="profile-form-group">
+                  <label htmlFor="state" className="profile-form-label">
                     State/Province
                   </label>
                   <input
@@ -286,7 +300,6 @@ const ProfileInfo = ({
                     name="address.state"
                     value={formData.address.state}
                     onChange={handleInputChange}
-                    required
                     className={getInputClass("address.state", true)}
                     aria-invalid={
                       fieldErrors?.address?.state ? "true" : "false"
@@ -297,17 +310,21 @@ const ProfileInfo = ({
                     {...getValidationAttributes("address.state", true)}
                   />
                   {fieldErrors?.address?.state && (
-                    <div className="field-error" id="state-error" role="alert">
+                    <div
+                      className="profile-field-error"
+                      id="state-error"
+                      role="alert"
+                    >
                       {fieldErrors.address.state}
                     </div>
                   )}
                 </div>
               </div>
 
-              <div className="address-form-row">
-                <div className="form-group">
-                  <label htmlFor="zipCode" className="form-label">
-                    ZIP/Postal Code
+              <div className="profile-form-row">
+                <div className="profile-form-group">
+                  <label htmlFor="zipCode" className="profile-form-label">
+                    Zip/Postal Code
                   </label>
                   <input
                     type="text"
@@ -329,7 +346,7 @@ const ProfileInfo = ({
                   />
                   {fieldErrors?.address?.zipCode && (
                     <div
-                      className="field-error"
+                      className="profile-field-error"
                       id="zipCode-error"
                       role="alert"
                     >
@@ -338,8 +355,8 @@ const ProfileInfo = ({
                   )}
                 </div>
 
-                <div className="form-group">
-                  <label htmlFor="country" className="form-label">
+                <div className="profile-form-group">
+                  <label htmlFor="country" className="profile-form-label">
                     Country
                   </label>
                   <input
@@ -362,7 +379,7 @@ const ProfileInfo = ({
                   />
                   {fieldErrors?.address?.country && (
                     <div
-                      className="field-error"
+                      className="profile-field-error"
                       id="country-error"
                       role="alert"
                     >
@@ -371,77 +388,61 @@ const ProfileInfo = ({
                   )}
                 </div>
               </div>
-            </div>
 
-            <div className="form-actions">
-              <button
-                type="submit"
-                className="btn-primary"
-                disabled={updatingProfile}
-              >
-                {updatingProfile ? (
-                  <>
-                    <Spinner size="small" message="" showMessage={false} />
-                    Saving...
-                  </>
-                ) : (
-                  "Save Address"
-                )}
-              </button>
-              <button
-                type="button"
-                className="btn-secondary"
-                onClick={() => {
-                  setIsEditingAddress(false);
-                  setFieldErrors({});
-                }}
-              >
-                Cancel
-              </button>
+              <div className="profile-form-actions">
+                <button
+                  type="submit"
+                  className="profile-btn-primary"
+                  disabled={updatingProfile}
+                >
+                  {updatingProfile ? (
+                    <>
+                      <Spinner size="small" message="" showMessage={false} />
+                      Saving...
+                    </>
+                  ) : (
+                    "Save Address"
+                  )}
+                </button>
+                <button
+                  type="button"
+                  className="profile-btn-secondary"
+                  onClick={() => {
+                    setIsEditingAddress(false);
+                    setFieldErrors({});
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           </form>
         ) : (
-          <div className="profile-details">
-            {displayUserData?.address &&
-            Object.values(displayUserData.address).some(
-              (val) => val && val.trim() !== ""
-            ) ? (
-              <>
-                <div className="detail-item">
-                  <span className="detail-label">Street:</span>
-                  <span className="detail-value">
-                    {displayUserData.address.street || "Not provided"}
+          <div className="profile-address-container">
+            {displayUserData?.address?.street ? (
+              <div className="profile-address-details">
+                <p className="profile-address-text">
+                  <span className="profile-address-line">
+                    {displayUserData.address.street}
                   </span>
-                </div>
-                <div className="detail-item">
-                  <span className="detail-label">City:</span>
-                  <span className="detail-value">
-                    {displayUserData.address.city || "Not provided"}
+                  <span className="profile-address-line">
+                    {displayUserData.address.city}
+                    {displayUserData.address.state
+                      ? `, ${displayUserData.address.state}`
+                      : ""}
+                    {displayUserData.address.zipCode
+                      ? ` ${displayUserData.address.zipCode}`
+                      : ""}
                   </span>
-                </div>
-                <div className="detail-item">
-                  <span className="detail-label">State/Province:</span>
-                  <span className="detail-value">
-                    {displayUserData.address.state || "Not provided"}
-                  </span>
-                </div>
-                <div className="detail-item">
-                  <span className="detail-label">ZIP/Postal Code:</span>
-                  <span className="detail-value">
-                    {displayUserData.address.zipCode || "Not provided"}
-                  </span>
-                </div>
-                <div className="detail-item">
-                  <span className="detail-label">Country:</span>
-                  <span className="detail-value">
-                    {displayUserData.address.country || "Not provided"}
-                  </span>
-                </div>
-              </>
-            ) : (
-              <div className="no-address-message">
-                No shipping address provided yet.
+                  {displayUserData.address.country && (
+                    <span className="profile-address-line">
+                      {displayUserData.address.country}
+                    </span>
+                  )}
+                </p>
               </div>
+            ) : (
+              <p className="profile-no-data">No shipping address provided</p>
             )}
           </div>
         )}
