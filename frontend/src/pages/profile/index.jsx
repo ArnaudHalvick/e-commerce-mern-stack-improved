@@ -61,7 +61,6 @@ const Profile = () => {
 
   const [message, setMessage] = useState({ text: "", type: "" });
   const [verificationRequested, setVerificationRequested] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [updatedUserData, setUpdatedUserData] = useState(null);
 

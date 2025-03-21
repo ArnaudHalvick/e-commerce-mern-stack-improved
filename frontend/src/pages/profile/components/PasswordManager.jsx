@@ -20,6 +20,8 @@ const PasswordManager = ({
           <button
             className="btn-secondary"
             onClick={() => setIsChangingPassword(true)}
+            tabIndex="0"
+            aria-label="Change password"
           >
             Change Password
           </button>

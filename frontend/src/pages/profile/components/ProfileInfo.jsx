@@ -16,7 +16,6 @@ const ProfileInfo = ({
 }) => {
   const [isEditingBasicInfo, setIsEditingBasicInfo] = useState(false);
   const [isEditingAddress, setIsEditingAddress] = useState(false);
-
   const handleBasicInfoSubmit = (e) => {
     e.preventDefault();
     // Only submit name and phone, don't include address at all
