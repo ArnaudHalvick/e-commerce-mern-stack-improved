@@ -20,6 +20,7 @@ const AuthContextProvider = (props) => {
   const [isUserLoggedOut, setIsUserLoggedOut] = useState(
     () => localStorage.getItem("user-logged-out") === "true"
   );
+  const [initialLoadComplete, setInitialLoadComplete] = useState(false);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -176,6 +177,7 @@ const AuthContextProvider = (props) => {
         setUserState(null);
         dispatch(clearUser());
         setLoading(false);
+        setInitialLoadComplete(true);
         return;
       }
 
@@ -237,6 +239,7 @@ const AuthContextProvider = (props) => {
         }
       } finally {
         setLoading(false);
+        setInitialLoadComplete(true);
       }
     };
 
@@ -385,6 +388,11 @@ const AuthContextProvider = (props) => {
       navigate("/");
     }
   };
+
+  if (!initialLoadComplete) {
+    // Return nothing or a minimal loader until initial auth check is complete
+    return <div style={{ display: "none" }}></div>;
+  }
 
   // Context value
   const contextValue = {
