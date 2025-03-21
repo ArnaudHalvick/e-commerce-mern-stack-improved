@@ -10,19 +10,15 @@ router.post("/remove-product", productController.removeProduct);
 router.get("/all-products", productController.getAllProducts);
 router.get("/newcollection", productController.getNewCollection);
 router.get("/featured-women", productController.getFeaturedWomen);
-router.get("/products/tag/:tag", productController.getProductsByTag);
-router.get("/products/type/:type", productController.getProductsByType);
-router.get(
-  "/products/category/:category",
-  productController.getProductsByCategory
-);
+router.get("/tag/:tag", productController.getProductsByTag);
+router.get("/type/:type", productController.getProductsByType);
+router.get("/category/:category", productController.getProductsByCategory);
 
-// New routes with plural 'products' (to match frontend expectations)
-router.get("/products/slug/:slug", productController.getProductBySlug);
-router.get("/products/:id", productController.getProductById);
+router.get("/slug/:slug", productController.getProductBySlug);
+router.get("/:id", productController.getProductById);
 
 router.get(
-  "/related-products/:category/:productId?/:productSlug?",
+  "/related/:category/:productId?/:productSlug?",
   productController.getRelatedProducts
 );
 

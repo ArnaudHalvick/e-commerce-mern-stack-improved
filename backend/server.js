@@ -70,8 +70,8 @@ app.get("/api/health", (req, res) => {
 });
 
 // Routes
-app.use("/api", userRoutes);
-app.use("/api", productRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/products", productRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api", uploadRoutes);
 app.use("/api/reviews", reviewRoutes);

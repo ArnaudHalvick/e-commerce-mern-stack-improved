@@ -17,7 +17,7 @@ const ShopContextProvider = (props) => {
 
     // Fetch all products with basicInfo=true to get only essential fields
     // We don't need reviews here as they're loaded separately on product detail pages
-    fetch(`${API_BASE_URL}/api/all-products?basicInfo=true`)
+    fetch(`${API_BASE_URL}/api/products/all-products?basicInfo=true`)
       .then((res) => {
         if (!res.ok) {
           throw new Error(

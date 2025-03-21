@@ -72,7 +72,7 @@ const AuthContextProvider = (props) => {
       setTokenRefreshInProgress(true);
 
       const response = await axios.post(
-        `${API_BASE_URL}/api/refresh-token`,
+        `${API_BASE_URL}/api/users/refresh-token`,
         {},
         { withCredentials: true } // Important to include cookies
       );
@@ -100,7 +100,7 @@ const AuthContextProvider = (props) => {
       const token = localStorage.getItem("auth-token");
       if (!token) return null;
 
-      const response = await fetch(`${API_BASE_URL}/api/me`, {
+      const response = await fetch(`${API_BASE_URL}/api/users/me`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -114,7 +114,7 @@ const AuthContextProvider = (props) => {
         const newToken = await refreshAccessToken();
         if (newToken) {
           // Retry with the new token
-          const retryResponse = await fetch(`${API_BASE_URL}/api/me`, {
+          const retryResponse = await fetch(`${API_BASE_URL}/api/users/me`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
@@ -177,7 +177,7 @@ const AuthContextProvider = (props) => {
         const currentToken = localStorage.getItem("auth-token");
 
         // Verify token with backend
-        const response = await fetch(`${API_BASE_URL}/api/verify-token`, {
+        const response = await fetch(`${API_BASE_URL}/api/users/verify-token`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -244,7 +244,7 @@ const AuthContextProvider = (props) => {
     setAccountDisabled(false);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/login`, {
+      const response = await fetch(`${API_BASE_URL}/api/users/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -304,7 +304,7 @@ const AuthContextProvider = (props) => {
         passwordConfirm: userData.passwordConfirm,
       };
 
-      const response = await fetch(`${API_BASE_URL}/api/signup`, {
+      const response = await fetch(`${API_BASE_URL}/api/users/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -346,7 +346,7 @@ const AuthContextProvider = (props) => {
   const logout = async () => {
     try {
       // Call backend logout endpoint to clear refresh token cookie
-      await fetch(`${API_BASE_URL}/api/logout`, {
+      await fetch(`${API_BASE_URL}/api/users/logout`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

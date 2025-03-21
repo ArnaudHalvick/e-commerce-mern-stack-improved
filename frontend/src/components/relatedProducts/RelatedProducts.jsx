@@ -27,7 +27,7 @@ const RelatedProducts = ({ product }) => {
     const { category } = product;
 
     // Build the API URL with the available parameters
-    let apiUrl = `${API_BASE_URL}/api/related-products/${category}`;
+    let apiUrl = `${API_BASE_URL}/api/products/related/${category}`;
 
     // Add productId if available
     if (id) {

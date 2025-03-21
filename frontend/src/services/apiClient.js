@@ -89,7 +89,7 @@ apiClient.interceptors.response.use(
         try {
           // Call the refresh token endpoint
           const response = await axios.post(
-            `${API_BASE_URL}/api/refresh-token`,
+            `${API_BASE_URL}/api/users/refresh-token`,
             {},
             { withCredentials: true }
           );

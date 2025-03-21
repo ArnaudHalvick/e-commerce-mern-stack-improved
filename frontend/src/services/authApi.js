@@ -11,7 +11,7 @@ const authApi = {
    */
   register: async (userData) => {
     try {
-      const response = await apiClient.post("/api/signup", userData);
+      const response = await apiClient.post("/api/users/signup", userData);
       return response.data;
     } catch (error) {
       // Let the error interceptor handle formatting, just rethrow
@@ -27,7 +27,10 @@ const authApi = {
    */
   login: async (email, password) => {
     try {
-      const response = await apiClient.post("/api/login", { email, password });
+      const response = await apiClient.post("/api/users/login", {
+        email,
+        password,
+      });
       return response.data;
     } catch (error) {
       // Let the error interceptor handle formatting, just rethrow
@@ -41,7 +44,7 @@ const authApi = {
    */
   logout: async () => {
     try {
-      const response = await apiClient.get("/api/logout");
+      const response = await apiClient.get("/api/users/logout");
       return response.data;
     } catch (error) {
       // Let the error interceptor handle formatting, just rethrow
@@ -55,7 +58,7 @@ const authApi = {
    */
   getProfile: async () => {
     try {
-      const response = await apiClient.get("/api/me");
+      const response = await apiClient.get("/api/users/me");
       return response.data;
     } catch (error) {
       // Let the error interceptor handle formatting, just rethrow
@@ -70,7 +73,7 @@ const authApi = {
    */
   updateProfile: async (profileData) => {
     try {
-      const response = await apiClient.put("/api/profile", profileData);
+      const response = await apiClient.put("/api/users/profile", profileData);
       return response.data;
     } catch (error) {
       // Let the error interceptor handle formatting, just rethrow
@@ -86,7 +89,7 @@ const authApi = {
    */
   changePassword: async (currentPassword, newPassword) => {
     try {
-      const response = await apiClient.put("/api/change-password", {
+      const response = await apiClient.put("/api/users/change-password", {
         currentPassword,
         newPassword,
       });
@@ -103,7 +106,7 @@ const authApi = {
    */
   disableAccount: async () => {
     try {
-      const response = await apiClient.put("/api/disable-account");
+      const response = await apiClient.put("/api/users/disable-account");
       return response.data;
     } catch (error) {
       // Let the error interceptor handle formatting, just rethrow
@@ -118,7 +121,7 @@ const authApi = {
    */
   requestVerification: async (email) => {
     try {
-      const response = await apiClient.post("/api/request-verification", {
+      const response = await apiClient.post("/api/users/request-verification", {
         email,
       });
       return response.data;
@@ -135,7 +138,9 @@ const authApi = {
    */
   verifyEmail: async (token) => {
     try {
-      const response = await apiClient.get(`/api/verify-email?token=${token}`);
+      const response = await apiClient.get(
+        `/api/users/verify-email?token=${token}`
+      );
       return response.data;
     } catch (error) {
       // Let the error interceptor handle formatting, just rethrow
