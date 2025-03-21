@@ -10,7 +10,7 @@ export const updateUserProfile = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem("auth-token");
-      const response = await axios.put(getApiUrl("profile"), userData, {
+      const response = await axios.put(getApiUrl("users/profile"), userData, {
         headers: {
           "Content-Type": "application/json",
           "auth-token": token,
