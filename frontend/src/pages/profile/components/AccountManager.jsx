@@ -1,4 +1,5 @@
 import React from "react";
+import Spinner from "../../../components/ui/Spinner";
 
 /**
  * AccountManager component for account-related actions
@@ -15,7 +16,14 @@ const AccountManager = ({ handleDisableAccount, disablingAccount }) => {
           tabIndex="0"
           aria-label="Disable account"
         >
-          {disablingAccount ? "Disabling..." : "Disable Account"}
+          {disablingAccount ? (
+            <>
+              <Spinner size="small" message="" showMessage={false} />
+              Disabling...
+            </>
+          ) : (
+            "Disable Account"
+          )}
         </button>
       </div>
     </section>

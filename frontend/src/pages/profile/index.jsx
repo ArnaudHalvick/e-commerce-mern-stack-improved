@@ -17,9 +17,7 @@ import ProfileInfo from "./components/ProfileInfo";
 import PasswordManager from "./components/PasswordManager";
 import AccountManager from "./components/AccountManager";
 import EmailVerification from "./components/EmailVerification";
-
-// Hooks
-import useProfileValidation from "./hooks/useProfileValidation";
+import Spinner from "../../components/ui/Spinner";
 
 // CSS
 import "./Profile.css";
@@ -63,15 +61,7 @@ const Profile = () => {
   const [verificationRequested, setVerificationRequested] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [updatedUserData, setUpdatedUserData] = useState(null);
-
-  // Use custom validation hook
-  const {
-    fieldErrors,
-    setFieldErrors,
-    validateAddressFields,
-    validatePasswordChange,
-    clearFieldError,
-  } = useProfileValidation();
+  const [fieldErrors, setFieldErrors] = useState({});
 
   // Fetch complete profile when component mounts
   useEffect(() => {
@@ -154,6 +144,12 @@ const Profile = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
+    // Clear any previous field errors
+    setFieldErrors((prev) => ({
+      ...prev,
+      [name.split(".")[1] || name]: null,
+    }));
+
     // Handle nested address fields
     if (name.startsWith("address.")) {
       const addressField = name.split(".")[1];
@@ -164,17 +160,11 @@ const Profile = () => {
           [addressField]: value,
         },
       }));
-
-      // Clear error for this field
-      clearFieldError(addressField);
     } else {
       setFormData((prev) => ({
         ...prev,
         [name]: value,
       }));
-
-      // Clear error for this field
-      clearFieldError(name);
     }
   };
 
@@ -193,14 +183,18 @@ const Profile = () => {
     }
 
     setMessage({ text: "", type: "" });
+    setFieldErrors({});
 
     // Use the custom form data if provided, otherwise use the full formData
     const dataToSubmit = customFormData || formData;
 
-    // Validate fields
-    if (!validateAddressFields(dataToSubmit)) {
+    // Client-side password confirmation check
+    if (
+      dataToSubmit.confirmPassword &&
+      dataToSubmit.newPassword !== dataToSubmit.confirmPassword
+    ) {
       setMessage({
-        text: "Please fix the errors in the form",
+        text: "New passwords do not match",
         type: "error",
       });
       return;
@@ -243,10 +237,26 @@ const Profile = () => {
         type: "success",
       });
     } catch (err) {
-      setMessage({
-        text: err || "Failed to update profile. Please try again.",
-        type: "error",
-      });
+      // Check for validation errors in the response
+      if (err?.validationErrors) {
+        const validationErrors = {};
+        // Transform the backend validation errors to match our field structure
+        Object.entries(err.validationErrors).forEach(([field, message]) => {
+          // Convert fields like 'address.street' to 'street'
+          const fieldName = field.includes(".") ? field.split(".")[1] : field;
+          validationErrors[fieldName] = message;
+        });
+        setFieldErrors(validationErrors);
+        setMessage({
+          text: "Please fix the errors in the form",
+          type: "error",
+        });
+      } else {
+        setMessage({
+          text: err || "Failed to update profile. Please try again.",
+          type: "error",
+        });
+      }
     }
   };
 
@@ -254,11 +264,10 @@ const Profile = () => {
     e.preventDefault();
     setMessage({ text: "", type: "" });
 
-    // Validate passwords
-    const validation = validatePasswordChange(passwordData);
-    if (!validation.isValid) {
+    // Basic client-side validation for password match
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
       setMessage({
-        text: validation.message,
+        text: "New passwords do not match",
         type: "error",
       });
       return;
@@ -319,7 +328,9 @@ const Profile = () => {
         <Breadcrumb
           routes={[{ label: "HOME", path: "/" }, { label: "PROFILE" }]}
         />
-        <div className="loading">Loading...</div>
+        <div className="loading">
+          <Spinner message="Loading profile data..." size="medium" />
+        </div>
       </div>
     );
   }

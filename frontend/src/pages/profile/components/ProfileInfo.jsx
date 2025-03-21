@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Spinner from "../../../components/ui/Spinner";
 
 /**
  * ProfileInfo component for displaying and editing user's basic information
@@ -102,7 +103,14 @@ const ProfileInfo = ({
               className="btn-primary"
               disabled={updatingProfile}
             >
-              {updatingProfile ? "Saving..." : "Save Changes"}
+              {updatingProfile ? (
+                <>
+                  <Spinner size="small" message="" showMessage={false} />
+                  Saving...
+                </>
+              ) : (
+                "Save Changes"
+              )}
             </button>
             <button
               type="button"
@@ -262,7 +270,14 @@ const ProfileInfo = ({
                 className="btn-primary"
                 disabled={updatingProfile}
               >
-                {updatingProfile ? "Saving..." : "Save Address"}
+                {updatingProfile ? (
+                  <>
+                    <Spinner size="small" message="" showMessage={false} />
+                    Saving...
+                  </>
+                ) : (
+                  "Save Address"
+                )}
               </button>
               <button
                 type="button"

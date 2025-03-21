@@ -18,6 +18,20 @@ export const updateUserProfile = createAsyncThunk(
       });
       return response.data.user;
     } catch (error) {
+      // Handle validation errors
+      if (error.response?.data?.errors) {
+        // Format validation errors from express-validator
+        const validationErrors = {};
+        error.response.data.errors.forEach((err) => {
+          validationErrors[err.param] = err.msg;
+        });
+
+        return rejectWithValue({
+          message: error.response?.data?.message || "Failed to update profile",
+          validationErrors,
+        });
+      }
+
       return rejectWithValue(
         error.response?.data?.message || "Failed to update profile"
       );
@@ -48,6 +62,20 @@ export const changePassword = createAsyncThunk(
         passwordChangePending: true, // Flag to indicate password change is pending verification
       };
     } catch (error) {
+      // Handle validation errors
+      if (error.response?.data?.errors) {
+        // Format validation errors from express-validator
+        const validationErrors = {};
+        error.response.data.errors.forEach((err) => {
+          validationErrors[err.param] = err.msg;
+        });
+
+        return rejectWithValue({
+          message: error.response?.data?.message || "Failed to change password",
+          validationErrors,
+        });
+      }
+
       return rejectWithValue(
         error.response?.data?.message || "Failed to change password"
       );

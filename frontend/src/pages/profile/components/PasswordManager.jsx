@@ -1,4 +1,5 @@
 import React from "react";
+import Spinner from "../../../components/ui/Spinner";
 
 /**
  * PasswordManager component for handling password changes
@@ -83,7 +84,14 @@ const PasswordManager = ({
               className="btn-primary"
               disabled={changingPassword}
             >
-              {changingPassword ? "Updating..." : "Update Password"}
+              {changingPassword ? (
+                <>
+                  <Spinner size="small" message="" showMessage={false} />
+                  Updating...
+                </>
+              ) : (
+                "Update Password"
+              )}
             </button>
             <button
               type="button"
