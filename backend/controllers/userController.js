@@ -36,6 +36,8 @@ const sendTokens = (user, statusCode, res, additionalData = {}) => {
     ),
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    path: "/",
   };
 
   const responseData = {
@@ -195,6 +197,14 @@ const refreshToken = catchAsync(async (req, res, next) => {
 
   if (!user) {
     return next(new AppError("Invalid or expired refresh token", 401));
+  }
+
+  // Check if account is disabled
+  if (user.isDisabled) {
+    return res.status(403).json({
+      success: false,
+      message: "Your account has been disabled",
+    });
   }
 
   // Generate new access token

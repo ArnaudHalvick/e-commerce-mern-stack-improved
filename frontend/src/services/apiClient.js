@@ -10,6 +10,24 @@ const apiClient = axios.create({
   },
 });
 
+// Flag to prevent multiple refresh requests
+let isRefreshing = false;
+// Queue of failed requests to retry after token refresh
+let failedQueue = [];
+
+// Function to process the queue of failed requests
+const processQueue = (error, token = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+
+  failedQueue = [];
+};
+
 // Add a request interceptor to include auth token
 apiClient.interceptors.request.use(
   (config) => {
@@ -29,7 +47,9 @@ apiClient.interceptors.response.use(
   (response) => {
     return response;
   },
-  (error) => {
+  async (error) => {
+    const originalRequest = error.config;
+
     // Extract useful error information
     const errorResponse = {
       message: "An unexpected error occurred",
@@ -47,10 +67,56 @@ apiClient.interceptors.response.use(
         error.response.data?.error ||
         `${error.response.status} - ${error.response.statusText}`;
 
-      // Special handling for auth errors
-      if (error.response.status === 401) {
-        // Clear auth data if needed
-        // Could be handled by the consumer of this error
+      // Special handling for auth errors - try to refresh token on 401
+      if (error.response.status === 401 && !originalRequest._retry) {
+        if (isRefreshing) {
+          // If already refreshing, add this request to the queue
+          return new Promise((resolve, reject) => {
+            failedQueue.push({ resolve, reject });
+          })
+            .then((token) => {
+              originalRequest.headers["auth-token"] = token;
+              return apiClient(originalRequest);
+            })
+            .catch((err) => {
+              return Promise.reject(err);
+            });
+        }
+
+        originalRequest._retry = true;
+        isRefreshing = true;
+
+        try {
+          // Call the refresh token endpoint
+          const response = await axios.post(
+            `${API_BASE_URL}/api/refresh-token`,
+            {},
+            { withCredentials: true }
+          );
+
+          if (response.data && response.data.success) {
+            const newToken = response.data.accessToken;
+            localStorage.setItem("auth-token", newToken);
+
+            // Update the auth header for the original request
+            originalRequest.headers["auth-token"] = newToken;
+
+            // Process any queued requests with the new token
+            processQueue(null, newToken);
+
+            return apiClient(originalRequest);
+          } else {
+            // If refresh fails, process queue with error
+            processQueue(new Error("Refresh token failed"));
+            localStorage.removeItem("auth-token");
+          }
+        } catch (refreshError) {
+          // If refresh request throws, process queue with error
+          processQueue(refreshError);
+          localStorage.removeItem("auth-token");
+        } finally {
+          isRefreshing = false;
+        }
       }
     } else if (error.request) {
       // The request was made but no response was received
