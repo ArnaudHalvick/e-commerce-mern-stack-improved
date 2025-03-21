@@ -40,7 +40,6 @@ const AuthContextProvider = (props) => {
   // Listen for token refresh failures
   useEffect(() => {
     const handleTokenRefreshFailure = () => {
-      console.log("Token refresh failed event received");
       handleLogout();
       // Optional: redirect to login page or show notification
       navigate("/login", {
