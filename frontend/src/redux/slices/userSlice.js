@@ -46,7 +46,7 @@ export const changePassword = createAsyncThunk(
     try {
       const token = localStorage.getItem("auth-token");
       const response = await axios.put(
-        getApiUrl("change-password"),
+        getApiUrl("users/change-password"),
         { currentPassword, newPassword },
         {
           headers: {
@@ -90,7 +90,7 @@ export const disableAccount = createAsyncThunk(
     try {
       const token = localStorage.getItem("auth-token");
       const response = await axios.put(
-        getApiUrl("disable-account"),
+        getApiUrl("users/disable-account"),
         {},
         {
           headers: {
@@ -113,9 +113,12 @@ export const requestEmailVerification = createAsyncThunk(
   "user/requestVerification",
   async (email, { rejectWithValue }) => {
     try {
-      const response = await axios.post(getApiUrl("request-verification"), {
-        email,
-      });
+      const response = await axios.post(
+        getApiUrl("users/request-verification"),
+        {
+          email,
+        }
+      );
       return response.data;
     } catch (error) {
       return rejectWithValue(
@@ -131,7 +134,7 @@ export const verifyEmail = createAsyncThunk(
   async (token, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        getApiUrl(`verify-email?token=${token}`)
+        getApiUrl(`users/verify-email?token=${token}`)
       );
       return response.data;
     } catch (error) {
@@ -147,7 +150,7 @@ export const verifyPasswordChange = createAsyncThunk(
   "user/verifyPasswordChange",
   async (token, { rejectWithValue }) => {
     try {
-      const url = getApiUrl(`verify-password-change?token=${token}`);
+      const url = getApiUrl(`users/verify-password-change?token=${token}`);
 
       const response = await axios.get(url);
       return response.data;
@@ -187,7 +190,7 @@ export const requestEmailChange = createAsyncThunk(
     try {
       const token = localStorage.getItem("auth-token");
       const response = await axios.post(
-        getApiUrl("change-email"),
+        getApiUrl("users/change-email"),
         { email },
         {
           headers: {

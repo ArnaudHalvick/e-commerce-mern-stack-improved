@@ -35,7 +35,7 @@ const ListProduct = () => {
     if (window.confirm(`Are you sure you want to delete ${name}?`)) {
       try {
         // Use the new utility function for proper URL construction
-        const apiUrl = getApiUrl("remove-product");
+        const apiUrl = getApiUrl("products/remove-product");
 
         const response = await fetch(apiUrl, {
           method: "POST",

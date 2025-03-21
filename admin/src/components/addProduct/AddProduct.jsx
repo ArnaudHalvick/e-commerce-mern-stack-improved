@@ -76,7 +76,7 @@ const AddProduct = () => {
         };
 
         // Use the new utility function for proper URL construction
-        const addUrl = getApiUrl("add-product");
+        const addUrl = getApiUrl("products/add-product");
 
         // Add product to database
         const addResponse = await axios.post(addUrl, productData, {
