@@ -690,6 +690,12 @@ const requestEmailChange = catchAsync(async (req, res, next) => {
     return next(new AppError("New email address is required", 400));
   }
 
+  // Validate email format using regex
+  const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+  if (!emailRegex.test(email)) {
+    return next(new AppError("Please enter a valid email address", 400));
+  }
+
   // Normalize the new email
   const normalizedNewEmail = normalizeEmail(email);
 

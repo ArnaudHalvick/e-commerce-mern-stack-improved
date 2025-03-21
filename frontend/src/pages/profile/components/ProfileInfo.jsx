@@ -16,20 +16,9 @@ const ProfileInfo = ({
   displayUserData,
   displayName,
   validationSchema,
-  handleEmailChangeRequest,
-  emailVerificationStatus,
 }) => {
   const [isEditingBasicInfo, setIsEditingBasicInfo] = useState(false);
   const [isEditingAddress, setIsEditingAddress] = useState(false);
-  const [isEditingEmail, setIsEditingEmail] = useState(false);
-  const [emailData, setEmailData] = useState({ email: "" });
-
-  // Set initial email data when user data is available
-  useEffect(() => {
-    if (displayUserData?.email) {
-      setEmailData({ email: displayUserData.email });
-    }
-  }, [displayUserData]);
 
   // Enhance this method to check for nested fields in the address
   const getInputClass = (fieldName, isNested = false) => {
@@ -108,43 +97,12 @@ const ProfileInfo = ({
     setIsEditingAddress(false);
   };
 
-  const handleEmailChange = (e) => {
-    setEmailData({ email: e.target.value });
-
-    // Clear any previous email field errors
-    if (fieldErrors?.email) {
-      setFieldErrors((prev) => ({
-        ...prev,
-        email: null,
-      }));
-    }
-  };
-
-  const handleEmailSubmit = (e) => {
-    e.preventDefault();
-
-    // Validate email before submission
-    if (validationSchema?.email?.pattern) {
-      const pattern = new RegExp(validationSchema.email.pattern);
-      if (!pattern.test(emailData.email)) {
-        setFieldErrors((prev) => ({
-          ...prev,
-          email: validationSchema.email.message || "Invalid email format",
-        }));
-        return;
-      }
-    }
-
-    handleEmailChangeRequest(emailData.email);
-    setIsEditingEmail(false);
-  };
-
   return (
     <section className="profile-section">
       {/* Basic Information Section */}
       <div className="section-header">
         <h2 className="section-title">Basic Information</h2>
-        {!isEditingBasicInfo && !isEditingAddress && !isEditingEmail && (
+        {!isEditingBasicInfo && !isEditingAddress && (
           <button
             className="btn-secondary"
             onClick={() => setIsEditingBasicInfo(true)}
@@ -239,26 +197,6 @@ const ProfileInfo = ({
             <span className="detail-label">Name:</span>
             <span className="detail-value">{displayName}</span>
           </div>
-          {/* Email Information Section */}
-          <div className="detail-item">
-            <span className="detail-label">Email:</span>
-            <span className="detail-value">
-              {displayUserData?.email || "Not provided"}
-              {displayUserData?.isEmailVerified && (
-                <span className="verified-badge">Verified</span>
-              )}
-            </span>
-            {!isEditingEmail && !isEditingBasicInfo && !isEditingAddress && (
-              <button
-                className="btn-text btn-edit-email"
-                onClick={() => setIsEditingEmail(true)}
-                tabIndex="0"
-                aria-label="Edit email address"
-              >
-                Edit
-              </button>
-            )}
-          </div>
           <div className="detail-item">
             <span className="detail-label">Phone:</span>
             <span className="detail-value">
@@ -268,80 +206,11 @@ const ProfileInfo = ({
         </div>
       )}
 
-      {/* Email Edit Form */}
-      {isEditingEmail && (
-        <form onSubmit={handleEmailSubmit} noValidate className="email-form">
-          <div className="form-group">
-            <label htmlFor="email" className="form-label">
-              Email Address
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={emailData.email}
-              onChange={handleEmailChange}
-              required
-              className={getInputClass("email")}
-              aria-invalid={fieldErrors?.email ? "true" : "false"}
-              aria-describedby={fieldErrors?.email ? "email-error" : undefined}
-              {...getValidationAttributes("email")}
-            />
-            {fieldErrors?.email && (
-              <div className="field-error" id="email-error" role="alert">
-                {fieldErrors.email}
-              </div>
-            )}
-            <p className="form-note">
-              After changing your email, a verification link will be sent to the
-              new address. Your email will only be updated after verification.
-            </p>
-          </div>
-
-          <div className="form-actions">
-            <button
-              type="submit"
-              className="btn-primary"
-              disabled={
-                updatingProfile || emailData.email === displayUserData?.email
-              }
-            >
-              {updatingProfile ? (
-                <>
-                  <Spinner size="small" message="" showMessage={false} />
-                  Saving...
-                </>
-              ) : (
-                "Save Email"
-              )}
-            </button>
-            <button
-              type="button"
-              className="btn-secondary"
-              onClick={() => {
-                setIsEditingEmail(false);
-                setFieldErrors({});
-                setEmailData({ email: displayUserData?.email || "" });
-              }}
-            >
-              Cancel
-            </button>
-          </div>
-        </form>
-      )}
-
-      {/* Verification Status Message */}
-      {emailVerificationStatus && (
-        <div className={`verification-message ${emailVerificationStatus.type}`}>
-          {emailVerificationStatus.message}
-        </div>
-      )}
-
       {/* Shipping Address Section */}
       <div className="shipping-address-section">
         <div className="section-header">
           <h2 className="section-title">Shipping Address</h2>
-          {!isEditingBasicInfo && !isEditingAddress && !isEditingEmail && (
+          {!isEditingBasicInfo && !isEditingAddress && (
             <button
               className="btn-secondary"
               onClick={() => setIsEditingAddress(true)}
@@ -532,33 +401,47 @@ const ProfileInfo = ({
             </div>
           </form>
         ) : (
-          <div className="address-container">
+          <div className="profile-details">
             {displayUserData?.address &&
-            Object.values(displayUserData.address).some((value) => value) ? (
-              <div className="address-details">
-                <p className="address-text">
-                  {displayUserData.address.street && (
-                    <span className="address-line">
-                      {displayUserData.address.street}
-                    </span>
-                  )}
-                  {displayUserData.address.city &&
-                    displayUserData.address.state && (
-                      <span className="address-line">
-                        {displayUserData.address.city},{" "}
-                        {displayUserData.address.state}{" "}
-                        {displayUserData.address.zipCode}
-                      </span>
-                    )}
-                  {displayUserData.address.country && (
-                    <span className="address-line">
-                      {displayUserData.address.country}
-                    </span>
-                  )}
-                </p>
-              </div>
+            Object.values(displayUserData.address).some(
+              (val) => val && val.trim() !== ""
+            ) ? (
+              <>
+                <div className="detail-item">
+                  <span className="detail-label">Street:</span>
+                  <span className="detail-value">
+                    {displayUserData.address.street || "Not provided"}
+                  </span>
+                </div>
+                <div className="detail-item">
+                  <span className="detail-label">City:</span>
+                  <span className="detail-value">
+                    {displayUserData.address.city || "Not provided"}
+                  </span>
+                </div>
+                <div className="detail-item">
+                  <span className="detail-label">State/Province:</span>
+                  <span className="detail-value">
+                    {displayUserData.address.state || "Not provided"}
+                  </span>
+                </div>
+                <div className="detail-item">
+                  <span className="detail-label">ZIP/Postal Code:</span>
+                  <span className="detail-value">
+                    {displayUserData.address.zipCode || "Not provided"}
+                  </span>
+                </div>
+                <div className="detail-item">
+                  <span className="detail-label">Country:</span>
+                  <span className="detail-value">
+                    {displayUserData.address.country || "Not provided"}
+                  </span>
+                </div>
+              </>
             ) : (
-              <p className="no-data">No address information</p>
+              <div className="no-address-message">
+                No shipping address provided yet.
+              </div>
             )}
           </div>
         )}

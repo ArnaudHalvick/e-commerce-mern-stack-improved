@@ -9,7 +9,6 @@ import {
   changePassword,
   disableAccount,
   resetPasswordChanged,
-  requestEmailChange,
 } from "../../redux/slices/userSlice";
 import { useError } from "../../context/ErrorContext";
 
@@ -21,6 +20,7 @@ import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
 import ProfileInfo from "./components/ProfileInfo";
 import PasswordManager from "./components/PasswordManager";
 import AccountManager from "./components/AccountManager";
+import EmailManager from "./components/EmailManager";
 import EmailVerification from "./components/EmailVerification";
 import Spinner from "../../components/ui/Spinner";
 
@@ -248,407 +248,278 @@ const Profile = () => {
       errorMessage = fieldRules.requiredMessage || `${fieldName} is required`;
     }
     // Check minimum length
-    else if (
-      fieldRules.minLength &&
-      fieldValue &&
-      fieldValue.length < fieldRules.minLength
-    ) {
+    else if (fieldRules.minLength && fieldValue.length < fieldRules.minLength) {
       errorMessage =
         fieldRules.message ||
-        `Minimum length is ${fieldRules.minLength} characters`;
+        `${fieldName} must be at least ${fieldRules.minLength} characters`;
     }
     // Check maximum length
-    else if (
-      fieldRules.maxLength &&
-      fieldValue &&
-      fieldValue.length > fieldRules.maxLength
-    ) {
+    else if (fieldRules.maxLength && fieldValue.length > fieldRules.maxLength) {
       errorMessage =
         fieldRules.message ||
-        `Maximum length is ${fieldRules.maxLength} characters`;
+        `${fieldName} cannot exceed ${fieldRules.maxLength} characters`;
     }
     // Check pattern
-    else if (fieldRules.pattern && fieldValue) {
+    else if (fieldRules.pattern) {
       const pattern = new RegExp(fieldRules.pattern);
       if (!pattern.test(fieldValue)) {
-        errorMessage = fieldRules.message || `Invalid format`;
+        errorMessage = fieldRules.message || `Invalid ${fieldName} format`;
       }
     }
 
-    // Update field errors
-    setFieldErrors((prev) => {
-      if (childName) {
-        // For nested fields
-        return {
-          ...prev,
-          [fieldName]: {
-            ...prev[fieldName],
-            [childName]: errorMessage,
-          },
-        };
-      } else {
-        // For regular fields
-        return {
-          ...prev,
-          [fieldName]: errorMessage,
-        };
-      }
-    });
-  };
-
-  // Add this function to validate the full form before submission
-  const validateForm = (data) => {
-    const errors = {};
-    let isValid = true;
-
-    // Skip validation if we don't have validation rules
-    if (!validationSchema) return { isValid: true, errors: {} };
-
-    // Validate each field according to its rules
-    Object.keys(data).forEach((field) => {
-      if (field === "address" && data[field]) {
-        // Handle address fields
-        errors.address = {};
-        Object.keys(data[field]).forEach((addressField) => {
-          const addressFieldRules = validationSchema.address?.[addressField];
-          if (addressFieldRules) {
-            const value = data[field][addressField];
-            let fieldError = null;
-
-            // Check required fields
-            if (addressFieldRules.required && (!value || value.trim() === "")) {
-              fieldError =
-                addressFieldRules.requiredMessage ||
-                `${addressField} is required`;
-            }
-            // Check minimum length
-            else if (
-              addressFieldRules.minLength &&
-              value &&
-              value.length < addressFieldRules.minLength
-            ) {
-              fieldError =
-                addressFieldRules.message ||
-                `Minimum length is ${addressFieldRules.minLength} characters`;
-            }
-            // Check maximum length
-            else if (
-              addressFieldRules.maxLength &&
-              value &&
-              value.length > addressFieldRules.maxLength
-            ) {
-              fieldError =
-                addressFieldRules.message ||
-                `Maximum length is ${addressFieldRules.maxLength} characters`;
-            }
-            // Check pattern
-            else if (addressFieldRules.pattern && value) {
-              const pattern = new RegExp(addressFieldRules.pattern);
-              if (!pattern.test(value)) {
-                fieldError = addressFieldRules.message || `Invalid format`;
-              }
-            }
-
-            if (fieldError) {
-              errors.address[addressField] = fieldError;
-              isValid = false;
-            }
-          }
-        });
-
-        // Remove address errors object if empty
-        if (Object.keys(errors.address).length === 0) {
-          delete errors.address;
-        }
-      } else {
-        // Handle regular fields
-        const fieldRules = validationSchema[field];
-        if (fieldRules) {
-          const value = data[field];
-          let fieldError = null;
-
-          // Check required fields
-          if (fieldRules.required && (!value || value.trim() === "")) {
-            fieldError = fieldRules.requiredMessage || `${field} is required`;
-          }
-          // Check minimum length
-          else if (
-            fieldRules.minLength &&
-            value &&
-            value.length < fieldRules.minLength
-          ) {
-            fieldError =
-              fieldRules.message ||
-              `Minimum length is ${fieldRules.minLength} characters`;
-          }
-          // Check maximum length
-          else if (
-            fieldRules.maxLength &&
-            value &&
-            value.length > fieldRules.maxLength
-          ) {
-            fieldError =
-              fieldRules.message ||
-              `Maximum length is ${fieldRules.maxLength} characters`;
-          }
-          // Check pattern
-          else if (fieldRules.pattern && value) {
-            const pattern = new RegExp(fieldRules.pattern);
-            if (!pattern.test(value)) {
-              fieldError = fieldRules.message || `Invalid format`;
-            }
-          }
-
-          if (fieldError) {
-            errors[field] = fieldError;
-            isValid = false;
-          }
-        }
-      }
-    });
-
-    return { isValid, errors };
-  };
-
-  // Update the handleSubmit function to use the new validation
-  const handleSubmit = async (e, customFormData = null) => {
-    e.preventDefault();
-
-    const dataToSubmit = customFormData || formData;
-
-    // Validate form before submission
-    const { isValid, errors } = validateForm(dataToSubmit);
-
-    if (!isValid) {
-      setFieldErrors(errors);
-      return;
-    }
-
-    try {
-      const response = await dispatch(updateUserProfile(dataToSubmit)).unwrap();
-
-      // Store the updated user data
-      setUpdatedUserData(response);
-
-      // Also refresh the user data in the AuthContext
-      await fetchUserProfile();
-
-      // Update the form data with the latest response
-      // Include only fields present in the response to avoid overwriting existing fields
-      setFormData((prev) => {
-        const newFormData = { ...prev };
-
-        if (response.name) newFormData.name = response.name;
-        if (response.phone !== undefined)
-          newFormData.phone = response.phone || "";
-
-        // Update address if it's in the response
-        if (response.address) {
-          newFormData.address = {
-            street: response.address.street || "",
-            city: response.address.city || "",
-            state: response.address.state || "",
-            zipCode: response.address.zipCode || "",
-            country: response.address.country || "",
-          };
-        }
-
-        return newFormData;
-      });
-
-      setMessage({
-        text: "Profile updated successfully!",
-        type: "success",
-      });
-    } catch (err) {
-      // Check for validation errors in the response
-      if (err?.validationErrors) {
-        const validationErrors = {};
-        // Transform the backend validation errors to match our field structure
-        Object.entries(err.validationErrors).forEach(([field, message]) => {
-          // Convert fields like 'address.street' to 'street'
-          const fieldName = field.includes(".") ? field.split(".")[1] : field;
-          validationErrors[fieldName] = message;
-        });
-        setFieldErrors(validationErrors);
-        setMessage({
-          text: "Please fix the errors in the form",
-          type: "error",
-        });
-      } else {
-        setMessage({
-          text: err || "Failed to update profile. Please try again.",
-          type: "error",
-        });
-      }
-    }
-  };
-
-  const handlePasswordSubmit = async (e) => {
-    e.preventDefault();
-    setMessage({ text: "", type: "" });
-    setFieldErrors({});
-
-    // Client-side validation using schema validation
-    if (passwordValidation.schema && !passwordValidation.isLoading) {
-      const errors = passwordValidation.validateForm(passwordData);
-
-      if (Object.keys(errors).length > 0) {
-        setFieldErrors(errors);
-        setMessage({
-          text: "Please fix the errors in the form",
-          type: "error",
-        });
-        return;
-      }
-    }
-
-    try {
-      await dispatch(
-        changePassword({
-          currentPassword: passwordData.currentPassword,
-          newPassword: passwordData.newPassword,
-        })
-      ).unwrap();
-      // Success message and reset will be handled by the useEffect
-    } catch (err) {
-      // Check for validation errors in the response
-      if (err?.validationErrors) {
-        const validationErrors = {};
-        Object.entries(err.validationErrors).forEach(([field, message]) => {
-          validationErrors[field] = message;
-        });
-        setFieldErrors(validationErrors);
-        setMessage({
-          text: "Please fix the errors in the form",
-          type: "error",
-        });
-      } else {
-        setMessage({
-          text: err || "Failed to change password. Please try again.",
-          type: "error",
-        });
-      }
-    }
-  };
-
-  const handleDisableAccount = async () => {
-    if (
-      window.confirm(
-        "Are you sure you want to disable your account? You won't be able to log in until an administrator re-enables it."
-      )
-    ) {
-      try {
-        await dispatch(disableAccount()).unwrap();
-        logout();
-        navigate("/");
-      } catch (err) {
-        setMessage({
-          text: err || "Failed to disable account. Please try again.",
-          type: "error",
-        });
-      }
-    }
-  };
-
-  // Handle email change request
-  const handleEmailChangeRequest = async (newEmail) => {
-    // Clear any previous message
-    setMessage({ text: "", type: "" });
-    setEmailVerificationStatus(null);
-
-    // Validate that the email is different from current email
-    if (user && user.email === newEmail) {
+    // Update error state
+    if (childName) {
+      // For nested fields
       setFieldErrors((prev) => ({
         ...prev,
-        email: "New email must be different from your current email",
+        [fieldName]: {
+          ...prev[fieldName],
+          [childName]: errorMessage,
+        },
       }));
+    } else {
+      // For regular fields
+      setFieldErrors((prev) => ({
+        ...prev,
+        [fieldName]: errorMessage,
+      }));
+    }
+  };
+
+  // Validate form before submission
+  const validateForm = (data) => {
+    // Skip validation if we don't have validation rules
+    if (!validationSchema) return true;
+
+    let isValid = true;
+    const errors = {};
+
+    // Process each field in the form data
+    Object.entries(data).forEach(([fieldName, fieldValue]) => {
+      // Skip validation for the address object - we'll do that separately
+      if (fieldName === "address") return;
+
+      const fieldRules = validationSchema[fieldName];
+      if (!fieldRules) return;
+
+      // Check required fields
+      if (
+        fieldRules.required &&
+        (!fieldValue || fieldValue.toString().trim() === "")
+      ) {
+        errors[fieldName] =
+          fieldRules.requiredMessage || `${fieldName} is required`;
+        isValid = false;
+      }
+      // Check minimum length
+      else if (
+        fieldRules.minLength &&
+        fieldValue.length < fieldRules.minLength
+      ) {
+        errors[fieldName] =
+          fieldRules.message ||
+          `${fieldName} must be at least ${fieldRules.minLength} characters`;
+        isValid = false;
+      }
+      // Check maximum length
+      else if (
+        fieldRules.maxLength &&
+        fieldValue.length > fieldRules.maxLength
+      ) {
+        errors[fieldName] =
+          fieldRules.message ||
+          `${fieldName} cannot exceed ${fieldRules.maxLength} characters`;
+        isValid = false;
+      }
+      // Check pattern
+      else if (fieldRules.pattern) {
+        const pattern = new RegExp(fieldRules.pattern);
+        if (fieldValue && !pattern.test(fieldValue)) {
+          errors[fieldName] =
+            fieldRules.message || `Invalid ${fieldName} format`;
+          isValid = false;
+        }
+      }
+    });
+
+    // Validate address fields if present
+    if (data.address && validationSchema.address) {
+      errors.address = {};
+      let addressValid = true;
+
+      Object.entries(data.address).forEach(([addressField, addressValue]) => {
+        const addressRules = validationSchema.address[addressField];
+        if (!addressRules) return;
+
+        // Validate each address field
+        if (
+          addressRules.required &&
+          (!addressValue || addressValue.trim() === "")
+        ) {
+          errors.address[addressField] =
+            addressRules.requiredMessage || `${addressField} is required`;
+          addressValid = false;
+        } else if (
+          addressRules.minLength &&
+          addressValue.length < addressRules.minLength
+        ) {
+          errors.address[addressField] =
+            addressRules.message ||
+            `${addressField} must be at least ${addressRules.minLength} characters`;
+          addressValid = false;
+        } else if (
+          addressRules.maxLength &&
+          addressValue.length > addressRules.maxLength
+        ) {
+          errors.address[addressField] =
+            addressRules.message ||
+            `${addressField} cannot exceed ${addressRules.maxLength} characters`;
+          addressValid = false;
+        } else if (addressRules.pattern) {
+          const pattern = new RegExp(addressRules.pattern);
+          if (addressValue && !pattern.test(addressValue)) {
+            errors.address[addressField] =
+              addressRules.message || `Invalid ${addressField} format`;
+            addressValid = false;
+          }
+        }
+      });
+
+      // If all address fields are valid, remove the address errors object
+      if (addressValid) {
+        delete errors.address;
+      } else {
+        isValid = false;
+      }
+    }
+
+    setFieldErrors(errors);
+    return isValid;
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e, customFormData = null) => {
+    e?.preventDefault();
+
+    // Use custom form data if provided, otherwise use the form state
+    const dataToSubmit = customFormData || formData;
+
+    // Validate the form
+    if (!validateForm(dataToSubmit)) {
       return;
     }
 
     try {
-      // Dispatch the email change request
-      const response = await dispatch(requestEmailChange(newEmail)).unwrap();
+      const result = await dispatch(updateUserProfile(dataToSubmit)).unwrap();
+      showSuccess("Profile updated successfully!");
 
-      // Set success message
-      setEmailVerificationStatus({
-        message: `Verification email sent to ${newEmail}. Please check your inbox to confirm this change.`,
-        type: "success",
+      // Update the displayed user data
+      setUpdatedUserData({
+        ...user,
+        ...dataToSubmit,
       });
-
-      // Show toast notification
-      showSuccess("Verification email sent successfully");
     } catch (error) {
-      // Handle errors
-      const errorMessage =
-        error?.message || "Failed to request email verification";
-      setEmailVerificationStatus({
-        message: errorMessage,
-        type: "error",
-      });
-
-      // Show error notification
-      showError(errorMessage);
+      showError(error || "Failed to update profile");
     }
   };
 
-  const handleResendVerification = async () => {
-    if (!user?.email) return;
+  // Handle password change
+  const handlePasswordSubmit = async (e) => {
+    e.preventDefault();
+
+    // Validate password fields
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      setFieldErrors({
+        ...fieldErrors,
+        confirmPassword: "Passwords do not match",
+      });
+      return;
+    }
 
     try {
-      await dispatch(requestEmailVerification(user.email)).unwrap();
-      setVerificationRequested(true);
-    } catch (err) {
-      setMessage({
-        text: err || "Failed to send verification email. Please try again.",
-        type: "error",
+      const result = await dispatch(changePassword(passwordData)).unwrap();
+      // Success is handled by useEffect watching for passwordChanged
+    } catch (error) {
+      setFieldErrors({
+        currentPassword: error.includes("current password")
+          ? "Current password is incorrect"
+          : null,
+        ...fieldErrors,
       });
+      showError(error || "Failed to change password");
     }
   };
 
-  if (authLoading || profileValidation.isLoading) {
-    return (
-      <div className="profile-container">
-        <Breadcrumb
-          routes={[{ label: "HOME", path: "/" }, { label: "PROFILE" }]}
-        />
-        <div className="loading">
-          <Spinner message="Loading profile data..." size="medium" />
-        </div>
-      </div>
-    );
-  }
+  // Handle account disable/delete
+  const handleDisableAccount = async () => {
+    try {
+      await dispatch(disableAccount()).unwrap();
 
-  // Get the display user data (either the updated data or the original user data)
+      showSuccess(
+        "Your account has been disabled. You will be logged out in a moment."
+      );
+
+      // Log out after a brief delay to allow the user to see the success message
+      setTimeout(() => {
+        logout();
+        navigate("/");
+      }, 3000);
+    } catch (error) {
+      showError(error || "Failed to disable account");
+    }
+  };
+
+  // Handle resend verification
+  const handleResendVerification = async () => {
+    try {
+      await dispatch(requestEmailVerification()).unwrap();
+      setVerificationRequested(true);
+      showSuccess("Verification email sent. Please check your inbox.");
+    } catch (error) {
+      showError(error || "Failed to send verification email");
+    }
+  };
+
+  // Displayed user data (either the updated data or the original user data)
   const displayUserData = updatedUserData || user;
-  const displayName =
-    displayUserData?.username || displayUserData?.name || "Not provided";
+  // Display name (try to use name or fallback to username)
+  const displayName = displayUserData?.name || displayUserData?.username || "";
 
   return (
     <div className="profile-container">
-      <Breadcrumb current="My Profile" />
+      <Breadcrumb
+        routes={[{ label: "Home", path: "/" }, { label: "Profile" }]}
+      />
 
-      <div className="profile-content">
-        <h1 className="profile-title">My Profile</h1>
+      <h1 className="profile-heading">Profile</h1>
 
-        {/* Display Messages */}
-        {message.text && (
-          <div className={`message ${message.type}`}>
-            <p>{message.text}</p>
-          </div>
-        )}
+      {/* Show loading state */}
+      {authLoading ? (
+        <Spinner size="large" message="Loading your profile..." />
+      ) : (
+        <>
+          {/* Status Messages */}
+          {message.text && (
+            <div className={`form-message ${message.type}`}>{message.text}</div>
+          )}
 
-        {/* Email Verification Alert */}
-        <EmailVerification
-          user={user}
-          verificationRequested={verificationRequested}
-          handleResendVerification={handleResendVerification}
-          loading={loading}
-          sendingVerification={loadingStates?.sendingVerification}
-        />
+          {/* Verification Status Messages */}
+          {emailVerificationStatus && (
+            <div className={`form-message ${emailVerificationStatus.type}`}>
+              {emailVerificationStatus.message}
+            </div>
+          )}
 
-        <div className="profile-sections">
-          {/* Basic Info Section */}
+          {/* Email Verification Alert - if user's email is not verified */}
+          <EmailVerification
+            user={user}
+            verificationRequested={verificationRequested}
+            handleResendVerification={handleResendVerification}
+            loading={loading}
+            sendingVerification={loadingStates?.sendingVerification}
+          />
+
+          {/* Profile Info (Basic Information and Address) */}
           <ProfileInfo
             formData={formData}
             handleInputChange={handleInputChange}
@@ -660,30 +531,31 @@ const Profile = () => {
             displayUserData={displayUserData}
             displayName={displayName}
             validationSchema={validationSchema}
-            handleEmailChangeRequest={handleEmailChangeRequest}
-            emailVerificationStatus={emailVerificationStatus}
           />
 
-          {/* Password Management Section */}
+          {/* Email Management */}
+          <EmailManager
+            user={displayUserData}
+            validationSchema={validationSchema}
+            setEmailVerificationStatus={setEmailVerificationStatus}
+          />
+
+          {/* Password Management */}
           <PasswordManager
-            isChangingPassword={isChangingPassword}
-            setIsChangingPassword={setIsChangingPassword}
             passwordData={passwordData}
             handlePasswordInputChange={handlePasswordInputChange}
             handlePasswordSubmit={handlePasswordSubmit}
-            loading={loading}
-            changingPassword={loadingStates?.changingPassword}
             fieldErrors={fieldErrors}
+            isChangingPassword={isChangingPassword}
+            setIsChangingPassword={setIsChangingPassword}
+            loadingStates={loadingStates}
+            validationSchema={passwordValidation.schema}
           />
 
-          {/* Account Management Section */}
-          <AccountManager
-            handleDisableAccount={handleDisableAccount}
-            loading={loading}
-            disablingAccount={loadingStates?.disablingAccount}
-          />
-        </div>
-      </div>
+          {/* Account Management (Disable Account) */}
+          <AccountManager handleDisableAccount={handleDisableAccount} />
+        </>
+      )}
     </div>
   );
 };

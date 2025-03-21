@@ -493,3 +493,71 @@
 .form-label span.required {
   display: none;
 }
+
+/* Add styles for the email manager section */
+.email-manager-section {
+  margin-bottom: 2rem;
+}
+
+.email-form {
+  max-width: 600px;
+}
+
+.form-note {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: #666;
+  line-height: 1.4;
+}
+
+.verification-message {
+  margin: 1rem 0;
+  padding: 0.75rem 1rem;
+  border-radius: 0.25rem;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.verification-message.success {
+  background-color: #e6f7e6;
+  border: 1px solid #c3e6cb;
+  color: #155724;
+}
+
+.verification-message.error {
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  color: #721c24;
+}
+
+.unverified-badge {
+  margin-left: 0.5rem;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  color: #fff;
+  background-color: #dc3545;
+  padding: 0.15rem 0.4rem;
+  border-radius: 0.25rem;
+  vertical-align: middle;
+}
+
+.form-message {
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 0.25rem;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.form-message.success {
+  background-color: #e6f7e6;
+  border: 1px solid #c3e6cb;
+  color: #155724;
+}
+
+.form-message.error {
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  color: #721c24;
+}
