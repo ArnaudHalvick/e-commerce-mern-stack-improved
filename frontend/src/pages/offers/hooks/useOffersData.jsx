@@ -144,7 +144,7 @@ const useOffersData = () => {
     setLoading(true);
     setError(null);
 
-    fetch(getApiUrl("all-products?basicInfo=true"))
+    fetch(getApiUrl("products/all-products?basicInfo=true"))
       .then((res) => {
         if (!res.ok) {
           throw new Error(

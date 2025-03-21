@@ -13,7 +13,7 @@ const Popular = () => {
     setLoading(true);
     setError(null);
 
-    fetch(getApiUrl("featured-women?basicInfo=true"))
+    fetch(getApiUrl("products/featured-women?basicInfo=true"))
       .then((res) => {
         if (!res.ok) {
           throw new Error(

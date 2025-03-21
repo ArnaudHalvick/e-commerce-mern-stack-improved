@@ -13,7 +13,7 @@ const NewCollection = () => {
     setLoading(true);
     setError(null);
 
-    fetch(getApiUrl("newcollection"))
+    fetch(getApiUrl("products/newcollection"))
       .then((res) => {
         if (!res.ok) {
           throw new Error(

@@ -24,7 +24,14 @@ const cartApi = {
    */
   addToCart: async (cartItem) => {
     try {
-      const response = await apiClient.post("/api/cart/add", cartItem);
+      // Rename itemId to productId as required by the backend
+      const { itemId, ...rest } = cartItem;
+      const payload = {
+        productId: itemId, // Convert itemId to productId
+        ...rest,
+      };
+
+      const response = await apiClient.post("/api/cart/add", payload);
       return response.data;
     } catch (error) {
       throw (
