@@ -70,7 +70,7 @@ const registerUser = catchAsync(async (req, res, next) => {
 
   // Check if email already exists
   const normalizedEmail = normalizeEmail(email);
-  const existingUser = await User.findOne({ email: normalizedEmail });
+  const existingUser = await User.findOne({ normalizedEmail });
 
   if (existingUser) {
     return next(new AppError("User with this email already exists", 400));
@@ -79,7 +79,7 @@ const registerUser = catchAsync(async (req, res, next) => {
   // Create new user
   const user = await User.create({
     name: username,
-    email: normalizedEmail,
+    email: email,
     password,
   });
 
@@ -132,9 +132,7 @@ const loginUser = catchAsync(async (req, res, next) => {
 
   // Find user by email
   const normalizedEmail = normalizeEmail(email);
-  const user = await User.findOne({ email: normalizedEmail }).select(
-    "+password"
-  );
+  const user = await User.findOne({ normalizedEmail }).select("+password");
 
   if (!user) {
     return next(new AppError("Invalid email or password", 401));
@@ -335,7 +333,7 @@ const forgotPassword = catchAsync(async (req, res, next) => {
   }
 
   const normalizedEmail = normalizeEmail(email);
-  const user = await User.findOne({ email: normalizedEmail });
+  const user = await User.findOne({ normalizedEmail });
 
   if (!user) {
     return next(new AppError("No user found with this email", 404));
@@ -474,7 +472,7 @@ const requestVerification = catchAsync(async (req, res, next) => {
   }
 
   const normalizedEmail = normalizeEmail(email);
-  const user = await User.findOne({ email: normalizedEmail });
+  const user = await User.findOne({ normalizedEmail });
 
   if (!user) {
     logger.warn(`Verification request for non-existent email: ${email}`);
@@ -558,7 +556,7 @@ const verifyEmail = catchAsync(async (req, res, next) => {
       // If email is provided, check if that email is already verified
       const normalizedEmail = normalizeEmail(email);
       const existingUser = await User.findOne({
-        email: normalizedEmail,
+        normalizedEmail,
         isEmailVerified: true,
       });
 
@@ -700,7 +698,9 @@ const requestEmailChange = catchAsync(async (req, res, next) => {
   const normalizedNewEmail = normalizeEmail(email);
 
   // Check if email already exists
-  const existingUser = await User.findOne({ email: normalizedNewEmail });
+  const existingUser = await User.findOne({
+    normalizedEmail: normalizedNewEmail,
+  });
   if (existingUser && existingUser._id.toString() !== req.user.id) {
     return next(
       new AppError("Email is already in use by another account", 400)
