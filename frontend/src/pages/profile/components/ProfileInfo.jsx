@@ -427,25 +427,19 @@ const ProfileInfo = ({
           <div className="profile-address-container">
             {displayUserData?.address?.street ? (
               <div className="profile-address-details">
-                <p className="profile-address-text">
-                  <span className="profile-address-line">
-                    {displayUserData.address.street}
-                  </span>
-                  <span className="profile-address-line">
-                    {displayUserData.address.city}
-                    {displayUserData.address.state
-                      ? `, ${displayUserData.address.state}`
-                      : ""}
-                    {displayUserData.address.zipCode
-                      ? ` ${displayUserData.address.zipCode}`
-                      : ""}
-                  </span>
-                  {displayUserData.address.country && (
-                    <span className="profile-address-line">
-                      {displayUserData.address.country}
-                    </span>
-                  )}
-                </p>
+                <div className="profile-address-line">
+                  {displayUserData.address.street}
+                </div>
+                <div className="profile-address-line">
+                  {displayUserData.address.zipCode &&
+                    `${displayUserData.address.zipCode}, `}
+                  {displayUserData.address.city}
+                </div>
+                <div className="profile-address-line">
+                  {displayUserData.address.state &&
+                    `${displayUserData.address.state}, `}
+                  {displayUserData.address.country}
+                </div>
               </div>
             ) : (
               <p className="profile-no-data">No shipping address provided</p>
