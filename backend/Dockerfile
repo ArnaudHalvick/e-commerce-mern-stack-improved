@@ -18,4 +18,4 @@ RUN mkdir -p /app/logs && chmod 777 /app/logs
 EXPOSE 4000
 
 # Command to run the application
-CMD ["node", "index.js"] 
+CMD ["node", "server.js"] 

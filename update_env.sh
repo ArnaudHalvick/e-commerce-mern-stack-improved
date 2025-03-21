@@ -30,10 +30,10 @@ PUBLIC_URL=${PROD_URL}
 PORT=4000
 EOL
 
-# Update backend CORS settings in index.js by directly editing the file
-echo "Updating CORS settings in backend/index.js"
-cat > backend/index.js.new << EOL
-// backend/index.js
+# Update backend CORS settings in server.js by directly editing the file
+echo "Updating CORS settings in backend/server.js"
+cat > backend/server.js.new << EOL
+// backend/server.js
 
 require("dotenv").config(); // Load environment variables from .env file
 
@@ -141,6 +141,6 @@ app.listen(port, (error) => {
 EOL
 
 # Replace the old file with the new one
-mv backend/index.js.new backend/index.js
+mv backend/server.js.new backend/server.js
 
 echo "Environment files updated successfully for production URL: ${PROD_URL}" 

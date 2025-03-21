@@ -5,11 +5,11 @@
   "license": "ISC",
   "author": "",
   "type": "commonjs",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "NODE_ENV=development nodemon index.js",
-    "prod": "NODE_ENV=production node index.js",
+    "start": "node server.js",
+    "dev": "NODE_ENV=development nodemon server.js",
+    "prod": "NODE_ENV=production node server.js",
     "fix-image-urls": "node scripts/fixImageUrls.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

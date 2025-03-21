@@ -1,4 +1,4 @@
-// backend/index.js
+// backend/server.js
 
 require("dotenv").config(); // Load environment variables from .env file
 
