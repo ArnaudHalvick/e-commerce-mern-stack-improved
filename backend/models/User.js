@@ -120,9 +120,10 @@ const UserSchema = new mongoose.Schema({
       type: String,
       validate: {
         validator: function (v) {
-          return !v || /^[0-9a-zA-Z\-\s]{3,10}$/.test(v);
+          return !v || /^[0-9a-zA-Z\-\s]{5,12}$/.test(v);
         },
-        message: (props) => "Please enter a valid zip/postal code",
+        message: (props) =>
+          "Please enter a valid zip/postal code (5-12 characters)",
       },
     },
     country: {

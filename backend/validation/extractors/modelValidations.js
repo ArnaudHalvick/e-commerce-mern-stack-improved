@@ -4,7 +4,10 @@
  */
 
 const User = require("../../models/User");
-const { getModelValidation } = require("./schemaToValidation");
+const {
+  getModelValidation,
+  extractValidationRules,
+} = require("./schemaToValidation");
 
 /**
  * Get validation rules for user profile fields
@@ -29,30 +32,68 @@ const getUserProfileValidation = () => {
     },
   };
 
-  // Add nested address validation only if not already extracted from model
-  if (!modelValidations.address?.street?.minLength) {
-    customValidations.address = {
-      street: {
-        minLength: 3,
-        message: "Street address must be at least 3 characters long",
-      },
-      city: {
-        minLength: 2,
-        message: "City must be at least 2 characters long",
-      },
-      state: {
-        minLength: 2,
-        message: "State must be at least 2 characters long",
-      },
-      zipCode: {
-        pattern: "^[0-9a-zA-Z\\-\\s]{3,10}$",
-        message: "Please enter a valid zip/postal code",
-      },
-      country: {
-        minLength: 2,
-        message: "Country must be at least 2 characters long",
-      },
-    };
+  // Handle address validation - extract directly from schema paths
+  const userSchema = User.schema;
+  const addressFields = Object.keys(userSchema.paths).filter((path) =>
+    path.startsWith("address.")
+  );
+
+  if (addressFields.length > 0) {
+    // Initialize the address object if it doesn't exist
+    if (!modelValidations.address) {
+      modelValidations.address = {};
+    }
+
+    // For each address field, extract validation rules
+    addressFields.forEach((fullPath) => {
+      // Extract the field name after 'address.'
+      const fieldName = fullPath.replace("address.", "");
+
+      // Skip internal fields like __v or _id
+      if (fieldName === "_id" || fieldName === "__v") return;
+
+      const schemaType = userSchema.paths[fullPath];
+
+      // Initialize field if needed
+      if (!modelValidations.address[fieldName]) {
+        modelValidations.address[fieldName] = {};
+      }
+
+      // Extract validators from this field
+      if (schemaType.validators && schemaType.validators.length > 0) {
+        schemaType.validators.forEach((validator) => {
+          // Skip non-validator functions
+          if (!validator || !validator.validator) return;
+
+          // Process validator functions to extract rules
+          if (typeof validator.validator === "function") {
+            const fnString = validator.validator.toString();
+
+            // Extract minLength validator
+            const minLengthMatch = fnString.match(/v\.length\s*>=\s*(\d+)/);
+            if (minLengthMatch && minLengthMatch[1]) {
+              modelValidations.address[fieldName].minLength = parseInt(
+                minLengthMatch[1]
+              );
+            }
+
+            // Extract regex pattern
+            const regexMatch = fnString.match(/\/([^\/]+)\//);
+            if (regexMatch && regexMatch[1]) {
+              modelValidations.address[fieldName].pattern = regexMatch[1];
+            }
+          }
+
+          // Extract validation message
+          if (validator.message) {
+            modelValidations.address[fieldName].message =
+              typeof validator.message === "function"
+                ? validator.message({ value: "" })
+                : validator.message;
+          }
+        });
+      }
+    });
   }
 
   // Remove any undefined values from customValidations
