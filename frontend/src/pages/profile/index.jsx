@@ -519,6 +519,13 @@ const Profile = () => {
             sendingVerification={loadingStates?.sendingVerification}
           />
 
+          {/* Email Management */}
+          <EmailManager
+            user={displayUserData}
+            validationSchema={validationSchema}
+            setEmailVerificationStatus={setEmailVerificationStatus}
+          />
+
           {/* Profile Info (Basic Information and Address) */}
           <ProfileInfo
             formData={formData}
@@ -531,13 +538,6 @@ const Profile = () => {
             displayUserData={displayUserData}
             displayName={displayName}
             validationSchema={validationSchema}
-          />
-
-          {/* Email Management */}
-          <EmailManager
-            user={displayUserData}
-            validationSchema={validationSchema}
-            setEmailVerificationStatus={setEmailVerificationStatus}
           />
 
           {/* Password Management */}
