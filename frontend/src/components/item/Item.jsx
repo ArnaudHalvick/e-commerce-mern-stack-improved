@@ -1,7 +1,7 @@
 import "./Item.css";
 import { Link } from "react-router-dom";
 import { useMemo } from "react";
-import { getImageUrl } from "../../utils/imageUtils";
+import { getImageUrl } from "../../utils/apiUtils";
 
 const Item = (props) => {
   const { images, new_price, old_price, slug, _id, id, name, mainImageIndex } =

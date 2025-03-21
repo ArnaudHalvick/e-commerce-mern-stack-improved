@@ -70,10 +70,10 @@ app.get("/api/health", (req, res) => {
 });
 
 // Routes
+app.use("/api", uploadRoutes); // This is for admin I will update it later
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/cart", cartRoutes);
-app.use("/api", uploadRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/error-demo", errorDemoRoutes);
 app.use("/api/validation", validationRoutes);

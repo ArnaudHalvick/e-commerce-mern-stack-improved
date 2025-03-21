@@ -1,5 +1,6 @@
 import React, { memo, useState } from "react";
 import remove_icon from "../../../components/assets/cart_cross_icon.png";
+import { getImageUrl } from "../../../utils/apiUtils";
 import "../CartItems.css";
 
 /**
@@ -56,7 +57,11 @@ const CartItem = ({
   return (
     <tr>
       <td>
-        <img className="cart-product-image" src={item.image} alt={item.name} />
+        <img
+          className="cart-product-image"
+          src={getImageUrl(item.image)}
+          alt={item.name}
+        />
       </td>
       <td>{item.name}</td>
       <td>
