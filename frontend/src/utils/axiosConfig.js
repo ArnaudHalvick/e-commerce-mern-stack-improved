@@ -15,6 +15,14 @@ let isRefreshing = false;
 // Queue of failed requests to retry after token refresh
 let failedQueue = [];
 
+// Create a cancel token source for requests that should be canceled on logout
+const cancelTokenSource = axios.CancelToken.source();
+
+// Function to check if user is logged out
+const isUserLoggedOut = () => {
+  return localStorage.getItem("user-logged-out") === "true";
+};
+
 // Function to process the queue of failed requests
 const processQueue = (error, token = null) => {
   failedQueue.forEach((prom) => {
@@ -31,12 +39,32 @@ const processQueue = (error, token = null) => {
 // Add a request interceptor to handle authentication
 api.interceptors.request.use(
   (config) => {
+    // If user is logged out, avoid authenticated requests
+    if (
+      isUserLoggedOut() &&
+      config.url !== "/api/users/login" &&
+      config.url !== "/api/users/signup"
+    ) {
+      const error = new Error("User is logged out");
+      error.config = config;
+      return Promise.reject(error);
+    }
+
     // Get token from local storage
     const token = localStorage.getItem("auth-token");
 
     // If token exists, add to headers
     if (token) {
       config.headers["auth-token"] = token;
+    }
+
+    // Add cancel token to non-auth requests
+    if (
+      !config.url.includes("/api/users/login") &&
+      !config.url.includes("/api/users/signup") &&
+      !config.url.includes("/api/users/refresh-token")
+    ) {
+      config.cancelToken = cancelTokenSource.token;
     }
 
     return config;
@@ -52,6 +80,11 @@ api.interceptors.response.use(
     return response;
   },
   async (error) => {
+    // If request was canceled, just return the rejected promise
+    if (axios.isCancel(error)) {
+      return Promise.reject(error);
+    }
+
     const originalRequest = error.config;
 
     // Extract error details
@@ -71,7 +104,9 @@ api.interceptors.response.use(
     // If the error is 401 Unauthorized and it's not a retry, attempt to refresh the token
     if (
       (error.response?.status === 401 || isTokenExpiredError) &&
-      !originalRequest._retry
+      !originalRequest._retry &&
+      !isUserLoggedOut() &&
+      !originalRequest.url?.includes("refresh-token")
     ) {
       if (isRefreshing) {
         // If already refreshing, add this request to the queue
@@ -113,6 +148,7 @@ api.interceptors.response.use(
           // If refresh fails, process queue with error
           processQueue(new Error("Refresh token failed"));
           localStorage.removeItem("auth-token");
+          localStorage.setItem("user-logged-out", "true");
 
           // Trigger redirect to login if needed (using event or other mechanism)
           if (typeof window !== "undefined") {
@@ -127,6 +163,7 @@ api.interceptors.response.use(
         // If refresh request throws, process queue with error
         processQueue(refreshError);
         localStorage.removeItem("auth-token");
+        localStorage.setItem("user-logged-out", "true");
 
         // Trigger redirect to login if needed
         if (typeof window !== "undefined") {
@@ -180,5 +217,12 @@ api.interceptors.response.use(
     return Promise.reject(errorResponse);
   }
 );
+
+// Function to cancel pending requests (used during logout)
+export const cancelPendingRequests = (
+  message = "Operation canceled due to logout"
+) => {
+  cancelTokenSource.cancel(message);
+};
 
 export default api;

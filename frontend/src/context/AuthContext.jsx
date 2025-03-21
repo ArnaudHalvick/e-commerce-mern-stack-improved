@@ -5,6 +5,8 @@ import { resetCart } from "../redux/slices/cartSlice";
 import { setUser, clearUser } from "../redux/slices/userSlice";
 import { API_BASE_URL } from "../utils/apiUtils";
 import axios from "axios";
+import { cancelPendingRequests as cancelApiRequests } from "../services/apiClient";
+import { cancelPendingRequests as cancelAxiosRequests } from "../utils/axiosConfig";
 
 export const AuthContext = createContext(null);
 
@@ -15,9 +17,18 @@ const AuthContextProvider = (props) => {
   const [error, setError] = useState(null);
   const [accountDisabled, setAccountDisabled] = useState(false);
   const [tokenRefreshInProgress, setTokenRefreshInProgress] = useState(false);
+  const [isUserLoggedOut, setIsUserLoggedOut] = useState(
+    () => localStorage.getItem("user-logged-out") === "true"
+  );
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  // Sync isUserLoggedOut with localStorage
+  useEffect(() => {
+    const isLoggedOut = localStorage.getItem("user-logged-out") === "true";
+    setIsUserLoggedOut(isLoggedOut);
+  }, []);
 
   // Helper function to normalize user data
   const normalizeUserData = (userData) => {
@@ -31,8 +42,10 @@ const AuthContextProvider = (props) => {
   // Handle auth logout - Extracted to be used in multiple places
   const handleLogout = useCallback(() => {
     localStorage.removeItem("auth-token");
+    localStorage.setItem("user-logged-out", "true");
     setUserState(null);
     setIsAuthenticated(false);
+    setIsUserLoggedOut(true); // Set flag to prevent refresh attempts after logout
     dispatch(resetCart());
     dispatch(clearUser());
   }, [dispatch]);
@@ -65,7 +78,7 @@ const AuthContextProvider = (props) => {
 
   // Function to refresh the access token
   const refreshAccessToken = useCallback(async () => {
-    if (tokenRefreshInProgress) return null;
+    if (tokenRefreshInProgress || isUserLoggedOut) return null;
 
     try {
       setTokenRefreshInProgress(true);
@@ -91,7 +104,7 @@ const AuthContextProvider = (props) => {
     } finally {
       setTokenRefreshInProgress(false);
     }
-  }, [tokenRefreshInProgress, handleLogout]);
+  }, [tokenRefreshInProgress, handleLogout, isUserLoggedOut]);
 
   // Memoized fetchUserProfile function
   const fetchUserProfile = useCallback(async () => {
@@ -157,30 +170,22 @@ const AuthContextProvider = (props) => {
       setLoading(true);
       const token = localStorage.getItem("auth-token");
 
-      if (!token) {
-        // Even if we don't have a token in localStorage, try to refresh
-        const newToken = await refreshAccessToken();
-        if (!newToken) {
-          setIsAuthenticated(false);
-          setUserState(null);
-          dispatch(clearUser());
-          setLoading(false);
-          return;
-        }
-
-        // If we got a new token, continue with it
+      // Skip token refresh if user is logged out or no token exists
+      if (!token || isUserLoggedOut) {
+        setIsAuthenticated(false);
+        setUserState(null);
+        dispatch(clearUser());
+        setLoading(false);
+        return;
       }
 
       try {
-        // Use the current token (either from localStorage or newly refreshed)
-        const currentToken = localStorage.getItem("auth-token");
-
-        // Verify token with backend
+        // Use the current token to verify with backend
         const response = await fetch(`${API_BASE_URL}/api/users/verify-token`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            "auth-token": currentToken,
+            "auth-token": token,
           },
           credentials: "include", // Include cookies for refresh token
         });
@@ -205,12 +210,14 @@ const AuthContextProvider = (props) => {
             setAccountDisabled(true);
             setError("Your account has been disabled. Please contact support.");
           } else if (response.status === 401) {
-            // If unauthorized, try to refresh the token
-            const newToken = await refreshAccessToken();
-            if (newToken) {
-              // If refresh successful, retry auth check
-              await checkAuthStatus();
-              return;
+            // Only attempt to refresh token if not logged out
+            if (!isUserLoggedOut) {
+              const newToken = await refreshAccessToken();
+              if (newToken) {
+                // If refresh successful, retry auth check
+                await checkAuthStatus();
+                return;
+              }
             }
           }
 
@@ -234,13 +241,22 @@ const AuthContextProvider = (props) => {
     };
 
     checkAuthStatus();
-  }, [dispatch, fetchUserProfile, refreshAccessToken, handleLogout]);
+  }, [
+    dispatch,
+    fetchUserProfile,
+    refreshAccessToken,
+    handleLogout,
+    isUserLoggedOut,
+  ]);
 
   // Login function
   const login = async (email, password) => {
     setLoading(true);
     setError(null);
     setAccountDisabled(false);
+    // Clear logout flag on login attempt
+    localStorage.removeItem("user-logged-out");
+    setIsUserLoggedOut(false);
 
     try {
       const response = await fetch(`${API_BASE_URL}/api/users/login`, {
@@ -343,6 +359,14 @@ const AuthContextProvider = (props) => {
 
   // Logout function
   const logout = async () => {
+    // First set logged out flag to prevent new authenticated requests
+    setIsUserLoggedOut(true);
+    localStorage.setItem("user-logged-out", "true");
+
+    // Cancel all pending requests to prevent 401 errors
+    cancelApiRequests("User logged out");
+    cancelAxiosRequests("User logged out");
+
     try {
       // Call backend logout endpoint to clear refresh token cookie
       await fetch(`${API_BASE_URL}/api/users/logout`, {

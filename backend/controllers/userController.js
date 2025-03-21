@@ -162,16 +162,15 @@ const loginUser = catchAsync(async (req, res, next) => {
 const logoutUser = catchAsync(async (req, res, next) => {
   const { refreshToken } = req.cookies;
 
-  if (!refreshToken) {
-    return next(new AppError("No refresh token provided", 400));
+  // Still proceed with logout even if no refresh token is provided
+  if (refreshToken) {
+    // Clear refresh token in DB
+    await User.findOneAndUpdate(
+      { refreshToken },
+      { refreshToken: "" },
+      { runValidators: false }
+    );
   }
-
-  // Clear refresh token in DB
-  await User.findOneAndUpdate(
-    { refreshToken },
-    { refreshToken: "" },
-    { runValidators: false }
-  );
 
   // Clear cookie
   res.clearCookie("refreshToken");
