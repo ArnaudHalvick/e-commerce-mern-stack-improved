@@ -14,7 +14,7 @@ const asyncHandler = require("express-async-handler");
 const {
   getUserProfileValidation,
   getPasswordChangeValidation,
-} = require("../utils/schemaToValidation");
+} = require("../validation");
 const logger = require("../utils/logger");
 
 /**

@@ -1,8 +1,20 @@
+/**
+ * User validation middleware
+ *
+ * This file contains express-validator middleware for user-related routes
+ * These validators are used for request validation before reaching controllers
+ */
+
 const { body, validationResult } = require("express-validator");
 const User = require("../../models/User");
 const { normalizeEmail } = require("../../utils/emailNormalizer");
 
-// Utility function to check validation results
+/**
+ * Utility function to check validation results
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next function
+ */
 const validateResults = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -15,7 +27,10 @@ const validateResults = (req, res, next) => {
   next();
 };
 
-// User registration validation
+/**
+ * User registration validation
+ * Validates username, email, password, and password confirmation
+ */
 const validateRegistration = [
   // Username validation
   body("username")
@@ -77,7 +92,10 @@ const validateRegistration = [
   validateResults,
 ];
 
-// Login validation
+/**
+ * Login validation
+ * Validates email and password
+ */
 const validateLogin = [
   // Email validation
   body("email")
@@ -97,7 +115,10 @@ const validateLogin = [
   validateResults,
 ];
 
-// Password change validation
+/**
+ * Password change validation
+ * Validates current password, new password, and password confirmation
+ */
 const validatePasswordChange = [
   // Current password validation
   body("currentPassword")
@@ -131,7 +152,10 @@ const validatePasswordChange = [
   validateResults,
 ];
 
-// Profile update validation
+/**
+ * Profile update validation
+ * Validates name, phone, and address fields
+ */
 const validateProfileUpdate = [
   // Name validation
   body("name")

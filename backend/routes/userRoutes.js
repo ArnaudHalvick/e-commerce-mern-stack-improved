@@ -9,7 +9,7 @@ const {
   validateLogin,
   validatePasswordChange,
   validateProfileUpdate,
-} = require("../middleware/validators");
+} = require("../validation");
 
 // Public routes
 router.post("/signup", validateRegistration, userController.registerUser);
