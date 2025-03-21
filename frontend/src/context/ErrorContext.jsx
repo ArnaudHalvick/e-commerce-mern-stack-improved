@@ -6,6 +6,17 @@ import React, { createContext, useContext, useState, useCallback } from "react";
 const ErrorContext = createContext();
 
 /**
+ * Generate a unique toast ID
+ * This ensures we don't have duplicate keys when multiple toasts are created in the same millisecond
+ */
+let uniqueToastId = 0;
+const generateUniqueId = () => {
+  const timestamp = Date.now();
+  uniqueToastId++;
+  return `${timestamp}-${uniqueToastId}`;
+};
+
+/**
  * ErrorProvider Component - Wraps the application to provide error handling capabilities
  */
 export const ErrorProvider = ({ children }) => {
@@ -14,7 +25,7 @@ export const ErrorProvider = ({ children }) => {
 
   /**
    * Remove a specific toast by ID
-   * @param {number} id - The ID of the toast to remove
+   * @param {string} id - The ID of the toast to remove
    */
   const removeToast = useCallback((id) => {
     setToasts((prevToasts) => prevToasts.filter((toast) => toast.id !== id));
@@ -28,7 +39,7 @@ export const ErrorProvider = ({ children }) => {
    */
   const addToast = useCallback(
     (message, type = "error", duration = 5000) => {
-      const id = Date.now();
+      const id = generateUniqueId();
       setToasts((prevToasts) => [
         ...prevToasts,
         { id, message, type, duration },

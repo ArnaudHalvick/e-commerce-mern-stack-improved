@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
@@ -78,8 +78,10 @@ const Profile = () => {
 
   // Fetch complete profile when component mounts
   useEffect(() => {
+    let isMounted = true;
+
     const getCompleteProfile = async () => {
-      if (isAuthenticated) {
+      if (isAuthenticated && isMounted) {
         await fetchUserProfile();
       }
     };
@@ -87,16 +89,26 @@ const Profile = () => {
     // Fetch validation schema from backend
     const fetchValidationSchema = async () => {
       try {
+        if (!isMounted) return;
         const response = await apiClient.get("/api/validation/profile");
-        setValidationSchema(response.data);
+        if (isMounted) {
+          setValidationSchema(response.data);
+        }
       } catch (error) {
-        showError("Failed to load validation rules");
+        if (isMounted && !error.isLoggedOut) {
+          showError("Failed to load validation rules");
+        }
       }
     };
 
     // Call both functions
     fetchValidationSchema();
     getCompleteProfile();
+
+    // Cleanup function
+    return () => {
+      isMounted = false;
+    };
   }, [isAuthenticated, fetchUserProfile, showError]);
 
   // Initialize form data with user profile data
@@ -133,21 +145,22 @@ const Profile = () => {
       });
       setIsChangingPassword(false);
 
-      if (passwordChangePending) {
-        setMessage({
-          text: "Verification email sent. Please check your email to confirm password change.",
-          type: "success",
-        });
-      } else {
-        setMessage({
-          text: "Password changed successfully!",
-          type: "success",
-        });
-      }
+      setMessage({
+        text: "Password changed successfully!",
+        type: "success",
+      });
+
+      // Clear the success message after 5 seconds
+      const timerId = setTimeout(() => {
+        setMessage({ text: "", type: "" });
+      }, 5000);
+
+      // Clean up timer on unmount
+      return () => clearTimeout(timerId);
 
       dispatch(resetPasswordChanged());
     }
-  }, [passwordChanged, passwordChangePending, dispatch]);
+  }, [passwordChanged, dispatch]);
 
   // Add a useEffect to check for query parameters
   useEffect(() => {
@@ -427,30 +440,77 @@ const Profile = () => {
   const handlePasswordSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate password fields
-    if (passwordData.newPassword !== passwordData.confirmPassword) {
-      setFieldErrors({
-        ...fieldErrors,
-        confirmPassword: "Passwords do not match",
+    // Clear previous error messages
+    setFieldErrors({});
+
+    // Validate password fields with schema
+    if (passwordValidation.schema) {
+      const errors = {};
+
+      // Validate each field individually
+      Object.keys(passwordData).forEach((field) => {
+        const error = passwordValidation.validateField(
+          field,
+          passwordData[field]
+        );
+        if (error) errors[field] = error;
       });
-      return;
+
+      // Special validation for confirmPassword
+      if (passwordData.newPassword !== passwordData.confirmPassword) {
+        errors.confirmPassword = "Passwords do not match";
+      }
+
+      // If we have validation errors, show them and stop
+      if (Object.keys(errors).length > 0) {
+        setFieldErrors(errors);
+        return;
+      }
     }
 
     try {
-      const result = await dispatch(changePassword(passwordData)).unwrap();
+      // Send all required fields to the API, including confirmPassword
+      const passwordPayload = {
+        currentPassword: passwordData.currentPassword,
+        newPassword: passwordData.newPassword,
+        confirmPassword: passwordData.confirmPassword, // Include this for the API
+      };
+
+      const result = await dispatch(changePassword(passwordPayload)).unwrap();
       // Success is handled by useEffect watching for passwordChanged
     } catch (error) {
-      setFieldErrors({
-        currentPassword: error.includes("current password")
-          ? "Current password is incorrect"
-          : null,
-        ...fieldErrors,
-      });
-      showError(error || "Failed to change password");
+      // Handle structured validation errors from the backend
+      if (error.validationErrors) {
+        setFieldErrors(error.validationErrors);
+      } else if (
+        typeof error === "string" &&
+        error.includes("current password")
+      ) {
+        // Handle specific error message about incorrect current password
+        setFieldErrors({
+          currentPassword: "Current password is incorrect",
+        });
+      } else {
+        // Show generic error message
+        showError(
+          typeof error === "string" ? error : "Failed to change password"
+        );
+      }
     }
   };
 
-  // Handle account disable/delete
+  // Handle Account Management
+  const handleLogout = useCallback(async () => {
+    try {
+      await logout();
+      navigate("/");
+    } catch (error) {
+      // Even if there's an error, still clear local state
+      logout();
+      navigate("/");
+    }
+  }, [logout, navigate]);
+
   const handleDisableAccount = async () => {
     try {
       await dispatch(disableAccount()).unwrap();
@@ -461,8 +521,7 @@ const Profile = () => {
 
       // Log out after a brief delay to allow the user to see the success message
       setTimeout(() => {
-        logout();
-        navigate("/");
+        handleLogout();
       }, 3000);
     } catch (error) {
       showError(error || "Failed to disable account");
@@ -552,7 +611,8 @@ const Profile = () => {
             fieldErrors={fieldErrors}
             isChangingPassword={isChangingPassword}
             setIsChangingPassword={setIsChangingPassword}
-            loadingStates={loadingStates}
+            loading={loading}
+            changingPassword={loadingStates.changingPassword}
             validationSchema={passwordValidation.schema}
           />
 

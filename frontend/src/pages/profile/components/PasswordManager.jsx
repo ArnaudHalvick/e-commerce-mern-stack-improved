@@ -33,10 +33,8 @@ const PasswordManager = ({
 
     const attributes = {};
 
-    // Add pattern if it exists
-    if (fieldSchema.pattern) {
-      attributes.pattern = fieldSchema.pattern;
-    }
+    // Don't add pattern directly to HTML - we'll handle validation in JavaScript
+    // This avoids the regex syntax errors in browser validation
 
     // Add title with validation message
     if (fieldSchema.message) {
@@ -54,6 +52,36 @@ const PasswordManager = ({
     }
 
     return attributes;
+  };
+
+  // Generate password requirements message based on validation schema
+  const getPasswordRequirements = () => {
+    if (!validationSchema?.newPassword) {
+      return "Password should be secure with a mix of characters.";
+    }
+
+    const requirements = [];
+    const schema = validationSchema.newPassword;
+
+    if (schema.minLength) {
+      requirements.push(`at least ${schema.minLength} characters long`);
+    }
+
+    // Check for pattern-based requirements
+    if (schema.message) {
+      // Extract common password requirements from the message
+      if (schema.message.includes("uppercase")) {
+        requirements.push("one uppercase letter");
+      }
+      if (schema.message.includes("number")) {
+        requirements.push("one number");
+      }
+      if (schema.message.includes("special")) {
+        requirements.push("one special character");
+      }
+    }
+
+    return `Password must be ${requirements.join(" and include ")}.`;
   };
 
   return (
@@ -123,7 +151,9 @@ const PasswordManager = ({
               className={getInputClass("newPassword")}
               aria-invalid={fieldErrors?.newPassword ? "true" : "false"}
               aria-describedby={
-                fieldErrors?.newPassword ? "newPassword-error" : undefined
+                fieldErrors?.newPassword
+                  ? "newPassword-error"
+                  : "newPassword-requirements"
               }
               {...getValidationAttributes("newPassword")}
             />
@@ -136,11 +166,11 @@ const PasswordManager = ({
                 {fieldErrors.newPassword}
               </p>
             )}
-            <p className="profile-password-requirements">
-              Password must be at least{" "}
-              {validationSchema?.newPassword?.minLength || 8} characters long
-              and include at least one uppercase letter, one number, and one
-              special character.
+            <p
+              className="profile-password-requirements"
+              id="newPassword-requirements"
+            >
+              {getPasswordRequirements()}
             </p>
           </div>
 

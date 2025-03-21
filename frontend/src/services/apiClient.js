@@ -47,6 +47,7 @@ apiClient.interceptors.request.use(
     ) {
       const error = new Error("User is logged out");
       error.config = config;
+      error.isLoggedOutError = true; // Add a flag to identify this type of error
       return Promise.reject(error);
     }
 
@@ -82,32 +83,47 @@ apiClient.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    const originalRequest = error.config;
+    // Special case for logged out errors
+    if (error.isLoggedOutError) {
+      return Promise.reject({
+        message: "User is logged out",
+        status: 401,
+        originalError: error,
+        isLoggedOut: true,
+      });
+    }
 
-    // Extract useful error information
+    // Default error response structure
     const errorResponse = {
       message: "An unexpected error occurred",
-      status: 500,
+      status: 500, // Default status
       originalError: error,
     };
 
-    // Handle specific error scenarios
+    // Server responded with an error
     if (error.response) {
-      // The server responded with a status code outside of 2xx range
       errorResponse.status = error.response.status;
 
-      // Extract error message from the backend response format
-      errorResponse.message =
-        error.response.data?.message ||
-        error.response.data?.error ||
-        `${error.response.status} - ${error.response.statusText}`;
+      // Extract error message from response if available
+      if (error.response.data) {
+        if (typeof error.response.data === "string") {
+          errorResponse.message = error.response.data;
+        } else if (error.response.data.message) {
+          errorResponse.message = error.response.data.message;
+        } else if (error.response.data.error) {
+          errorResponse.message = error.response.data.error;
+        }
+      } else {
+        errorResponse.message = error.message;
+      }
 
-      // Special handling for auth errors - try to refresh token on 401
+      // If the error was due to an expired token, try to refresh it
       if (
         error.response.status === 401 &&
-        !originalRequest._retry &&
-        !isUserLoggedOut() &&
-        !originalRequest.url?.includes("refresh-token")
+        error.config &&
+        !error.config._retry &&
+        !isRefreshing &&
+        !isUserLoggedOut()
       ) {
         if (isRefreshing) {
           // If already refreshing, add this request to the queue
@@ -115,15 +131,15 @@ apiClient.interceptors.response.use(
             failedQueue.push({ resolve, reject });
           })
             .then((token) => {
-              originalRequest.headers["auth-token"] = token;
-              return apiClient(originalRequest);
+              error.config.headers["auth-token"] = token;
+              return apiClient(error.config);
             })
             .catch((err) => {
               return Promise.reject(err);
             });
         }
 
-        originalRequest._retry = true;
+        error.config._retry = true;
         isRefreshing = true;
 
         try {
@@ -139,12 +155,12 @@ apiClient.interceptors.response.use(
             localStorage.setItem("auth-token", newToken);
 
             // Update the auth header for the original request
-            originalRequest.headers["auth-token"] = newToken;
+            error.config.headers["auth-token"] = newToken;
 
             // Process any queued requests with the new token
             processQueue(null, newToken);
 
-            return apiClient(originalRequest);
+            return apiClient(error.config);
           } else {
             // If refresh fails, process queue with error
             processQueue(new Error("Refresh token failed"));

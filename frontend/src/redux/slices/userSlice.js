@@ -42,12 +42,19 @@ export const updateUserProfile = createAsyncThunk(
 // Async thunk for changing password
 export const changePassword = createAsyncThunk(
   "user/changePassword",
-  async ({ currentPassword, newPassword }, { rejectWithValue }) => {
+  async (
+    { currentPassword, newPassword, confirmPassword },
+    { rejectWithValue }
+  ) => {
     try {
       const token = localStorage.getItem("auth-token");
       const response = await axios.put(
         getApiUrl("users/change-password"),
-        { currentPassword, newPassword },
+        {
+          currentPassword,
+          newPassword,
+          newPasswordConfirm: confirmPassword,
+        },
         {
           headers: {
             "Content-Type": "application/json",
@@ -56,18 +63,20 @@ export const changePassword = createAsyncThunk(
         }
       );
 
-      // Return response data including the verification message
+      // Return response data
       return {
         ...response.data,
-        passwordChangePending: true, // Flag to indicate password change is pending verification
+        passwordChanged: true,
       };
     } catch (error) {
-      // Handle validation errors
+      // Handle validation errors from express-validator
       if (error.response?.data?.errors) {
-        // Format validation errors from express-validator
         const validationErrors = {};
         error.response.data.errors.forEach((err) => {
-          validationErrors[err.param] = err.msg;
+          // Map backend field names to frontend field names
+          const fieldName =
+            err.param === "newPasswordConfirm" ? "confirmPassword" : err.param;
+          validationErrors[fieldName] = err.msg;
         });
 
         return rejectWithValue({
@@ -76,9 +85,20 @@ export const changePassword = createAsyncThunk(
         });
       }
 
-      return rejectWithValue(
-        error.response?.data?.message || "Failed to change password"
-      );
+      // Handle specific error cases
+      if (error.response?.data?.message?.includes("current password")) {
+        return rejectWithValue({
+          message: error.response?.data?.message,
+          validationErrors: {
+            currentPassword: "Current password is incorrect",
+          },
+        });
+      }
+
+      // Generic error
+      return rejectWithValue({
+        message: error.response?.data?.message || "Failed to change password",
+      });
     }
   }
 );
@@ -292,8 +312,7 @@ const userSlice = createSlice({
         state.loading = false;
         state.loadingStates.changingPassword = false;
         state.passwordChanged = true;
-        state.passwordChangePending =
-          action.payload.passwordChangePending || false;
+        state.passwordChangePending = false;
       })
       .addCase(changePassword.rejected, (state, action) => {
         state.loading = false;

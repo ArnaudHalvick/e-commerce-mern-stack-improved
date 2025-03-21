@@ -23,9 +23,13 @@ const useSchemaValidation = (formType) => {
   const [validationSchema, setValidationSchema] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [abortController, setAbortController] = useState(null);
 
   // Fetch validation schema from backend
   useEffect(() => {
+    const controller = new AbortController();
+    setAbortController(controller);
+
     const fetchValidationSchema = async () => {
       try {
         setIsLoading(true);
@@ -43,6 +47,7 @@ const useSchemaValidation = (formType) => {
             "Content-Type": "application/json",
             "auth-token": token,
           },
+          signal: controller.signal,
         };
 
         const { data } = await axios.get(
@@ -50,20 +55,48 @@ const useSchemaValidation = (formType) => {
           config
         );
 
-        setValidationSchema(data);
-        setError(null);
+        // Check if component is still mounted before updating state
+        if (!controller.signal.aborted) {
+          setValidationSchema(data);
+          setError(null);
+        }
       } catch (err) {
-        setError(
-          err.response && err.response.data.message
-            ? err.response.data.message
-            : err.message
-        );
+        // Check if this was an abort error (e.g., component unmounted)
+        if (err.name === "AbortError" || err.name === "CanceledError") {
+          console.log("Schema validation request was aborted");
+          return;
+        }
+
+        // Check if this is a user logged out error
+        if (
+          (err.message && err.message.includes("logged out")) ||
+          err.isLoggedOut
+        ) {
+          console.log("User logged out, validation not needed");
+          return;
+        }
+
+        // Only set error if component is still mounted and the error is not due to abort/logout
+        if (!controller.signal.aborted) {
+          setError(
+            err.response && err.response.data.message
+              ? err.response.data.message
+              : err.message
+          );
+        }
       } finally {
-        setIsLoading(false);
+        if (!controller.signal.aborted) {
+          setIsLoading(false);
+        }
       }
     };
 
     fetchValidationSchema();
+
+    // Cleanup function to abort API requests when component unmounts
+    return () => {
+      controller.abort();
+    };
   }, [formType]);
 
   /**
@@ -103,12 +136,16 @@ const useSchemaValidation = (formType) => {
 
     if (!fieldSchema) return null;
 
-    // Special case for confirmPassword
-    if (fieldName === "confirmPassword" && validationSchema.newPassword) {
+    // Special case for confirmPassword - moved to the top for early validation
+    if (fieldName === "confirmPassword") {
       const newPassword = document.getElementById("newPassword")?.value;
       if (value !== newPassword) {
-        return fieldSchema.message || "Passwords must match";
+        return "Passwords must match";
       }
+
+      // If passwords match and no other validation for confirmPassword,
+      // return early (typically confirmPassword just needs to match)
+      return null;
     }
 
     // Required validation
@@ -130,8 +167,43 @@ const useSchemaValidation = (formType) => {
     }
 
     // Pattern validation
-    if (fieldSchema.pattern && !new RegExp(fieldSchema.pattern).test(value)) {
-      return fieldSchema.message || `${fieldName} format is invalid`;
+    if (fieldSchema.pattern) {
+      try {
+        // Safely create RegExp - some patterns from backend might need adjustment
+        let patternToUse = fieldSchema.pattern;
+
+        // Try to create RegExp safely
+        const patternRegex = new RegExp(patternToUse);
+        if (!patternRegex.test(value)) {
+          // For password fields, provide a more user-friendly error message
+          if (fieldName === "newPassword" && fieldSchema.message) {
+            return fieldSchema.message;
+          }
+          return fieldSchema.message || `${fieldName} format is invalid`;
+        }
+      } catch (error) {
+        // If the pattern is invalid, fall back to the message
+        console.warn(
+          `Invalid pattern in validation schema: ${fieldSchema.pattern}`
+        );
+
+        // For password fields with complex patterns, use a manual check
+        if (fieldName === "newPassword") {
+          // Manually check password requirements
+          const hasUppercase = /[A-Z]/.test(value);
+          const hasNumber = /[0-9]/.test(value);
+          const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(
+            value
+          );
+
+          if (!hasUppercase || !hasNumber || !hasSpecial) {
+            return (
+              fieldSchema.message ||
+              "Password must contain at least 1 uppercase letter, 1 number, and 1 special character"
+            );
+          }
+        }
+      }
     }
 
     // Enum validation
