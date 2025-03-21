@@ -472,7 +472,7 @@ const Profile = () => {
   // Handle resend verification
   const handleResendVerification = async () => {
     try {
-      await dispatch(requestEmailVerification()).unwrap();
+      await dispatch(requestEmailVerification(user.email)).unwrap();
       setVerificationRequested(true);
       showSuccess("Verification email sent. Please check your inbox.");
     } catch (error) {
