@@ -41,7 +41,6 @@ const ProfileInfo = ({
 
     // Handle nested fields like address.street
     if (isNested) {
-      // For nested fields like address.city, split the field name
       const [parent, child] = fieldName.split(".");
       fieldSchema = validationSchema[parent]?.[child];
     } else {
@@ -81,7 +80,6 @@ const ProfileInfo = ({
     const basicInfoData = {
       name: formData.name,
       phone: formData.phone,
-      // Remove address from basic info submission
     };
     handleSubmit(e, basicInfoData);
     setIsEditingBasicInfo(false);
@@ -100,120 +98,128 @@ const ProfileInfo = ({
   };
 
   return (
-    <section className="profile-section">
+    <>
       {/* Basic Information Section */}
-      <div className="profile-section-header">
-        <h2 className="profile-section-title">Basic Information</h2>
-        {!isEditingBasicInfo && !isEditingAddress && (
-          <button
-            className="profile-btn-secondary"
-            onClick={() => setIsEditingBasicInfo(true)}
-            tabIndex="0"
-            aria-label="Edit basic information"
-          >
-            Edit
-          </button>
-        )}
-      </div>
-
-      {isEditingBasicInfo ? (
-        <form onSubmit={handleBasicInfoSubmit} noValidate>
-          <div className="profile-form-group">
-            <label htmlFor="name" className="profile-form-label">
-              Name{" "}
-              {validationSchema?.name?.required && (
-                <span className="profile-required">*</span>
-              )}
-            </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              value={formData.name}
-              onChange={handleInputChange}
-              required
-              className={getInputClass("name")}
-              aria-invalid={fieldErrors?.name ? "true" : "false"}
-              aria-describedby={fieldErrors?.name ? "name-error" : undefined}
-              {...getValidationAttributes("name")}
-            />
-            {fieldErrors?.name && (
-              <div className="profile-field-error" id="name-error" role="alert">
-                {fieldErrors.name}
-              </div>
-            )}
-          </div>
-
-          <div className="profile-form-group">
-            <label htmlFor="phone" className="profile-form-label">
-              Phone
-            </label>
-            <input
-              type="tel"
-              id="phone"
-              name="phone"
-              value={formData.phone || ""}
-              onChange={handleInputChange}
-              className={getInputClass("phone")}
-              aria-invalid={fieldErrors?.phone ? "true" : "false"}
-              aria-describedby={fieldErrors?.phone ? "phone-error" : undefined}
-              {...getValidationAttributes("phone")}
-            />
-            {fieldErrors?.phone && (
-              <div
-                className="profile-field-error"
-                id="phone-error"
-                role="alert"
-              >
-                {fieldErrors.phone}
-              </div>
-            )}
-          </div>
-
-          <div className="profile-form-actions">
+      <section className="profile-section">
+        <div className="profile-section-header">
+          <h2 className="profile-section-title">Basic Information</h2>
+          {!isEditingBasicInfo && !isEditingAddress && (
             <button
-              type="submit"
-              className="profile-btn-primary"
-              disabled={updatingProfile}
-            >
-              {updatingProfile ? (
-                <>
-                  <Spinner size="small" message="" showMessage={false} />
-                  Saving...
-                </>
-              ) : (
-                "Save Changes"
-              )}
-            </button>
-            <button
-              type="button"
               className="profile-btn-secondary"
-              onClick={() => {
-                setIsEditingBasicInfo(false);
-                setFieldErrors({});
-              }}
+              onClick={() => setIsEditingBasicInfo(true)}
+              tabIndex="0"
+              aria-label="Edit basic information"
             >
-              Cancel
+              Edit
             </button>
-          </div>
-        </form>
-      ) : (
-        <div className="profile-profile-details">
-          <div className="profile-detail-item">
-            <span className="profile-detail-label">Name:</span>
-            <span className="profile-detail-value">{displayName}</span>
-          </div>
-          <div className="profile-detail-item">
-            <span className="profile-detail-label">Phone:</span>
-            <span className="profile-detail-value">
-              {displayUserData?.phone || "Not provided"}
-            </span>
-          </div>
+          )}
         </div>
-      )}
+
+        {isEditingBasicInfo ? (
+          <form onSubmit={handleBasicInfoSubmit} noValidate>
+            <div className="profile-form-group">
+              <label htmlFor="name" className="profile-form-label">
+                Name{" "}
+                {validationSchema?.name?.required && (
+                  <span className="profile-required">*</span>
+                )}
+              </label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                required
+                className={getInputClass("name")}
+                aria-invalid={fieldErrors?.name ? "true" : "false"}
+                aria-describedby={fieldErrors?.name ? "name-error" : undefined}
+                {...getValidationAttributes("name")}
+              />
+              {fieldErrors?.name && (
+                <div
+                  className="profile-field-error"
+                  id="name-error"
+                  role="alert"
+                >
+                  {fieldErrors.name}
+                </div>
+              )}
+            </div>
+
+            <div className="profile-form-group">
+              <label htmlFor="phone" className="profile-form-label">
+                Phone
+              </label>
+              <input
+                type="tel"
+                id="phone"
+                name="phone"
+                value={formData.phone || ""}
+                onChange={handleInputChange}
+                className={getInputClass("phone")}
+                aria-invalid={fieldErrors?.phone ? "true" : "false"}
+                aria-describedby={
+                  fieldErrors?.phone ? "phone-error" : undefined
+                }
+                {...getValidationAttributes("phone")}
+              />
+              {fieldErrors?.phone && (
+                <div
+                  className="profile-field-error"
+                  id="phone-error"
+                  role="alert"
+                >
+                  {fieldErrors.phone}
+                </div>
+              )}
+            </div>
+
+            <div className="profile-form-actions">
+              <button
+                type="submit"
+                className="profile-btn-primary"
+                disabled={updatingProfile}
+              >
+                {updatingProfile ? (
+                  <>
+                    <Spinner size="small" message="" showMessage={false} />
+                    Saving...
+                  </>
+                ) : (
+                  "Save Changes"
+                )}
+              </button>
+              <button
+                type="button"
+                className="profile-btn-secondary"
+                onClick={() => {
+                  setIsEditingBasicInfo(false);
+                  setFieldErrors({});
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        ) : (
+          <div className="profile-profile-details">
+            <div className="profile-detail-item">
+              <span className="profile-detail-label">Name:</span>
+              <span className="profile-detail-value">{displayName}</span>
+            </div>
+            <div className="profile-detail-item">
+              <span className="profile-detail-label">Phone:</span>
+              <span className="profile-detail-value">
+                {displayUserData?.phone || "Not provided"}
+              </span>
+            </div>
+          </div>
+        )}
+      </section>
 
       {/* Shipping Address Section */}
-      <div className="profile-shipping-address-section">
+      <section className="profile-section">
         <div className="profile-section-header">
           <h2 className="profile-section-title">Shipping Address</h2>
           {!isEditingBasicInfo && !isEditingAddress && (
@@ -446,8 +452,8 @@ const ProfileInfo = ({
             )}
           </div>
         )}
-      </div>
-    </section>
+      </section>
+    </>
   );
 };
 
