@@ -3,6 +3,7 @@ import Spinner from "../../../components/ui/Spinner";
 
 /**
  * ProfileInfo component for displaying and editing user's basic information
+ * Uses schema-based validation from backend for instant feedback
  */
 const ProfileInfo = ({
   formData,
@@ -17,6 +18,13 @@ const ProfileInfo = ({
 }) => {
   const [isEditingBasicInfo, setIsEditingBasicInfo] = useState(false);
   const [isEditingAddress, setIsEditingAddress] = useState(false);
+
+  // Function to determine input class based on validation state
+  const getInputClass = (fieldName) => {
+    if (!fieldErrors) return "form-input";
+    return fieldErrors[fieldName] ? "form-input error" : "form-input";
+  };
+
   const handleBasicInfoSubmit = (e) => {
     e.preventDefault();
     // Only submit name and phone, don't include address at all
@@ -59,7 +67,7 @@ const ProfileInfo = ({
       </div>
 
       {isEditingBasicInfo ? (
-        <form onSubmit={handleBasicInfoSubmit}>
+        <form onSubmit={handleBasicInfoSubmit} noValidate>
           <div className="form-group">
             <label htmlFor="name" className="form-label">
               Name
@@ -71,10 +79,14 @@ const ProfileInfo = ({
               value={formData.name}
               onChange={handleInputChange}
               required
-              className="form-input"
+              className={getInputClass("name")}
+              aria-invalid={fieldErrors?.name ? "true" : "false"}
+              aria-describedby={fieldErrors?.name ? "name-error" : undefined}
             />
-            {fieldErrors.name && (
-              <p className="field-error">{fieldErrors.name}</p>
+            {fieldErrors?.name && (
+              <p className="field-error" id="name-error" role="alert">
+                {fieldErrors.name}
+              </p>
             )}
           </div>
 
@@ -88,12 +100,16 @@ const ProfileInfo = ({
               name="phone"
               value={formData.phone}
               onChange={handleInputChange}
-              className="form-input"
+              className={getInputClass("phone")}
               pattern="[0-9]{10,15}"
               title="Phone number must contain 10-15 digits"
+              aria-invalid={fieldErrors?.phone ? "true" : "false"}
+              aria-describedby={fieldErrors?.phone ? "phone-error" : undefined}
             />
-            {fieldErrors.phone && (
-              <p className="field-error">{fieldErrors.phone}</p>
+            {fieldErrors?.phone && (
+              <p className="field-error" id="phone-error" role="alert">
+                {fieldErrors.phone}
+              </p>
             )}
           </div>
 
@@ -165,7 +181,7 @@ const ProfileInfo = ({
         </div>
 
         {isEditingAddress ? (
-          <form onSubmit={handleAddressSubmit}>
+          <form onSubmit={handleAddressSubmit} noValidate>
             <div className="address-form">
               <div className="form-group">
                 <label htmlFor="street" className="form-label">
@@ -178,10 +194,16 @@ const ProfileInfo = ({
                   value={formData.address.street}
                   onChange={handleInputChange}
                   required
-                  className="form-input"
+                  className={getInputClass("street")}
+                  aria-invalid={fieldErrors?.street ? "true" : "false"}
+                  aria-describedby={
+                    fieldErrors?.street ? "street-error" : undefined
+                  }
                 />
-                {fieldErrors.street && (
-                  <p className="field-error">{fieldErrors.street}</p>
+                {fieldErrors?.street && (
+                  <p className="field-error" id="street-error" role="alert">
+                    {fieldErrors.street}
+                  </p>
                 )}
               </div>
 
@@ -197,10 +219,16 @@ const ProfileInfo = ({
                     value={formData.address.city}
                     onChange={handleInputChange}
                     required
-                    className="form-input"
+                    className={getInputClass("city")}
+                    aria-invalid={fieldErrors?.city ? "true" : "false"}
+                    aria-describedby={
+                      fieldErrors?.city ? "city-error" : undefined
+                    }
                   />
-                  {fieldErrors.city && (
-                    <p className="field-error">{fieldErrors.city}</p>
+                  {fieldErrors?.city && (
+                    <p className="field-error" id="city-error" role="alert">
+                      {fieldErrors.city}
+                    </p>
                   )}
                 </div>
 
@@ -215,10 +243,16 @@ const ProfileInfo = ({
                     value={formData.address.state}
                     onChange={handleInputChange}
                     required
-                    className="form-input"
+                    className={getInputClass("state")}
+                    aria-invalid={fieldErrors?.state ? "true" : "false"}
+                    aria-describedby={
+                      fieldErrors?.state ? "state-error" : undefined
+                    }
                   />
-                  {fieldErrors.state && (
-                    <p className="field-error">{fieldErrors.state}</p>
+                  {fieldErrors?.state && (
+                    <p className="field-error" id="state-error" role="alert">
+                      {fieldErrors.state}
+                    </p>
                   )}
                 </div>
               </div>
@@ -235,12 +269,18 @@ const ProfileInfo = ({
                     value={formData.address.zipCode}
                     onChange={handleInputChange}
                     required
-                    className="form-input"
+                    className={getInputClass("zipCode")}
                     pattern="[0-9a-zA-Z\-\s]{3,10}"
                     title="Please enter a valid zip/postal code (3-10 characters)"
+                    aria-invalid={fieldErrors?.zipCode ? "true" : "false"}
+                    aria-describedby={
+                      fieldErrors?.zipCode ? "zipCode-error" : undefined
+                    }
                   />
-                  {fieldErrors.zipCode && (
-                    <p className="field-error">{fieldErrors.zipCode}</p>
+                  {fieldErrors?.zipCode && (
+                    <p className="field-error" id="zipCode-error" role="alert">
+                      {fieldErrors.zipCode}
+                    </p>
                   )}
                 </div>
 
@@ -255,10 +295,16 @@ const ProfileInfo = ({
                     value={formData.address.country}
                     onChange={handleInputChange}
                     required
-                    className="form-input"
+                    className={getInputClass("country")}
+                    aria-invalid={fieldErrors?.country ? "true" : "false"}
+                    aria-describedby={
+                      fieldErrors?.country ? "country-error" : undefined
+                    }
                   />
-                  {fieldErrors.country && (
-                    <p className="field-error">{fieldErrors.country}</p>
+                  {fieldErrors?.country && (
+                    <p className="field-error" id="country-error" role="alert">
+                      {fieldErrors.country}
+                    </p>
                   )}
                 </div>
               </div>

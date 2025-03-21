@@ -19,6 +19,7 @@ const cartRoutes = require("./routes/cartRoutes");
 const uploadRoutes = require("./routes/uploadRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
 const errorDemoRoutes = require("./routes/errorDemoRoutes");
+const validationRoutes = require("./routes/validationRoutes");
 
 // Initialize express app
 const app = express();
@@ -75,6 +76,7 @@ app.use("/api/cart", cartRoutes);
 app.use("/api", uploadRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/error-demo", errorDemoRoutes);
+app.use("/api/validation", validationRoutes);
 
 // 404 handler - unhandled routes
 app.all("*", (req, res, next) => {

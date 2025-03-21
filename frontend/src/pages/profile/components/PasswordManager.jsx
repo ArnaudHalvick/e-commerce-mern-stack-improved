@@ -3,6 +3,7 @@ import Spinner from "../../../components/ui/Spinner";
 
 /**
  * PasswordManager component for handling password changes
+ * Uses schema-based validation from backend for instant feedback
  */
 const PasswordManager = ({
   isChangingPassword,
@@ -12,7 +13,14 @@ const PasswordManager = ({
   handlePasswordSubmit,
   loading,
   changingPassword,
+  fieldErrors,
 }) => {
+  // Function to determine input class based on validation state
+  const getInputClass = (fieldName) => {
+    if (!fieldErrors) return "form-input";
+    return fieldErrors[fieldName] ? "form-input error" : "form-input";
+  };
+
   return (
     <section className="profile-section">
       <div className="section-header">
@@ -30,7 +38,7 @@ const PasswordManager = ({
       </div>
 
       {isChangingPassword && (
-        <form onSubmit={handlePasswordSubmit}>
+        <form onSubmit={handlePasswordSubmit} noValidate>
           <div className="form-group">
             <label htmlFor="currentPassword" className="form-label">
               Current Password
@@ -42,8 +50,23 @@ const PasswordManager = ({
               value={passwordData.currentPassword}
               onChange={handlePasswordInputChange}
               required
-              className="form-input"
+              className={getInputClass("currentPassword")}
+              aria-invalid={fieldErrors?.currentPassword ? "true" : "false"}
+              aria-describedby={
+                fieldErrors?.currentPassword
+                  ? "currentPassword-error"
+                  : undefined
+              }
             />
+            {fieldErrors?.currentPassword && (
+              <p
+                className="field-error"
+                id="currentPassword-error"
+                role="alert"
+              >
+                {fieldErrors.currentPassword}
+              </p>
+            )}
           </div>
 
           <div className="form-group">
@@ -58,8 +81,17 @@ const PasswordManager = ({
               onChange={handlePasswordInputChange}
               required
               minLength="8"
-              className="form-input"
+              className={getInputClass("newPassword")}
+              aria-invalid={fieldErrors?.newPassword ? "true" : "false"}
+              aria-describedby={
+                fieldErrors?.newPassword ? "newPassword-error" : undefined
+              }
             />
+            {fieldErrors?.newPassword && (
+              <p className="field-error" id="newPassword-error" role="alert">
+                {fieldErrors.newPassword}
+              </p>
+            )}
           </div>
 
           <div className="form-group">
@@ -74,8 +106,23 @@ const PasswordManager = ({
               onChange={handlePasswordInputChange}
               required
               minLength="8"
-              className="form-input"
+              className={getInputClass("confirmPassword")}
+              aria-invalid={fieldErrors?.confirmPassword ? "true" : "false"}
+              aria-describedby={
+                fieldErrors?.confirmPassword
+                  ? "confirmPassword-error"
+                  : undefined
+              }
             />
+            {fieldErrors?.confirmPassword && (
+              <p
+                className="field-error"
+                id="confirmPassword-error"
+                role="alert"
+              >
+                {fieldErrors.confirmPassword}
+              </p>
+            )}
           </div>
 
           <div className="form-actions">

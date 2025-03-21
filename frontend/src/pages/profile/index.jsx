@@ -11,6 +11,9 @@ import {
   resetPasswordChanged,
 } from "../../redux/slices/userSlice";
 
+// Custom hooks
+import useSchemaValidation from "../../hooks/useSchemaValidation";
+
 // Components
 import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
 import ProfileInfo from "./components/ProfileInfo";
@@ -38,6 +41,10 @@ const Profile = () => {
   const navigate = useNavigate();
   const { loading, passwordChanged, passwordChangePending, loadingStates } =
     useSelector((state) => state.user);
+
+  // Get validation rules from backend
+  const profileValidation = useSchemaValidation("profile");
+  const passwordValidation = useSchemaValidation("password");
 
   const [formData, setFormData] = useState({
     name: "",
@@ -160,11 +167,36 @@ const Profile = () => {
           [addressField]: value,
         },
       }));
+
+      // Validate field on change
+      if (profileValidation.schema) {
+        const error = profileValidation.validateField(
+          `address.${addressField}`,
+          value
+        );
+        if (error) {
+          setFieldErrors((prev) => ({
+            ...prev,
+            [addressField]: error,
+          }));
+        }
+      }
     } else {
       setFormData((prev) => ({
         ...prev,
         [name]: value,
       }));
+
+      // Validate field on change
+      if (profileValidation.schema) {
+        const error = profileValidation.validateField(name, value);
+        if (error) {
+          setFieldErrors((prev) => ({
+            ...prev,
+            [name]: error,
+          }));
+        }
+      }
     }
   };
 
@@ -174,6 +206,22 @@ const Profile = () => {
       ...prev,
       [name]: value,
     }));
+
+    // Validate password field on change
+    if (passwordValidation.schema) {
+      const error = passwordValidation.validateField(name, value);
+      if (error) {
+        setFieldErrors((prev) => ({
+          ...prev,
+          [name]: error,
+        }));
+      } else {
+        setFieldErrors((prev) => ({
+          ...prev,
+          [name]: null,
+        }));
+      }
+    }
   };
 
   const handleSubmit = async (e, customFormData = null) => {
@@ -188,16 +236,18 @@ const Profile = () => {
     // Use the custom form data if provided, otherwise use the full formData
     const dataToSubmit = customFormData || formData;
 
-    // Client-side password confirmation check
-    if (
-      dataToSubmit.confirmPassword &&
-      dataToSubmit.newPassword !== dataToSubmit.confirmPassword
-    ) {
-      setMessage({
-        text: "New passwords do not match",
-        type: "error",
-      });
-      return;
+    // Client-side validation using schema validation
+    if (profileValidation.schema && !profileValidation.isLoading) {
+      const errors = profileValidation.validateForm(dataToSubmit);
+
+      if (Object.keys(errors).length > 0) {
+        setFieldErrors(errors);
+        setMessage({
+          text: "Please fix the errors in the form",
+          type: "error",
+        });
+        return;
+      }
     }
 
     try {
@@ -263,14 +313,20 @@ const Profile = () => {
   const handlePasswordSubmit = async (e) => {
     e.preventDefault();
     setMessage({ text: "", type: "" });
+    setFieldErrors({});
 
-    // Basic client-side validation for password match
-    if (passwordData.newPassword !== passwordData.confirmPassword) {
-      setMessage({
-        text: "New passwords do not match",
-        type: "error",
-      });
-      return;
+    // Client-side validation using schema validation
+    if (passwordValidation.schema && !passwordValidation.isLoading) {
+      const errors = passwordValidation.validateForm(passwordData);
+
+      if (Object.keys(errors).length > 0) {
+        setFieldErrors(errors);
+        setMessage({
+          text: "Please fix the errors in the form",
+          type: "error",
+        });
+        return;
+      }
     }
 
     try {
@@ -282,10 +338,23 @@ const Profile = () => {
       ).unwrap();
       // Success message and reset will be handled by the useEffect
     } catch (err) {
-      setMessage({
-        text: err || "Failed to change password. Please try again.",
-        type: "error",
-      });
+      // Check for validation errors in the response
+      if (err?.validationErrors) {
+        const validationErrors = {};
+        Object.entries(err.validationErrors).forEach(([field, message]) => {
+          validationErrors[field] = message;
+        });
+        setFieldErrors(validationErrors);
+        setMessage({
+          text: "Please fix the errors in the form",
+          type: "error",
+        });
+      } else {
+        setMessage({
+          text: err || "Failed to change password. Please try again.",
+          type: "error",
+        });
+      }
     }
   };
 
@@ -322,7 +391,7 @@ const Profile = () => {
     }
   };
 
-  if (authLoading) {
+  if (authLoading || profileValidation.isLoading) {
     return (
       <div className="profile-container">
         <Breadcrumb
@@ -386,6 +455,7 @@ const Profile = () => {
             handlePasswordSubmit={handlePasswordSubmit}
             loading={loading}
             changingPassword={loadingStates?.changingPassword}
+            fieldErrors={fieldErrors}
           />
 
           {/* Account Management Section */}
