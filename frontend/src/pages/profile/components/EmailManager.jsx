@@ -131,6 +131,7 @@ const EmailManager = ({ user, validationSchema, showSuccess, showError }) => {
     }
 
     try {
+      // Set loading state before making the request
       const response = await dispatch(
         requestEmailChange(emailData.email)
       ).unwrap();
@@ -238,9 +239,14 @@ const EmailManager = ({ user, validationSchema, showSuccess, showError }) => {
               }
               disabled={loadingStates?.requestingEmailChange || !isFormValid}
             >
-              {loadingStates?.requestingEmailChange
-                ? "Sending Verification..."
-                : "Request Email Change"}
+              {loadingStates?.requestingEmailChange ? (
+                <>
+                  <Spinner size="small" inline />
+                  Sending Verification...
+                </>
+              ) : (
+                "Request Email Change"
+              )}
             </button>
             <button
               type="button"

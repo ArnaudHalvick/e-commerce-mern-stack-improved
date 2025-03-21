@@ -63,7 +63,7 @@ const useSchemaValidation = (formType) => {
       } catch (err) {
         // Check if this was an abort error (e.g., component unmounted)
         if (err.name === "AbortError" || err.name === "CanceledError") {
-          console.log("Schema validation request was aborted");
+          // Silently ignore abort errors - it's expected on component unmount
           return;
         }
 
@@ -72,7 +72,7 @@ const useSchemaValidation = (formType) => {
           (err.message && err.message.includes("logged out")) ||
           err.isLoggedOut
         ) {
-          console.log("User logged out, validation not needed");
+          // Silently ignore logout errors
           return;
         }
 
@@ -148,6 +148,11 @@ const useSchemaValidation = (formType) => {
       return null;
     }
 
+    // Special case for name - enforce minimum 2 characters
+    if (fieldName === "name" && value && value.trim().length === 1) {
+      return "Name must be at least 2 characters long";
+    }
+
     // Required validation
     if (fieldSchema.required && (!value || value.trim() === "")) {
       return fieldSchema.requiredMessage || `${fieldName} is required`;
@@ -156,8 +161,10 @@ const useSchemaValidation = (formType) => {
     // Skip other validations if empty and not required
     if (!value || value.trim() === "") return null;
 
-    // Min length validation
-    if (fieldSchema.minLength && value.length < fieldSchema.minLength) {
+    // Min length validation - with special case for name (min 2 chars)
+    if (fieldName === "name" && value.length < 2) {
+      return "Name must be at least 2 characters long";
+    } else if (fieldSchema.minLength && value.length < fieldSchema.minLength) {
       return `${fieldName} must be at least ${fieldSchema.minLength} characters`;
     }
 
@@ -235,15 +242,24 @@ const useSchemaValidation = (formType) => {
         typeof formData[fieldName] === "object" &&
         formData[fieldName] !== null
       ) {
+        const nestedErrors = {};
+        let hasNestedErrors = false;
+
         Object.keys(formData[fieldName]).forEach((nestedField) => {
           const fullFieldName = `${fieldName}.${nestedField}`;
           const value = formData[fieldName][nestedField];
           const errorMessage = validateField(fullFieldName, value);
+
           if (errorMessage) {
-            // For UI purposes, often just the nested field name is needed
-            errors[nestedField] = errorMessage;
+            // Store errors in proper nested structure
+            nestedErrors[nestedField] = errorMessage;
+            hasNestedErrors = true;
           }
         });
+
+        if (hasNestedErrors) {
+          errors[fieldName] = nestedErrors;
+        }
       } else {
         // Normal field
         const errorMessage = validateField(fieldName, formData[fieldName]);

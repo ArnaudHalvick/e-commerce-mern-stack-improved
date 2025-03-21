@@ -58,10 +58,14 @@ const ProfileInfo = ({
       return;
     }
 
-    // Check if required address fields have values
-    const requiredAddressFields = Object.keys(validationSchema.address).filter(
-      (key) => validationSchema.address[key]?.required
-    );
+    // Check if all address fields have values (make all fields required regardless of backend schema)
+    const requiredAddressFields = [
+      "street",
+      "city",
+      "zipCode",
+      "country",
+      "state",
+    ]; // All fields are required
 
     // Check if all required address fields have values
     const hasAllRequiredFields = requiredAddressFields.every(
@@ -312,7 +316,7 @@ const ProfileInfo = ({
             <div className="profile-address-form">
               <div className="profile-form-group">
                 <label htmlFor="street" className="profile-form-label">
-                  Street Address
+                  Street Address <span className="profile-required">*</span>
                 </label>
                 <input
                   type="text"
@@ -343,7 +347,7 @@ const ProfileInfo = ({
               <div className="profile-form-row">
                 <div className="profile-form-group">
                   <label htmlFor="city" className="profile-form-label">
-                    City
+                    City <span className="profile-required">*</span>
                   </label>
                   <input
                     type="text"
@@ -373,7 +377,7 @@ const ProfileInfo = ({
 
                 <div className="profile-form-group">
                   <label htmlFor="state" className="profile-form-label">
-                    State/Province
+                    State/Province <span className="profile-required">*</span>
                   </label>
                   <input
                     type="text"
@@ -381,6 +385,7 @@ const ProfileInfo = ({
                     name="address.state"
                     value={formData.address.state}
                     onChange={handleInputChange}
+                    required
                     className={getInputClass("address.state", true)}
                     aria-invalid={
                       fieldErrors?.address?.state ? "true" : "false"
@@ -406,7 +411,7 @@ const ProfileInfo = ({
               <div className="profile-form-row">
                 <div className="profile-form-group">
                   <label htmlFor="zipCode" className="profile-form-label">
-                    Zip/Postal Code
+                    Zip/Postal Code <span className="profile-required">*</span>
                   </label>
                   <input
                     type="text"
@@ -440,7 +445,7 @@ const ProfileInfo = ({
 
                 <div className="profile-form-group">
                   <label htmlFor="country" className="profile-form-label">
-                    Country
+                    Country <span className="profile-required">*</span>
                   </label>
                   <input
                     type="text"

@@ -173,6 +173,11 @@ const Profile = () => {
       // Validate regular field using our hook
       const error = profileValidation.validateField(name, value);
       updateFieldError(name, null, error);
+
+      // Special validation for name field - ensure it's not just a single character
+      if (name === "name" && value.trim().length === 1) {
+        updateFieldError(name, null, "Name must be at least 2 characters long");
+      }
     }
   };
 
@@ -255,11 +260,16 @@ const Profile = () => {
       const result = await dispatch(updateUserProfile(dataToSubmit)).unwrap();
       showSuccess("Profile updated successfully!");
 
-      // Update the displayed user data
-      setUpdatedUserData({
+      // Create a complete updated user data object
+      const updatedData = {
         ...user,
         ...dataToSubmit,
-      });
+        // Ensure name and username are updated consistently
+        name: dataToSubmit.name || user.name,
+        username: dataToSubmit.name || user.username,
+      };
+
+      setUpdatedUserData(updatedData);
     } catch (error) {
       showError(error || "Failed to update profile");
     }
@@ -373,7 +383,18 @@ const Profile = () => {
   // Show either the fetched user data or the updated one
   const displayUserData = updatedUserData || user;
   const displayName =
-    displayUserData?.username || displayUserData?.name || "User";
+    displayUserData?.name || displayUserData?.username || "User";
+
+  // This effect ensures displayName is properly updated when user data changes
+  useEffect(() => {
+    if (updatedUserData?.name) {
+      // Force a re-render of the component with the new name
+      setFormData((prev) => ({
+        ...prev,
+        name: updatedUserData.name,
+      }));
+    }
+  }, [updatedUserData]);
 
   return (
     <div className="profile-container">
