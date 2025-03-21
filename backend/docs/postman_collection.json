@@ -225,7 +225,27 @@
           }
         },
         {
-          "name": "Verify Email",
+          "name": "Verify Email with Token in Path",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:4000/api/users/verify-email/:token",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "users", "verify-email", ":token"],
+              "variable": [
+                {
+                  "key": "token",
+                  "value": "{{verificationToken}}"
+                }
+              ]
+            },
+            "description": "Verify email with token in path parameter"
+          }
+        },
+        {
+          "name": "Verify Email with Token in Query",
           "request": {
             "method": "GET",
             "url": {
@@ -241,7 +261,31 @@
                 }
               ]
             },
-            "description": "Verify email with token"
+            "description": "Verify email with token in query parameter"
+          }
+        },
+        {
+          "name": "Verify Email with Email Change",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:4000/api/users/verify-email?token={{verificationToken}}&isEmailChange=true",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "users", "verify-email"],
+              "query": [
+                {
+                  "key": "token",
+                  "value": "{{verificationToken}}"
+                },
+                {
+                  "key": "isEmailChange",
+                  "value": "true"
+                }
+              ]
+            },
+            "description": "Verify email for email change"
           }
         }
       ]
