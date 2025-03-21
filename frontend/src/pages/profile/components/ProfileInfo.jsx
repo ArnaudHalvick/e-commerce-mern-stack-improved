@@ -31,9 +31,14 @@ const ProfileInfo = ({
     }
   }, [displayUserData]);
 
-  // Function to determine input class based on validation state
-  const getInputClass = (fieldName) => {
-    if (!fieldErrors) return "form-input";
+  // Enhance this method to check for nested fields in the address
+  const getInputClass = (fieldName, isNested = false) => {
+    if (isNested) {
+      const [parent, child] = fieldName.split(".");
+      return fieldErrors[parent] && fieldErrors[parent][child]
+        ? "form-input error"
+        : "form-input";
+    }
     return fieldErrors[fieldName] ? "form-input error" : "form-input";
   };
 
@@ -155,7 +160,10 @@ const ProfileInfo = ({
         <form onSubmit={handleBasicInfoSubmit} noValidate>
           <div className="form-group">
             <label htmlFor="name" className="form-label">
-              Name
+              Name{" "}
+              {validationSchema?.name?.required && (
+                <span className="required">*</span>
+              )}
             </label>
             <input
               type="text"
@@ -170,21 +178,21 @@ const ProfileInfo = ({
               {...getValidationAttributes("name")}
             />
             {fieldErrors?.name && (
-              <p className="field-error" id="name-error" role="alert">
+              <div className="field-error" id="name-error" role="alert">
                 {fieldErrors.name}
-              </p>
+              </div>
             )}
           </div>
 
           <div className="form-group">
             <label htmlFor="phone" className="form-label">
-              Phone Number
+              Phone
             </label>
             <input
               type="tel"
               id="phone"
               name="phone"
-              value={formData.phone}
+              value={formData.phone || ""}
               onChange={handleInputChange}
               className={getInputClass("phone")}
               aria-invalid={fieldErrors?.phone ? "true" : "false"}
@@ -192,9 +200,9 @@ const ProfileInfo = ({
               {...getValidationAttributes("phone")}
             />
             {fieldErrors?.phone && (
-              <p className="field-error" id="phone-error" role="alert">
+              <div className="field-error" id="phone-error" role="alert">
                 {fieldErrors.phone}
-              </p>
+              </div>
             )}
           </div>
 
@@ -280,9 +288,9 @@ const ProfileInfo = ({
               {...getValidationAttributes("email")}
             />
             {fieldErrors?.email && (
-              <p className="field-error" id="email-error" role="alert">
+              <div className="field-error" id="email-error" role="alert">
                 {fieldErrors.email}
-              </p>
+              </div>
             )}
             <p className="form-note">
               After changing your email, a verification link will be sent to the
@@ -359,17 +367,17 @@ const ProfileInfo = ({
                   value={formData.address.street}
                   onChange={handleInputChange}
                   required
-                  className={getInputClass("street")}
-                  aria-invalid={fieldErrors?.street ? "true" : "false"}
+                  className={getInputClass("address.street", true)}
+                  aria-invalid={fieldErrors?.address?.street ? "true" : "false"}
                   aria-describedby={
-                    fieldErrors?.street ? "street-error" : undefined
+                    fieldErrors?.address?.street ? "street-error" : undefined
                   }
                   {...getValidationAttributes("address.street", true)}
                 />
-                {fieldErrors?.street && (
-                  <p className="field-error" id="street-error" role="alert">
-                    {fieldErrors.street}
-                  </p>
+                {fieldErrors?.address?.street && (
+                  <div className="field-error" id="street-error" role="alert">
+                    {fieldErrors.address.street}
+                  </div>
                 )}
               </div>
 
@@ -385,17 +393,17 @@ const ProfileInfo = ({
                     value={formData.address.city}
                     onChange={handleInputChange}
                     required
-                    className={getInputClass("city")}
-                    aria-invalid={fieldErrors?.city ? "true" : "false"}
+                    className={getInputClass("address.city", true)}
+                    aria-invalid={fieldErrors?.address?.city ? "true" : "false"}
                     aria-describedby={
-                      fieldErrors?.city ? "city-error" : undefined
+                      fieldErrors?.address?.city ? "city-error" : undefined
                     }
                     {...getValidationAttributes("address.city", true)}
                   />
-                  {fieldErrors?.city && (
-                    <p className="field-error" id="city-error" role="alert">
-                      {fieldErrors.city}
-                    </p>
+                  {fieldErrors?.address?.city && (
+                    <div className="field-error" id="city-error" role="alert">
+                      {fieldErrors.address.city}
+                    </div>
                   )}
                 </div>
 
@@ -410,17 +418,19 @@ const ProfileInfo = ({
                     value={formData.address.state}
                     onChange={handleInputChange}
                     required
-                    className={getInputClass("state")}
-                    aria-invalid={fieldErrors?.state ? "true" : "false"}
+                    className={getInputClass("address.state", true)}
+                    aria-invalid={
+                      fieldErrors?.address?.state ? "true" : "false"
+                    }
                     aria-describedby={
-                      fieldErrors?.state ? "state-error" : undefined
+                      fieldErrors?.address?.state ? "state-error" : undefined
                     }
                     {...getValidationAttributes("address.state", true)}
                   />
-                  {fieldErrors?.state && (
-                    <p className="field-error" id="state-error" role="alert">
-                      {fieldErrors.state}
-                    </p>
+                  {fieldErrors?.address?.state && (
+                    <div className="field-error" id="state-error" role="alert">
+                      {fieldErrors.address.state}
+                    </div>
                   )}
                 </div>
               </div>
@@ -437,17 +447,25 @@ const ProfileInfo = ({
                     value={formData.address.zipCode}
                     onChange={handleInputChange}
                     required
-                    className={getInputClass("zipCode")}
-                    aria-invalid={fieldErrors?.zipCode ? "true" : "false"}
+                    className={getInputClass("address.zipCode", true)}
+                    aria-invalid={
+                      fieldErrors?.address?.zipCode ? "true" : "false"
+                    }
                     aria-describedby={
-                      fieldErrors?.zipCode ? "zipCode-error" : undefined
+                      fieldErrors?.address?.zipCode
+                        ? "zipCode-error"
+                        : undefined
                     }
                     {...getValidationAttributes("address.zipCode", true)}
                   />
-                  {fieldErrors?.zipCode && (
-                    <p className="field-error" id="zipCode-error" role="alert">
-                      {fieldErrors.zipCode}
-                    </p>
+                  {fieldErrors?.address?.zipCode && (
+                    <div
+                      className="field-error"
+                      id="zipCode-error"
+                      role="alert"
+                    >
+                      {fieldErrors.address.zipCode}
+                    </div>
                   )}
                 </div>
 
@@ -462,17 +480,25 @@ const ProfileInfo = ({
                     value={formData.address.country}
                     onChange={handleInputChange}
                     required
-                    className={getInputClass("country")}
-                    aria-invalid={fieldErrors?.country ? "true" : "false"}
+                    className={getInputClass("address.country", true)}
+                    aria-invalid={
+                      fieldErrors?.address?.country ? "true" : "false"
+                    }
                     aria-describedby={
-                      fieldErrors?.country ? "country-error" : undefined
+                      fieldErrors?.address?.country
+                        ? "country-error"
+                        : undefined
                     }
                     {...getValidationAttributes("address.country", true)}
                   />
-                  {fieldErrors?.country && (
-                    <p className="field-error" id="country-error" role="alert">
-                      {fieldErrors.country}
-                    </p>
+                  {fieldErrors?.address?.country && (
+                    <div
+                      className="field-error"
+                      id="country-error"
+                      role="alert"
+                    >
+                      {fieldErrors.address.country}
+                    </div>
                   )}
                 </div>
               </div>

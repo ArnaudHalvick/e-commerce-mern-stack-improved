@@ -26,6 +26,7 @@ import Spinner from "../../components/ui/Spinner";
 
 // CSS
 import "./Profile.css";
+import { apiClient } from "../../services";
 
 /**
  * User profile page component
@@ -73,6 +74,7 @@ const Profile = () => {
   const [updatedUserData, setUpdatedUserData] = useState(null);
   const [fieldErrors, setFieldErrors] = useState({});
   const [emailVerificationStatus, setEmailVerificationStatus] = useState(null);
+  const [validationSchema, setValidationSchema] = useState(null);
 
   // Fetch complete profile when component mounts
   useEffect(() => {
@@ -82,8 +84,20 @@ const Profile = () => {
       }
     };
 
+    // Fetch validation schema from backend
+    const fetchValidationSchema = async () => {
+      try {
+        const response = await apiClient.get("/api/validation/profile");
+        setValidationSchema(response.data);
+      } catch (error) {
+        showError("Failed to load validation rules");
+      }
+    };
+
+    // Call both functions
+    fetchValidationSchema();
     getCompleteProfile();
-  }, [isAuthenticated, fetchUserProfile]);
+  }, [isAuthenticated, fetchUserProfile, showError]);
 
   // Initialize form data with user profile data
   useEffect(() => {
@@ -152,55 +166,31 @@ const Profile = () => {
     }
   }, []);
 
+  // Update the handleInputChange function to validate as user types
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
-    // Clear any previous field errors
-    setFieldErrors((prev) => ({
-      ...prev,
-      [name.split(".")[1] || name]: null,
-    }));
-
-    // Handle nested address fields
-    if (name.startsWith("address.")) {
-      const addressField = name.split(".")[1];
-      setFormData((prev) => ({
-        ...prev,
-        address: {
-          ...prev.address,
-          [addressField]: value,
+    // Handle nested fields (address.street, address.city, etc.)
+    if (name.includes(".")) {
+      const [parent, child] = name.split(".");
+      setFormData({
+        ...formData,
+        [parent]: {
+          ...formData[parent],
+          [child]: value,
         },
-      }));
+      });
 
-      // Validate field on change
-      if (profileValidation.schema) {
-        const error = profileValidation.validateField(
-          `address.${addressField}`,
-          value
-        );
-        if (error) {
-          setFieldErrors((prev) => ({
-            ...prev,
-            [addressField]: error,
-          }));
-        }
-      }
+      // Validate nested field
+      validateField(parent, child, value);
     } else {
-      setFormData((prev) => ({
-        ...prev,
+      setFormData({
+        ...formData,
         [name]: value,
-      }));
+      });
 
-      // Validate field on change
-      if (profileValidation.schema) {
-        const error = profileValidation.validateField(name, value);
-        if (error) {
-          setFieldErrors((prev) => ({
-            ...prev,
-            [name]: error,
-          }));
-        }
-      }
+      // Validate regular field
+      validateField(name, null, value);
     }
   };
 
@@ -228,30 +218,210 @@ const Profile = () => {
     }
   };
 
-  const handleSubmit = async (e, customFormData = null) => {
-    // If e is an event, prevent default
-    if (e && e.preventDefault) {
-      e.preventDefault();
+  // Add this function for field-level validation
+  const validateField = (fieldName, childName = null, value) => {
+    // Skip validation if we don't have validation rules
+    if (!validationSchema) return;
+
+    let fieldRules = validationSchema[fieldName];
+    let fieldValue = value;
+    let errorMessage = null;
+
+    // Handle nested field validation
+    if (childName && fieldRules) {
+      fieldRules = fieldRules[childName];
+
+      // Initialize nested errors object if needed
+      if (!fieldErrors[fieldName]) {
+        setFieldErrors((prev) => ({
+          ...prev,
+          [fieldName]: {},
+        }));
+      }
     }
 
-    setMessage({ text: "", type: "" });
-    setFieldErrors({});
+    // Skip if no validation rules for this field
+    if (!fieldRules) return;
 
-    // Use the custom form data if provided, otherwise use the full formData
+    // Check required fields
+    if (fieldRules.required && (!fieldValue || fieldValue.trim() === "")) {
+      errorMessage = fieldRules.requiredMessage || `${fieldName} is required`;
+    }
+    // Check minimum length
+    else if (
+      fieldRules.minLength &&
+      fieldValue &&
+      fieldValue.length < fieldRules.minLength
+    ) {
+      errorMessage =
+        fieldRules.message ||
+        `Minimum length is ${fieldRules.minLength} characters`;
+    }
+    // Check maximum length
+    else if (
+      fieldRules.maxLength &&
+      fieldValue &&
+      fieldValue.length > fieldRules.maxLength
+    ) {
+      errorMessage =
+        fieldRules.message ||
+        `Maximum length is ${fieldRules.maxLength} characters`;
+    }
+    // Check pattern
+    else if (fieldRules.pattern && fieldValue) {
+      const pattern = new RegExp(fieldRules.pattern);
+      if (!pattern.test(fieldValue)) {
+        errorMessage = fieldRules.message || `Invalid format`;
+      }
+    }
+
+    // Update field errors
+    setFieldErrors((prev) => {
+      if (childName) {
+        // For nested fields
+        return {
+          ...prev,
+          [fieldName]: {
+            ...prev[fieldName],
+            [childName]: errorMessage,
+          },
+        };
+      } else {
+        // For regular fields
+        return {
+          ...prev,
+          [fieldName]: errorMessage,
+        };
+      }
+    });
+  };
+
+  // Add this function to validate the full form before submission
+  const validateForm = (data) => {
+    const errors = {};
+    let isValid = true;
+
+    // Skip validation if we don't have validation rules
+    if (!validationSchema) return { isValid: true, errors: {} };
+
+    // Validate each field according to its rules
+    Object.keys(data).forEach((field) => {
+      if (field === "address" && data[field]) {
+        // Handle address fields
+        errors.address = {};
+        Object.keys(data[field]).forEach((addressField) => {
+          const addressFieldRules = validationSchema.address?.[addressField];
+          if (addressFieldRules) {
+            const value = data[field][addressField];
+            let fieldError = null;
+
+            // Check required fields
+            if (addressFieldRules.required && (!value || value.trim() === "")) {
+              fieldError =
+                addressFieldRules.requiredMessage ||
+                `${addressField} is required`;
+            }
+            // Check minimum length
+            else if (
+              addressFieldRules.minLength &&
+              value &&
+              value.length < addressFieldRules.minLength
+            ) {
+              fieldError =
+                addressFieldRules.message ||
+                `Minimum length is ${addressFieldRules.minLength} characters`;
+            }
+            // Check maximum length
+            else if (
+              addressFieldRules.maxLength &&
+              value &&
+              value.length > addressFieldRules.maxLength
+            ) {
+              fieldError =
+                addressFieldRules.message ||
+                `Maximum length is ${addressFieldRules.maxLength} characters`;
+            }
+            // Check pattern
+            else if (addressFieldRules.pattern && value) {
+              const pattern = new RegExp(addressFieldRules.pattern);
+              if (!pattern.test(value)) {
+                fieldError = addressFieldRules.message || `Invalid format`;
+              }
+            }
+
+            if (fieldError) {
+              errors.address[addressField] = fieldError;
+              isValid = false;
+            }
+          }
+        });
+
+        // Remove address errors object if empty
+        if (Object.keys(errors.address).length === 0) {
+          delete errors.address;
+        }
+      } else {
+        // Handle regular fields
+        const fieldRules = validationSchema[field];
+        if (fieldRules) {
+          const value = data[field];
+          let fieldError = null;
+
+          // Check required fields
+          if (fieldRules.required && (!value || value.trim() === "")) {
+            fieldError = fieldRules.requiredMessage || `${field} is required`;
+          }
+          // Check minimum length
+          else if (
+            fieldRules.minLength &&
+            value &&
+            value.length < fieldRules.minLength
+          ) {
+            fieldError =
+              fieldRules.message ||
+              `Minimum length is ${fieldRules.minLength} characters`;
+          }
+          // Check maximum length
+          else if (
+            fieldRules.maxLength &&
+            value &&
+            value.length > fieldRules.maxLength
+          ) {
+            fieldError =
+              fieldRules.message ||
+              `Maximum length is ${fieldRules.maxLength} characters`;
+          }
+          // Check pattern
+          else if (fieldRules.pattern && value) {
+            const pattern = new RegExp(fieldRules.pattern);
+            if (!pattern.test(value)) {
+              fieldError = fieldRules.message || `Invalid format`;
+            }
+          }
+
+          if (fieldError) {
+            errors[field] = fieldError;
+            isValid = false;
+          }
+        }
+      }
+    });
+
+    return { isValid, errors };
+  };
+
+  // Update the handleSubmit function to use the new validation
+  const handleSubmit = async (e, customFormData = null) => {
+    e.preventDefault();
+
     const dataToSubmit = customFormData || formData;
 
-    // Client-side validation using schema validation
-    if (profileValidation.schema && !profileValidation.isLoading) {
-      const errors = profileValidation.validateForm(dataToSubmit);
+    // Validate form before submission
+    const { isValid, errors } = validateForm(dataToSubmit);
 
-      if (Object.keys(errors).length > 0) {
-        setFieldErrors(errors);
-        setMessage({
-          text: "Please fix the errors in the form",
-          type: "error",
-        });
-        return;
-      }
+    if (!isValid) {
+      setFieldErrors(errors);
+      return;
     }
 
     try {
@@ -489,7 +659,7 @@ const Profile = () => {
             setFieldErrors={setFieldErrors}
             displayUserData={displayUserData}
             displayName={displayName}
-            validationSchema={profileValidation.schema}
+            validationSchema={validationSchema}
             handleEmailChangeRequest={handleEmailChangeRequest}
             emailVerificationStatus={emailVerificationStatus}
           />
