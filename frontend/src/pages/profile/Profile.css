@@ -498,32 +498,12 @@
 .profile-unverified-badge {
   display: inline-flex;
   align-items: center;
-  background-color: rgba(255, 193, 7, 0.1);
-  color: #ffc107;
-  padding: 0.2rem 0.5rem;
+  margin-left: 8px;
+  padding: 2px 6px;
   border-radius: 4px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  margin-left: 0.5rem;
-}
-
-.profile-form-message {
-  padding: 1rem 1.5rem;
-  border-radius: 8px;
-  margin-bottom: 1.5rem;
-  display: flex;
-  align-items: center;
-  animation: fadeIn 0.5s ease;
-}
-
-.profile-form-message.success {
-  background-color: rgba(40, 167, 69, 0.1);
-  border-left: 4px solid #28a745;
-  color: #155724;
-}
-
-.profile-form-message.error {
-  background-color: rgba(220, 53, 69, 0.1);
-  border-left: 4px solid #dc3545;
-  color: #721c24;
+  font-size: 0.7rem;
+  font-weight: 500;
+  background-color: rgba(255, 193, 7, 0.1);
+  color: #856404;
+  border: 1px solid rgba(255, 193, 7, 0.4);
 }

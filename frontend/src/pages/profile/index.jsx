@@ -8,7 +8,6 @@ import {
   requestEmailVerification,
   changePassword,
   disableAccount,
-  resetPasswordChanged,
 } from "../../redux/slices/userSlice";
 import { useError } from "../../context/ErrorContext";
 
@@ -26,7 +25,6 @@ import Spinner from "../../components/ui/Spinner";
 
 // CSS
 import "./Profile.css";
-import { apiClient } from "../../services";
 
 /**
  * User profile page component
@@ -68,12 +66,10 @@ const Profile = () => {
     confirmPassword: "",
   });
 
-  const [message, setMessage] = useState({ text: "", type: "" });
   const [verificationRequested, setVerificationRequested] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [updatedUserData, setUpdatedUserData] = useState(null);
   const [fieldErrors, setFieldErrors] = useState({});
-  const [emailVerificationStatus, setEmailVerificationStatus] = useState(null);
 
   // Fetch complete profile when component mounts
   useEffect(() => {
@@ -128,20 +124,10 @@ const Profile = () => {
       });
       setIsChangingPassword(false);
 
-      setMessage({
-        text: "Password changed successfully!",
-        type: "success",
-      });
-
-      // Clear the success message after 5 seconds
-      const timerId = setTimeout(() => {
-        setMessage({ text: "", type: "" });
-      }, 5000);
-
-      // Clean up timer on unmount
-      return () => clearTimeout(timerId);
+      // Show success toast
+      showSuccess("Password changed successfully!");
     }
-  }, [passwordChanged, dispatch]);
+  }, [passwordChanged, showSuccess]);
 
   // Add a useEffect to check for query parameters
   useEffect(() => {
@@ -149,16 +135,15 @@ const Profile = () => {
     const tokenExpired = queryParams.get("tokenExpired");
 
     if (tokenExpired === "true") {
-      setMessage({
-        text: "Your password change request has expired. Please request a new password change.",
-        type: "error",
-      });
+      showError(
+        "Your password change request has expired. Please request a new password change."
+      );
 
       // Remove the query parameter from the URL without refreshing the page
       const newUrl = window.location.pathname;
       window.history.replaceState({}, document.title, newUrl);
     }
-  }, []);
+  }, [showError]);
 
   // Update the handleInputChange function to validate as user types
   const handleInputChange = (e) => {
@@ -342,7 +327,6 @@ const Profile = () => {
 
       // Clear field errors and other local state
       setFieldErrors({});
-      setMessage({ text: "", type: "" });
 
       // Perform logout
       await logout();
@@ -351,7 +335,6 @@ const Profile = () => {
       console.error("Logout error:", error);
       // Even if there's an error, still clear local state
       setFieldErrors({});
-      setMessage({ text: "", type: "" });
       logout();
       navigate("/");
     }
@@ -403,22 +386,6 @@ const Profile = () => {
         <Spinner size="large" message="Loading your profile..." />
       ) : (
         <>
-          {/* Status Messages */}
-          {message.text && (
-            <div className={`profile-form-message ${message.type}`}>
-              {message.text}
-            </div>
-          )}
-
-          {/* Verification Status Messages */}
-          {emailVerificationStatus && (
-            <div
-              className={`profile-form-message ${emailVerificationStatus.type}`}
-            >
-              {emailVerificationStatus.message}
-            </div>
-          )}
-
           {/* Email Verification Alert - if user's email is not verified */}
           <EmailVerification
             user={user}
@@ -432,7 +399,8 @@ const Profile = () => {
           <EmailManager
             user={displayUserData}
             validationSchema={profileValidation.schema}
-            setEmailVerificationStatus={setEmailVerificationStatus}
+            showSuccess={showSuccess}
+            showError={showError}
           />
 
           {/* Profile Info (Basic Information and Address) */}

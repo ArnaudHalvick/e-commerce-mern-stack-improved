@@ -9,13 +9,15 @@ import { isValidEmail } from "../../../utils/validation";
  * EmailManager component for handling email change functionality
  * Uses schema-based validation from backend for instant feedback
  */
-const EmailManager = ({
-  user,
-  validationSchema,
-  setEmailVerificationStatus,
-}) => {
+const EmailManager = ({ user, validationSchema, showSuccess, showError }) => {
   const dispatch = useDispatch();
-  const { showError, showSuccess } = useError();
+  const { showError: contextShowError, showSuccess: contextShowSuccess } =
+    useError();
+
+  // Use passed error/success handlers if available, otherwise use from context
+  const displayError = showError || contextShowError;
+  const displaySuccess = showSuccess || contextShowSuccess;
+
   const loadingStates = useSelector((state) => state.user.loadingStates);
   const emailChangePending = useSelector(
     (state) => state.user.emailChangeRequested
@@ -112,19 +114,15 @@ const EmailManager = ({
         requestEmailChange(emailData.email)
       ).unwrap();
 
-      setEmailVerificationStatus({
-        type: "success",
-        message:
-          "Verification email sent to your new address. Please verify to complete the email change.",
-      });
-
-      showSuccess("Verification email sent successfully!");
+      displaySuccess(
+        "Verification email sent to your new address. Please verify to complete the email change."
+      );
       setIsEditing(false);
     } catch (error) {
       setFieldError(
         typeof error === "string" ? error : "Failed to request email change"
       );
-      showError(error || "Failed to request email change");
+      displayError(error || "Failed to request email change");
     }
   };
 
