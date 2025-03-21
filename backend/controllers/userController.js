@@ -531,6 +531,7 @@ const requestVerification = catchAsync(async (req, res, next) => {
 const verifyEmail = catchAsync(async (req, res, next) => {
   // Get token from params or query
   const token = req.params.token || req.query.token;
+  const isEmailChange = req.query.isEmailChange === "true";
 
   if (!token) {
     return next(new AppError("Verification token is required", 400));
@@ -603,7 +604,47 @@ const verifyEmail = catchAsync(async (req, res, next) => {
     return next(new AppError("Invalid or expired verification token", 400));
   }
 
-  // Check if email is already verified
+  // For email change verification
+  if (isEmailChange) {
+    // Check if we have a pending email change
+    if (!user.pendingEmail) {
+      return res.status(200).json({
+        success: true,
+        message: "No pending email change found",
+      });
+    }
+
+    // Update the email
+    const previousEmail = user.email;
+    user.email = user.pendingEmail;
+    user.normalizedEmail = normalizeEmail(user.pendingEmail);
+    user.pendingEmail = undefined;
+
+    // Keep email as verified if it was already verified
+    // Otherwise mark as verified now
+    if (!user.isEmailVerified) {
+      user.isEmailVerified = true;
+    }
+
+    user.emailVerificationToken = undefined;
+    user.emailVerificationExpiry = undefined;
+
+    await user.save({ validateBeforeSave: false });
+
+    logger.info(
+      `User ${user._id} successfully changed email from ${previousEmail} to ${user.email}`
+    );
+
+    // Send tokens with updated user info
+    sendTokens(user, 200, res, {
+      message: "Email changed successfully",
+      emailChanged: true,
+    });
+
+    return;
+  }
+
+  // Check if email is already verified for regular verification flow
   if (user.isEmailVerified) {
     return res.status(200).json({
       success: true,
@@ -641,6 +682,86 @@ const verifyToken = catchAsync(async (req, res, next) => {
   });
 });
 
+// Request email change
+const requestEmailChange = catchAsync(async (req, res, next) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return next(new AppError("New email address is required", 400));
+  }
+
+  // Normalize the new email
+  const normalizedNewEmail = normalizeEmail(email);
+
+  // Check if email already exists
+  const existingUser = await User.findOne({ email: normalizedNewEmail });
+  if (existingUser && existingUser._id.toString() !== req.user.id) {
+    return next(
+      new AppError("Email is already in use by another account", 400)
+    );
+  }
+
+  const user = await User.findById(req.user.id);
+  if (!user) {
+    return next(new AppError("User not found", 404));
+  }
+
+  // Check if new email is different from current
+  if (normalizedNewEmail === normalizeEmail(user.email)) {
+    return next(
+      new AppError("New email must be different from your current email", 400)
+    );
+  }
+
+  // Store the pending email change
+  user.pendingEmail = email;
+
+  // Generate email verification token
+  const emailVerificationToken = user.generateEmailVerificationToken();
+
+  await user.save({ validateBeforeSave: false });
+
+  // Create verification URL
+  const verificationURL = createVerificationUrl(emailVerificationToken, {
+    email: email,
+    isEmailChange: true,
+  });
+
+  // Generate email HTML using the template with modifications for email change
+  const htmlEmail = generateVerificationEmail(verificationURL, {
+    isEmailChange: true,
+    user: user.name,
+    newEmail: email,
+  });
+
+  try {
+    await sendEmail({
+      email: email, // Send to the new email
+      subject: "Email Change Verification",
+      html: htmlEmail,
+    });
+
+    res.status(200).json({
+      success: true,
+      message:
+        "Verification email sent to your new address. Please verify to complete the email change.",
+    });
+  } catch (error) {
+    // If email sending fails, remove verification token and pending email
+    user.emailVerificationToken = undefined;
+    user.emailVerificationExpiry = undefined;
+    user.pendingEmail = undefined;
+    await user.save({ validateBeforeSave: false });
+
+    return next(
+      new AppError(
+        "Failed to send verification email. Please try again later.",
+        500
+      )
+    );
+  }
+});
+
 module.exports = {
   registerUser,
   loginUser,
@@ -655,4 +776,5 @@ module.exports = {
   requestVerification,
   verifyEmail,
   verifyToken,
+  requestEmailChange,
 };

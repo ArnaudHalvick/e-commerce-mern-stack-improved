@@ -14,11 +14,44 @@ const PasswordManager = ({
   loading,
   changingPassword,
   fieldErrors,
+  validationSchema,
 }) => {
   // Function to determine input class based on validation state
   const getInputClass = (fieldName) => {
     if (!fieldErrors) return "form-input";
     return fieldErrors[fieldName] ? "form-input error" : "form-input";
+  };
+
+  // Get validation attributes for a field
+  const getValidationAttributes = (fieldName) => {
+    if (!validationSchema) return {};
+
+    const fieldSchema = validationSchema[fieldName];
+    if (!fieldSchema) return {};
+
+    const attributes = {};
+
+    // Add pattern if it exists
+    if (fieldSchema.pattern) {
+      attributes.pattern = fieldSchema.pattern;
+    }
+
+    // Add title with validation message
+    if (fieldSchema.message) {
+      attributes.title = fieldSchema.message;
+    }
+
+    // Add min length if it exists
+    if (fieldSchema.minLength) {
+      attributes.minLength = fieldSchema.minLength;
+    }
+
+    // Add max length if it exists
+    if (fieldSchema.maxLength) {
+      attributes.maxLength = fieldSchema.maxLength;
+    }
+
+    return attributes;
   };
 
   return (
@@ -57,6 +90,7 @@ const PasswordManager = ({
                   ? "currentPassword-error"
                   : undefined
               }
+              {...getValidationAttributes("currentPassword")}
             />
             {fieldErrors?.currentPassword && (
               <p
@@ -80,18 +114,24 @@ const PasswordManager = ({
               value={passwordData.newPassword}
               onChange={handlePasswordInputChange}
               required
-              minLength="8"
               className={getInputClass("newPassword")}
               aria-invalid={fieldErrors?.newPassword ? "true" : "false"}
               aria-describedby={
                 fieldErrors?.newPassword ? "newPassword-error" : undefined
               }
+              {...getValidationAttributes("newPassword")}
             />
             {fieldErrors?.newPassword && (
               <p className="field-error" id="newPassword-error" role="alert">
                 {fieldErrors.newPassword}
               </p>
             )}
+            <p className="password-requirements">
+              Password must be at least{" "}
+              {validationSchema?.newPassword?.minLength || 8} characters long
+              and include at least one uppercase letter, one number, and one
+              special character.
+            </p>
           </div>
 
           <div className="form-group">
@@ -105,7 +145,6 @@ const PasswordManager = ({
               value={passwordData.confirmPassword}
               onChange={handlePasswordInputChange}
               required
-              minLength="8"
               className={getInputClass("confirmPassword")}
               aria-invalid={fieldErrors?.confirmPassword ? "true" : "false"}
               aria-describedby={
@@ -113,6 +152,7 @@ const PasswordManager = ({
                   ? "confirmPassword-error"
                   : undefined
               }
+              {...getValidationAttributes("confirmPassword")}
             />
             {fieldErrors?.confirmPassword && (
               <p
@@ -126,12 +166,8 @@ const PasswordManager = ({
           </div>
 
           <div className="form-actions">
-            <button
-              type="submit"
-              className="btn-primary"
-              disabled={changingPassword}
-            >
-              {changingPassword ? (
+            <button type="submit" className="btn-primary" disabled={loading}>
+              {loading ? (
                 <>
                   <Spinner size="small" message="" showMessage={false} />
                   Updating...

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Spinner from "../../../components/ui/Spinner";
 
 /**
@@ -15,14 +15,68 @@ const ProfileInfo = ({
   setFieldErrors,
   displayUserData,
   displayName,
+  validationSchema,
+  handleEmailChangeRequest,
+  emailVerificationStatus,
 }) => {
   const [isEditingBasicInfo, setIsEditingBasicInfo] = useState(false);
   const [isEditingAddress, setIsEditingAddress] = useState(false);
+  const [isEditingEmail, setIsEditingEmail] = useState(false);
+  const [emailData, setEmailData] = useState({ email: "" });
+
+  // Set initial email data when user data is available
+  useEffect(() => {
+    if (displayUserData?.email) {
+      setEmailData({ email: displayUserData.email });
+    }
+  }, [displayUserData]);
 
   // Function to determine input class based on validation state
   const getInputClass = (fieldName) => {
     if (!fieldErrors) return "form-input";
     return fieldErrors[fieldName] ? "form-input error" : "form-input";
+  };
+
+  // Get validation attributes for a field
+  const getValidationAttributes = (fieldName, isNested = false) => {
+    if (!validationSchema) return {};
+
+    let fieldSchema;
+
+    // Handle nested fields like address.street
+    if (isNested) {
+      // For nested fields like address.city, split the field name
+      const [parent, child] = fieldName.split(".");
+      fieldSchema = validationSchema[parent]?.[child];
+    } else {
+      fieldSchema = validationSchema[fieldName];
+    }
+
+    if (!fieldSchema) return {};
+
+    const attributes = {};
+
+    // Add pattern if it exists
+    if (fieldSchema.pattern) {
+      attributes.pattern = fieldSchema.pattern;
+    }
+
+    // Add title with validation message
+    if (fieldSchema.message) {
+      attributes.title = fieldSchema.message;
+    }
+
+    // Add min length if it exists
+    if (fieldSchema.minLength) {
+      attributes.minLength = fieldSchema.minLength;
+    }
+
+    // Add max length if it exists
+    if (fieldSchema.maxLength) {
+      attributes.maxLength = fieldSchema.maxLength;
+    }
+
+    return attributes;
   };
 
   const handleBasicInfoSubmit = (e) => {
@@ -49,12 +103,43 @@ const ProfileInfo = ({
     setIsEditingAddress(false);
   };
 
+  const handleEmailChange = (e) => {
+    setEmailData({ email: e.target.value });
+
+    // Clear any previous email field errors
+    if (fieldErrors?.email) {
+      setFieldErrors((prev) => ({
+        ...prev,
+        email: null,
+      }));
+    }
+  };
+
+  const handleEmailSubmit = (e) => {
+    e.preventDefault();
+
+    // Validate email before submission
+    if (validationSchema?.email?.pattern) {
+      const pattern = new RegExp(validationSchema.email.pattern);
+      if (!pattern.test(emailData.email)) {
+        setFieldErrors((prev) => ({
+          ...prev,
+          email: validationSchema.email.message || "Invalid email format",
+        }));
+        return;
+      }
+    }
+
+    handleEmailChangeRequest(emailData.email);
+    setIsEditingEmail(false);
+  };
+
   return (
     <section className="profile-section">
       {/* Basic Information Section */}
       <div className="section-header">
         <h2 className="section-title">Basic Information</h2>
-        {!isEditingBasicInfo && !isEditingAddress && (
+        {!isEditingBasicInfo && !isEditingAddress && !isEditingEmail && (
           <button
             className="btn-secondary"
             onClick={() => setIsEditingBasicInfo(true)}
@@ -82,6 +167,7 @@ const ProfileInfo = ({
               className={getInputClass("name")}
               aria-invalid={fieldErrors?.name ? "true" : "false"}
               aria-describedby={fieldErrors?.name ? "name-error" : undefined}
+              {...getValidationAttributes("name")}
             />
             {fieldErrors?.name && (
               <p className="field-error" id="name-error" role="alert">
@@ -101,10 +187,9 @@ const ProfileInfo = ({
               value={formData.phone}
               onChange={handleInputChange}
               className={getInputClass("phone")}
-              pattern="[0-9]{10,15}"
-              title="Phone number must contain 10-15 digits"
               aria-invalid={fieldErrors?.phone ? "true" : "false"}
               aria-describedby={fieldErrors?.phone ? "phone-error" : undefined}
+              {...getValidationAttributes("phone")}
             />
             {fieldErrors?.phone && (
               <p className="field-error" id="phone-error" role="alert">
@@ -146,6 +231,7 @@ const ProfileInfo = ({
             <span className="detail-label">Name:</span>
             <span className="detail-value">{displayName}</span>
           </div>
+          {/* Email Information Section */}
           <div className="detail-item">
             <span className="detail-label">Email:</span>
             <span className="detail-value">
@@ -154,6 +240,16 @@ const ProfileInfo = ({
                 <span className="verified-badge">Verified</span>
               )}
             </span>
+            {!isEditingEmail && !isEditingBasicInfo && !isEditingAddress && (
+              <button
+                className="btn-text btn-edit-email"
+                onClick={() => setIsEditingEmail(true)}
+                tabIndex="0"
+                aria-label="Edit email address"
+              >
+                Edit
+              </button>
+            )}
           </div>
           <div className="detail-item">
             <span className="detail-label">Phone:</span>
@@ -164,11 +260,80 @@ const ProfileInfo = ({
         </div>
       )}
 
+      {/* Email Edit Form */}
+      {isEditingEmail && (
+        <form onSubmit={handleEmailSubmit} noValidate className="email-form">
+          <div className="form-group">
+            <label htmlFor="email" className="form-label">
+              Email Address
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={emailData.email}
+              onChange={handleEmailChange}
+              required
+              className={getInputClass("email")}
+              aria-invalid={fieldErrors?.email ? "true" : "false"}
+              aria-describedby={fieldErrors?.email ? "email-error" : undefined}
+              {...getValidationAttributes("email")}
+            />
+            {fieldErrors?.email && (
+              <p className="field-error" id="email-error" role="alert">
+                {fieldErrors.email}
+              </p>
+            )}
+            <p className="form-note">
+              After changing your email, a verification link will be sent to the
+              new address. Your email will only be updated after verification.
+            </p>
+          </div>
+
+          <div className="form-actions">
+            <button
+              type="submit"
+              className="btn-primary"
+              disabled={
+                updatingProfile || emailData.email === displayUserData?.email
+              }
+            >
+              {updatingProfile ? (
+                <>
+                  <Spinner size="small" message="" showMessage={false} />
+                  Saving...
+                </>
+              ) : (
+                "Save Email"
+              )}
+            </button>
+            <button
+              type="button"
+              className="btn-secondary"
+              onClick={() => {
+                setIsEditingEmail(false);
+                setFieldErrors({});
+                setEmailData({ email: displayUserData?.email || "" });
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      )}
+
+      {/* Verification Status Message */}
+      {emailVerificationStatus && (
+        <div className={`verification-message ${emailVerificationStatus.type}`}>
+          {emailVerificationStatus.message}
+        </div>
+      )}
+
       {/* Shipping Address Section */}
       <div className="shipping-address-section">
         <div className="section-header">
           <h2 className="section-title">Shipping Address</h2>
-          {!isEditingBasicInfo && !isEditingAddress && (
+          {!isEditingBasicInfo && !isEditingAddress && !isEditingEmail && (
             <button
               className="btn-secondary"
               onClick={() => setIsEditingAddress(true)}
@@ -199,6 +364,7 @@ const ProfileInfo = ({
                   aria-describedby={
                     fieldErrors?.street ? "street-error" : undefined
                   }
+                  {...getValidationAttributes("address.street", true)}
                 />
                 {fieldErrors?.street && (
                   <p className="field-error" id="street-error" role="alert">
@@ -224,6 +390,7 @@ const ProfileInfo = ({
                     aria-describedby={
                       fieldErrors?.city ? "city-error" : undefined
                     }
+                    {...getValidationAttributes("address.city", true)}
                   />
                   {fieldErrors?.city && (
                     <p className="field-error" id="city-error" role="alert">
@@ -248,6 +415,7 @@ const ProfileInfo = ({
                     aria-describedby={
                       fieldErrors?.state ? "state-error" : undefined
                     }
+                    {...getValidationAttributes("address.state", true)}
                   />
                   {fieldErrors?.state && (
                     <p className="field-error" id="state-error" role="alert">
@@ -260,7 +428,7 @@ const ProfileInfo = ({
               <div className="address-form-row">
                 <div className="form-group">
                   <label htmlFor="zipCode" className="form-label">
-                    Zip/Postal Code
+                    ZIP/Postal Code
                   </label>
                   <input
                     type="text"
@@ -270,12 +438,11 @@ const ProfileInfo = ({
                     onChange={handleInputChange}
                     required
                     className={getInputClass("zipCode")}
-                    pattern="[0-9a-zA-Z\-\s]{3,10}"
-                    title="Please enter a valid zip/postal code (3-10 characters)"
                     aria-invalid={fieldErrors?.zipCode ? "true" : "false"}
                     aria-describedby={
                       fieldErrors?.zipCode ? "zipCode-error" : undefined
                     }
+                    {...getValidationAttributes("address.zipCode", true)}
                   />
                   {fieldErrors?.zipCode && (
                     <p className="field-error" id="zipCode-error" role="alert">
@@ -300,6 +467,7 @@ const ProfileInfo = ({
                     aria-describedby={
                       fieldErrors?.country ? "country-error" : undefined
                     }
+                    {...getValidationAttributes("address.country", true)}
                   />
                   {fieldErrors?.country && (
                     <p className="field-error" id="country-error" role="alert">

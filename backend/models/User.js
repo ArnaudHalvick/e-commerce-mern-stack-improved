@@ -26,6 +26,11 @@ const UserSchema = new mongoose.Schema({
     lowercase: true,
     sparse: true, // Allow null/undefined values to avoid unique constraint errors
   },
+  pendingEmail: {
+    type: String,
+    lowercase: true,
+    match: [/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, "Please enter a valid email"],
+  },
   password: {
     type: String,
     required: [true, "Please enter your password"],
@@ -77,10 +82,10 @@ const UserSchema = new mongoose.Schema({
     type: String,
     validate: {
       validator: function (v) {
-        return !v || /^[0-9]{10,15}$/.test(v);
+        return !v || /^[0-9]{10,12}$/.test(v);
       },
       message: (props) =>
-        `${props.value} is not a valid phone number. It should have 10-15 digits.`,
+        `${props.value} is not a valid phone number. It should have 10-12 digits.`,
     },
   },
   address: {

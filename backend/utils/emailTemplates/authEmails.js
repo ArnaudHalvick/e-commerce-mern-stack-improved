@@ -8,16 +8,34 @@ const { getFrontendUrl, joinUrl } = require("../urlUtils");
 /**
  * Generate HTML for email verification email
  * @param {string} verificationURL - The verification URL to include in the email
+ * @param {Object} options - Additional options for customizing the email
+ * @param {boolean} options.isEmailChange - Whether this is for an email change
+ * @param {string} options.user - User's name
+ * @param {string} options.newEmail - The new email address for email change
  * @returns {string} - HTML content for email
  */
-const generateVerificationEmail = (verificationURL) => {
+const generateVerificationEmail = (verificationURL, options = {}) => {
+  const { isEmailChange, user, newEmail } = options;
+
+  // Dynamic content based on email type
+  let title = isEmailChange
+    ? "Verify Your Email Change"
+    : "Verify Your Email Address";
+  let mainContent = isEmailChange
+    ? `<p>You recently requested to change your email address from your current email to <strong>${newEmail}</strong>. To complete this change, please verify your new email address.</p>`
+    : `<p>Thank you for signing up! To complete your registration and access all features, please verify your email address.</p>`;
+
+  let buttonText = isEmailChange
+    ? "Confirm Email Change"
+    : "Verify Email Address";
+
   return `
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Email Verification</title>
+  <title>${title}</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -72,12 +90,12 @@ const generateVerificationEmail = (verificationURL) => {
       <div class="logo">E-Commerce Store</div>
     </div>
     
-    <h1>Verify Your Email Address</h1>
+    <h1>${title}</h1>
     
-    <p>Thank you for signing up! To complete your registration and access all features, please verify your email address.</p>
+    ${mainContent}
     
     <p style="text-align: center;">
-      <a href="${verificationURL}" class="btn-verify" target="_blank">Verify Email Address</a>
+      <a href="${verificationURL}" class="btn-verify" target="_blank">${buttonText}</a>
     </p>
     
     <p>If the button above doesn't work, you can also verify by copying and pasting the following URL into your browser:</p>
@@ -88,7 +106,11 @@ const generateVerificationEmail = (verificationURL) => {
     
     <p>This verification link will expire in 24 hours.</p>
     
-    <p>If you did not sign up for an account, please disregard this email.</p>
+    <p>${
+      isEmailChange
+        ? "If you did not request this email change, please contact support immediately or change your password to secure your account."
+        : "If you did not sign up for an account, please disregard this email."
+    }</p>
     
     <div class="footer">
       <p>This is an automated email, please do not reply.</p>

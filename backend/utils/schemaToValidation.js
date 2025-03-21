@@ -137,7 +137,7 @@ const getUserProfileValidation = () => {
   const userModel = User.schema;
 
   // Fields relevant to the profile form
-  const relevantFields = ["name", "phone", "address"];
+  const relevantFields = ["name", "phone", "address", "email"];
   const fieldsToExclude = Object.keys(userModel.paths).filter(
     (field) => !relevantFields.includes(field)
   );
@@ -152,6 +152,17 @@ const getUserProfileValidation = () => {
   }
   validationRules.phone.pattern = "^[0-9]{10,15}$";
   validationRules.phone.message = "Phone number must contain 10-15 digits";
+
+  // Make sure email validation is included
+  if (!validationRules.email) {
+    validationRules.email = {};
+  }
+
+  // If email pattern wasn't extracted from schema, add it manually
+  if (!validationRules.email.pattern) {
+    validationRules.email.pattern = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
+    validationRules.email.message = "Please enter a valid email address";
+  }
 
   // Address validations from middleware
   if (!validationRules.address) {

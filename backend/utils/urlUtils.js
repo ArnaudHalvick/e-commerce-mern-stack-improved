@@ -41,11 +41,26 @@ const joinUrl = (baseUrl, path) => {
 /**
  * Create a verification URL for email
  * @param {string} token - The verification token
+ * @param {Object} options - Optional parameters
+ * @param {string} options.email - Email address to include in the URL
+ * @param {boolean} options.isEmailChange - Whether this is for an email change
  * @returns {string} The full verification URL
  */
-const createVerificationUrl = (token) => {
+const createVerificationUrl = (token, options = {}) => {
   const frontendUrl = getFrontendUrl();
-  return joinUrl(frontendUrl, `verify-email?token=${token}`);
+  let url = `verify-email?token=${token}`;
+
+  // Add email as a query parameter if provided
+  if (options.email) {
+    url += `&email=${encodeURIComponent(options.email)}`;
+  }
+
+  // Add isEmailChange flag if true
+  if (options.isEmailChange) {
+    url += `&isEmailChange=true`;
+  }
+
+  return joinUrl(frontendUrl, url);
 };
 
 /**

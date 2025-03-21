@@ -9,7 +9,9 @@ import {
   changePassword,
   disableAccount,
   resetPasswordChanged,
+  requestEmailChange,
 } from "../../redux/slices/userSlice";
+import { useError } from "../../context/ErrorContext";
 
 // Custom hooks
 import useSchemaValidation from "../../hooks/useSchemaValidation";
@@ -39,6 +41,7 @@ const Profile = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { showError, showSuccess } = useError();
   const { loading, passwordChanged, passwordChangePending, loadingStates } =
     useSelector((state) => state.user);
 
@@ -69,6 +72,7 @@ const Profile = () => {
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [updatedUserData, setUpdatedUserData] = useState(null);
   const [fieldErrors, setFieldErrors] = useState({});
+  const [emailVerificationStatus, setEmailVerificationStatus] = useState(null);
 
   // Fetch complete profile when component mounts
   useEffect(() => {
@@ -377,6 +381,47 @@ const Profile = () => {
     }
   };
 
+  // Handle email change request
+  const handleEmailChangeRequest = async (newEmail) => {
+    // Clear any previous message
+    setMessage({ text: "", type: "" });
+    setEmailVerificationStatus(null);
+
+    // Validate that the email is different from current email
+    if (user && user.email === newEmail) {
+      setFieldErrors((prev) => ({
+        ...prev,
+        email: "New email must be different from your current email",
+      }));
+      return;
+    }
+
+    try {
+      // Dispatch the email change request
+      const response = await dispatch(requestEmailChange(newEmail)).unwrap();
+
+      // Set success message
+      setEmailVerificationStatus({
+        message: `Verification email sent to ${newEmail}. Please check your inbox to confirm this change.`,
+        type: "success",
+      });
+
+      // Show toast notification
+      showSuccess("Verification email sent successfully");
+    } catch (error) {
+      // Handle errors
+      const errorMessage =
+        error?.message || "Failed to request email verification";
+      setEmailVerificationStatus({
+        message: errorMessage,
+        type: "error",
+      });
+
+      // Show error notification
+      showError(errorMessage);
+    }
+  };
+
   const handleResendVerification = async () => {
     if (!user?.email) return;
 
@@ -444,6 +489,9 @@ const Profile = () => {
             setFieldErrors={setFieldErrors}
             displayUserData={displayUserData}
             displayName={displayName}
+            validationSchema={profileValidation.schema}
+            handleEmailChangeRequest={handleEmailChangeRequest}
+            emailVerificationStatus={emailVerificationStatus}
           />
 
           {/* Password Management Section */}

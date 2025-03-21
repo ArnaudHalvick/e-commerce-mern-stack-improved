@@ -180,12 +180,40 @@ export const verifyPasswordChange = createAsyncThunk(
   }
 );
 
+// Async thunk for requesting email change
+export const requestEmailChange = createAsyncThunk(
+  "user/requestEmailChange",
+  async (email, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem("auth-token");
+      const response = await axios.post(
+        getApiUrl("change-email"),
+        { email },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "auth-token": token,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      // Handle error responses
+      if (error.response?.data?.message) {
+        return rejectWithValue(error.response.data.message);
+      }
+      return rejectWithValue("Failed to send email change verification");
+    }
+  }
+);
+
 const userSlice = createSlice({
   name: "user",
   initialState: {
     profile: null,
     isEmailVerified: false,
     verificationRequested: false,
+    emailChangeRequested: false,
     loading: false,
     loadingStates: {
       verifyingEmail: false,
@@ -193,6 +221,7 @@ const userSlice = createSlice({
       disablingAccount: false,
       changingPassword: false,
       updatingProfile: false,
+      changingEmail: false,
     },
     error: null,
     passwordChanged: false,
@@ -208,6 +237,7 @@ const userSlice = createSlice({
       state.profile = null;
       state.isEmailVerified = false;
       state.verificationRequested = false;
+      state.emailChangeRequested = false;
       state.passwordChanged = false;
       state.passwordChangePending = false;
       state.accountDisabled = false;
@@ -218,6 +248,7 @@ const userSlice = createSlice({
         disablingAccount: false,
         changingPassword: false,
         updatingProfile: false,
+        changingEmail: false,
       };
     },
     clearError: (state) => {
@@ -332,6 +363,23 @@ const userSlice = createSlice({
         state.loading = false;
         state.loadingStates.changingPassword = false;
         state.error = action.payload;
+      })
+      // Handle requestEmailChange
+      .addCase(requestEmailChange.pending, (state) => {
+        state.loading = true;
+        state.loadingStates.changingEmail = true;
+        state.error = null;
+      })
+      .addCase(requestEmailChange.fulfilled, (state, action) => {
+        state.loading = false;
+        state.loadingStates.changingEmail = false;
+        state.emailChangeRequested = true;
+      })
+      .addCase(requestEmailChange.rejected, (state, action) => {
+        state.loading = false;
+        state.loadingStates.changingEmail = false;
+        state.error = action.payload;
+        state.emailChangeRequested = false;
       });
   },
 });

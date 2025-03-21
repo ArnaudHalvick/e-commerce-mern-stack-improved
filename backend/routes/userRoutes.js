@@ -40,5 +40,10 @@ router.put(
   userController.changePassword
 );
 router.put("/disable-account", isAuthenticated, userController.disableAccount);
+router.post(
+  "/change-email",
+  isAuthenticated,
+  userController.requestEmailChange
+);
 
 module.exports = router;
