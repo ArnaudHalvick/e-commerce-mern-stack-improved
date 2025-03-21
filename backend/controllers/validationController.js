@@ -34,6 +34,7 @@ const getProfileValidationRules = asyncHandler(async (req, res) => {
   try {
     const validationRules = getUserProfileValidation();
     logger.info(`User ${req.user.id} requested profile validation rules`);
+    logger.debug("Returning validation rules:", validationRules);
     res.json(validationRules);
   } catch (error) {
     logger.error("Error getting profile validation rules:", { error });

@@ -113,31 +113,27 @@ const extractFieldValidation = (schemaType) => {
     }
   }
 
-  // Custom validators - extract all validator messages
+  // For custom validators with regex patterns
   if (schemaType.validators && schemaType.validators.length > 0) {
     schemaType.validators.forEach((validator) => {
       if (validator.type === "required") return; // Already handled
 
-      // For custom validators, get the message
-      if (validator.message) {
-        // Use validator type as key if available, otherwise use 'message'
-        const key = validator.type ? `${validator.type}Message` : "message";
-        rules[key] =
-          typeof validator.message === "function"
-            ? validator.message({ value: "" })
-            : validator.message;
-      }
-
-      // If validator has a validator function with a pattern, extract it
-      if (
-        validator.validator &&
-        validator.validator.toString().includes("test")
-      ) {
+      // Extract regex pattern from validator function
+      if (validator.validator && typeof validator.validator === "function") {
         const fnString = validator.validator.toString();
-        const regexMatch = fnString.match(/\/([^\/]+)\/\.test/);
+        const regexMatch = fnString.match(/\/([^\/]+)\//);
+
         if (regexMatch && regexMatch[1]) {
           rules.pattern = regexMatch[1];
         }
+      }
+
+      // Get validation message
+      if (validator.message) {
+        rules.message =
+          typeof validator.message === "function"
+            ? validator.message({ value: "" })
+            : validator.message;
       }
     });
   }

@@ -14,17 +14,24 @@ const getUserProfileValidation = () => {
   // Fields relevant to the profile form
   const relevantFields = ["name", "phone", "address", "email"];
 
-  // Custom validations that might not be directly extractable from the schema
+  // Extract validations from the model first
+  const modelValidations = getModelValidation(User, relevantFields);
+
+  // Only add custom validations for fields that weren't properly extracted
   const customValidations = {
-    phone: {
-      pattern: "^[0-9]{10,15}$",
-      message: "Phone number must contain 10-15 digits",
-    },
     email: {
-      pattern: "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$",
-      message: "Please enter a valid email address",
+      pattern: !modelValidations.email?.pattern
+        ? "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"
+        : undefined,
+      message: !modelValidations.email?.message
+        ? "Please enter a valid email address"
+        : undefined,
     },
-    address: {
+  };
+
+  // Add nested address validation only if not already extracted from model
+  if (!modelValidations.address?.street?.minLength) {
+    customValidations.address = {
       street: {
         minLength: 3,
         message: "Street address must be at least 3 characters long",
@@ -45,11 +52,24 @@ const getUserProfileValidation = () => {
         minLength: 2,
         message: "Country must be at least 2 characters long",
       },
-    },
-  };
+    };
+  }
 
-  // Extract and merge validations
-  return getModelValidation(User, relevantFields, customValidations);
+  // Remove any undefined values from customValidations
+  Object.keys(customValidations).forEach((key) => {
+    if (customValidations[key] === undefined) {
+      delete customValidations[key];
+    } else if (typeof customValidations[key] === "object") {
+      Object.keys(customValidations[key]).forEach((nestedKey) => {
+        if (customValidations[key][nestedKey] === undefined) {
+          delete customValidations[key][nestedKey];
+        }
+      });
+    }
+  });
+
+  // Merge with model validations
+  return { ...modelValidations, ...customValidations };
 };
 
 /**

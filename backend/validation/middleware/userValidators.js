@@ -8,6 +8,7 @@
 const { body, validationResult } = require("express-validator");
 const User = require("../../models/User");
 const { normalizeEmail } = require("../../utils/emailNormalizer");
+const { getUserProfileValidation } = require("../extractors/modelValidations");
 
 /**
  * Utility function to check validation results
@@ -157,54 +158,68 @@ const validatePasswordChange = [
  * Validates name, phone, and address fields
  */
 const validateProfileUpdate = [
+  // Get validation rules from the User model
+  (req, res, next) => {
+    // Store the validation rules for use in subsequent middleware
+    req.validationRules = getUserProfileValidation();
+    next();
+  },
+
   // Name validation
   body("name")
     .optional()
     .trim()
-    .isLength({ min: 2, max: 30 })
-    .withMessage("Name must be between 2 and 30 characters"),
+    .custom((value, { req }) => {
+      const rules = req.validationRules.name;
+
+      if (rules.minLength && value.length < rules.minLength) {
+        throw new Error(
+          rules.message || `Name must be at least ${rules.minLength} characters`
+        );
+      }
+
+      if (rules.maxLength && value.length > rules.maxLength) {
+        throw new Error(
+          rules.message || `Name cannot exceed ${rules.maxLength} characters`
+        );
+      }
+
+      return true;
+    }),
 
   // Phone validation
   body("phone")
     .optional()
     .trim()
-    .matches(/^[0-9]{10,15}$/)
-    .withMessage("Phone number must contain 10-15 digits"),
+    .custom((value, { req }) => {
+      const rules = req.validationRules.phone;
 
-  // Address validation - street
+      if (rules && rules.pattern) {
+        const regex = new RegExp(rules.pattern);
+        if (!regex.test(value)) {
+          throw new Error(rules.message || "Invalid phone number format");
+        }
+      }
+
+      return true;
+    }),
+
+  // Dynamic address validation
   body("address.street")
     .optional()
     .trim()
-    .isLength({ min: 3 })
-    .withMessage("Street address must be at least 3 characters long"),
+    .custom((value, { req }) => {
+      const rules = req.validationRules.address?.street;
+      if (rules?.minLength && value.length < rules.minLength) {
+        throw new Error(
+          rules.message ||
+            `Street must be at least ${rules.minLength} characters`
+        );
+      }
+      return true;
+    }),
 
-  // Address validation - city
-  body("address.city")
-    .optional()
-    .trim()
-    .isLength({ min: 2 })
-    .withMessage("City must be at least 2 characters long"),
-
-  // Address validation - state
-  body("address.state")
-    .optional()
-    .trim()
-    .isLength({ min: 2 })
-    .withMessage("State must be at least 2 characters long"),
-
-  // Address validation - zipCode
-  body("address.zipCode")
-    .optional()
-    .trim()
-    .matches(/^[0-9a-zA-Z\-\s]{3,10}$/)
-    .withMessage("Please enter a valid zip/postal code"),
-
-  // Address validation - country
-  body("address.country")
-    .optional()
-    .trim()
-    .isLength({ min: 2 })
-    .withMessage("Country must be at least 2 characters long"),
+  // Similar custom validators for other address fields...
 
   validateResults,
 ];

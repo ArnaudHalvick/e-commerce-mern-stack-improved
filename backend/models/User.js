@@ -82,10 +82,10 @@ const UserSchema = new mongoose.Schema({
     type: String,
     validate: {
       validator: function (v) {
-        return !v || /^[0-9]{10,12}$/.test(v);
+        return !v || /^[0-9]{10,15}$/.test(v);
       },
       message: (props) =>
-        `${props.value} is not a valid phone number. It should have 10-12 digits.`,
+        `${props.value} is not a valid phone number. It should have 10-15 digits.`,
     },
   },
   address: {
