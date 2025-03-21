@@ -28,10 +28,10 @@ const getCartData = catchAsync(async (req, res, next) => {
 
 // Add item to cart
 const addToCart = catchAsync(async (req, res, next) => {
-  const { itemId, quantity = 1, size } = req.body;
+  const { productId, quantity = 1, size } = req.body;
 
-  if (!itemId) {
-    return next(new AppError("Item ID is required", 400));
+  if (!productId) {
+    return next(new AppError("Product ID is required", 400));
   }
 
   if (!size) {
@@ -50,7 +50,7 @@ const addToCart = catchAsync(async (req, res, next) => {
   }
 
   // Fetch product details to ensure it exists and get price
-  const product = await Product.findById(itemId);
+  const product = await Product.findById(productId);
   if (!product) {
     return next(new AppError("Product not found", 404));
   }
@@ -62,7 +62,7 @@ const addToCart = catchAsync(async (req, res, next) => {
 
   // Check if the item with the same size already exists in the cart
   const existingItemIndex = cart.items.findIndex(
-    (item) => item.product.toString() === itemId && item.size === size
+    (item) => item.productId.toString() === productId && item.size === size
   );
 
   // If the item exists, update the quantity
@@ -71,7 +71,7 @@ const addToCart = catchAsync(async (req, res, next) => {
   } else {
     // Otherwise, add a new item
     cart.items.push({
-      product: itemId,
+      productId: productId,
       quantity,
       size,
       price: product.new_price || product.old_price,
@@ -101,10 +101,10 @@ const addToCart = catchAsync(async (req, res, next) => {
 
 // Remove item from cart
 const removeFromCart = catchAsync(async (req, res, next) => {
-  const { itemId, size } = req.params;
+  const { productId, size, removeAll = false } = req.body;
 
-  if (!itemId) {
-    return next(new AppError("Item ID is required", 400));
+  if (!productId) {
+    return next(new AppError("Product ID is required", 400));
   }
 
   // Find cart
@@ -116,15 +116,25 @@ const removeFromCart = catchAsync(async (req, res, next) => {
   // Find the index of the item to remove
   const itemIndex = cart.items.findIndex(
     (item) =>
-      item.product.toString() === itemId && (!size || item.size === size)
+      item.productId.toString() === productId && (!size || item.size === size)
   );
 
   if (itemIndex === -1) {
     return next(new AppError("Item not found in cart", 404));
   }
 
-  // Remove the item from the cart
-  cart.items.splice(itemIndex, 1);
+  // Remove the item from the cart or reduce quantity
+  if (removeAll) {
+    cart.items.splice(itemIndex, 1);
+  } else {
+    // Reduce quantity
+    cart.items[itemIndex].quantity -= 1;
+
+    // If quantity becomes 0, remove the item
+    if (cart.items[itemIndex].quantity <= 0) {
+      cart.items.splice(itemIndex, 1);
+    }
+  }
 
   // Recalculate total price and items
   cart.totalItems = cart.items.reduce(
@@ -169,11 +179,10 @@ const clearCart = catchAsync(async (req, res, next) => {
 
 // Update cart item
 const updateCartItem = catchAsync(async (req, res, next) => {
-  const { itemId } = req.params;
-  const { quantity, size } = req.body;
+  const { productId, quantity, size } = req.body;
 
-  if (!itemId) {
-    return next(new AppError("Item ID is required", 400));
+  if (!productId) {
+    return next(new AppError("Product ID is required", 400));
   }
 
   if (!quantity || quantity < 1) {
@@ -189,7 +198,7 @@ const updateCartItem = catchAsync(async (req, res, next) => {
   // Find the index of the item to update
   const itemIndex = cart.items.findIndex(
     (item) =>
-      item.product.toString() === itemId && (!size || item.size === size)
+      item.productId.toString() === productId && (!size || item.size === size)
   );
 
   if (itemIndex === -1) {

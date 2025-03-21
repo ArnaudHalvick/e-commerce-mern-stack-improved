@@ -9,7 +9,7 @@ const { isAuthenticated } = require("../middleware/auth");
 router.get("/", isAuthenticated, cartController.getCartData);
 router.post("/add", isAuthenticated, cartController.addToCart);
 router.post("/remove", isAuthenticated, cartController.removeFromCart);
-router.put("/update", isAuthenticated, cartController.updateCartItem);
+router.post("/update", isAuthenticated, cartController.updateCartItem);
 router.delete("/clear", isAuthenticated, cartController.clearCart);
 
 module.exports = router;

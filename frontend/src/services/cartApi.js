@@ -47,12 +47,14 @@ const cartApi = {
    */
   removeFromCart: async ({ itemId, quantity = 1, removeAll = false, size }) => {
     try {
-      const response = await apiClient.post("/api/cart/remove", {
-        itemId,
-        quantity,
+      // Rename itemId to productId as required by the backend
+      const payload = {
+        productId: itemId, // Convert itemId to productId
         removeAll,
         size,
-      });
+      };
+
+      const response = await apiClient.post("/api/cart/remove", payload);
       return response.data;
     } catch (error) {
       throw (
@@ -70,11 +72,14 @@ const cartApi = {
    */
   updateCartItem: async ({ itemId, quantity, size }) => {
     try {
-      const response = await apiClient.post("/api/cart/update", {
-        itemId,
+      // Rename itemId to productId as required by the backend
+      const payload = {
+        productId: itemId, // Convert itemId to productId
         quantity,
         size,
-      });
+      };
+
+      const response = await apiClient.post("/api/cart/update", payload);
       return response.data;
     } catch (error) {
       throw (
