@@ -133,7 +133,7 @@ const EmailManager = ({
   };
 
   return (
-    <section className="profile-section email-manager-section">
+    <section className="profile-section">
       <div className="profile-section-header">
         <h2 className="profile-section-title">Email Management</h2>
         {!isEditing && (
