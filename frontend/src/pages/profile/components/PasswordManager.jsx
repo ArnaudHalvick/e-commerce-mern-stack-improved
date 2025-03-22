@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useError } from "../../../context/ErrorContext";
-import Spinner from "../../../components/ui/Spinner";
 
 /**
  * PasswordManager component for handling password changes

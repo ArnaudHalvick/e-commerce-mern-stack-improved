@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { requestEmailChange } from "../../../redux/slices/userSlice";
-import Spinner from "../../../components/ui/Spinner";
 import { useError } from "../../../context/ErrorContext";
 import { isValidEmail } from "../../../utils/validation";
 
@@ -209,19 +208,9 @@ const EmailManager = ({ user, validationSchema, showSuccess, showError }) => {
               }
               disabled={isLoading || !isFormValid}
             >
-              {isLoading ? (
-                <Spinner
-                  showAnimation={false}
-                  showMessage={true}
-                  message="Sending Verification..."
-                  size="medium"
-                  // Ensure spinner doesn't capture pointer events
-                  style={{ pointerEvents: "none" }}
-                />
-              ) : (
-                "Request Email Change"
-              )}
+              {isLoading ? "Sending Verification..." : "Request Email Change"}
             </button>
+
             <button
               type="button"
               className="profile-btn-secondary"
