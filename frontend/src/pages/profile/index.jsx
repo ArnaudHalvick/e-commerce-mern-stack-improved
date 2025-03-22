@@ -273,11 +273,9 @@ const Profile = () => {
     try {
       await dispatch(disableAccount(password)).unwrap();
       showSuccess(
-        "Your account has been disabled. You will be logged out in a moment."
+        "Your account has been disabled. You will be logged out now."
       );
-      setTimeout(() => {
-        handleLogout();
-      }, 3000);
+      handleLogout();
     } catch (error) {
       showError(error || "Failed to disable account");
       throw error; // Re-throw to allow modal to handle specific errors

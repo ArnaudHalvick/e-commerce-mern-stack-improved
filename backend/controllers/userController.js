@@ -145,7 +145,7 @@ const loginUser = catchAsync(async (req, res, next) => {
   }
 
   // Check if account is disabled
-  if (user.isDisabled) {
+  if (user.disabled) {
     return next(
       new AppError(
         "Your account has been disabled. Please contact support.",
@@ -197,7 +197,7 @@ const refreshToken = catchAsync(async (req, res, next) => {
   }
 
   // Check if account is disabled
-  if (user.isDisabled) {
+  if (user.disabled) {
     return res.status(403).json({
       success: false,
       message: "Your account has been disabled",
@@ -449,7 +449,7 @@ const disableAccount = catchAsync(async (req, res, next) => {
   }
 
   // Disable account
-  user.isDisabled = true;
+  user.disabled = true;
   user.disabledAt = Date.now();
   await user.save({ validateBeforeSave: false });
 

@@ -47,6 +47,7 @@ const AuthContextProvider = (props) => {
     setUserState(null);
     setIsAuthenticated(false);
     setIsUserLoggedOut(true); // Set flag to prevent refresh attempts after logout
+    setAccountDisabled(false); // Reset account disabled flag
     dispatch(resetCart());
     dispatch(clearUser());
   }, [dispatch]);
@@ -288,7 +289,9 @@ const AuthContextProvider = (props) => {
       } else {
         if (
           response.status === 403 &&
-          data.message === "Your account has been disabled"
+          (data.message === "Your account has been disabled" ||
+            data.message ===
+              "Your account is disabled. Please contact support.")
         ) {
           setAccountDisabled(true);
           setError("Your account has been disabled. Please contact support.");
