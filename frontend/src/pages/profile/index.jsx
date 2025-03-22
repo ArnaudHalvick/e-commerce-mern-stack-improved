@@ -269,9 +269,9 @@ const Profile = () => {
     }
   }, [logout, navigate]);
 
-  const handleDisableAccount = async () => {
+  const handleDisableAccount = async (password) => {
     try {
-      await dispatch(disableAccount()).unwrap();
+      await dispatch(disableAccount(password)).unwrap();
       showSuccess(
         "Your account has been disabled. You will be logged out in a moment."
       );
@@ -280,6 +280,7 @@ const Profile = () => {
       }, 3000);
     } catch (error) {
       showError(error || "Failed to disable account");
+      throw error; // Re-throw to allow modal to handle specific errors
     }
   };
 

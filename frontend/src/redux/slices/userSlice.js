@@ -106,12 +106,12 @@ export const changePassword = createAsyncThunk(
 // Async thunk for disabling account
 export const disableAccount = createAsyncThunk(
   "user/disableAccount",
-  async (_, { rejectWithValue }) => {
+  async (password, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem("auth-token");
       const response = await axios.put(
         getApiUrl("users/disable-account"),
-        {},
+        { password },
         {
           headers: {
             "Content-Type": "application/json",

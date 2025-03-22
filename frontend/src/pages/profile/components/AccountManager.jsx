@@ -1,9 +1,40 @@
-import React from "react";
+import React, { useState } from "react";
+import DisableAccountModal from "./DisableAccountModal";
 
 /**
  * AccountManager component for account-related actions
  */
 const AccountManager = ({ handleDisableAccount, disablingAccount }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+    setError("");
+  };
+
+  const handleCloseModal = () => {
+    if (!disablingAccount) {
+      setIsModalOpen(false);
+      setError("");
+    }
+  };
+
+  const handleConfirmDisable = (password) => {
+    if (!password?.trim()) {
+      setError("Password is required to disable your account");
+      return;
+    }
+
+    // Clear previous errors
+    setError("");
+
+    // Call parent handler with password
+    handleDisableAccount(password).catch((err) => {
+      setError(err || "Failed to disable account");
+    });
+  };
+
   return (
     <section className="profile-section">
       <h2 className="profile-section-title">Account Management</h2>
@@ -12,7 +43,7 @@ const AccountManager = ({ handleDisableAccount, disablingAccount }) => {
           className={
             disablingAccount ? "profile-btn-disabled" : "profile-btn-danger"
           }
-          onClick={handleDisableAccount}
+          onClick={handleOpenModal}
           disabled={disablingAccount}
           tabIndex="0"
           aria-label="Disable account"
@@ -27,6 +58,15 @@ const AccountManager = ({ handleDisableAccount, disablingAccount }) => {
           reversed by contacting customer support.
         </p>
       </div>
+
+      {/* Account disable confirmation modal */}
+      <DisableAccountModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmDisable}
+        isProcessing={disablingAccount}
+        error={error}
+      />
     </section>
   );
 };

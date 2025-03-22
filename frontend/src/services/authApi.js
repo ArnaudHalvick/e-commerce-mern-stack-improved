@@ -102,11 +102,14 @@ const authApi = {
 
   /**
    * Disable the current user's account
+   * @param {string} password - User's password for confirmation
    * @returns {Promise} - Promise that resolves to account disabling response
    */
-  disableAccount: async () => {
+  disableAccount: async (password) => {
     try {
-      const response = await apiClient.put("/api/users/disable-account");
+      const response = await apiClient.put("/api/users/disable-account", {
+        password,
+      });
       return response.data;
     } catch (error) {
       // Let the error interceptor handle formatting, just rethrow
