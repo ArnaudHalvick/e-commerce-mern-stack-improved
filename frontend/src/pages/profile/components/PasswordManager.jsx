@@ -266,7 +266,19 @@ const PasswordManager = ({
             <button
               type="button"
               className="profile-btn-secondary"
-              onClick={() => setIsChangingPassword(false)}
+              onClick={() => {
+                // Reset password fields before closing
+                handlePasswordInputChange({
+                  target: { name: "currentPassword", value: "" },
+                });
+                handlePasswordInputChange({
+                  target: { name: "newPassword", value: "" },
+                });
+                handlePasswordInputChange({
+                  target: { name: "confirmPassword", value: "" },
+                });
+                setIsChangingPassword(false);
+              }}
               disabled={loading || changingPassword}
             >
               Cancel

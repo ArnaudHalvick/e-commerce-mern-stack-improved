@@ -6,6 +6,28 @@ import { useError } from "../../../context/ErrorContext";
 import { isValidEmail } from "../../../utils/validation";
 
 /**
+ * Inline spinner component specifically for buttons
+ */
+const ButtonSpinner = () => {
+  return (
+    <span
+      className="button-spinner"
+      style={{
+        display: "inline-block",
+        width: "16px",
+        height: "16px",
+        border: "2px solid rgba(255, 255, 255, 0.3)",
+        borderRadius: "50%",
+        borderTopColor: "#fff",
+        animation: "spin 1s linear infinite",
+        marginRight: "8px",
+        verticalAlign: "middle",
+      }}
+    ></span>
+  );
+};
+
+/**
  * EmailManager component for handling email change functionality
  * Uses schema-based validation from backend for instant feedback
  */
@@ -152,6 +174,16 @@ const EmailManager = ({ user, validationSchema, showSuccess, showError }) => {
     return fieldError ? "profile-form-input error" : "profile-form-input";
   };
 
+  // Handle cancel for email editing
+  const handleCancel = () => {
+    // Reset the email data to the original email
+    setEmailData({ email: user?.email || "" });
+    // Clear any field errors
+    setFieldError(null);
+    // Exit edit mode
+    setIsEditing(false);
+  };
+
   return (
     <section className="profile-section">
       <div className="profile-section-header">
@@ -241,7 +273,7 @@ const EmailManager = ({ user, validationSchema, showSuccess, showError }) => {
             >
               {loadingStates?.requestingEmailChange ? (
                 <>
-                  <Spinner size="small" inline />
+                  <ButtonSpinner />
                   Sending Verification...
                 </>
               ) : (
@@ -251,11 +283,7 @@ const EmailManager = ({ user, validationSchema, showSuccess, showError }) => {
             <button
               type="button"
               className="profile-btn-secondary"
-              onClick={() => {
-                setIsEditing(false);
-                setEmailData({ email: user?.email || "" });
-                setFieldError(null);
-              }}
+              onClick={handleCancel}
               disabled={loadingStates?.requestingEmailChange}
             >
               Cancel

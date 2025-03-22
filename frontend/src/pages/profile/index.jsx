@@ -431,6 +431,7 @@ const Profile = () => {
           {/* Profile Info (Basic Information and Address) */}
           <ProfileInfo
             formData={formData}
+            setFormData={setFormData}
             handleInputChange={handleInputChange}
             handleSubmit={handleSubmit}
             loading={loading}

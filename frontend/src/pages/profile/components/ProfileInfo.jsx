@@ -8,6 +8,7 @@ import { useError } from "../../../context/ErrorContext";
  */
 const ProfileInfo = ({
   formData,
+  setFormData,
   handleInputChange,
   handleSubmit,
   loading,
@@ -270,6 +271,13 @@ const ProfileInfo = ({
                 className="profile-btn-secondary"
                 onClick={() => {
                   setIsEditingBasicInfo(false);
+                  // Reset basic info form to original values
+                  setFormData((prev) => ({
+                    ...prev,
+                    name:
+                      displayUserData?.name || displayUserData?.username || "",
+                    phone: displayUserData?.phone || "",
+                  }));
                   setFieldErrors({});
                 }}
                 disabled={loading || updatingProfile}
@@ -495,6 +503,17 @@ const ProfileInfo = ({
                   className="profile-btn-secondary"
                   onClick={() => {
                     setIsEditingAddress(false);
+                    // Reset address form to original values
+                    setFormData((prev) => ({
+                      ...prev,
+                      address: {
+                        street: displayUserData?.address?.street || "",
+                        city: displayUserData?.address?.city || "",
+                        state: displayUserData?.address?.state || "",
+                        zipCode: displayUserData?.address?.zipCode || "",
+                        country: displayUserData?.address?.country || "",
+                      },
+                    }));
                     // Reset address form errors
                     setFieldErrors((prev) => ({
                       ...prev,
