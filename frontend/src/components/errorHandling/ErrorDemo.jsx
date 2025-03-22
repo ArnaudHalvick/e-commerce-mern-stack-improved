@@ -3,17 +3,13 @@ import { useError } from "../../context/ErrorContext";
 import api from "../../utils/axiosConfig";
 import "./ErrorStyles.css";
 import Spinner from "../ui/Spinner";
-/**
- * Error Demonstration Component
- * Shows how to use the error handling system
- */
+
 const ErrorDemo = () => {
   const { showError, showSuccess, showWarning, showInfo } = useError();
   const [message, setMessage] = useState("This is a test message");
-  const [apiPath, setApiPath] = useState("/api/test-error");
+  const [apiPath, setApiPath] = useState("/api/error-demo/test-error");
   const [statusCode, setStatusCode] = useState(404);
 
-  // Handlers for showing different types of notifications
   const handleShowError = () => {
     showError(message);
   };
@@ -30,23 +26,18 @@ const ErrorDemo = () => {
     showInfo(message);
   };
 
-  // Handler for throwing a runtime error
   const handleThrowError = () => {
     throw new Error(message);
   };
 
-  // Handler for simulating an API error
   const handleApiError = async () => {
     try {
-      // This should trigger our axios interceptor
-      await api.get(apiPath);
+      await api.get(`${apiPath}?statusCode=${statusCode}`);
     } catch (error) {
-      // The interceptor will format the error, we just need to show it
       showError(error.message);
     }
   };
 
-  // Update form field handlers
   const handleMessageChange = (e) => {
     setMessage(e.target.value);
   };
@@ -66,9 +57,8 @@ const ErrorDemo = () => {
         This component demonstrates how to use the error handling system in your
         application.
       </p>
-
       <div className="error-demo-section">
-        <h3 className="error-demo-section.h3">1. Toast Notifications</h3>
+        <h3>1. Toast Notifications</h3>
         <div className="error-demo-form">
           <div className="form-group">
             <label htmlFor="message">Message:</label>
@@ -80,7 +70,6 @@ const ErrorDemo = () => {
               className="form-control"
             />
           </div>
-
           <div className="error-demo-buttons">
             <button onClick={handleShowError} className="demo-button error">
               Show Error
@@ -97,7 +86,6 @@ const ErrorDemo = () => {
           </div>
         </div>
       </div>
-
       <div className="error-demo-section">
         <h3>2. API Error Handling</h3>
         <p>
@@ -123,12 +111,12 @@ const ErrorDemo = () => {
               onChange={handleStatusCodeChange}
               className="form-control"
             >
-              <option value="400">400 - Bad Request</option>
-              <option value="401">401 - Unauthorized</option>
-              <option value="403">403 - Forbidden</option>
-              <option value="404">404 - Not Found</option>
-              <option value="422">422 - Validation Error</option>
-              <option value="500">500 - Server Error</option>
+              <option value={400}>400 - Bad Request</option>
+              <option value={401}>401 - Unauthorized</option>
+              <option value={403}>403 - Forbidden</option>
+              <option value={404}>404 - Not Found</option>
+              <option value={422}>422 - Validation Error</option>
+              <option value={500}>500 - Server Error</option>
             </select>
           </div>
           <button onClick={handleApiError} className="demo-button api-error">
@@ -136,7 +124,6 @@ const ErrorDemo = () => {
           </button>
         </div>
       </div>
-
       <div className="error-demo-section">
         <h3>3. Error Boundary Testing</h3>
         <p>
@@ -151,10 +138,9 @@ const ErrorDemo = () => {
         </button>
       </div>
       <div className="error-demo-section">
-        <h3 className="error-demo-section.h3">Loading Spinner Test</h3>
+        <h3>Loading Spinner Test</h3>
         <Spinner message="Loading..." size="medium" />
       </div>
-
       <div className="error-demo-code">
         <h3>Usage Example:</h3>
         <pre>
@@ -166,17 +152,15 @@ const YourComponent = () => {
   
   const handleSubmit = async (formData) => {
     try {
-      // Use our configured axios instance
       await api.post('/api/data', formData);
       showSuccess('Data submitted successfully!');
-      } catch (error) {
-        // Error is already formatted by our interceptor
-        showError(error.message);
-        }
-        };
-        
-        // Rest of your component...
-        }`}
+    } catch (error) {
+      showError(error.message);
+    }
+  };
+  
+  // Rest of your component...
+};`}
         </pre>
       </div>
     </div>
