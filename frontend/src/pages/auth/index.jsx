@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
 // Components
@@ -8,6 +8,9 @@ import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
 
 // Hooks
 import useAuthForm from "./hooks/useAuthForm";
+
+// Context
+import { AuthContext } from "../../context/AuthContext";
 
 // Styles
 import "./Auth.css";
@@ -20,6 +23,7 @@ import "./Auth.css";
 const Auth = ({ initialState = "Login" }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { isAuthenticated, loading: authLoading } = useContext(AuthContext);
 
   const {
     state,
@@ -34,6 +38,19 @@ const Auth = ({ initialState = "Login" }) => {
     handleSubmit,
     setInitialState,
   } = useAuthForm();
+
+  // Effect to redirect authenticated users away from login/signup
+  useEffect(() => {
+    // Only redirect after auth state is determined (not loading)
+    if (!authLoading && isAuthenticated) {
+      // Redirect to home page or the page they were trying to access
+      const returnTo = location.state?.from || "/";
+      navigate(returnTo, {
+        replace: true,
+        state: { message: "You are already logged in" },
+      });
+    }
+  }, [isAuthenticated, authLoading, navigate, location.state?.from]);
 
   // Effect to handle initial state
   useEffect(() => {
@@ -59,6 +76,14 @@ const Auth = ({ initialState = "Login" }) => {
       navigate("/verify-pending");
     }
   }, [error, navigate]);
+
+  // If still loading auth state, show loading
+  if (authLoading) {
+    return <div className="auth-page__loading">Loading...</div>;
+  }
+
+  // If already authenticated, the redirect effect will handle it
+  // But we won't render the actual forms
 
   return (
     <div className="auth-page">

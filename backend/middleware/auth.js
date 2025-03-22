@@ -62,6 +62,47 @@ const isAuthenticated = async (req, res, next) => {
   }
 };
 
+// Middleware to prevent already authenticated users from accessing login/signup routes
+const isNotAuthenticated = async (req, res, next) => {
+  try {
+    // Check for token in auth-token header (for backward compatibility)
+    let token = req.headers["auth-token"];
+
+    // If not found, check Authorization header
+    if (!token) {
+      const authHeader = req.headers.authorization;
+      if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        // No token found, user is not authenticated, proceed to login/signup
+        return next();
+      }
+      token = authHeader.split(" ")[1];
+    }
+
+    // Try to verify token
+    try {
+      const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+      const user = await User.findById(decoded.id);
+
+      // If we got here, token is valid and user exists
+      if (user && !user.disabled) {
+        return res.status(403).json({
+          success: false,
+          message: "You are already logged in",
+        });
+      }
+    } catch (tokenError) {
+      // Token is invalid or expired, allow access to login/signup
+      return next();
+    }
+
+    // If we get here, proceed to login/signup
+    next();
+  } catch (error) {
+    // In case of any error, allow access to login/signup
+    next();
+  }
+};
+
 const verifyRefreshToken = async (req, res, next) => {
   try {
     const refreshToken = req.cookies.refreshToken;
@@ -101,4 +142,4 @@ const verifyRefreshToken = async (req, res, next) => {
   }
 };
 
-module.exports = { isAuthenticated, verifyRefreshToken };
+module.exports = { isAuthenticated, isNotAuthenticated, verifyRefreshToken };

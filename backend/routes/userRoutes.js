@@ -3,7 +3,11 @@
 const express = require("express");
 const router = express.Router();
 const userController = require("../controllers/userController");
-const { isAuthenticated, verifyRefreshToken } = require("../middleware/auth");
+const {
+  isAuthenticated,
+  isNotAuthenticated,
+  verifyRefreshToken,
+} = require("../middleware/auth");
 const {
   validateRegistration,
   validateLogin,
@@ -12,8 +16,18 @@ const {
 } = require("../validation");
 
 // Public routes
-router.post("/signup", validateRegistration, userController.registerUser);
-router.post("/login", validateLogin, userController.loginUser);
+router.post(
+  "/signup",
+  isNotAuthenticated,
+  validateRegistration,
+  userController.registerUser
+);
+router.post(
+  "/login",
+  isNotAuthenticated,
+  validateLogin,
+  userController.loginUser
+);
 router.post("/refresh-token", verifyRefreshToken, userController.refreshToken);
 router.post("/request-verification", userController.requestVerification);
 router.get("/verify-email/:token", userController.verifyEmail);
