@@ -42,8 +42,8 @@ const Auth = ({ initialState }) => {
     setInitialState,
     changeHandler,
     handleSubmit,
-    validationSchema,
-    schemaLoading,
+    schema: validationSchema,
+    isLoading: schemaLoading,
   } = useSchemaAuthForm();
 
   // Redirect authenticated users away from login/signup pages.
@@ -103,6 +103,7 @@ const Auth = ({ initialState }) => {
               handleSubmit={handleSubmit}
               isOffline={isOffline}
               validationSchema={validationSchema}
+              isLoading={schemaLoading}
             />
           ) : (
             <SignupForm

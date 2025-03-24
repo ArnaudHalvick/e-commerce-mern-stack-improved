@@ -3,12 +3,13 @@
 import { useState, useContext, useCallback, useEffect, useRef } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import usePasswordValidation from "./usePasswordValidation";
 import { useError } from "../../../context/ErrorContext";
+import { formatApiError } from "../../../utils/apiErrorUtils";
+
+import useSchemaValidation from "../../../hooks/useSchemaValidation";
 import useFormErrors from "../../../hooks/useFormErrors";
 import useAsync from "../../../hooks/useAsync";
 import useNetwork from "../../../hooks/useNetwork";
-import { formatApiError } from "../../../utils/apiErrorUtils";
 
 const useAuthForm = () => {
   const [state, setState] = useState("Login");
@@ -41,16 +42,20 @@ const useAuthForm = () => {
     offlineMessage: "You are currently offline. Please reconnect to continue.",
   });
 
+  // Use the schema validation hook for registration forms
   const {
-    isValid: passwordValid,
-    validLength,
-    hasNumber,
-    hasUppercase,
-    specialChar,
-    match,
-    validationStarted,
-    errors: passwordErrors,
-  } = usePasswordValidation(formData.password, formData.confirmPassword);
+    validateField,
+    validateForm,
+    isLoading: schemaLoading,
+    schema: validationSchema,
+  } = useSchemaValidation("registration", true);
+
+  // Track if validation has started for visual feedback
+  const [validationStarted, setValidationStarted] = useState({
+    password: false,
+    confirmPassword: false,
+    email: false,
+  });
 
   const { execute: executeLogin, loading: loginLoading } = useAsync(
     async (email, password) => {
@@ -117,18 +122,35 @@ const useAuthForm = () => {
     });
     clearAllErrors();
     setTermsAccepted(false);
+    setValidationStarted({
+      password: false,
+      confirmPassword: false,
+      email: false,
+    });
   };
 
   const changeHandler = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+
+    // Clear previous error for this field
     if (errors[name]) {
       clearFieldError(name);
     }
-    if (name === "email" && value) {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(value)) {
-        setFieldError("email", "Please enter a valid email address");
+
+    // Track validation has started for fields
+    if (name === "password" || name === "confirmPassword" || name === "email") {
+      setValidationStarted((prev) => ({
+        ...prev,
+        [name]: true,
+      }));
+    }
+
+    // Use schema validation for fields
+    if (validationSchema && validationStarted[name]) {
+      const error = validateField(name, value);
+      if (error) {
+        setFieldError(name, error);
       }
     }
   };
@@ -148,46 +170,28 @@ const useAuthForm = () => {
   };
 
   const validateSignupForm = () => {
-    let isValid = true;
     clearAllErrors();
-    if (!formData.username.trim()) {
-      setFieldError("username", "Name is required");
-      isValid = false;
-    }
-    if (!formData.email.trim()) {
-      setFieldError("email", "Email is required");
-      isValid = false;
-    } else {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(formData.email)) {
-        setFieldError("email", "Please enter a valid email address");
-        isValid = false;
-      }
-    }
-    if (!formData.password.trim()) {
-      setFieldError("password", "Password is required");
-      isValid = false;
-    } else if (!passwordValid) {
-      const activeErrors = passwordErrors.filter((error) => {
-        if (error.includes("match") && !formData.confirmPassword) {
-          return false;
-        }
-        return true;
-      });
-      if (activeErrors.length > 0) {
-        setFieldError("password", "Password does not meet the requirements");
-        isValid = false;
-      }
-    }
-    if (formData.password !== formData.confirmPassword) {
-      setFieldError("confirmPassword", "Passwords do not match");
-      isValid = false;
-    }
+
+    // Validate all fields with backend schema
+    const validationErrors = validateForm({
+      username: formData.username,
+      email: formData.email,
+      password: formData.password,
+      passwordConfirm: formData.confirmPassword,
+    });
+
+    // Check for terms acceptance
     if (!termsAccepted) {
-      setFieldError("terms", "You must accept the terms and conditions");
-      isValid = false;
+      validationErrors.terms = "You must accept the terms and conditions";
     }
-    return isValid;
+
+    // Apply errors to form state
+    if (Object.keys(validationErrors).length > 0) {
+      setMultipleErrors(validationErrors);
+      return false;
+    }
+
+    return true;
   };
 
   const handleSubmit = async (e) => {
@@ -213,6 +217,64 @@ const useAuthForm = () => {
     }
   };
 
+  // Check password validity against schema requirements
+  const checkPasswordValidity = () => {
+    if (!validationSchema || !validationSchema.password) {
+      return {
+        validLength: false,
+        hasNumber: false,
+        hasUppercase: false,
+        specialChar: false,
+        match: false,
+        validationStarted: false,
+        isValid: false,
+      };
+    }
+
+    // Extract password requirements from schema
+    const passwordSchema = validationSchema.password;
+    const minLength = passwordSchema.minLength || 8;
+
+    // Determine if requirements exist in the schema
+    const requiresUppercase = passwordSchema.requiresUppercase || false;
+    const requiresNumber = passwordSchema.requiresNumber || false;
+    const requiresSpecial = passwordSchema.requiresSpecial || false;
+
+    // Check actual password against requirements
+    const validLength = formData.password.length >= minLength;
+    const hasUppercase = !requiresUppercase || /[A-Z]/.test(formData.password);
+    const hasNumber = !requiresNumber || /\d/.test(formData.password);
+    const specialChar =
+      !requiresSpecial || /[!@#$%^&*(),.?":{}|<>]/.test(formData.password);
+
+    // Password matching check
+    const match =
+      formData.password === formData.confirmPassword &&
+      formData.password !== "";
+
+    // Determine if validation has started
+    const hasStarted = validationStarted.password;
+
+    // Password is valid if it meets all requirements
+    const isValid =
+      validLength &&
+      hasUppercase &&
+      hasNumber &&
+      specialChar &&
+      match &&
+      hasStarted;
+
+    return {
+      validLength,
+      hasNumber,
+      hasUppercase,
+      specialChar,
+      match,
+      validationStarted: hasStarted,
+      isValid,
+    };
+  };
+
   // Use a ref to ensure we process the auth error only once per change.
   const authErrorProcessed = useRef(false);
 
@@ -233,17 +295,10 @@ const useAuthForm = () => {
     state,
     formData,
     termsAccepted,
-    loading: loginLoading || signupLoading,
+    loading: loginLoading || signupLoading || schemaLoading,
     errors,
-    passwordValidation: {
-      validLength,
-      hasNumber,
-      hasUppercase,
-      specialChar,
-      match,
-      validationStarted,
-      isValid: passwordValid,
-    },
+    passwordValidation: checkPasswordValidity(),
+    schema: validationSchema,
     isOffline: !isOnline,
     setTermsAccepted,
     switchState,

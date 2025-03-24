@@ -13,6 +13,7 @@ import PropTypes from "prop-types";
  * @param {Function} props.handleSubmit - Form submission handler
  * @param {Boolean} props.isOffline - Whether the user is offline
  * @param {Object} props.validationSchema - Validation schema from backend
+ * @param {Boolean} props.isLoading - Whether the validation schema is still loading
  */
 const LoginForm = ({
   formData,
@@ -22,10 +23,11 @@ const LoginForm = ({
   handleSubmit,
   isOffline,
   validationSchema,
+  isLoading,
 }) => {
   // Get validation attributes for inputs based on schema
   const getValidationAttributes = (fieldName) => {
-    if (!validationSchema) return {};
+    if (!validationSchema || isLoading) return {};
 
     const fieldSchema = validationSchema[fieldName];
     if (!fieldSchema) return {};
@@ -101,6 +103,7 @@ LoginForm.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
   isOffline: PropTypes.bool,
   validationSchema: PropTypes.object,
+  isLoading: PropTypes.bool,
 };
 
 LoginForm.defaultProps = {
@@ -108,6 +111,7 @@ LoginForm.defaultProps = {
   errors: {},
   isOffline: false,
   validationSchema: null,
+  isLoading: false,
 };
 
 export default LoginForm;

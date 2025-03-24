@@ -7,7 +7,6 @@ import useAsync from "../../../hooks/useAsync";
 import useNetwork from "../../../hooks/useNetwork";
 import useSchemaValidation from "../../../hooks/useSchemaValidation";
 import { formatApiError } from "../../../utils/apiErrorUtils";
-import { isValidEmail } from "../../../utils/validation";
 
 /**
  * Custom hook for auth forms (login/signup) with backend schema validation
@@ -56,6 +55,7 @@ const useSchemaAuthForm = () => {
   const [validationStarted, setValidationStarted] = useState({
     password: false,
     confirmPassword: false,
+    email: false,
   });
 
   // Login execution
@@ -139,6 +139,7 @@ const useSchemaAuthForm = () => {
     setValidationStarted({
       password: false,
       confirmPassword: false,
+      email: false,
     });
   };
 
@@ -152,51 +153,22 @@ const useSchemaAuthForm = () => {
       clearFieldError(name);
     }
 
-    // Add explicit email validation with clearing
-    if (name === "email") {
-      if (value && value.trim()) {
-        if (isValidEmail(value)) {
-          // Email is valid, clear any existing error
-          clearFieldError("email");
-        }
-      }
-    }
-
-    // Track validation has started for password fields
-    if (name === "password" || name === "confirmPassword") {
+    // Track validation has started for fields
+    if (name === "password" || name === "confirmPassword" || name === "email") {
       setValidationStarted((prev) => ({
         ...prev,
         [name]: true,
       }));
     }
 
-    // Validate field with backend schema and clear error if valid
-    if (validationSchema && name !== "confirmPassword") {
+    // Validate field with backend schema
+    if (validationSchema && validationStarted[name]) {
       const error = validateField(name, value);
       if (error) {
         setFieldError(name, error);
       } else {
         // Clear error when input becomes valid
         clearFieldError(name);
-      }
-    }
-
-    // Special handling for confirm password
-    if (
-      name === "confirmPassword" ||
-      (name === "password" && formData.confirmPassword)
-    ) {
-      if (name === "confirmPassword" && value !== formData.password) {
-        setFieldError("confirmPassword", "Passwords do not match");
-      } else if (
-        name === "password" &&
-        value !== formData.confirmPassword &&
-        formData.confirmPassword
-      ) {
-        setFieldError("confirmPassword", "Passwords do not match");
-      } else {
-        // Clear error when passwords match
-        clearFieldError("confirmPassword");
       }
     }
   };
@@ -249,42 +221,88 @@ const useSchemaAuthForm = () => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!isOnline) {
       showError(
         "You are offline. Please check your internet connection and try again."
       );
       return;
     }
-
     if (state === "Signup") {
       if (!validateSignupForm()) return;
-
       const signupData = {
         username: formData.username,
         email: formData.email,
         password: formData.password,
         passwordConfirm: formData.confirmPassword,
       };
-
-      const result = await executeSignup(signupData);
-
-      // Directly handle navigation here as a fallback
-      if (result && result.success && result.requiresVerification) {
-        console.log("Navigating from handleSubmit");
-        navigate("/verify-pending", {
-          state: { email: formData.email },
-          replace: true,
-        });
-      }
+      await executeSignup(signupData);
     } else {
       if (!validateLoginForm()) return;
       await executeLogin(formData.email, formData.password);
     }
   };
 
-  // Process auth errors
+  // Check password validity against schema requirements
+  const checkPasswordValidity = () => {
+    if (!validationSchema || !validationSchema.password) {
+      return {
+        validLength: false,
+        hasNumber: false,
+        hasUppercase: false,
+        specialChar: false,
+        match: false,
+        validationStarted: false,
+        isValid: false,
+      };
+    }
+
+    // Extract password requirements from schema
+    const passwordSchema = validationSchema.password;
+    const minLength = passwordSchema.minLength || 8;
+
+    // Determine if requirements exist in the schema
+    const requiresUppercase = passwordSchema.requiresUppercase || false;
+    const requiresNumber = passwordSchema.requiresNumber || false;
+    const requiresSpecial = passwordSchema.requiresSpecial || false;
+
+    // Check actual password against requirements
+    const validLength = formData.password.length >= minLength;
+    const hasUppercase = !requiresUppercase || /[A-Z]/.test(formData.password);
+    const hasNumber = !requiresNumber || /\d/.test(formData.password);
+    const specialChar =
+      !requiresSpecial || /[!@#$%^&*(),.?":{}|<>]/.test(formData.password);
+
+    // Password matching check
+    const match =
+      formData.password === formData.confirmPassword &&
+      formData.password !== "";
+
+    // Determine if validation has started
+    const hasStarted = validationStarted.password;
+
+    // Password is valid if it meets all requirements
+    const isValid =
+      validLength &&
+      hasUppercase &&
+      hasNumber &&
+      specialChar &&
+      match &&
+      hasStarted;
+
+    return {
+      validLength,
+      hasNumber,
+      hasUppercase,
+      specialChar,
+      match,
+      validationStarted: hasStarted,
+      isValid,
+    };
+  };
+
+  // Use a ref to ensure we process the auth error only once per change.
   const authErrorProcessed = useRef(false);
+
   useEffect(() => {
     if (authError && !authErrorProcessed.current) {
       if (typeof authError === "string") {
@@ -298,84 +316,20 @@ const useSchemaAuthForm = () => {
     }
   }, [authError, setFieldError, setMultipleErrors]);
 
-  // Check password against schema requirements
-  const checkPasswordValidity = () => {
-    if (!formData.password) {
-      return {
-        validLength: false,
-        hasUppercase: false,
-        hasNumber: false,
-        specialChar: false,
-        match: false,
-        isValid: false,
-      };
-    }
-
-    // If we have validation schema, use it
-    if (validationSchema?.password) {
-      const schema = validationSchema.password;
-      // Make sure to use minLength as a number, not an array
-      const minLength =
-        typeof schema.minLength === "number"
-          ? schema.minLength
-          : Array.isArray(schema.minLength)
-          ? schema.minLength[0]
-          : 8;
-
-      // Check each requirement
-      const checks = {
-        validLength: formData.password.length >= minLength,
-        hasUppercase: /[A-Z]/.test(formData.password),
-        hasNumber: /[0-9]/.test(formData.password),
-        specialChar: /[!@#$%^&*(),.?":{}|<>]/.test(formData.password),
-        match: formData.confirmPassword
-          ? formData.password === formData.confirmPassword
-          : false,
-      };
-
-      // A password is valid if it meets all the actual requirements
-      checks.isValid =
-        checks.validLength &&
-        checks.hasUppercase &&
-        checks.hasNumber &&
-        checks.specialChar;
-
-      return checks;
-    }
-
-    // If no schema available yet, return reasonable defaults
-    return {
-      validLength: false,
-      hasUppercase: false,
-      hasNumber: false,
-      specialChar: false,
-      match: formData.confirmPassword
-        ? formData.password === formData.confirmPassword
-        : false,
-      isValid: false,
-    };
-  };
-
-  // Get password validation state for UI feedback
-  const passwordValidation = {
-    ...checkPasswordValidity(),
-    validationStarted: validationStarted.password,
-  };
-
   return {
     state,
     formData,
     termsAccepted,
     loading: loginLoading || signupLoading || schemaLoading,
     errors,
-    passwordValidation,
+    passwordValidation: checkPasswordValidity(),
+    schema: validationSchema,
     isOffline: !isOnline,
     setTermsAccepted,
     switchState,
     changeHandler,
     handleSubmit,
     setInitialState,
-    validationSchema,
   };
 };
 

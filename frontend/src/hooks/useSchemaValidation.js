@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { getApiUrl } from "../utils/apiUtils";
-import { isValidEmail } from "../utils/validation";
 
 /**
  * Custom hook for schema-based validation using rules fetched from the backend
@@ -15,7 +14,6 @@ import { isValidEmail } from "../utils/validation";
  * - Handles nested fields (like address.street)
  * - Provides real-time field validation
  * - Supports all common validation types: required, min/max length, patterns, etc.
- * - Special handling for password confirmation
  *
  * @param {string} formType - The type of form to validate ('profile', 'password', or 'registration')
  * @param {boolean} isPublic - Whether the endpoint is public (doesn't require auth)
@@ -110,10 +108,6 @@ const useSchemaValidation = (formType, isPublic = false) => {
    * the rules defined in the validation schema. It handles both top-level
    * fields and nested fields (using dot notation).
    *
-   * Special cases:
-   * - For confirmPassword, it checks if it matches newPassword
-   * - For pattern validation, it converts the string pattern to RegExp
-   *
    * @param {string} fieldName - The name of the field to validate (can use dot notation for nested fields)
    * @param {*} value - The value to validate
    * @returns {string|null} - The error message or null if valid
@@ -140,21 +134,15 @@ const useSchemaValidation = (formType, isPublic = false) => {
 
     if (!fieldSchema) return null;
 
-    // Special case for confirmPassword - moved to the top for early validation
-    if (fieldName === "confirmPassword") {
-      const newPassword = document.getElementById("newPassword")?.value;
-      if (value !== newPassword) {
-        return "Passwords must match";
+    // Special case for confirmPassword - check if it matches the related password field
+    if (fieldName === "confirmPassword" || fieldName === "passwordConfirm") {
+      const passwordField =
+        document.getElementById("newPassword") ||
+        document.getElementById("password");
+
+      if (passwordField && value !== passwordField.value) {
+        return fieldSchema.message || "Passwords must match";
       }
-
-      // If passwords match and no other validation for confirmPassword,
-      // return early (typically confirmPassword just needs to match)
-      return null;
-    }
-
-    // Special case for name - enforce minimum 2 characters
-    if (fieldName === "name" && value && value.trim().length === 1) {
-      return "Name must be at least 2 characters long";
     }
 
     // Required validation
@@ -165,61 +153,45 @@ const useSchemaValidation = (formType, isPublic = false) => {
     // Skip other validations if empty and not required
     if (!value || value.trim() === "") return null;
 
-    // Email validation - use our consistent email validator
-    if (fieldName === "email") {
-      if (!isValidEmail(value)) {
-        return fieldSchema.message || "Please enter a valid email address";
-      }
-      return null;
-    }
-
-    // Min length validation - with special case for name (min 2 chars)
-    if (fieldName === "name" && value.length < 2) {
-      return "Name must be at least 2 characters long";
-    } else if (fieldSchema.minLength && value.length < fieldSchema.minLength) {
-      return `${fieldName} must be at least ${fieldSchema.minLength} characters`;
+    // Min length validation
+    if (fieldSchema.minLength && value.length < fieldSchema.minLength) {
+      return (
+        fieldSchema.minLengthMessage ||
+        `${fieldName} must be at least ${fieldSchema.minLength} characters`
+      );
     }
 
     // Max length validation
     if (fieldSchema.maxLength && value.length > fieldSchema.maxLength) {
-      return `${fieldName} must be at most ${fieldSchema.maxLength} characters`;
+      return (
+        fieldSchema.maxLengthMessage ||
+        `${fieldName} must be at most ${fieldSchema.maxLength} characters`
+      );
     }
 
     // Pattern validation
     if (fieldSchema.pattern) {
       try {
-        // Safely create RegExp - some patterns from backend might need adjustment
-        let patternToUse = fieldSchema.pattern;
+        // Special handling for email fields - always use case-insensitive matching
+        const isEmailField =
+          fieldName === "email" || fieldName.endsWith(".email");
+        const flags = isEmailField ? "i" : "";
+        const patternRegex = new RegExp(fieldSchema.pattern, flags);
 
-        // Try to create RegExp safely
-        const patternRegex = new RegExp(patternToUse);
         if (!patternRegex.test(value)) {
-          // For password fields, provide a more user-friendly error message
-          if (fieldName === "newPassword" && fieldSchema.message) {
-            return fieldSchema.message;
+          // Provide detailed error message for email fields
+          if (isEmailField) {
+            return fieldSchema.message || "Please enter a valid email address";
           }
           return fieldSchema.message || `${fieldName} format is invalid`;
         }
       } catch (error) {
-        // If the pattern is invalid, fall back to the message
         console.warn(
           `Invalid pattern in validation schema: ${fieldSchema.pattern}`
         );
-
-        // For password fields with complex patterns, use a manual check
-        if (fieldName === "newPassword") {
-          // Manually check password requirements
-          const hasUppercase = /[A-Z]/.test(value);
-          const hasNumber = /[0-9]/.test(value);
-          // Removed unnecessary escape for '[' in the regex
-          const hasSpecial = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(value);
-
-          if (!hasUppercase || !hasNumber || !hasSpecial) {
-            return (
-              fieldSchema.message ||
-              "Password must contain at least 1 uppercase letter, 1 number, and 1 special character"
-            );
-          }
+        // If pattern is invalid, check if we have a message to fall back to
+        if (fieldSchema.message) {
+          return fieldSchema.message;
         }
       }
     }

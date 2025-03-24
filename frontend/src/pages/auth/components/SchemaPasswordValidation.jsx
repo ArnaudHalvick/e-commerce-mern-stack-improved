@@ -54,15 +54,32 @@ const SchemaPasswordValidation = ({
 
     // Add minimum length requirement if specified
     if (schema.minLength) {
+      const minLength =
+        typeof schema.minLength === "number"
+          ? schema.minLength
+          : Array.isArray(schema.minLength)
+          ? schema.minLength[0]
+          : 8;
+
       requirements.push({
         id: "length",
-        text: `At least ${schema.minLength} characters long`,
+        text: `At least ${minLength} characters long`,
         isValid: validLength,
       });
     }
 
+    // Check if we need to look for explicit requiresX flags or extract from message
+    const needsToInferFromMessage =
+      !schema.requiresUppercase &&
+      !schema.requiresNumber &&
+      !schema.requiresSpecial;
+
     // Check explicit requirement flags (from our updated extractor)
-    if (schema.requiresUppercase || schema.message?.includes("uppercase")) {
+    if (
+      schema.requiresUppercase ||
+      (needsToInferFromMessage &&
+        schema.message?.toLowerCase().includes("uppercase"))
+    ) {
       requirements.push({
         id: "uppercase",
         text: "At least 1 uppercase letter",
@@ -70,7 +87,11 @@ const SchemaPasswordValidation = ({
       });
     }
 
-    if (schema.requiresNumber || schema.message?.includes("number")) {
+    if (
+      schema.requiresNumber ||
+      (needsToInferFromMessage &&
+        schema.message?.toLowerCase().includes("number"))
+    ) {
       requirements.push({
         id: "number",
         text: "At least 1 number",
@@ -78,12 +99,43 @@ const SchemaPasswordValidation = ({
       });
     }
 
-    if (schema.requiresSpecial || schema.message?.includes("special")) {
+    if (
+      schema.requiresSpecial ||
+      (needsToInferFromMessage &&
+        schema.message?.toLowerCase().includes("special"))
+    ) {
       requirements.push({
         id: "special",
         text: "At least 1 special character",
         isValid: specialChar,
       });
+    }
+
+    // If we still have no requirements but have a pattern, add the standard set
+    if (requirements.length <= 1 && schema.pattern) {
+      if (!requirements.some((r) => r.id === "uppercase")) {
+        requirements.push({
+          id: "uppercase",
+          text: "At least 1 uppercase letter",
+          isValid: hasUppercase,
+        });
+      }
+
+      if (!requirements.some((r) => r.id === "number")) {
+        requirements.push({
+          id: "number",
+          text: "At least 1 number",
+          isValid: hasNumber,
+        });
+      }
+
+      if (!requirements.some((r) => r.id === "special")) {
+        requirements.push({
+          id: "special",
+          text: "At least 1 special character",
+          isValid: specialChar,
+        });
+      }
     }
 
     return requirements;
