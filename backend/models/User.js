@@ -19,9 +19,17 @@ const UserSchema = new mongoose.Schema({
     unique: true,
     lowercase: true,
     match: [
-      /^([\w+-]+(?:\.[\w+-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,})$/,
+      /^([\w+-]+(?:\.[\w+-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,})$/i,
       "Please enter a valid email",
     ],
+    validate: {
+      validator: function (email) {
+        return /^([\w+-]+(?:\.[\w+-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,})$/i.test(
+          email
+        );
+      },
+      message: "Please enter a valid email",
+    },
   },
   normalizedEmail: {
     type: String,
@@ -33,7 +41,7 @@ const UserSchema = new mongoose.Schema({
     type: String,
     lowercase: true,
     match: [
-      /^([\w+-]+(?:\.[\w+-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,})$/,
+      /^([\w+-]+(?:\.[\w+-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,})$/i,
       "Please enter a valid email",
     ],
   },

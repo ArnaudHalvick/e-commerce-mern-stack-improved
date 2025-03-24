@@ -172,26 +172,40 @@ const useSchemaValidation = (formType, isPublic = false) => {
     // Pattern validation
     if (fieldSchema.pattern) {
       try {
-        // Special handling for email fields - always use case-insensitive matching
-        const isEmailField =
-          fieldName === "email" || fieldName.endsWith(".email");
-        const flags = isEmailField ? "i" : "";
-        const patternRegex = new RegExp(fieldSchema.pattern, flags);
+        // Safely create RegExp with flags if provided
+        const flags = fieldSchema.patternFlags || "";
 
-        if (!patternRegex.test(value)) {
-          // Provide detailed error message for email fields
-          if (isEmailField) {
+        // Special case for email fields
+        if (fieldName === "email") {
+          // For email validation, use a more permissive regex with case-insensitive flag
+          const emailRegex = new RegExp(
+            "^([\\w+-]+(?:\\.[\\w+-]+)*)@((?:[\\w-]+\\.)*\\w[\\w-]{0,66})\\.([a-z]{2,})$",
+            "i"
+          );
+
+          if (!emailRegex.test(value)) {
             return fieldSchema.message || "Please enter a valid email address";
           }
-          return fieldSchema.message || `${fieldName} format is invalid`;
+        } else {
+          // For other fields, use the pattern from the schema
+          const patternRegex = new RegExp(fieldSchema.pattern, flags);
+          if (!patternRegex.test(value)) {
+            return fieldSchema.message || `${fieldName} format is invalid`;
+          }
         }
       } catch (error) {
+        // If the pattern is invalid, fallback validation
         console.warn(
           `Invalid pattern in validation schema: ${fieldSchema.pattern}`
         );
-        // If pattern is invalid, check if we have a message to fall back to
-        if (fieldSchema.message) {
-          return fieldSchema.message;
+
+        // Fallback for email validation
+        if (fieldName === "email") {
+          const emailRegex =
+            /^([\w+-]+(?:\.[\w+-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,})$/i;
+          if (!emailRegex.test(value)) {
+            return fieldSchema.message || "Please enter a valid email address";
+          }
         }
       }
     }

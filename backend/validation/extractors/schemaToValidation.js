@@ -119,13 +119,37 @@ const extractFieldValidation = (schemaType) => {
 
   // Regex pattern
   if (schemaType.options.match) {
-    rules.pattern = schemaType.options.match[0].toString();
-    // Remove leading/trailing slashes for frontend use
-    rules.pattern = rules.pattern.replace(/^\/|\/[gimuy]*$/g, "");
+    const regexStr = schemaType.options.match[0].toString();
+    // Extract the actual pattern between the slashes
+    const patternMatch = regexStr.match(/\/(.+)\/([gimuy]*)/);
+
+    if (patternMatch) {
+      rules.pattern = patternMatch[1];
+      if (patternMatch[2]) {
+        rules.patternFlags = patternMatch[2];
+      }
+    } else {
+      // Fallback - use hardcoded email pattern for email fields
+      if (schemaType.path === "email") {
+        rules.pattern =
+          "^([\\w+-]+(?:\\.[\\w+-]+)*)@((?:[\\w-]+\\.)*\\w[\\w-]{0,66})\\.([a-z]{2,})$";
+        rules.patternFlags = "i";
+      }
+    }
 
     // Add message if available
     if (schemaType.options.match[1]) {
       rules.message = schemaType.options.match[1];
+    }
+  }
+
+  // For email fields, always add a hardcoded fallback pattern
+  if (schemaType.path === "email" && !rules.pattern) {
+    rules.pattern =
+      "^([\\w+-]+(?:\\.[\\w+-]+)*)@((?:[\\w-]+\\.)*\\w[\\w-]{0,66})\\.([a-z]{2,})$";
+    rules.patternFlags = "i";
+    if (!rules.message) {
+      rules.message = "Please enter a valid email";
     }
   }
 

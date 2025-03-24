@@ -25,12 +25,10 @@ const getUserProfileValidation = () => {
   // Only add custom validations for fields that weren't properly extracted
   const customValidations = {
     email: {
-      pattern: !modelValidations.email?.pattern
-        ? "^([\\w+-]+(?:\\.[\\w+-]+)*)@((?:[\\w-]+\\.)*\\w[\\w-]{0,66})\\.([a-z]{2,})$"
-        : undefined,
-      message: !modelValidations.email?.message
-        ? "Please enter a valid email address"
-        : undefined,
+      pattern:
+        "^([\\w+-]+(?:\\.[\\w+-]+)*)@((?:[\\w-]+\\.)*\\w[\\w-]{0,66})\\.([a-z]{2,})$",
+      patternFlags: "i",
+      message: "Please enter a valid email address",
     },
   };
 

@@ -180,6 +180,18 @@ const useAuthForm = () => {
       passwordConfirm: formData.confirmPassword,
     });
 
+    // Log validation errors in development
+    if (
+      process.env.NODE_ENV !== "production" &&
+      Object.keys(validationErrors).length > 0
+    ) {
+      console.group("Signup Validation Errors");
+      console.log("Form Data:", formData);
+      console.log("Validation Schema:", validationSchema);
+      console.log("Validation Errors:", validationErrors);
+      console.groupEnd();
+    }
+
     // Check for terms acceptance
     if (!termsAccepted) {
       validationErrors.terms = "You must accept the terms and conditions";
