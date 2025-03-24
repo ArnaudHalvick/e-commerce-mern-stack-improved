@@ -59,6 +59,13 @@ const LoginForm = ({
         loadingText="Logging in..."
         disabled={isOffline}
         className="auth-form__submit-btn"
+        size="medium"
+        variant="primary"
+        style={{
+          height: "3.5rem",
+          fontSize: "1.25rem",
+          borderRadius: "0.5rem",
+        }}
       />
     </div>
   </form>

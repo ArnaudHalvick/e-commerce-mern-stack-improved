@@ -1,18 +1,19 @@
 .form-field {
-  margin-bottom: 16px;
+  margin-bottom: 1rem;
   width: 100%;
 }
 
 .form-field__label {
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: 0.375rem;
   font-weight: 500;
-  font-size: 14px;
+  font-size: 0.875rem;
+  color: #333;
 }
 
 .form-field__required {
-  color: #e53935;
-  margin-left: 4px;
+  color: #ff4141;
+  margin-left: 0.25rem;
 }
 
 .form-field__input-container {
@@ -21,17 +22,17 @@
 
 .form-input {
   width: 100%;
-  padding: 10px 12px;
+  padding: 0.75rem 1rem;
   border: 1px solid #ced4da;
-  border-radius: 4px;
-  font-size: 16px;
+  border-radius: 0.25rem;
+  font-size: 1rem;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
 .form-input:focus {
-  border-color: #80bdff;
+  border-color: #ff4141;
   outline: 0;
-  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  box-shadow: 0 0 0 0.125rem rgba(255, 65, 65, 0.25);
 }
 
 .form-input--error {
@@ -39,12 +40,12 @@
 }
 
 .form-input--error:focus {
-  box-shadow: 0 0 0 0.2rem rgba(229, 57, 53, 0.25);
+  box-shadow: 0 0 0 0.125rem rgba(229, 57, 53, 0.25);
 }
 
 .form-field__error {
   color: #e53935;
-  font-size: 12px;
-  margin-top: 4px;
-  min-height: 20px;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+  min-height: 1.25rem;
 }

@@ -144,6 +144,13 @@ const SignupForm = ({
           loadingText="Creating account..."
           disabled={isOffline || (!termsAccepted && !errors?.terms)}
           className="auth-form__submit-btn"
+          size="medium"
+          variant="primary"
+          style={{
+            height: "3.5rem",
+            fontSize: "1.25rem",
+            borderRadius: "0.5rem",
+          }}
         />
       </div>
     </form>

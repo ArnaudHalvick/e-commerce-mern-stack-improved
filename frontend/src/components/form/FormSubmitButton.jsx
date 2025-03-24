@@ -1,8 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
+import "./FormSubmitButton.css";
 
 /**
- * FormSubmitButton - A button component for form submissions with loading state
+ * FormSubmitButton - A customizable button component for form submissions with loading state
  *
  * @param {Object} props - Component props
  * @param {boolean} props.isLoading - Whether the form is currently being submitted
@@ -12,6 +13,9 @@ import PropTypes from "prop-types";
  * @param {Function} props.onClick - Click handler (optional, use for non-submit buttons)
  * @param {string} props.type - Button type (defaults to "submit")
  * @param {string} props.className - Additional CSS class names
+ * @param {string} props.size - Button size (small, medium, large)
+ * @param {string} props.variant - Button color variant (primary, secondary, outline)
+ * @param {Object} props.style - Additional inline styles
  */
 const FormSubmitButton = ({
   isLoading,
@@ -21,6 +25,9 @@ const FormSubmitButton = ({
   onClick,
   type = "submit",
   className = "",
+  size = "medium",
+  variant = "primary",
+  style = {},
 }) => {
   const handleKeyDown = (e) => {
     if (e.key === "Enter" || e.key === " ") {
@@ -32,9 +39,12 @@ const FormSubmitButton = ({
 
   // Base classes for the button
   const baseClassName = "form-submit-button";
-  const combinedClassName = `${baseClassName} ${
-    isLoading ? `${baseClassName}--loading` : ""
-  } ${className}`;
+  const sizeClass = size ? `${baseClassName}--${size}` : "";
+  const variantClass = variant ? `${baseClassName}--${variant}` : "";
+  const loadingClass = isLoading ? `${baseClassName}--loading` : "";
+
+  const combinedClassName =
+    `${baseClassName} ${sizeClass} ${variantClass} ${loadingClass} ${className}`.trim();
 
   return (
     <button
@@ -45,6 +55,7 @@ const FormSubmitButton = ({
       onKeyDown={type !== "submit" ? handleKeyDown : undefined}
       aria-busy={isLoading}
       tabIndex={0}
+      style={style}
     >
       {isLoading ? (
         <>
@@ -69,6 +80,9 @@ FormSubmitButton.propTypes = {
   onClick: PropTypes.func,
   type: PropTypes.string,
   className: PropTypes.string,
+  size: PropTypes.oneOf(["small", "medium", "large"]),
+  variant: PropTypes.oneOf(["primary", "secondary", "outline"]),
+  style: PropTypes.object,
 };
 
 export default FormSubmitButton;

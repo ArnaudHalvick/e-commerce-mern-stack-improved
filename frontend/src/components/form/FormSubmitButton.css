@@ -2,20 +2,35 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 120px;
-  padding: 10px 20px;
-  border-radius: 4px;
+  min-width: 7.5rem;
+  border-radius: 0.25rem;
   font-weight: 600;
-  background-color: #007bff;
+  background-color: #ff4141;
   color: white;
   border: none;
   cursor: pointer;
   transition: background-color 0.2s, transform 0.1s;
   position: relative;
+  font-size: 1rem;
+}
+
+/* Size variants */
+.form-submit-button--small {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+}
+
+.form-submit-button--medium {
+  padding: 0.75rem 1.25rem;
+}
+
+.form-submit-button--large {
+  padding: 1rem 1.5rem;
+  font-size: 1.125rem;
 }
 
 .form-submit-button:hover:not(:disabled) {
-  background-color: #0069d9;
+  background-color: #ff6e6e;
 }
 
 .form-submit-button:active:not(:disabled) {
@@ -32,13 +47,40 @@
   cursor: wait;
 }
 
+/* Color variants */
+.form-submit-button--primary {
+  background-color: #ff4141;
+}
+
+.form-submit-button--primary:hover:not(:disabled) {
+  background-color: #ff6e6e;
+}
+
+.form-submit-button--secondary {
+  background-color: #6c757d;
+}
+
+.form-submit-button--secondary:hover:not(:disabled) {
+  background-color: #5a6268;
+}
+
+.form-submit-button--outline {
+  background-color: transparent;
+  border: 1px solid #ff4141;
+  color: #ff4141;
+}
+
+.form-submit-button--outline:hover:not(:disabled) {
+  background-color: rgba(255, 65, 65, 0.1);
+}
+
 /* Spinner animation */
 .form-submit-button__spinner {
   display: inline-block;
-  width: 16px;
-  height: 16px;
-  margin-right: 8px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.5rem;
+  border: 0.125rem solid rgba(255, 255, 255, 0.3);
   border-radius: 50%;
   border-top-color: #fff;
   animation: spin 0.8s linear infinite;
