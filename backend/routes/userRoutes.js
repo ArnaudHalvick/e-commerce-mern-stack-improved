@@ -2,7 +2,8 @@
 
 const express = require("express");
 const router = express.Router();
-const userController = require("../controllers/userController");
+const authController = require("../controllers/authController");
+const profileController = require("../controllers/profileController");
 const {
   isAuthenticated,
   isNotAuthenticated,
@@ -15,49 +16,53 @@ const {
   validateProfileUpdate,
 } = require("../validation");
 
-// Public routes
+// Public routes - Authentication
 router.post(
   "/signup",
   isNotAuthenticated,
   validateRegistration,
-  userController.registerUser
+  authController.registerUser
 );
 router.post(
   "/login",
   isNotAuthenticated,
   validateLogin,
-  userController.loginUser
+  authController.loginUser
 );
-router.post("/refresh-token", verifyRefreshToken, userController.refreshToken);
-router.post("/request-verification", userController.requestVerification);
-router.get("/verify-email/:token", userController.verifyEmail);
-router.get("/verify-email", userController.verifyEmail);
-router.post("/forgot-password", userController.forgotPassword);
-router.post("/reset-password", userController.resetPassword);
+router.post("/refresh-token", verifyRefreshToken, authController.refreshToken);
+router.post("/request-verification", authController.requestVerification);
+router.get("/verify-email/:token", authController.verifyEmail);
+router.get("/verify-email", authController.verifyEmail);
+router.post("/forgot-password", authController.forgotPassword);
+router.post("/reset-password", authController.resetPassword);
 
-// Protected routes
-router.post("/logout", isAuthenticated, userController.logoutUser);
-router.get("/me", isAuthenticated, userController.getUserProfile);
+// Protected routes - Authentication
+router.post("/logout", isAuthenticated, authController.logoutUser);
+router.get("/verify-token", isAuthenticated, authController.verifyToken);
+
+// Protected routes - Profile management
+router.get("/me", isAuthenticated, profileController.getUserProfile);
 router.put(
   "/profile",
   isAuthenticated,
   validateProfileUpdate,
-  userController.updateProfile
+  profileController.updateProfile
 );
-router.get("/verify-token", isAuthenticated, userController.verifyToken);
-
-// New profile management routes
 router.put(
   "/change-password",
   isAuthenticated,
   validatePasswordChange,
-  userController.changePassword
+  profileController.changePassword
 );
-router.put("/disable-account", isAuthenticated, userController.disableAccount);
+router.put(
+  "/disable-account",
+  isAuthenticated,
+  profileController.disableAccount
+);
 router.post(
   "/change-email",
   isAuthenticated,
-  userController.requestEmailChange
+  profileController.requestEmailChange
 );
 
 module.exports = router;

@@ -1,4 +1,12 @@
 // backend/controllers/userController.js
+/**
+ * DEPRECATED: This file is kept for reference only.
+ * The functionality has been refactored into:
+ * - authController.js
+ * - profileController.js
+ * - authService.js
+ * - profileService.js
+ */
 
 const User = require("../models/User");
 const crypto = require("crypto");
