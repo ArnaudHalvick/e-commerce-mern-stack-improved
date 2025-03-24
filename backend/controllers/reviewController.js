@@ -1,8 +1,9 @@
+// backend/controllers/reviewController.js
+
 const Review = require("../models/Review");
 const Product = require("../models/Product");
 const Cart = require("../models/Cart");
-const User = require("../models/User");
-const catchAsync = require("../utils/catchAsync");
+const catchAsync = require("../utils/common/catchAsync");
 const AppError = require("../utils/AppError");
 
 // Add a new review (only if user has purchased the product)

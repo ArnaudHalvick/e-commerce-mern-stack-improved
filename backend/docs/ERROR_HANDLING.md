@@ -41,7 +41,7 @@ Key properties:
 
 ### 2. Async Error Wrapper (`catchAsync`)
 
-Location: `utils/catchAsync.js`
+Location: `utils/common/catchAsync.js`
 
 The `catchAsync` utility wraps async controller functions to eliminate the need for repetitive try/catch blocks:
 

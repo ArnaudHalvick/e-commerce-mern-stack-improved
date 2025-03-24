@@ -6,7 +6,7 @@
  */
 
 const AppError = require("../utils/AppError");
-const catchAsync = require("../utils/catchAsync");
+const catchAsync = require("../utils/common/catchAsync");
 
 /**
  * Simulate a specific HTTP error for testing error handling

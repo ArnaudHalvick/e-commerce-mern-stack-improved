@@ -1,7 +1,7 @@
 // backend/controllers/productController.js
 
 const Product = require("../models/Product");
-const catchAsync = require("../utils/catchAsync");
+const catchAsync = require("../utils/common/catchAsync");
 const AppError = require("../utils/AppError");
 
 // Helper function to transform product data from MongoDB to proper JSON

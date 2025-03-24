@@ -2,7 +2,7 @@
 
 const Cart = require("../models/Cart");
 const Product = require("../models/Product");
-const catchAsync = require("../utils/catchAsync");
+const catchAsync = require("../utils/common/catchAsync");
 const AppError = require("../utils/AppError");
 
 // Get cart data or create a new cart
