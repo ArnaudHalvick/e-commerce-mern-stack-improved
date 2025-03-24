@@ -1,3 +1,5 @@
+// backend/utils/sendEmail.js
+
 const nodemailer = require("nodemailer");
 const logger = require("./logger");
 

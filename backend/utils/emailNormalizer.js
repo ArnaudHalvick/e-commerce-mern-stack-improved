@@ -1,3 +1,5 @@
+// backend/utils/emailNormalizer.js
+
 /**
  * Email normalization utility
  *

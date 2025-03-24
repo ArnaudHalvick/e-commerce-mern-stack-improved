@@ -1,3 +1,5 @@
+// backend/utils/emailTemplates/authEmails.js
+
 /**
  * Auth-related email templates
  * This module contains all email templates related to authentication

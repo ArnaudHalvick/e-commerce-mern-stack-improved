@@ -1,3 +1,5 @@
+// backend/utils/catchAsync.js
+
 /**
  * A utility function to wrap async Express route handlers to automatically catch errors
  * and pass them to the Express error handling middleware via next().

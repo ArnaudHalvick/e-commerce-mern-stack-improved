@@ -1,3 +1,5 @@
+// backend/utils/errorHandler.js
+
 /**
  * Global error handling middleware for Express
  *
