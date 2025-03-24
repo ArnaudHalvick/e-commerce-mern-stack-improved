@@ -1,4 +1,4 @@
-// backend/utils/AppError.js
+// backend/utils/errors/AppError.js
 
 /**
  * Custom error class for the application that extends the built-in Error object.

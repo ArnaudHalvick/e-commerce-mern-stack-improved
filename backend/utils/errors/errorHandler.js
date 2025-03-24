@@ -9,7 +9,7 @@
  */
 
 const AppError = require("./AppError");
-const logger = require("./common/logger");
+const logger = require("../common/logger");
 
 /**
  * Handle specific errors from MongoDB

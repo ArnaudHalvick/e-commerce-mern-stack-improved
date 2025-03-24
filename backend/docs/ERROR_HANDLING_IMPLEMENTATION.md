@@ -17,8 +17,8 @@ This guide provides step-by-step instructions for implementing the error handlin
 At the top of your controller file, import the necessary error handling utilities:
 
 ```javascript
-const catchAsync = require("../utils/catchAsync");
-const AppError = require("../utils/AppError");
+const catchAsync = require("../utils/common/catchAsync");
+const AppError = require("../utils/errors/AppError");
 ```
 
 ### Step 2: Wrap Controller Functions

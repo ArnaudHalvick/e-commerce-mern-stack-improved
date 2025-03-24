@@ -4,7 +4,7 @@ const Review = require("../models/Review");
 const Product = require("../models/Product");
 const Cart = require("../models/Cart");
 const catchAsync = require("../utils/common/catchAsync");
-const AppError = require("../utils/AppError");
+const AppError = require("../utils/errors/AppError");
 
 // Add a new review (only if user has purchased the product)
 const addReview = catchAsync(async (req, res, next) => {

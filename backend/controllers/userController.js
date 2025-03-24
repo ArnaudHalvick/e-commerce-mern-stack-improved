@@ -5,7 +5,7 @@ const crypto = require("crypto");
 const sendEmail = require("../utils/sendEmail");
 const { normalizeEmail } = require("../utils/emailNormalizer");
 const catchAsync = require("../utils/common/catchAsync");
-const AppError = require("../utils/AppError");
+const AppError = require("../utils/errors/AppError");
 const logger = require("../utils/common/logger");
 const {
   generateVerificationEmail,

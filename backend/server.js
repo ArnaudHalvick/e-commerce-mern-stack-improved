@@ -8,8 +8,8 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
 const connectDB = require("./config/db");
-const AppError = require("./utils/AppError");
-const globalErrorHandler = require("./utils/errorHandler");
+const AppError = require("./utils/errors/AppError");
+const globalErrorHandler = require("./utils/errors/errorHandler");
 const logger = require("./utils/common/logger");
 
 // Import routes

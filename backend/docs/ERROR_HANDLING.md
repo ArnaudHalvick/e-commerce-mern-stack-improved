@@ -17,7 +17,7 @@ The error handling system consists of four main components:
 
 ### 1. Custom Error Class (`AppError`)
 
-Location: `utils/AppError.js`
+Location: `utils/errors/AppError.js`
 
 The `AppError` class extends the built-in `Error` object and adds properties for better error handling:
 

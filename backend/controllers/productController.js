@@ -2,7 +2,7 @@
 
 const Product = require("../models/Product");
 const catchAsync = require("../utils/common/catchAsync");
-const AppError = require("../utils/AppError");
+const AppError = require("../utils/errors/AppError");
 
 // Helper function to transform product data from MongoDB to proper JSON
 const formatProductForClient = (product) => {

@@ -5,7 +5,7 @@
  * for testing and demonstration purposes of the frontend error handling system.
  */
 
-const AppError = require("../utils/AppError");
+const AppError = require("../utils/errors/AppError");
 const catchAsync = require("../utils/common/catchAsync");
 
 /**
