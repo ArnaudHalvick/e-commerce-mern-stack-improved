@@ -5,7 +5,7 @@
  * This module contains all email templates related to authentication
  */
 
-const { getFrontendUrl, joinUrl } = require("../urlUtils");
+const { getFrontendUrl, joinUrl } = require("../common/urlUtils");
 
 /**
  * Generate HTML for email verification email

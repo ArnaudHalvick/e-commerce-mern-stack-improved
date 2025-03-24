@@ -2,8 +2,7 @@
 
 const express = require("express");
 const router = express.Router();
-const path = require("path");
-const upload = require("../utils/upload");
+const upload = require("../utils/common/upload");
 
 // Upload routes
 router.post("/upload", upload.single("product"), (req, res) => {

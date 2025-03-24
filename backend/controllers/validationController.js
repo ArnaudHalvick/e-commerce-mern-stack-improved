@@ -15,7 +15,7 @@ const {
   getUserProfileValidation,
   getPasswordChangeValidation,
 } = require("../validation");
-const logger = require("../utils/logger");
+const logger = require("../utils/common/logger");
 
 /**
  * Get validation rules for the user profile form

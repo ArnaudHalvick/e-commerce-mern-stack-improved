@@ -10,7 +10,7 @@ const morgan = require("morgan");
 const connectDB = require("./config/db");
 const AppError = require("./utils/AppError");
 const globalErrorHandler = require("./utils/errorHandler");
-const logger = require("./utils/logger");
+const logger = require("./utils/common/logger");
 
 // Import routes
 const productRoutes = require("./routes/productRoutes");

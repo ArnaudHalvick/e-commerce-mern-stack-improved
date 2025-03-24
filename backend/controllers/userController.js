@@ -6,7 +6,7 @@ const sendEmail = require("../utils/sendEmail");
 const { normalizeEmail } = require("../utils/emailNormalizer");
 const catchAsync = require("../utils/common/catchAsync");
 const AppError = require("../utils/AppError");
-const logger = require("../utils/logger");
+const logger = require("../utils/common/logger");
 const {
   generateVerificationEmail,
   generatePasswordResetEmail,
@@ -15,7 +15,7 @@ const {
 const {
   createVerificationUrl,
   createPasswordResetUrl,
-} = require("../utils/urlUtils");
+} = require("../utils/common/urlUtils");
 
 // Helper function to send tokens
 const sendTokens = (user, statusCode, res, additionalData = {}) => {
