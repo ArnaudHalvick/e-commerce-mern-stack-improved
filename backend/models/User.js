@@ -18,7 +18,10 @@ const UserSchema = new mongoose.Schema({
     required: [true, "Please enter your email"],
     unique: true,
     lowercase: true,
-    match: [/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, "Please enter a valid email"],
+    match: [
+      /^([\w+-]+(?:\.[\w+-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,})$/,
+      "Please enter a valid email",
+    ],
   },
   normalizedEmail: {
     type: String,
@@ -29,7 +32,10 @@ const UserSchema = new mongoose.Schema({
   pendingEmail: {
     type: String,
     lowercase: true,
-    match: [/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, "Please enter a valid email"],
+    match: [
+      /^([\w+-]+(?:\.[\w+-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,})$/,
+      "Please enter a valid email",
+    ],
   },
   password: {
     type: String,

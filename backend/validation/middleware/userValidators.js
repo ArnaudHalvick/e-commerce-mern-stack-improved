@@ -79,8 +79,15 @@ const validateRegistration = [
     .trim()
     .notEmpty()
     .withMessage("Email is required")
-    .isEmail()
-    .withMessage("Please provide a valid email address")
+    .custom((value) => {
+      // Use a more permissive regex for email validation
+      const emailRegex =
+        /^([\w+-]+(?:\.[\w+-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,})$/i;
+      if (!emailRegex.test(value)) {
+        throw new Error("Please provide a valid email address");
+      }
+      return true;
+    })
     .customSanitizer((value) => {
       return value.toLowerCase();
     })
@@ -152,8 +159,15 @@ const validateLogin = [
     .trim()
     .notEmpty()
     .withMessage("Email is required")
-    .isEmail()
-    .withMessage("Please provide a valid email address")
+    .custom((value) => {
+      // Use a more permissive regex for email validation
+      const emailRegex =
+        /^([\w+-]+(?:\.[\w+-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,})$/i;
+      if (!emailRegex.test(value)) {
+        throw new Error("Please provide a valid email address");
+      }
+      return true;
+    })
     .customSanitizer((value) => {
       // Normalize the email for login
       return normalizeEmail(value);

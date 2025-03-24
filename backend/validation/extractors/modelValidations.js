@@ -26,7 +26,7 @@ const getUserProfileValidation = () => {
   const customValidations = {
     email: {
       pattern: !modelValidations.email?.pattern
-        ? "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"
+        ? "^([\\w+-]+(?:\\.[\\w+-]+)*)@((?:[\\w-]+\\.)*\\w[\\w-]{0,66})\\.([a-z]{2,})$"
         : undefined,
       message: !modelValidations.email?.message
         ? "Please enter a valid email address"

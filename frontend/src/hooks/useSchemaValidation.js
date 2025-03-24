@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { getApiUrl } from "../utils/apiUtils";
+import { isValidEmail } from "../utils/validation";
 
 /**
  * Custom hook for schema-based validation using rules fetched from the backend
@@ -167,6 +168,14 @@ const useSchemaValidation = (formType, isPublic = false) => {
 
     // Skip other validations if empty and not required
     if (!value || value.trim() === "") return null;
+
+    // Email validation - use our consistent email validator
+    if (fieldName === "email") {
+      if (!isValidEmail(value)) {
+        return fieldSchema.message || "Please enter a valid email address";
+      }
+      return null;
+    }
 
     // Min length validation - with special case for name (min 2 chars)
     if (fieldName === "name" && value.length < 2) {

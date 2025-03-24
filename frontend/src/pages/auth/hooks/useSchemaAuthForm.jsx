@@ -7,6 +7,7 @@ import useAsync from "../../../hooks/useAsync";
 import useNetwork from "../../../hooks/useNetwork";
 import useSchemaValidation from "../../../hooks/useSchemaValidation";
 import { formatApiError } from "../../../utils/apiErrorUtils";
+import { isValidEmail } from "../../../utils/validation";
 
 /**
  * Custom hook for auth forms (login/signup) with backend schema validation
@@ -145,8 +146,7 @@ const useSchemaAuthForm = () => {
     // Add explicit email validation with clearing
     if (name === "email") {
       if (value && value.trim()) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (emailRegex.test(value)) {
+        if (isValidEmail(value)) {
           // Email is valid, clear any existing error
           clearFieldError("email");
         }
