@@ -11,10 +11,14 @@
  */
 
 const asyncHandler = require("express-async-handler");
+const User = require("../models/User");
 const {
   getUserProfileValidation,
   getPasswordChangeValidation,
 } = require("../validation");
+const {
+  getModelValidation,
+} = require("../validation/extractors/schemaToValidation");
 const logger = require("../utils/common/logger");
 
 /**
@@ -67,7 +71,51 @@ const getPasswordValidationRules = asyncHandler(async (req, res) => {
   }
 });
 
+/**
+ * Get validation rules for user registration
+ * This endpoint provides validation rules for user registration:
+ * - Username requirements
+ * - Email validation
+ * - Password complexity rules
+ * - Confirmation password validation
+ *
+ * @route GET /api/validation/registration
+ * @access Public
+ * @returns {Object} Validation rules for registration fields
+ */
+const getRegistrationValidationRules = asyncHandler(async (req, res) => {
+  try {
+    // Extract validation rules from User model
+    const modelValidation = getModelValidation(User, [
+      "name",
+      "email",
+      "password",
+    ]);
+
+    // Add password confirmation validation (this cannot be extracted from model)
+    const validationRules = {
+      ...modelValidation,
+      passwordConfirm: {
+        required: true,
+        requiredMessage: "Please confirm your password",
+        message: "Passwords must match",
+      },
+    };
+
+    // Rename name to username for frontend consistency
+    validationRules.username = validationRules.name;
+    delete validationRules.name;
+
+    logger.info(`Registration validation rules requested`);
+    res.json(validationRules);
+  } catch (error) {
+    logger.error("Error getting registration validation rules:", { error });
+    throw error;
+  }
+});
+
 module.exports = {
   getProfileValidationRules,
   getPasswordValidationRules,
+  getRegistrationValidationRules,
 };

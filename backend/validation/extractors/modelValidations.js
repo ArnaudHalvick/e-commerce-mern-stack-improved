@@ -1,3 +1,5 @@
+// Path: backend/validation/extractors/modelValidations.js
+
 /**
  * Model-specific validation extractors
  * This file contains functions to extract validation rules for specific models
@@ -118,6 +120,44 @@ const getUserProfileValidation = () => {
  * @returns {Object} - Validation rules for password change
  */
 const getPasswordChangeValidation = () => {
+  // Extract password validation rules from User model
+  const userSchema = User.schema;
+  const passwordField = userSchema.paths.password;
+  const passwordValidation = {};
+
+  // Extract minLength from the schema
+  if (passwordField.options.minLength) {
+    passwordValidation.minLength = passwordField.options.minLength;
+  }
+
+  // Extract pattern and message from validator function
+  if (passwordField.validators && passwordField.validators.length > 0) {
+    passwordField.validators.forEach((validator) => {
+      if (validator.validator && typeof validator.validator === "function") {
+        const fnString = validator.validator.toString();
+
+        // Parse the validator function to extract pattern requirements
+        if (
+          fnString.includes("hasUppercase") &&
+          fnString.includes("hasNumber") &&
+          fnString.includes("hasSpecial")
+        ) {
+          passwordValidation.pattern =
+            "[A-Z].*[0-9].*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]|[0-9].*[A-Z].*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]|[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?].*[A-Z].*[0-9]";
+        }
+
+        // Extract message
+        if (validator.message) {
+          passwordValidation.message =
+            typeof validator.message === "function"
+              ? validator.message({ value: "" })
+              : validator.message;
+        }
+      }
+    });
+  }
+
+  // Return validation rules
   return {
     currentPassword: {
       required: true,
@@ -126,11 +166,11 @@ const getPasswordChangeValidation = () => {
     newPassword: {
       required: true,
       requiredMessage: "New password is required",
-      minLength: 8,
-      pattern:
-        "[A-Z].*[0-9].*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]|[0-9].*[A-Z].*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]|[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?].*[A-Z].*[0-9]",
+      minLength: passwordValidation.minLength,
+      pattern: passwordValidation.pattern,
       message:
-        "Password must contain at least 1 uppercase letter, 1 number, and 1 special character",
+        passwordValidation.message ||
+        "Password must contain meet the requirements",
     },
     confirmPassword: {
       required: true,

@@ -8,7 +8,11 @@
 const { body, validationResult } = require("express-validator");
 const User = require("../../models/User");
 const { normalizeEmail } = require("../../utils/emails/emailNormalizer");
-const { getUserProfileValidation } = require("../extractors/modelValidations");
+const {
+  getUserProfileValidation,
+  getPasswordChangeValidation,
+} = require("../extractors/modelValidations");
+const { getModelValidation } = require("../extractors/schemaToValidation");
 
 /**
  * Utility function to check validation results
@@ -33,13 +37,42 @@ const validateResults = (req, res, next) => {
  * Validates username, email, password, and password confirmation
  */
 const validateRegistration = [
-  // Username validation
+  // Store validation rules in request for use in subsequent middleware
+  (req, res, next) => {
+    // Extract validation rules directly from User model
+    const userValidation = getModelValidation(User, [
+      "name",
+      "email",
+      "password",
+    ]);
+    req.validationRules = userValidation;
+    next();
+  },
+
+  // Username validation based on model rules
   body("username")
     .trim()
     .notEmpty()
     .withMessage("Username is required")
-    .isLength({ min: 2, max: 30 })
-    .withMessage("Username must be between 2 and 30 characters"),
+    .custom((value, { req }) => {
+      const nameRules = req.validationRules.name;
+
+      if (nameRules.minLength && value.length < nameRules.minLength) {
+        throw new Error(
+          nameRules.message ||
+            `Username must be at least ${nameRules.minLength} characters`
+        );
+      }
+
+      if (nameRules.maxLength && value.length > nameRules.maxLength) {
+        throw new Error(
+          nameRules.message ||
+            `Username cannot exceed ${nameRules.maxLength} characters`
+        );
+      }
+
+      return true;
+    }),
 
   // Email validation with normalization for Gmail
   body("email")
@@ -66,18 +99,34 @@ const validateRegistration = [
       return true;
     }),
 
-  // Password validation
+  // Password validation based on model rules
   body("password")
-    .isStrongPassword({
-      minLength: 8,
-      minLowercase: 1,
-      minUppercase: 1,
-      minNumbers: 1,
-      minSymbols: 1,
-    })
-    .withMessage(
-      "Password must be at least 8 characters long and include at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character"
-    ),
+    .notEmpty()
+    .withMessage("Password is required")
+    .custom((value, { req }) => {
+      const passwordRules = req.validationRules.password;
+
+      if (passwordRules.minLength && value.length < passwordRules.minLength) {
+        throw new Error(
+          `Password must be at least ${passwordRules.minLength} characters long`
+        );
+      }
+
+      // Check for uppercase, number and special char based on the model's validator
+      if (!/[A-Z]/.test(value)) {
+        throw new Error("Password must contain at least 1 uppercase letter");
+      }
+
+      if (!/[0-9]/.test(value)) {
+        throw new Error("Password must contain at least 1 number");
+      }
+
+      if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(value)) {
+        throw new Error("Password must contain at least 1 special character");
+      }
+
+      return true;
+    }),
 
   // Password confirmation validation
   body("passwordConfirm")
@@ -121,23 +170,57 @@ const validateLogin = [
  * Validates current password, new password, and password confirmation
  */
 const validatePasswordChange = [
+  // Store password validation rules for use in subsequent middleware
+  (req, res, next) => {
+    // Get password validation rules from model
+    const passwordValidation = getPasswordChangeValidation();
+    req.passwordValidation = passwordValidation;
+    next();
+  },
+
   // Current password validation
   body("currentPassword")
     .notEmpty()
     .withMessage("Current password is required"),
 
-  // New password validation
+  // New password validation using extracted rules
   body("newPassword")
-    .isStrongPassword({
-      minLength: 8,
-      minLowercase: 1,
-      minUppercase: 1,
-      minNumbers: 1,
-      minSymbols: 1,
-    })
-    .withMessage(
-      "New password must be at least 8 characters long and include at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character"
-    ),
+    .notEmpty()
+    .withMessage("New password is required")
+    .custom((value, { req }) => {
+      const rules = req.passwordValidation.newPassword;
+
+      if (rules.minLength && value.length < rules.minLength) {
+        throw new Error(
+          `Password must be at least ${rules.minLength} characters long`
+        );
+      }
+
+      // Check for pattern using regex if available
+      if (rules.pattern) {
+        const regex = new RegExp(rules.pattern);
+        if (!regex.test(value)) {
+          throw new Error(
+            rules.message || "Password does not meet complexity requirements"
+          );
+        }
+      } else {
+        // Fallback checks if pattern not available
+        if (!/[A-Z]/.test(value)) {
+          throw new Error("Password must contain at least 1 uppercase letter");
+        }
+
+        if (!/[0-9]/.test(value)) {
+          throw new Error("Password must contain at least 1 number");
+        }
+
+        if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(value)) {
+          throw new Error("Password must contain at least 1 special character");
+        }
+      }
+
+      return true;
+    }),
 
   // Confirm new password validation
   body("newPasswordConfirm")
