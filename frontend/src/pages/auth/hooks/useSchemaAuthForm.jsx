@@ -35,7 +35,6 @@ const useSchemaAuthForm = () => {
     validateField,
     validateForm,
     isLoading: schemaLoading,
-    error: schemaError,
     schema: validationSchema,
   } = useSchemaValidation("registration", true);
 

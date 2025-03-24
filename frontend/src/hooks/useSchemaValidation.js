@@ -1,5 +1,3 @@
-// Path: frontend/src/hooks/useSchemaValidation.js
-
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { getApiUrl } from "../utils/apiUtils";
@@ -27,12 +25,10 @@ const useSchemaValidation = (formType, isPublic = false) => {
   const [validationSchema, setValidationSchema] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [abortController, setAbortController] = useState(null);
 
   // Fetch validation schema from backend
   useEffect(() => {
     const controller = new AbortController();
-    setAbortController(controller);
 
     const fetchValidationSchema = async () => {
       try {
@@ -215,9 +211,8 @@ const useSchemaValidation = (formType, isPublic = false) => {
           // Manually check password requirements
           const hasUppercase = /[A-Z]/.test(value);
           const hasNumber = /[0-9]/.test(value);
-          const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(
-            value
-          );
+          // Removed unnecessary escape for '[' in the regex
+          const hasSpecial = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(value);
 
           if (!hasUppercase || !hasNumber || !hasSpecial) {
             return (
