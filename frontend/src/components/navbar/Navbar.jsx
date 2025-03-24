@@ -6,7 +6,7 @@ import logo from "../assets/logo.png";
 import cart_icon from "../assets/cart_icon.png";
 import user_icon from "../assets/user_icon.png";
 
-import { useContext, useState, useEffect, useRef } from "react";
+import { useContext, useState, useEffect, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
 
 import { AuthContext } from "../../context/AuthContext";
@@ -53,6 +53,12 @@ const Navbar = () => {
   const toggleUserMenu = () => {
     setIsUserMenuOpen(!isUserMenuOpen);
   };
+
+  // Simple logout handler
+  const handleLogout = useCallback(() => {
+    setIsUserMenuOpen(false); // Close user menu
+    logout();
+  }, [logout]);
 
   return (
     <div className="shop-navbar">
@@ -150,7 +156,7 @@ const Navbar = () => {
                 >
                   My Cart
                 </Link>
-                <button className="user-dropdown-button" onClick={logout}>
+                <button className="user-dropdown-button" onClick={handleLogout}>
                   Logout
                 </button>
               </div>

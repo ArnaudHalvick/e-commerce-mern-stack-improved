@@ -1,15 +1,39 @@
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
+import { InlineSpinner } from "./ui/SpinnerUtils";
 
-// This component can be wrapped around your entire app or specific sections
-// to prevent any content from rendering until auth state is determined
-const AuthGuard = ({ children, loadingFallback = null }) => {
+/**
+ * AuthGuard component that can be used to show loading state during authentication
+ * or protect routes that require authentication
+ *
+ * @param {Object} props - Component props
+ * @param {React.ReactNode} props.children - Child components to render
+ * @param {boolean} props.requireAuth - Whether auth is required (for protected routes)
+ * @param {React.ReactNode} props.fallback - Component to show during loading
+ * @returns {JSX.Element} - Protected content or loading state
+ */
+const AuthGuard = ({ children, requireAuth = false, fallback = null }) => {
   const { loading } = useContext(AuthContext);
 
+  // Show loading state if auth is still being determined
   if (loading) {
-    return loadingFallback || null;
+    return (
+      fallback || (
+        <div
+          className="auth-guard-loading"
+          style={{
+            padding: "20px",
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <InlineSpinner size="medium" message="Loading..." />
+        </div>
+      )
+    );
   }
 
+  // Auth state is determined, render children
   return children;
 };
 

@@ -1,13 +1,16 @@
 // Path: frontend/src/App.js
 
-import { Routes, Route } from "react-router-dom"; // Removed BrowserRouter
-
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { useContext } from "react";
 import Container from "./components/container/Container";
 import Navbar from "./components/navbar/Navbar";
 import Footer from "./components/footer/Footer";
 import ErrorBoundary from "./components/errorHandling/ErrorBoundary";
 import { ToastContainer } from "./components/errorHandling";
 import { ErrorProvider } from "./context/ErrorContext";
+import AuthLoadingIndicator from "./components/AuthLoadingIndicator";
+import AuthGuard from "./components/AuthGuard";
+import { AuthContext } from "./context/AuthContext";
 
 // Page Components
 import Shop from "./pages/Shop";
@@ -31,13 +34,57 @@ import women_banner from "./components/assets/banner_women.png";
 import kids_banner from "./components/assets/banner_kids.png";
 
 /**
+ * Protected route component that requires authentication
+ */
+const ProtectedRoute = ({ children }) => {
+  const { isAuthenticated, loading } = useContext(AuthContext);
+  const location = useLocation();
+
+  // If still loading auth state, show the children with AuthGuard handling the loading state
+  if (loading) {
+    return <AuthGuard requireAuth>{children}</AuthGuard>;
+  }
+
+  // If not authenticated, redirect to login
+  if (!isAuthenticated) {
+    return <Navigate to="/login" state={{ from: location.pathname }} replace />;
+  }
+
+  // If authenticated, show the children
+  return children;
+};
+
+/**
+ * Route that's only accessible when NOT authenticated
+ */
+const UnauthenticatedRoute = ({ children }) => {
+  const { isAuthenticated, loading } = useContext(AuthContext);
+
+  // If still loading auth state, show nothing
+  if (loading) {
+    return <AuthGuard>{children}</AuthGuard>;
+  }
+
+  // If authenticated, redirect to home
+  if (isAuthenticated) {
+    return <Navigate to="/" replace />;
+  }
+
+  // If not authenticated, show the children
+  return children;
+};
+
+/**
  * Main App component that defines the application structure and routes
  */
 function App() {
   return (
     <ErrorProvider>
       <ErrorBoundary>
-        {/* Fixed Header */}
+        {/* Auth Loading Indicator */}
+        <AuthLoadingIndicator />
+
+        {/* Fixed Header - Always visible */}
         <Container fluid={true}>
           <Navbar />
         </Container>
@@ -45,7 +92,7 @@ function App() {
         {/* Main Content Area */}
         <Container>
           <Routes>
-            {/* Home and Category Routes */}
+            {/* Home and Category Routes - Public */}
             <Route path="/" element={<Shop />} />
             <Route
               path="/men"
@@ -60,22 +107,47 @@ function App() {
               element={<ShopCategory category="kids" banner={kids_banner} />}
             />
 
-            {/* Special Offer Routes */}
+            {/* Special Offer Routes - Public */}
             <Route path="/offers" element={<Offers />} />
 
-            {/* Product Detail Routes */}
-            {/* Legacy ID-based routes (for backward compatibility) */}
+            {/* Product Detail Routes - Public */}
             <Route path="/product" element={<Product />}>
               <Route path=":productId" element={<Product />} />
             </Route>
-            {/* New slug-based routes (preferred for SEO) */}
             <Route path="/products/:productSlug" element={<Product />} />
 
-            {/* User Account Routes */}
+            {/* Cart - Public */}
             <Route path="/cart" element={<Cart />} />
-            <Route path="/login" element={<Auth />} />
-            <Route path="/signup" element={<Auth initialState="Signup" />} />
-            <Route path="/profile" element={<Profile />} />
+
+            {/* Auth Routes - Only when NOT authenticated */}
+            <Route
+              path="/login"
+              element={
+                <UnauthenticatedRoute>
+                  <Auth />
+                </UnauthenticatedRoute>
+              }
+            />
+            <Route
+              path="/signup"
+              element={
+                <UnauthenticatedRoute>
+                  <Auth initialState="Signup" />
+                </UnauthenticatedRoute>
+              }
+            />
+
+            {/* Protected Routes - Only when authenticated */}
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Verification Routes - Public */}
             <Route path="/verify-email" element={<VerifyEmail />} />
             <Route path="/verify-pending" element={<VerifyPending />} />
             <Route
@@ -83,15 +155,15 @@ function App() {
               element={<VerifyPasswordChange />}
             />
 
-            {/* Demo Routes */}
+            {/* Demo Routes - Public */}
             <Route path="/error-demo" element={<ErrorDemoPage />} />
 
-            {/* 404 Route - Must be the last route */}
+            {/* 404 Route - Public */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Container>
 
-        {/* Fixed Footer */}
+        {/* Fixed Footer - Always visible */}
         <Container fluid={true}>
           <Footer />
         </Container>

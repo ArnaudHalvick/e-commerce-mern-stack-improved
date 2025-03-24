@@ -286,7 +286,9 @@ const AuthContextProvider = (props) => {
         // Fetch complete profile data
         await fetchUserProfile();
 
+        // Navigate to home page immediately
         navigate("/");
+
         return { success: true };
       } else {
         if (
@@ -371,6 +373,15 @@ const AuthContextProvider = (props) => {
     setIsUserLoggedOut(true);
     localStorage.setItem("user-logged-out", "true");
 
+    // Immediately clear local state to update UI
+    setIsAuthenticated(false);
+    setUserState(null);
+    dispatch(clearUser());
+    dispatch(resetCart());
+
+    // Remove token immediately
+    localStorage.removeItem("auth-token");
+
     // Cancel all pending requests to prevent 401 errors
     cancelApiRequests("User logged out");
     cancelAxiosRequests("User logged out");
@@ -381,15 +392,13 @@ const AuthContextProvider = (props) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "auth-token": localStorage.getItem("auth-token"),
         },
         credentials: "include", // Include cookies
       });
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
-      // Clear local state regardless of API success
-      handleLogout();
+      // Navigate immediately
       navigate("/");
     }
   };
@@ -406,6 +415,7 @@ const AuthContextProvider = (props) => {
     loading,
     error,
     accountDisabled,
+    initialLoadComplete,
     login,
     signup,
     logout,
