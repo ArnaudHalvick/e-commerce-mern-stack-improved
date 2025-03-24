@@ -1,3 +1,5 @@
+// frontend/src/hooks/useNetwork.js
+
 import { useState, useEffect, useRef } from "react";
 import { useError } from "../context/ErrorContext";
 

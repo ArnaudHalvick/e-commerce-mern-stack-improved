@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useRef } from "react";
+import React, { useEffect, useContext } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
 // Components
@@ -17,16 +17,10 @@ import "./Auth.css";
 import "../../components/form/FormInputField.css";
 import "../../components/form/FormSubmitButton.css";
 
-/**
- * Auth page component that handles user login and signup with enhanced error handling
- * @param {Object} props - Component props
- * @param {string} props.initialState - Initial state to show ("Login" or "Signup")
- */
-const Auth = ({ initialState = "Login" }) => {
+const Auth = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { isAuthenticated, loading: authLoading } = useContext(AuthContext);
-  const initialStateSet = useRef(false);
 
   const {
     state,
@@ -37,17 +31,14 @@ const Auth = ({ initialState = "Login" }) => {
     passwordValidation,
     isOffline,
     setTermsAccepted,
-    switchState,
+    setInitialState,
     changeHandler,
     handleSubmit,
-    setInitialState,
   } = useAuthForm();
 
-  // Effect to redirect authenticated users away from login/signup
+  // Redirect authenticated users away from login/signup pages.
   useEffect(() => {
-    // Only redirect after auth state is determined (not loading)
     if (!authLoading && isAuthenticated) {
-      // Redirect to home page or the page they were trying to access
       const returnTo = location.state?.from || "/";
       navigate(returnTo, {
         replace: true,
@@ -56,24 +47,16 @@ const Auth = ({ initialState = "Login" }) => {
     }
   }, [isAuthenticated, authLoading, navigate, location.state?.from]);
 
-  // Combined effect to handle initial state - only runs once
+  // Update form state based on the current route, only if it needs to change.
   useEffect(() => {
-    if (initialStateSet.current) return;
-
     const path = location.pathname;
-
-    if (path === "/login") {
-      setInitialState("Login");
-    } else if (path === "/signup") {
-      setInitialState("Signup");
-    } else if (initialState === "Signup") {
-      setInitialState("Signup");
+    const desiredState = path === "/login" ? "Login" : "Signup";
+    if (state !== desiredState) {
+      setInitialState(desiredState);
     }
+  }, [location.pathname, state, setInitialState]);
 
-    initialStateSet.current = true;
-  }, [location.pathname, initialState, setInitialState]);
-
-  // If still loading auth state, show loading
+  // Show loading while auth state is being determined.
   if (authLoading) {
     return <div className="auth-page__loading">Loading...</div>;
   }
@@ -87,7 +70,6 @@ const Auth = ({ initialState = "Login" }) => {
             {state === "Signup" ? "Create Account" : "Login"}
           </h1>
 
-          {/* General error message display */}
           {errors.general && (
             <div className="auth-page__error" role="alert">
               {errors.general}
@@ -124,7 +106,6 @@ const Auth = ({ initialState = "Login" }) => {
             <Link
               className="auth-page__switch-link"
               to={state === "Signup" ? "/login" : "/signup"}
-              onClick={switchState}
             >
               {state === "Signup" ? "Sign in" : "Sign up"}
             </Link>
