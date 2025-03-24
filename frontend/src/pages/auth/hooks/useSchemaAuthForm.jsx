@@ -66,8 +66,16 @@ const useSchemaAuthForm = () => {
     },
     {
       showErrorToast: false,
-      onSuccess: () => {
-        showSuccess("Login successful!");
+      onSuccess: (result) => {
+        if (result && result.success) {
+          showSuccess("Login successful!");
+        } else {
+          // Handle unsuccessful login even though API call succeeded
+          const errorMessage =
+            result?.message || "Login failed. Please check your credentials.";
+          showError(errorMessage);
+          setFieldError("general", errorMessage);
+        }
       },
       onError: (error) => {
         const formattedError = formatApiError(error);
@@ -90,20 +98,30 @@ const useSchemaAuthForm = () => {
     {
       showErrorToast: false,
       onSuccess: (result) => {
-        showSuccess("Account created successfully!");
         console.log("Signup result:", result); // Debug logging
-        if (result && result.success && result.requiresVerification) {
-          console.log(
-            "Redirecting to verification page with email:",
-            formData.email
-          ); // Debug logging
-          // Ensure we wait for the redirect
-          setTimeout(() => {
-            navigate("/verify-pending", {
-              state: { email: formData.email },
-              replace: true, // Use replace to avoid back button issues
-            });
-          }, 0);
+
+        if (result && result.success) {
+          showSuccess("Account created successfully!");
+
+          if (result.requiresVerification) {
+            console.log(
+              "Redirecting to verification page with email:",
+              formData.email
+            ); // Debug logging
+            // Ensure we wait for the redirect
+            setTimeout(() => {
+              navigate("/verify-pending", {
+                state: { email: formData.email },
+                replace: true, // Use replace to avoid back button issues
+              });
+            }, 0);
+          }
+        } else {
+          // Handle unsuccessful signup even though API call succeeded
+          const errorMessage =
+            result?.message || "Signup failed. Please try again.";
+          showError(errorMessage);
+          setFieldError("general", errorMessage);
         }
       },
       onError: (error) => {
@@ -182,10 +200,21 @@ const useSchemaAuthForm = () => {
     if (!formData.email.trim()) {
       setFieldError("email", "Email is required");
       isValid = false;
+    } else {
+      // Basic email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email.trim())) {
+        setFieldError("email", "Please enter a valid email address");
+        isValid = false;
+      }
     }
 
     if (!formData.password.trim()) {
       setFieldError("password", "Password is required");
+      isValid = false;
+    } else if (formData.password.trim().length < 6) {
+      // Basic minimum length check
+      setFieldError("password", "Password must be at least 6 characters");
       isValid = false;
     }
 

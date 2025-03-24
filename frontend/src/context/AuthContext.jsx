@@ -315,6 +315,8 @@ const AuthContextProvider = (props) => {
         ) {
           setAccountDisabled(true);
           setError("Your account has been disabled. Please contact support.");
+          setInTransition(false);
+          setLoading(false);
           return {
             success: false,
             message: data.message,
@@ -322,18 +324,19 @@ const AuthContextProvider = (props) => {
           };
         }
         setError(data.message || "Login failed");
-        return { success: false, message: data.message };
+        setInTransition(false);
+        setLoading(false);
+        return { success: false, message: data.message || "Login failed" };
       }
     } catch (err) {
       console.error("Login error:", err);
       setError("Login failed. Please try again.");
-      return { success: false, message: "Login failed. Please try again." };
-    } finally {
-      // If there was an error, we should end the transition and loading state
-      if (error) {
-        setInTransition(false);
-        setLoading(false);
-      }
+      setInTransition(false);
+      setLoading(false);
+      return {
+        success: false,
+        message: err.message || "Login failed. Please try again.",
+      };
     }
   };
 
@@ -379,6 +382,7 @@ const AuthContextProvider = (props) => {
           setInTransition(false);
         }
 
+        setLoading(false);
         return {
           success: true,
           requiresVerification: data.requiresVerification,
@@ -388,18 +392,21 @@ const AuthContextProvider = (props) => {
       } else {
         setError(data.message || "Signup failed");
         setInTransition(false); // Make sure to end transition state on error
-        return { success: false, message: data.message };
+        setLoading(false);
+        return {
+          success: false,
+          message: data.message || "Signup failed",
+        };
       }
     } catch (err) {
       console.error("Signup error:", err);
       setError("Signup failed. Please try again.");
       setInTransition(false); // Make sure to end transition state on error
-      return { success: false, message: "Signup failed. Please try again." };
-    } finally {
       setLoading(false);
-      // Always ensure inTransition is set to false when we're done
-      // regardless of success or failure
-      setInTransition(false);
+      return {
+        success: false,
+        message: err.message || "Signup failed. Please try again.",
+      };
     }
   };
 
