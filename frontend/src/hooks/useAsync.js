@@ -1,7 +1,16 @@
 // frontend/src/hooks/useAsync.js
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useError } from "../context/ErrorContext";
+
+// Define default options outside the hook to keep the reference stable
+const DEFAULT_OPTIONS = {
+  showErrorToast: true,
+  showSuccessToast: false,
+  successMessage: "Operation completed successfully",
+  onSuccess: null,
+  onError: null,
+};
 
 /**
  * Custom hook for handling asynchronous operations with loading and error states
@@ -15,17 +24,10 @@ const useAsync = (asyncFunction, options = {}) => {
   const [error, setError] = useState(null);
   const { showError, showSuccess } = useError();
 
-  // Default options
-  const defaultOptions = {
-    showErrorToast: true,
-    showSuccessToast: false,
-    successMessage: "Operation completed successfully",
-    onSuccess: null,
-    onError: null,
-  };
-
-  // Merge options
-  const config = { ...defaultOptions, ...options };
+  // Merge options and memoize the config to prevent re-creation on every render
+  const config = useMemo(() => {
+    return { ...DEFAULT_OPTIONS, ...options };
+  }, [options]);
 
   /**
    * Execute the async function with error handling
