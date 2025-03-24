@@ -1,11 +1,11 @@
-// backend/utils/emailTemplates/authEmails.js
+// backend/utils/emails/templates/authEmails.js
 
 /**
  * Auth-related email templates
  * This module contains all email templates related to authentication
  */
 
-const { getFrontendUrl, joinUrl } = require("../common/urlUtils");
+const { getFrontendUrl, joinUrl } = require("../../common/urlUtils");
 
 /**
  * Generate HTML for email verification email

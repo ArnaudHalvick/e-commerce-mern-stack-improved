@@ -11,7 +11,7 @@ const {
   generateVerificationEmail,
   generatePasswordResetEmail,
   generatePasswordChangeNotification,
-} = require("../utils/emailTemplates/authEmails");
+} = require("../utils/emails/templates/authEmails");
 const {
   createVerificationUrl,
   createPasswordResetUrl,
