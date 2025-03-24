@@ -94,18 +94,23 @@ const PasswordManager = ({
       requirements.push(`at least ${schema.minLength} characters long`);
     }
 
-    // Check for pattern-based requirements
-    if (schema.message) {
-      // Extract common password requirements from the message
-      if (schema.message.includes("uppercase")) {
-        requirements.push("one uppercase letter");
-      }
-      if (schema.message.includes("number")) {
-        requirements.push("one number");
-      }
-      if (schema.message.includes("special")) {
-        requirements.push("one special character");
-      }
+    // Use explicit requirement flags if available instead of message parsing
+    if (schema.requiresUppercase) {
+      requirements.push("one uppercase letter");
+    } else if (schema.message && schema.message.includes("uppercase")) {
+      requirements.push("one uppercase letter");
+    }
+
+    if (schema.requiresNumber) {
+      requirements.push("one number");
+    } else if (schema.message && schema.message.includes("number")) {
+      requirements.push("one number");
+    }
+
+    if (schema.requiresSpecial) {
+      requirements.push("one special character");
+    } else if (schema.message && schema.message.includes("special")) {
+      requirements.push("one special character");
     }
 
     return `Password must be ${requirements.join(" and include ")}.`;

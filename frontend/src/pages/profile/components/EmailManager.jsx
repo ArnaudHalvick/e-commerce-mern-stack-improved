@@ -63,7 +63,10 @@ const EmailManager = ({ user, validationSchema, showSuccess, showError }) => {
     }
     if (validationSchema.email.pattern && email) {
       try {
-        const pattern = new RegExp(validationSchema.email.pattern);
+        const pattern = new RegExp(
+          validationSchema.email.pattern,
+          validationSchema.email.patternFlags || "i"
+        );
         if (!pattern.test(email)) {
           errorMessage =
             validationSchema.email.message || "Invalid email format";

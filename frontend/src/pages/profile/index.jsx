@@ -186,9 +186,45 @@ const Profile = () => {
 
   const validateForm = (data) => {
     if (profileValidation.schema) {
-      const errors = profileValidation.validateForm(data);
-      if (Object.keys(errors).length > 0) {
-        setFieldErrors(errors);
+      // Handle nested fields like address properly
+      const flattenedData = { ...data };
+      if (data.address) {
+        Object.keys(data.address).forEach((key) => {
+          flattenedData[`address.${key}`] = data.address[key];
+        });
+      }
+
+      const validationErrors = profileValidation.validateForm(flattenedData);
+
+      // Format errors with better field names
+      const formattedErrors = {};
+
+      Object.keys(validationErrors).forEach((key) => {
+        if (key.includes(".")) {
+          const [parent, child] = key.split(".");
+          if (!formattedErrors[parent]) {
+            formattedErrors[parent] = {};
+          }
+          // Use a more user-friendly error message by capitalizing first letter
+          const displayName = child.charAt(0).toUpperCase() + child.slice(1);
+          const errorMsg = validationErrors[key].replace(
+            `${key} `,
+            `${displayName} `
+          );
+          formattedErrors[parent][child] = errorMsg;
+        } else {
+          // Also format non-nested fields
+          const displayName = key.charAt(0).toUpperCase() + key.slice(1);
+          const errorMsg = validationErrors[key].replace(
+            `${key} `,
+            `${displayName} `
+          );
+          formattedErrors[key] = errorMsg;
+        }
+      });
+
+      if (Object.keys(formattedErrors).length > 0) {
+        setFieldErrors(formattedErrors);
         return false;
       }
       return true;

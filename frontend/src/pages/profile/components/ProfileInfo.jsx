@@ -99,8 +99,6 @@ const ProfileInfo = ({
     if (!validationSchema) return {};
 
     let fieldSchema;
-
-    // Handle nested fields like address.street
     if (isNested) {
       const [parent, child] = fieldName.split(".");
       fieldSchema = validationSchema[parent]?.[child];
@@ -112,24 +110,34 @@ const ProfileInfo = ({
 
     const attributes = {};
 
-    // Add pattern if it exists
-    if (fieldSchema.pattern) {
-      attributes.pattern = fieldSchema.pattern;
+    // Add required attribute if it exists
+    if (fieldSchema.required) {
+      attributes.required = true;
+    }
+
+    // Add min length if it exists
+    if (fieldSchema.minLength) {
+      attributes.minLength =
+        typeof fieldSchema.minLength === "number"
+          ? fieldSchema.minLength
+          : Array.isArray(fieldSchema.minLength)
+          ? fieldSchema.minLength[0]
+          : undefined;
+    }
+
+    // Add max length if it exists
+    if (fieldSchema.maxLength) {
+      attributes.maxLength =
+        typeof fieldSchema.maxLength === "number"
+          ? fieldSchema.maxLength
+          : Array.isArray(fieldSchema.maxLength)
+          ? fieldSchema.maxLength[0]
+          : undefined;
     }
 
     // Add title with validation message
     if (fieldSchema.message) {
       attributes.title = fieldSchema.message;
-    }
-
-    // Add min length if it exists
-    if (fieldSchema.minLength) {
-      attributes.minLength = fieldSchema.minLength;
-    }
-
-    // Add max length if it exists
-    if (fieldSchema.maxLength) {
-      attributes.maxLength = fieldSchema.maxLength;
     }
 
     return attributes;

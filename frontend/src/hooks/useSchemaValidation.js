@@ -112,61 +112,47 @@ const useSchemaValidation = (formType, isPublic = false) => {
    * @param {*} value - The value to validate
    * @returns {string|null} - The error message or null if valid
    */
-  const validateField = (fieldName, value) => {
+  const validateField = (name, value) => {
     if (!validationSchema || isLoading) return null;
 
-    // Handle nested fields (e.g., address.city)
-    const fieldParts = fieldName.split(".");
+    // Handle nested fields for address
     let fieldSchema;
+    let displayName = name;
 
-    if (fieldParts.length > 1) {
-      // For nested fields
-      let currentSchema = validationSchema;
-      for (const part of fieldParts) {
-        if (!currentSchema[part]) return null;
-        currentSchema = currentSchema[part];
-      }
-      fieldSchema = currentSchema;
+    if (name.includes(".")) {
+      const [parent, child] = name.split(".");
+      fieldSchema = validationSchema[parent]?.[child];
+      // Use only the field name (not the full path) for error messages
+      displayName = child.charAt(0).toUpperCase() + child.slice(1);
     } else {
-      // For top-level fields
-      fieldSchema = validationSchema[fieldName];
+      fieldSchema = validationSchema[name];
+      // Capitalize first letter of field name for error messages
+      displayName = name.charAt(0).toUpperCase() + name.slice(1);
     }
 
     if (!fieldSchema) return null;
 
-    // Special case for confirmPassword - check if it matches the related password field
-    if (fieldName === "confirmPassword" || fieldName === "passwordConfirm") {
-      const passwordField =
-        document.getElementById("newPassword") ||
-        document.getElementById("password");
-
-      if (passwordField && value !== passwordField.value) {
-        return fieldSchema.message || "Passwords must match";
-      }
-    }
-
     // Required validation
-    if (fieldSchema.required && (!value || value.trim() === "")) {
-      return fieldSchema.requiredMessage || `${fieldName} is required`;
+    if (
+      fieldSchema.required &&
+      (!value || (typeof value === "string" && value.trim() === ""))
+    ) {
+      return fieldSchema.requiredMessage || `${displayName} is required`;
     }
 
-    // Skip other validations if empty and not required
-    if (!value || value.trim() === "") return null;
+    // Skip other validations if field is empty and not required
+    if (!value || (typeof value === "string" && value.trim() === "")) {
+      return null;
+    }
 
     // Min length validation
     if (fieldSchema.minLength && value.length < fieldSchema.minLength) {
-      return (
-        fieldSchema.minLengthMessage ||
-        `${fieldName} must be at least ${fieldSchema.minLength} characters`
-      );
+      return `${displayName} must be at least ${fieldSchema.minLength} characters`;
     }
 
     // Max length validation
     if (fieldSchema.maxLength && value.length > fieldSchema.maxLength) {
-      return (
-        fieldSchema.maxLengthMessage ||
-        `${fieldName} must be at most ${fieldSchema.maxLength} characters`
-      );
+      return `${displayName} must be no more than ${fieldSchema.maxLength} characters`;
     }
 
     // Pattern validation
@@ -175,32 +161,21 @@ const useSchemaValidation = (formType, isPublic = false) => {
         // Safely create RegExp with flags if provided
         const flags = fieldSchema.patternFlags || "";
 
-        // Special case for email fields
-        if (fieldName === "email") {
-          // For email validation, use a more permissive regex with case-insensitive flag
-          const emailRegex = new RegExp(
-            "^([\\w+-]+(?:\\.[\\w+-]+)*)@((?:[\\w-]+\\.)*\\w[\\w-]{0,66})\\.([a-z]{2,})$",
-            "i"
-          );
+        // Special case for email fields - always use case-insensitive
+        const isEmailField = name === "email" || name.endsWith(".email");
+        const emailRegexFlags = isEmailField ? "i" : flags;
 
-          if (!emailRegex.test(value)) {
-            return fieldSchema.message || "Please enter a valid email address";
-          }
-        } else {
-          // For other fields, use the pattern from the schema
-          const patternRegex = new RegExp(fieldSchema.pattern, flags);
-          if (!patternRegex.test(value)) {
-            return fieldSchema.message || `${fieldName} format is invalid`;
-          }
+        const patternRegex = new RegExp(fieldSchema.pattern, emailRegexFlags);
+        if (!patternRegex.test(value)) {
+          return fieldSchema.message || `${displayName} format is invalid`;
         }
       } catch (error) {
-        // If the pattern is invalid, fallback validation
         console.warn(
           `Invalid pattern in validation schema: ${fieldSchema.pattern}`
         );
 
         // Fallback for email validation
-        if (fieldName === "email") {
+        if (name === "email" || name.endsWith(".email")) {
           const emailRegex =
             /^([\w+-]+(?:\.[\w+-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,})$/i;
           if (!emailRegex.test(value)) {
@@ -208,11 +183,6 @@ const useSchemaValidation = (formType, isPublic = false) => {
           }
         }
       }
-    }
-
-    // Enum validation
-    if (fieldSchema.enum && !fieldSchema.enum.includes(value)) {
-      return `${fieldName} must be one of: ${fieldSchema.enum.join(", ")}`;
     }
 
     return null;
