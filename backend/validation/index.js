@@ -24,4 +24,5 @@ module.exports = {
   validateLogin: middleware.validateLogin,
   validatePasswordChange: middleware.validatePasswordChange,
   validateProfileUpdate: middleware.validateProfileUpdate,
+  validatePasswordReset: middleware.validatePasswordReset,
 };

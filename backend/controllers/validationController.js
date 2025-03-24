@@ -15,6 +15,7 @@ const User = require("../models/User");
 const {
   getUserProfileValidation,
   getPasswordChangeValidation,
+  getPasswordResetValidation,
 } = require("../validation");
 const {
   getModelValidation,
@@ -114,8 +115,34 @@ const getRegistrationValidationRules = asyncHandler(async (req, res) => {
   }
 });
 
+/**
+ * Get validation rules for password reset
+ * This endpoint provides validation rules for password reset:
+ * - Token validation
+ * - New password requirements (min length, pattern for complexity)
+ * - Confirmation password validation
+ *
+ * @route GET /api/validation/password-reset
+ * @access Public
+ * @returns {Object} Validation rules for password reset fields:
+ *   - token
+ *   - password (with complexity requirements)
+ *   - passwordConfirm
+ */
+const getPasswordResetValidationRules = asyncHandler(async (req, res) => {
+  try {
+    const validationRules = getPasswordResetValidation();
+    logger.info(`Password reset validation rules requested`);
+    res.json(validationRules);
+  } catch (error) {
+    logger.error("Error getting password reset validation rules:", { error });
+    throw error;
+  }
+});
+
 module.exports = {
   getProfileValidationRules,
   getPasswordValidationRules,
   getRegistrationValidationRules,
+  getPasswordResetValidationRules,
 };

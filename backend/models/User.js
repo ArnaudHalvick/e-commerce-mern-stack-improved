@@ -78,6 +78,12 @@ const UserSchema = new mongoose.Schema({
   emailVerificationExpiry: {
     type: Date,
   },
+  resetPasswordToken: {
+    type: String,
+  },
+  resetPasswordExpire: {
+    type: Date,
+  },
   passwordChangeToken: {
     type: String,
   },

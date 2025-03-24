@@ -14,6 +14,7 @@ const {
   validateLogin,
   validatePasswordChange,
   validateProfileUpdate,
+  validatePasswordReset,
 } = require("../validation");
 
 // Public routes - Authentication
@@ -34,7 +35,11 @@ router.post("/request-verification", authController.requestVerification);
 router.get("/verify-email/:token", authController.verifyEmail);
 router.get("/verify-email", authController.verifyEmail);
 router.post("/forgot-password", authController.forgotPassword);
-router.post("/reset-password", authController.resetPassword);
+router.post(
+  "/reset-password",
+  validatePasswordReset,
+  authController.resetPassword
+);
 
 // Protected routes - Authentication
 router.post("/logout", isAuthenticated, authController.logoutUser);

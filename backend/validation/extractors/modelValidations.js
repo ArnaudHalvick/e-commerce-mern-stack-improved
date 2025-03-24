@@ -178,7 +178,30 @@ const getPasswordChangeValidation = () => {
   };
 };
 
+/**
+ * Get validation rules for password reset
+ * @returns {Object} - Validation rules for password reset
+ */
+const getPasswordResetValidation = () => {
+  // Get the basic password validation from the password change validation
+  const passwordValidation = getPasswordChangeValidation();
+
+  return {
+    token: {
+      required: true,
+      requiredMessage: "Reset token is required",
+    },
+    password: passwordValidation.newPassword,
+    passwordConfirm: {
+      required: true,
+      requiredMessage: "Please confirm your password",
+      message: "Passwords must match",
+    },
+  };
+};
+
 module.exports = {
   getUserProfileValidation,
   getPasswordChangeValidation,
+  getPasswordResetValidation,
 };

@@ -321,9 +321,49 @@ const validateProfileUpdate = [
   validateResults,
 ];
 
+/**
+ * Password reset validation
+ * Validates the token and new password for password reset
+ */
+const validatePasswordReset = [
+  // Token validation
+  body("token")
+    .notEmpty()
+    .withMessage("Reset token is required")
+    .isString()
+    .withMessage("Invalid reset token format"),
+
+  // Password validation with same rules as registration
+  body("password")
+    .notEmpty()
+    .withMessage("Password is required")
+    .isLength({ min: 8 })
+    .withMessage("Password must be at least 8 characters long")
+    .matches(/[A-Z]/)
+    .withMessage("Password must contain at least 1 uppercase letter")
+    .matches(/[0-9]/)
+    .withMessage("Password must contain at least 1 number")
+    .matches(/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/)
+    .withMessage("Password must contain at least 1 special character"),
+
+  // Password confirmation validation
+  body("passwordConfirm")
+    .notEmpty()
+    .withMessage("Password confirmation is required")
+    .custom((value, { req }) => {
+      if (value !== req.body.password) {
+        throw new Error("Passwords do not match");
+      }
+      return true;
+    }),
+
+  validateResults,
+];
+
 module.exports = {
   validateRegistration,
   validateLogin,
   validatePasswordChange,
   validateProfileUpdate,
+  validatePasswordReset,
 };
