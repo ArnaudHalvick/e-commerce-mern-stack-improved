@@ -2,8 +2,8 @@
 
 const User = require("../models/User");
 const crypto = require("crypto");
-const sendEmail = require("../utils/sendEmail");
-const { normalizeEmail } = require("../utils/emailNormalizer");
+const sendEmail = require("../utils/emails/sendEmail");
+const { normalizeEmail } = require("../utils/emails/emailNormalizer");
 const catchAsync = require("../utils/common/catchAsync");
 const AppError = require("../utils/errors/AppError");
 const logger = require("../utils/common/logger");

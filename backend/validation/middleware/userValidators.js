@@ -7,7 +7,7 @@
 
 const { body, validationResult } = require("express-validator");
 const User = require("../../models/User");
-const { normalizeEmail } = require("../../utils/emailNormalizer");
+const { normalizeEmail } = require("../../utils/emails/emailNormalizer");
 const { getUserProfileValidation } = require("../extractors/modelValidations");
 
 /**
