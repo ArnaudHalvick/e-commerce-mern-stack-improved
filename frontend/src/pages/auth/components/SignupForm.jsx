@@ -1,28 +1,32 @@
 import React from "react";
+import PropTypes from "prop-types";
+import { FormInputField, FormSubmitButton } from "../../../components/form";
 import PasswordValidation from "./PasswordValidation";
 
 /**
- * Signup form component
+ * Signup form component with enhanced error handling
  *
  * @param {Object} props - Component props
  * @param {Object} props.formData - Form data values
  * @param {Function} props.changeHandler - Function to handle input changes
  * @param {Boolean} props.loading - Loading state
- * @param {Object} props.error - Error message
+ * @param {Object} props.errors - Field-level error messages
  * @param {Function} props.handleSubmit - Form submission handler
  * @param {Boolean} props.termsAccepted - Terms and conditions acceptance state
  * @param {Function} props.setTermsAccepted - Function to update terms acceptance state
  * @param {Object} props.passwordValidation - Password validation state
+ * @param {Boolean} props.isOffline - Whether the user is offline
  */
 const SignupForm = ({
   formData,
   changeHandler,
   loading,
-  error,
+  errors,
   handleSubmit,
   termsAccepted,
   setTermsAccepted,
   passwordValidation,
+  isOffline,
 }) => {
   const {
     validLength,
@@ -37,44 +41,59 @@ const SignupForm = ({
   const showValidation = formData.password.length > 0;
 
   return (
-    <form className="auth-form" onSubmit={handleSubmit}>
+    <form className="auth-form" onSubmit={handleSubmit} noValidate>
       <div className="auth-form__fields">
-        <input
-          className="auth-form__input"
+        <FormInputField
           type="text"
-          placeholder="Your name"
           name="username"
-          value={formData.username}
+          label="Your name"
+          value={formData.username || ""}
           onChange={changeHandler}
+          error={errors?.username}
+          placeholder="John Doe"
           required
-          autoComplete="name"
-        />
-        <input
           className="auth-form__input"
-          type="email"
-          placeholder="Email address"
-          name="email"
-          value={formData.email}
-          onChange={changeHandler}
-          required
-          autoComplete="email"
         />
 
-        <input
+        <FormInputField
+          type="email"
+          name="email"
+          label="Email address"
+          value={formData.email || ""}
+          onChange={changeHandler}
+          error={errors?.email}
+          placeholder="your@email.com"
+          validation={{
+            pattern: "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$",
+            title: "Enter a valid email address",
+          }}
+          required
+          className="auth-form__input"
+        />
+
+        <FormInputField
+          type="password"
+          name="password"
+          label="Password"
+          value={formData.password || ""}
+          onChange={changeHandler}
+          error={errors?.password}
+          placeholder="Create a strong password"
           className={`auth-form__input ${
             validationStarted ? "auth-form__input--validation-active" : ""
           }`}
-          type="password"
-          placeholder="Password"
-          name="password"
-          value={formData.password}
-          onChange={changeHandler}
           required
-          autoComplete="new-password"
           aria-describedby="password-validation"
         />
 
-        <input
+        <FormInputField
+          type="password"
+          name="confirmPassword"
+          label="Confirm password"
+          value={formData.confirmPassword || ""}
+          onChange={changeHandler}
+          error={errors?.confirmPassword}
+          placeholder="Confirm your password"
           className={`auth-form__input ${
             formData.confirmPassword
               ? match
@@ -82,13 +101,7 @@ const SignupForm = ({
                 : "auth-form__input--no-match"
               : ""
           }`}
-          type="password"
-          placeholder="Confirm password"
-          name="confirmPassword"
-          value={formData.confirmPassword}
-          onChange={changeHandler}
           required
-          autoComplete="new-password"
           aria-describedby="password-match-validation"
         />
 
@@ -102,16 +115,6 @@ const SignupForm = ({
           confirmPassword={formData.confirmPassword}
         />
       </div>
-
-      {error && <p className="auth-form__error">{error}</p>}
-
-      <button
-        className="auth-form__submit-btn"
-        type="submit"
-        disabled={loading}
-      >
-        {loading ? "Loading..." : "Create Account"}
-      </button>
 
       <div className="auth-form__terms">
         <input
@@ -127,8 +130,43 @@ const SignupForm = ({
           Policy
         </p>
       </div>
+
+      {errors?.terms && (
+        <p className="auth-form__error" role="alert">
+          {errors.terms}
+        </p>
+      )}
+
+      <div className="auth-form__actions">
+        <FormSubmitButton
+          isLoading={loading}
+          text="Create Account"
+          loadingText="Creating account..."
+          disabled={isOffline || (!termsAccepted && !errors?.terms)}
+          className="auth-form__submit-btn"
+        />
+      </div>
     </form>
   );
+};
+
+SignupForm.propTypes = {
+  formData: PropTypes.object.isRequired,
+  changeHandler: PropTypes.func.isRequired,
+  loading: PropTypes.bool,
+  errors: PropTypes.object,
+  handleSubmit: PropTypes.func.isRequired,
+  termsAccepted: PropTypes.bool.isRequired,
+  setTermsAccepted: PropTypes.func.isRequired,
+  passwordValidation: PropTypes.object,
+  isOffline: PropTypes.bool,
+};
+
+SignupForm.defaultProps = {
+  loading: false,
+  errors: {},
+  isOffline: false,
+  passwordValidation: {},
 };
 
 export default SignupForm;

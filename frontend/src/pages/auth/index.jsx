@@ -14,9 +14,11 @@ import { AuthContext } from "../../context/AuthContext";
 
 // Styles
 import "./Auth.css";
+import "../../components/form/FormInputField.css";
+import "../../components/form/FormSubmitButton.css";
 
 /**
- * Auth page component that handles user login and signup
+ * Auth page component that handles user login and signup with enhanced error handling
  * @param {Object} props - Component props
  * @param {string} props.initialState - Initial state to show ("Login" or "Signup")
  */
@@ -30,8 +32,9 @@ const Auth = ({ initialState = "Login" }) => {
     formData,
     termsAccepted,
     loading,
-    error,
+    errors,
     passwordValidation,
+    isOffline,
     setTermsAccepted,
     switchState,
     changeHandler,
@@ -69,21 +72,10 @@ const Auth = ({ initialState = "Login" }) => {
     }
   }, [location.pathname, setInitialState]);
 
-  // Effect to handle email verification needed redirect after login
-  useEffect(() => {
-    // This will be triggered when email verification is needed after login
-    if (error?.emailVerificationNeeded) {
-      navigate("/verify-pending");
-    }
-  }, [error, navigate]);
-
   // If still loading auth state, show loading
   if (authLoading) {
     return <div className="auth-page__loading">Loading...</div>;
   }
-
-  // If already authenticated, the redirect effect will handle it
-  // But we won't render the actual forms
 
   return (
     <div className="auth-page">
@@ -94,24 +86,33 @@ const Auth = ({ initialState = "Login" }) => {
             {state === "Signup" ? "Create Account" : "Login"}
           </h1>
 
+          {/* General error message display */}
+          {errors.general && (
+            <div className="auth-page__error" role="alert">
+              {errors.general}
+            </div>
+          )}
+
           {state === "Login" ? (
             <LoginForm
               formData={formData}
               changeHandler={changeHandler}
               loading={loading}
-              error={error}
+              errors={errors}
               handleSubmit={handleSubmit}
+              isOffline={isOffline}
             />
           ) : (
             <SignupForm
               formData={formData}
               changeHandler={changeHandler}
               loading={loading}
-              error={error}
+              errors={errors}
               handleSubmit={handleSubmit}
               termsAccepted={termsAccepted}
               setTermsAccepted={setTermsAccepted}
               passwordValidation={passwordValidation}
+              isOffline={isOffline}
             />
           )}
 

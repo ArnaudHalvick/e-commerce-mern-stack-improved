@@ -219,3 +219,65 @@
     font-size: 0.8rem;
   }
 }
+
+/* Auth form error messages */
+.auth-page__error {
+  background-color: rgba(229, 57, 53, 0.1);
+  color: #e53935;
+  border-left: 3px solid #e53935;
+  padding: 10px 15px;
+  margin-bottom: 20px;
+  border-radius: 0 4px 4px 0;
+  font-size: 14px;
+}
+
+.auth-form__actions {
+  margin-top: 20px;
+}
+
+/* Form input error styles */
+.auth-form .form-field__error {
+  color: #e53935;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+/* Match/No match indicators for password confirmation */
+.auth-form__input--match {
+  border-color: #4caf50 !important;
+  background-color: rgba(76, 175, 80, 0.05) !important;
+}
+
+.auth-form__input--no-match {
+  border-color: #e53935 !important;
+  background-color: rgba(229, 57, 53, 0.05) !important;
+}
+
+/* Offline state */
+.auth-form__submit-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Terms error message */
+.auth-form__terms {
+  margin-top: 16px;
+  display: flex;
+  align-items: flex-start;
+}
+
+.auth-form__terms .auth-form__error {
+  margin-top: 4px;
+  font-size: 12px;
+}
+
+/* Loading state for auth page */
+.auth-page__loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+  width: 100%;
+  font-size: 16px;
+  color: #666;
+}
