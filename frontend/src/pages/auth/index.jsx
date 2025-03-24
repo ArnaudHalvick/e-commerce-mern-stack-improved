@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useContext, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
 // Components
@@ -26,6 +26,7 @@ const Auth = ({ initialState = "Login" }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { isAuthenticated, loading: authLoading } = useContext(AuthContext);
+  const initialStateSet = useRef(false);
 
   const {
     state,
@@ -55,22 +56,22 @@ const Auth = ({ initialState = "Login" }) => {
     }
   }, [isAuthenticated, authLoading, navigate, location.state?.from]);
 
-  // Effect to handle initial state
+  // Combined effect to handle initial state - only runs once
   useEffect(() => {
-    if (initialState === "Signup") {
-      setInitialState("Signup");
-    }
-  }, [initialState, setInitialState]);
+    if (initialStateSet.current) return;
 
-  // Effect to update state based on URL path changes
-  useEffect(() => {
     const path = location.pathname;
+
     if (path === "/login") {
       setInitialState("Login");
     } else if (path === "/signup") {
       setInitialState("Signup");
+    } else if (initialState === "Signup") {
+      setInitialState("Signup");
     }
-  }, [location.pathname, setInitialState]);
+
+    initialStateSet.current = true;
+  }, [location.pathname, initialState, setInitialState]);
 
   // If still loading auth state, show loading
   if (authLoading) {

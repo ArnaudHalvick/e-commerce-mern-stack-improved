@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useError } from "../context/ErrorContext";
 
 /**
@@ -11,6 +11,10 @@ const useNetwork = (options = {}) => {
   const [connectionType, setConnectionType] = useState(null);
   const [reconnecting, setReconnecting] = useState(false);
   const { showError, showSuccess, showWarning } = useError();
+
+  // Use refs to track previous values and prevent unnecessary re-renders
+  const prevOnlineState = useRef(navigator.onLine);
+  const optionsRef = useRef(options);
 
   // Default options
   const defaultOptions = {
@@ -25,21 +29,36 @@ const useNetwork = (options = {}) => {
   // Merge default options with provided options
   const config = { ...defaultOptions, ...options };
 
+  // Update options ref when options change
+  useEffect(() => {
+    optionsRef.current = options;
+  }, [options]);
+
   useEffect(() => {
     // Handle coming online
     const handleOnline = () => {
-      setIsOnline(true);
-      setReconnecting(false);
-      if (config.showToasts) {
-        showSuccess(config.onlineMessage);
+      // Only update state and show toast if state actually changed
+      if (!prevOnlineState.current) {
+        setIsOnline(true);
+        setReconnecting(false);
+        prevOnlineState.current = true;
+
+        if (config.showToasts) {
+          showSuccess(config.onlineMessage);
+        }
       }
     };
 
     // Handle going offline
     const handleOffline = () => {
-      setIsOnline(false);
-      if (config.showToasts) {
-        showError(config.offlineMessage);
+      // Only update state and show toast if state actually changed
+      if (prevOnlineState.current) {
+        setIsOnline(false);
+        prevOnlineState.current = false;
+
+        if (config.showToasts) {
+          showError(config.offlineMessage);
+        }
       }
     };
 
@@ -49,11 +68,15 @@ const useNetwork = (options = {}) => {
       if ("connection" in navigator) {
         const { effectiveType } = navigator.connection;
 
-        setConnectionType(effectiveType);
+        // Only update if the connection type actually changed
+        if (effectiveType !== connectionType) {
+          setConnectionType(effectiveType);
 
-        // Show warning for slow connections
-        if (effectiveType === "2g" || effectiveType === "slow-2g") {
-          if (config.showToasts) {
+          // Show warning for slow connections
+          if (
+            (effectiveType === "2g" || effectiveType === "slow-2g") &&
+            config.showToasts
+          ) {
             showWarning(config.slowConnectionMessage);
           }
         }
@@ -73,8 +96,12 @@ const useNetwork = (options = {}) => {
       navigator.connection.addEventListener("change", handleConnectionChange);
     }
 
-    // Show initial offline message if offline
-    if (!navigator.onLine && config.showToasts) {
+    // Show initial offline message if offline and it's the first render
+    if (
+      !navigator.onLine &&
+      config.showToasts &&
+      !isOnline === navigator.onLine
+    ) {
       showError(config.offlineMessage);
     }
 
@@ -90,7 +117,8 @@ const useNetwork = (options = {}) => {
         );
       }
     };
-  }, [config, showError, showSuccess, showWarning]);
+    // Only re-run this effect if the toast functions change - config is handled through ref
+  }, [showError, showSuccess, showWarning]);
 
   return {
     isOnline,

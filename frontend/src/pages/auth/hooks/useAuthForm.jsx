@@ -1,4 +1,4 @@
-import { useState, useContext, useCallback } from "react";
+import { useState, useContext, useCallback, useEffect } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import usePasswordValidation from "./usePasswordValidation";
@@ -122,7 +122,7 @@ const useAuthForm = () => {
   );
 
   const switchState = () => {
-    setState((prevState) => (prevState === "Signup" ? "Login" : "Signup"));
+    setState((prevState) => (prevState === "Login" ? "Signup" : "Login"));
     // Clear form data and errors when switching states
     setFormData({
       username: "",
@@ -261,23 +261,16 @@ const useAuthForm = () => {
     }
   };
 
-  // Determine if there's an error from auth context
-  const processAuthErrors = () => {
-    if (authError) {
+  // Use useEffect to safely process auth errors
+  useEffect(() => {
+    if (authError && Object.keys(errors).length === 0) {
       if (typeof authError === "string") {
-        // General error
         setFieldError("general", authError);
       } else if (authError.fieldErrors) {
-        // Field-specific errors
         setMultipleErrors(authError.fieldErrors);
       }
     }
-  };
-
-  // Process auth errors when they change
-  if (authError && Object.keys(errors).length === 0) {
-    processAuthErrors();
-  }
+  }, [authError, errors, setFieldError, setMultipleErrors]);
 
   return {
     state,
