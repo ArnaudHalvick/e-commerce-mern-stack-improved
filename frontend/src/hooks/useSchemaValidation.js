@@ -1,3 +1,5 @@
+// Path: frontend/src/hooks/useSchemaValidation.js
+
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { getApiUrl } from "../utils/apiUtils";
@@ -16,10 +18,11 @@ import { getApiUrl } from "../utils/apiUtils";
  * - Supports all common validation types: required, min/max length, patterns, etc.
  * - Special handling for password confirmation
  *
- * @param {string} formType - The type of form to validate ('profile' or 'password')
+ * @param {string} formType - The type of form to validate ('profile', 'password', or 'registration')
+ * @param {boolean} isPublic - Whether the endpoint is public (doesn't require auth)
  * @returns {Object} - The validation functions and state
  */
-const useSchemaValidation = (formType) => {
+const useSchemaValidation = (formType, isPublic = false) => {
   const [validationSchema, setValidationSchema] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -34,21 +37,24 @@ const useSchemaValidation = (formType) => {
       try {
         setIsLoading(true);
 
-        // Get token from localStorage instead of using Redux state
-        const token = localStorage.getItem("auth-token");
-        if (!token) {
-          setError("Authentication token not found");
-          setIsLoading(false);
-          return;
-        }
-
+        // Set up request configuration
         const config = {
           headers: {
             "Content-Type": "application/json",
-            "auth-token": token,
           },
           signal: controller.signal,
         };
+
+        // Add auth token only for protected endpoints
+        if (!isPublic) {
+          const token = localStorage.getItem("auth-token");
+          if (!token) {
+            setError("Authentication token not found");
+            setIsLoading(false);
+            return;
+          }
+          config.headers["auth-token"] = token;
+        }
 
         const { data } = await axios.get(
           getApiUrl(`validation/${formType}`),
@@ -78,6 +84,7 @@ const useSchemaValidation = (formType) => {
 
         // Only set error if component is still mounted and the error is not due to abort/logout
         if (!controller.signal.aborted) {
+          console.error("Validation schema fetch error:", err);
           setError(
             err.response && err.response.data.message
               ? err.response.data.message
@@ -97,7 +104,7 @@ const useSchemaValidation = (formType) => {
     return () => {
       controller.abort();
     };
-  }, [formType]);
+  }, [formType, isPublic]);
 
   /**
    * Validate a single field against the schema

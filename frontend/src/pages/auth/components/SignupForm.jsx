@@ -1,10 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { FormInputField, FormSubmitButton } from "../../../components/form";
-import PasswordValidation from "./PasswordValidation";
+import SchemaPasswordValidation from "./SchemaPasswordValidation";
 
 /**
- * Signup form component with enhanced error handling
+ * Signup form component with enhanced schema-based validation
  *
  * @param {Object} props - Component props
  * @param {Object} props.formData - Form data values
@@ -16,6 +16,8 @@ import PasswordValidation from "./PasswordValidation";
  * @param {Function} props.setTermsAccepted - Function to update terms acceptance state
  * @param {Object} props.passwordValidation - Password validation state
  * @param {Boolean} props.isOffline - Whether the user is offline
+ * @param {Object} props.validationSchema - Validation schema from backend
+ * @param {Boolean} props.isLoading - Loading state for SchemaPasswordValidation
  */
 const SignupForm = ({
   formData,
@@ -27,11 +29,13 @@ const SignupForm = ({
   setTermsAccepted,
   passwordValidation,
   isOffline,
+  validationSchema,
+  isLoading,
 }) => {
   const {
     validLength,
-    hasNumber,
     hasUppercase,
+    hasNumber,
     specialChar,
     match,
     validationStarted,
@@ -39,6 +43,35 @@ const SignupForm = ({
 
   // Only show validation feedback when user has started typing a password
   const showValidation = formData.password.length > 0;
+
+  // Get validation attributes for inputs based on schema
+  const getValidationAttributes = (fieldName) => {
+    if (!validationSchema) return {};
+
+    const fieldSchema = validationSchema[fieldName];
+    if (!fieldSchema) return {};
+
+    const attributes = {
+      required: fieldSchema.required || false,
+    };
+
+    // Add title with validation message
+    if (fieldSchema.message) {
+      attributes.title = fieldSchema.message;
+    }
+
+    // Add min length if it exists
+    if (fieldSchema.minLength) {
+      attributes.minLength = fieldSchema.minLength;
+    }
+
+    // Add max length if it exists
+    if (fieldSchema.maxLength) {
+      attributes.maxLength = fieldSchema.maxLength;
+    }
+
+    return attributes;
+  };
 
   return (
     <form className="auth-form" onSubmit={handleSubmit} noValidate>
@@ -51,8 +84,9 @@ const SignupForm = ({
           onChange={changeHandler}
           error={errors?.username}
           placeholder="John Doe"
-          required
+          required={validationSchema?.username?.required}
           className="auth-form__input"
+          {...getValidationAttributes("username")}
         />
 
         <FormInputField
@@ -63,12 +97,9 @@ const SignupForm = ({
           onChange={changeHandler}
           error={errors?.email}
           placeholder="your@email.com"
-          validation={{
-            pattern: "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$",
-            title: "Enter a valid email address",
-          }}
-          required
+          required={validationSchema?.email?.required}
           className="auth-form__input"
+          {...getValidationAttributes("email")}
         />
 
         <FormInputField
@@ -82,8 +113,10 @@ const SignupForm = ({
           className={`auth-form__input ${
             validationStarted ? "auth-form__input--validation-active" : ""
           }`}
-          required
+          required={validationSchema?.password?.required}
           aria-describedby="password-validation"
+          autocomplete="new-password"
+          {...getValidationAttributes("password")}
         />
 
         <FormInputField
@@ -92,7 +125,7 @@ const SignupForm = ({
           label="Confirm password"
           value={formData.confirmPassword || ""}
           onChange={changeHandler}
-          error={errors?.confirmPassword}
+          error={errors?.confirmPassword || errors?.passwordConfirm}
           placeholder="Confirm your password"
           className={`auth-form__input ${
             formData.confirmPassword
@@ -101,18 +134,21 @@ const SignupForm = ({
                 : "auth-form__input--no-match"
               : ""
           }`}
-          required
+          required={validationSchema?.passwordConfirm?.required}
           aria-describedby="password-match-validation"
+          autocomplete="new-password"
         />
 
-        <PasswordValidation
+        <SchemaPasswordValidation
           validLength={validLength}
-          hasNumber={hasNumber}
           hasUppercase={hasUppercase}
+          hasNumber={hasNumber}
           specialChar={specialChar}
           match={match}
           showFeedback={showValidation}
           confirmPassword={formData.confirmPassword}
+          validationSchema={validationSchema}
+          isLoading={isLoading}
         />
       </div>
 
@@ -167,6 +203,8 @@ SignupForm.propTypes = {
   setTermsAccepted: PropTypes.func.isRequired,
   passwordValidation: PropTypes.object,
   isOffline: PropTypes.bool,
+  validationSchema: PropTypes.object,
+  isLoading: PropTypes.bool,
 };
 
 SignupForm.defaultProps = {
@@ -174,6 +212,8 @@ SignupForm.defaultProps = {
   errors: {},
   isOffline: false,
   passwordValidation: {},
+  validationSchema: null,
+  isLoading: false,
 };
 
 export default SignupForm;

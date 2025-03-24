@@ -3,7 +3,7 @@ import { FormInputField, FormSubmitButton } from "../../../components/form";
 import PropTypes from "prop-types";
 
 /**
- * Login form component with enhanced error handling
+ * Login form component with schema-based validation
  *
  * @param {Object} props - Component props
  * @param {Object} props.formData - Form data values
@@ -12,6 +12,7 @@ import PropTypes from "prop-types";
  * @param {Object} props.errors - Field-level error messages
  * @param {Function} props.handleSubmit - Form submission handler
  * @param {Boolean} props.isOffline - Whether the user is offline
+ * @param {Object} props.validationSchema - Validation schema from backend
  */
 const LoginForm = ({
   formData,
@@ -20,56 +21,77 @@ const LoginForm = ({
   errors,
   handleSubmit,
   isOffline,
-}) => (
-  <form className="auth-form" onSubmit={handleSubmit} noValidate>
-    <div className="auth-form__fields">
-      <FormInputField
-        type="email"
-        name="email"
-        label="Email address"
-        value={formData.email || ""}
-        onChange={changeHandler}
-        error={errors?.email}
-        placeholder="your@email.com"
-        validation={{
-          pattern: "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$",
-          title: "Enter a valid email address",
-        }}
-        required
-        className="auth-form__input"
-      />
+  validationSchema,
+}) => {
+  // Get validation attributes for inputs based on schema
+  const getValidationAttributes = (fieldName) => {
+    if (!validationSchema) return {};
 
-      <FormInputField
-        type="password"
-        name="password"
-        label="Password"
-        value={formData.password || ""}
-        onChange={changeHandler}
-        error={errors?.password}
-        placeholder="Your password"
-        required
-        className="auth-form__input"
-      />
-    </div>
+    const fieldSchema = validationSchema[fieldName];
+    if (!fieldSchema) return {};
 
-    <div className="auth-form__actions">
-      <FormSubmitButton
-        isLoading={loading}
-        text="Login"
-        loadingText="Logging in..."
-        disabled={isOffline}
-        className="auth-form__submit-btn"
-        size="medium"
-        variant="primary"
-        style={{
-          height: "3.5rem",
-          fontSize: "1.25rem",
-          borderRadius: "0.5rem",
-        }}
-      />
-    </div>
-  </form>
-);
+    const attributes = {
+      required: fieldSchema.required || false,
+    };
+
+    // Add title with validation message
+    if (fieldSchema.message) {
+      attributes.title = fieldSchema.message;
+    }
+
+    return attributes;
+  };
+
+  return (
+    <form className="auth-form" onSubmit={handleSubmit} noValidate>
+      <div className="auth-form__fields">
+        <FormInputField
+          type="email"
+          name="email"
+          label="Email address"
+          value={formData.email || ""}
+          onChange={changeHandler}
+          error={errors?.email}
+          placeholder="your@email.com"
+          required={validationSchema?.email?.required}
+          className="auth-form__input"
+          {...getValidationAttributes("email")}
+        />
+
+        <FormInputField
+          type="password"
+          name="password"
+          label="Password"
+          value={formData.password || ""}
+          onChange={changeHandler}
+          error={errors?.password}
+          placeholder="Your password"
+          required={validationSchema?.password?.required}
+          className="auth-form__input"
+          autocomplete="current-password"
+          {...getValidationAttributes("password")}
+        />
+      </div>
+
+      <div className="auth-form__actions">
+        <FormSubmitButton
+          isLoading={loading}
+          text="Login"
+          loadingText="Logging in..."
+          disabled={isOffline}
+          className="auth-form__submit-btn"
+          size="medium"
+          variant="primary"
+          style={{
+            height: "3.5rem",
+            fontSize: "1.25rem",
+            borderRadius: "0.5rem",
+          }}
+        />
+      </div>
+    </form>
+  );
+};
 
 LoginForm.propTypes = {
   formData: PropTypes.object.isRequired,
@@ -78,12 +100,14 @@ LoginForm.propTypes = {
   errors: PropTypes.object,
   handleSubmit: PropTypes.func.isRequired,
   isOffline: PropTypes.bool,
+  validationSchema: PropTypes.object,
 };
 
 LoginForm.defaultProps = {
   loading: false,
   errors: {},
   isOffline: false,
+  validationSchema: null,
 };
 
 export default LoginForm;

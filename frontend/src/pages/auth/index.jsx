@@ -7,7 +7,7 @@ import SignupForm from "./components/SignupForm";
 import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
 
 // Hooks
-import useAuthForm from "./hooks/useAuthForm";
+import useSchemaAuthForm from "./hooks/useSchemaAuthForm";
 
 // Context
 import { AuthContext } from "../../context/AuthContext";
@@ -17,6 +17,10 @@ import "./Auth.css";
 import "../../components/form/FormInputField.css";
 import "../../components/form/FormSubmitButton.css";
 
+/**
+ * Auth component for handling user login and signup
+ * Now using schema-based validation fetched from the backend
+ */
 const Auth = ({ initialState }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -38,7 +42,9 @@ const Auth = ({ initialState }) => {
     setInitialState,
     changeHandler,
     handleSubmit,
-  } = useAuthForm();
+    validationSchema,
+    schemaLoading,
+  } = useSchemaAuthForm();
 
   // Redirect authenticated users away from login/signup pages.
   useEffect(() => {
@@ -96,18 +102,21 @@ const Auth = ({ initialState }) => {
               errors={errors}
               handleSubmit={handleSubmit}
               isOffline={isOffline}
+              validationSchema={validationSchema}
             />
           ) : (
             <SignupForm
               formData={formData}
               changeHandler={changeHandler}
               loading={loading || inTransition}
+              isLoading={schemaLoading}
               errors={errors}
               handleSubmit={handleSubmit}
               termsAccepted={termsAccepted}
               setTermsAccepted={setTermsAccepted}
               passwordValidation={passwordValidation}
               isOffline={isOffline}
+              validationSchema={validationSchema}
             />
           )}
 

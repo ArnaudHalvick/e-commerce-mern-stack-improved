@@ -80,11 +80,27 @@ const extractFieldValidation = (schemaType) => {
 
   // Min/max length
   if (schemaType.options.minLength) {
-    rules.minLength = schemaType.options.minLength;
+    // Handle minLength whether it's a number or an array [value, message]
+    if (Array.isArray(schemaType.options.minLength)) {
+      rules.minLength = schemaType.options.minLength[0]; // Just take the number
+      if (!rules.message && schemaType.options.minLength[1]) {
+        rules.message = schemaType.options.minLength[1];
+      }
+    } else {
+      rules.minLength = schemaType.options.minLength;
+    }
   }
 
   if (schemaType.options.maxLength) {
-    rules.maxLength = schemaType.options.maxLength;
+    // Handle maxLength whether it's a number or an array [value, message]
+    if (Array.isArray(schemaType.options.maxLength)) {
+      rules.maxLength = schemaType.options.maxLength[0]; // Just take the number
+      if (!rules.message && schemaType.options.maxLength[1]) {
+        rules.message = schemaType.options.maxLength[1];
+      }
+    } else {
+      rules.maxLength = schemaType.options.maxLength;
+    }
   }
 
   // Min/max value
@@ -121,10 +137,26 @@ const extractFieldValidation = (schemaType) => {
       // Extract regex pattern from validator function
       if (validator.validator && typeof validator.validator === "function") {
         const fnString = validator.validator.toString();
+        // Look for regex literals in the function
         const regexMatch = fnString.match(/\/([^\/]+)\//);
 
         if (regexMatch && regexMatch[1]) {
-          rules.pattern = regexMatch[1];
+          // Only extract actual regex patterns, not code snippets
+          if (regexMatch[1].length < 100 && !regexMatch[1].includes("const")) {
+            rules.pattern = regexMatch[1];
+          }
+        }
+
+        // For password validation, explicitly extract requirements
+        if (
+          fnString.includes("hasUppercase") &&
+          fnString.includes("hasNumber") &&
+          fnString.includes("hasSpecial")
+        ) {
+          // Don't set a pattern, but extract the requirements for the UI
+          rules.requiresUppercase = true;
+          rules.requiresNumber = true;
+          rules.requiresSpecial = true;
         }
       }
 
