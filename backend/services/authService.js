@@ -54,6 +54,8 @@ const sendTokens = (user, statusCode, res, additionalData = {}) => {
     ...additionalData,
   };
 
+  logger.info(`Tokens generated for user: ${user._id}`);
+
   res
     .status(statusCode)
     .cookie("refreshToken", refreshToken, options)
@@ -82,22 +84,29 @@ const extractAndVerifyToken = async (req) => {
 
     // Check if user exists
     if (!user) {
+      logger.warn(
+        `Token validation failed: User not found for ID: ${decoded.id}`
+      );
       return { success: false, message: "User not found or token is invalid" };
     }
 
     // Check if account is disabled
     if (user.disabled) {
+      logger.warn(`Access attempt by disabled account: ${user._id}`);
       return { success: false, message: "Your account has been disabled" };
     }
 
     return { success: true, user };
   } catch (error) {
     if (error.name === "JsonWebTokenError") {
+      logger.warn(`Invalid token error: ${error.message}`);
       return { success: false, message: "Invalid token" };
     }
     if (error.name === "TokenExpiredError") {
+      logger.info(`Token expired for request: ${req.originalUrl}`);
       return { success: false, message: "Token has expired" };
     }
+    logger.error(`Token verification error: ${error.message}`, { error });
     return { success: false, message: "Internal server error" };
   }
 };
@@ -117,16 +126,19 @@ const extractAndVerifyRefreshToken = async (req) => {
     const user = await User.findById(decoded.id);
 
     if (!user || user.refreshToken !== refreshToken) {
+      logger.warn(`Invalid refresh token for user ID: ${decoded.id}`);
       return { success: false, message: "Invalid refresh token" };
     }
 
     // Check if account is disabled
     if (user.disabled) {
+      logger.warn(`Refresh token attempt by disabled account: ${user._id}`);
       return { success: false, message: "Your account has been disabled" };
     }
 
     return { success: true, user };
   } catch (error) {
+    logger.warn(`Refresh token verification failed: ${error.message}`);
     return { success: false, message: "Invalid refresh token" };
   }
 };
@@ -158,14 +170,22 @@ const sendVerificationEmail = async (
     newEmail: newEmail,
   });
 
+  const emailTarget = isEmailChange ? newEmail : user.email;
+
   try {
     await sendEmail({
-      email: isEmailChange ? newEmail : user.email,
+      email: emailTarget,
       subject: isEmailChange
         ? "Email Change Verification"
         : "Email Verification",
       html: htmlEmail,
     });
+
+    logger.info(
+      `Verification email sent to: ${emailTarget}${
+        isEmailChange ? " (email change)" : ""
+      }`
+    );
     return { success: true };
   } catch (error) {
     // Reset verification tokens on failure
@@ -175,6 +195,11 @@ const sendVerificationEmail = async (
       user.pendingEmail = undefined;
     }
     await user.save({ validateBeforeSave: false });
+
+    logger.error(
+      `Failed to send verification email to ${emailTarget}: ${error.message}`,
+      { error }
+    );
 
     return {
       success: false,
@@ -212,6 +237,8 @@ const sendPasswordResetEmail = async (user) => {
       subject: "Password Reset Request",
       html: htmlEmail,
     });
+
+    logger.info(`Password reset email sent to: ${user.email}`);
     return { success: true };
   } catch (error) {
     // Reset tokens on failure
@@ -219,10 +246,45 @@ const sendPasswordResetEmail = async (user) => {
     user.resetPasswordExpire = undefined;
     await user.save({ validateBeforeSave: false });
 
+    logger.error(
+      `Failed to send password reset email to ${user.email}: ${error.message}`,
+      { error }
+    );
+
     return {
       success: false,
       error: new AppError(
         "Failed to send reset email. Please try again later.",
+        500
+      ),
+    };
+  }
+};
+
+/**
+ * Send password change notification email
+ */
+const sendPasswordChangeNotification = async (user) => {
+  try {
+    const htmlEmail = generatePasswordChangeNotification(user.name);
+
+    await sendEmail({
+      email: user.email,
+      subject: "Password Changed Successfully",
+      html: htmlEmail,
+    });
+
+    logger.info(`Password change notification email sent to: ${user.email}`);
+    return { success: true };
+  } catch (error) {
+    logger.error(
+      `Failed to send password change notification to ${user.email}: ${error.message}`,
+      { error }
+    );
+    return {
+      success: false,
+      error: new AppError(
+        "Failed to send password change notification. Your password was changed successfully.",
         500
       ),
     };
@@ -235,4 +297,5 @@ module.exports = {
   extractAndVerifyRefreshToken,
   sendVerificationEmail,
   sendPasswordResetEmail,
+  sendPasswordChangeNotification,
 };

@@ -10,6 +10,7 @@ const {
   sendTokens,
   sendVerificationEmail,
   sendPasswordResetEmail,
+  sendPasswordChangeNotification,
 } = require("../services/authService");
 
 /**
@@ -192,22 +193,13 @@ const resetPassword = catchAsync(async (req, res, next) => {
   await user.save();
 
   // Send password change notification email
-  try {
-    const {
-      generatePasswordChangeNotification,
-    } = require("../utils/emails/templates/authEmails");
-    const sendEmail = require("../utils/emails/sendEmail");
+  const notificationResult = await sendPasswordChangeNotification(user);
 
-    const htmlEmail = generatePasswordChangeNotification(user.name);
-
-    await sendEmail({
-      email: user.email,
-      subject: "Password Changed Successfully",
-      html: htmlEmail,
-    });
-  } catch (error) {
-    // Don't block the password reset process if email fails
-    logger.error("Failed to send password change notification:", error);
+  if (!notificationResult.success) {
+    // Log the error but don't block the password reset process
+    logger.error(
+      `Failed to send password change notification: ${notificationResult.error.message}`
+    );
   }
 
   // Send tokens

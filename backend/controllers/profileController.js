@@ -2,9 +2,11 @@
 
 const catchAsync = require("../utils/common/catchAsync");
 const AppError = require("../utils/errors/AppError");
+const logger = require("../utils/common/logger");
 const {
   sendTokens,
   sendVerificationEmail,
+  sendPasswordChangeNotification,
 } = require("../services/authService");
 const {
   getUserById,
@@ -67,6 +69,16 @@ const changePassword = catchAsync(async (req, res, next) => {
 
   if (!result.success) {
     return next(result.error);
+  }
+
+  // Send password change notification
+  const notificationResult = await sendPasswordChangeNotification(result.user);
+
+  if (!notificationResult.success) {
+    // Log the error but don't block the password change process
+    logger.info(
+      `Failed to send password change notification: ${notificationResult.error.message}`
+    );
   }
 
   // Generate new tokens
