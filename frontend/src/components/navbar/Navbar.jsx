@@ -13,7 +13,8 @@ import { AuthContext } from "../../context/AuthContext";
 import CartCount from "./CartCount";
 
 const Navbar = () => {
-  const { isAuthenticated, user, logout } = useContext(AuthContext);
+  const { isAuthenticated, user, logout, inTransition } =
+    useContext(AuthContext);
   const [activeMenu, setActiveMenu] = useState("shop");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [displayName, setDisplayName] = useState("User");
@@ -45,24 +46,37 @@ const Navbar = () => {
   }, []);
 
   const handleMenuClick = (menuItem) => {
+    // Prevent menu click during authentication transition
+    if (inTransition) return;
+
     setActiveMenu(menuItem);
     // Close mobile menu after selection
     setIsMobileMenuOpen(false);
   };
 
   const toggleUserMenu = () => {
+    // Prevent toggle during authentication transition
+    if (inTransition) return;
+
     setIsUserMenuOpen(!isUserMenuOpen);
   };
 
   // Simple logout handler
   const handleLogout = useCallback(() => {
+    // Prevent multiple logout attempts
+    if (inTransition) return;
+
     setIsUserMenuOpen(false); // Close user menu
     logout();
-  }, [logout]);
+  }, [logout, inTransition]);
 
   return (
     <div className="shop-navbar">
-      <Link to="/" className="shop-nav-logo">
+      <Link
+        to="/"
+        className="shop-nav-logo"
+        onClick={(e) => inTransition && e.preventDefault()}
+      >
         <img src={logo} alt="logo" />
         <p className="shop-nav-logo-text">SHOPPER</p>
       </Link>
@@ -70,7 +84,7 @@ const Navbar = () => {
       {/* Hamburger Icon for Mobile */}
       <div
         className="hamburger"
-        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        onClick={() => !inTransition && setIsMobileMenuOpen(!isMobileMenuOpen)}
       >
         <span className="hamburger-line"></span>
         <span className="hamburger-line"></span>
@@ -156,7 +170,11 @@ const Navbar = () => {
                 >
                   My Cart
                 </Link>
-                <button className="user-dropdown-button" onClick={handleLogout}>
+                <button
+                  className="user-dropdown-button"
+                  onClick={handleLogout}
+                  disabled={inTransition}
+                >
                   Logout
                 </button>
               </div>
@@ -164,15 +182,31 @@ const Navbar = () => {
           </div>
         ) : (
           <div className="auth-buttons">
-            <Link to="/login">
-              <button className="shop-nav-button login-btn">Login</button>
+            <Link
+              to="/login"
+              onClick={(e) => inTransition && e.preventDefault()}
+            >
+              <button
+                className="shop-nav-button login-btn"
+                disabled={inTransition}
+              >
+                Login
+              </button>
             </Link>
-            <Link to="/signup">
-              <button className="shop-nav-button signup-btn">Signup</button>
+            <Link
+              to="/signup"
+              onClick={(e) => inTransition && e.preventDefault()}
+            >
+              <button
+                className="shop-nav-button signup-btn"
+                disabled={inTransition}
+              >
+                Signup
+              </button>
             </Link>
           </div>
         )}
-        <Link to="/cart">
+        <Link to="/cart" onClick={(e) => inTransition && e.preventDefault()}>
           <img className="cart-icon" src={cart_icon} alt="cart" />
         </Link>
         <CartCount />

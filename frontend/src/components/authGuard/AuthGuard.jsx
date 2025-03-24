@@ -1,6 +1,6 @@
 import { useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
-import { InlineSpinner } from "./ui/SpinnerUtils";
+import { AuthContext } from "../../context/AuthContext";
+import { InlineSpinner } from "../ui/SpinnerUtils";
 
 /**
  * AuthGuard component that can be used to show loading state during authentication
@@ -13,10 +13,10 @@ import { InlineSpinner } from "./ui/SpinnerUtils";
  * @returns {JSX.Element} - Protected content or loading state
  */
 const AuthGuard = ({ children, requireAuth = false, fallback = null }) => {
-  const { loading } = useContext(AuthContext);
+  const { loading, inTransition } = useContext(AuthContext);
 
-  // Show loading state if auth is still being determined
-  if (loading) {
+  // Show loading state if auth is still being determined or during transitions
+  if (loading || inTransition) {
     return (
       fallback || (
         <div

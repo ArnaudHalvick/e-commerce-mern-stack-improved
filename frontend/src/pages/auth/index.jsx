@@ -17,10 +17,14 @@ import "./Auth.css";
 import "../../components/form/FormInputField.css";
 import "../../components/form/FormSubmitButton.css";
 
-const Auth = () => {
+const Auth = ({ initialState }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { isAuthenticated, loading: authLoading } = useContext(AuthContext);
+  const {
+    isAuthenticated,
+    loading: authLoading,
+    inTransition,
+  } = useContext(AuthContext);
 
   const {
     state,
@@ -56,9 +60,17 @@ const Auth = () => {
     }
   }, [location.pathname, state, setInitialState]);
 
-  // Show loading while auth state is being determined.
-  if (authLoading) {
-    return <div className="auth-page__loading">Loading...</div>;
+  // Set initial state if provided as prop
+  useEffect(() => {
+    if (initialState && state !== initialState) {
+      setInitialState(initialState);
+    }
+  }, [initialState, state, setInitialState]);
+
+  // Skip showing loading indicator here since we're using AuthLoadingIndicator
+  // This prevents the flickering when transitioning between pages
+  if (authLoading && !inTransition) {
+    return null;
   }
 
   return (
@@ -80,7 +92,7 @@ const Auth = () => {
             <LoginForm
               formData={formData}
               changeHandler={changeHandler}
-              loading={loading}
+              loading={loading || inTransition}
               errors={errors}
               handleSubmit={handleSubmit}
               isOffline={isOffline}
@@ -89,7 +101,7 @@ const Auth = () => {
             <SignupForm
               formData={formData}
               changeHandler={changeHandler}
-              loading={loading}
+              loading={loading || inTransition}
               errors={errors}
               handleSubmit={handleSubmit}
               termsAccepted={termsAccepted}

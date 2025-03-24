@@ -23,6 +23,8 @@ const AuthContextProvider = (props) => {
     () => localStorage.getItem("user-logged-out") === "true"
   );
   const [initialLoadComplete, setInitialLoadComplete] = useState(false);
+  // New state for transition during login/logout
+  const [inTransition, setInTransition] = useState(false);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -260,6 +262,8 @@ const AuthContextProvider = (props) => {
     setLoading(true);
     setError(null);
     setAccountDisabled(false);
+    setInTransition(true); // Start transition state to prevent flashing
+
     // Clear logout flag on login attempt
     localStorage.removeItem("user-logged-out");
     setIsUserLoggedOut(false);
@@ -277,17 +281,29 @@ const AuthContextProvider = (props) => {
       const data = await response.json();
 
       if (response.ok && data.success) {
+        // Store token first
         localStorage.setItem("auth-token", data.accessToken);
+
+        // Prepare user data
         const normalizedUser = normalizeUserData(data.user);
-        setUserState(normalizedUser);
-        dispatch(setUser(normalizedUser));
-        setIsAuthenticated(true);
 
-        // Fetch complete profile data
-        await fetchUserProfile();
+        // Update all states at once before navigation
+        const updateAndNavigate = () => {
+          // Batch state updates
+          setUserState(normalizedUser);
+          dispatch(setUser(normalizedUser));
+          setIsAuthenticated(true);
+          setLoading(false);
 
-        // Navigate to home page immediately
-        navigate("/");
+          // Small delay for a smooth transition
+          setTimeout(() => {
+            setInTransition(false);
+            navigate("/");
+          }, 300);
+        };
+
+        // Fetch complete profile in the background
+        fetchUserProfile().finally(updateAndNavigate);
 
         return { success: true };
       } else {
@@ -313,7 +329,11 @@ const AuthContextProvider = (props) => {
       setError("Login failed. Please try again.");
       return { success: false, message: "Login failed. Please try again." };
     } finally {
-      setLoading(false);
+      // If there was an error, we should end the transition and loading state
+      if (error) {
+        setInTransition(false);
+        setLoading(false);
+      }
     }
   };
 
@@ -321,6 +341,7 @@ const AuthContextProvider = (props) => {
   const signup = async (userData) => {
     setLoading(true);
     setError(null);
+    setInTransition(true); // Start transition for signup too
 
     try {
       // Make sure we're passing the passwordConfirm property that backend expects
@@ -342,12 +363,22 @@ const AuthContextProvider = (props) => {
 
       if (response.ok && data.success) {
         if (!data.requiresVerification) {
+          // Batch state updates
           localStorage.setItem("auth-token", data.accessToken);
           const normalizedUser = normalizeUserData(data.user);
-          setUserState(normalizedUser);
-          dispatch(setUser(normalizedUser));
-          setIsAuthenticated(true);
+
+          // Add a short delay for smooth transition
+          setTimeout(() => {
+            setUserState(normalizedUser);
+            dispatch(setUser(normalizedUser));
+            setIsAuthenticated(true);
+            setInTransition(false);
+          }, 300);
+        } else {
+          // End transition state if verification is required
+          setInTransition(false);
         }
+
         return {
           success: true,
           requiresVerification: data.requiresVerification,
@@ -364,11 +395,18 @@ const AuthContextProvider = (props) => {
       return { success: false, message: "Signup failed. Please try again." };
     } finally {
       setLoading(false);
+      // If there was an error, end the transition state
+      if (error) {
+        setInTransition(false);
+      }
     }
   };
 
   // Logout function
   const logout = async () => {
+    // Start transition state
+    setInTransition(true);
+
     // First set logged out flag to prevent new authenticated requests
     setIsUserLoggedOut(true);
     localStorage.setItem("user-logged-out", "true");
@@ -398,8 +436,11 @@ const AuthContextProvider = (props) => {
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
-      // Navigate immediately
-      navigate("/");
+      // Add a small delay before navigation for a smooth transition
+      setTimeout(() => {
+        setInTransition(false);
+        navigate("/");
+      }, 300);
     }
   };
 
@@ -416,6 +457,7 @@ const AuthContextProvider = (props) => {
     error,
     accountDisabled,
     initialLoadComplete,
+    inTransition, // Expose the transition state
     login,
     signup,
     logout,

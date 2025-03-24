@@ -8,8 +8,8 @@ import Footer from "./components/footer/Footer";
 import ErrorBoundary from "./components/errorHandling/ErrorBoundary";
 import { ToastContainer } from "./components/errorHandling";
 import { ErrorProvider } from "./context/ErrorContext";
-import AuthLoadingIndicator from "./components/AuthLoadingIndicator";
-import AuthGuard from "./components/AuthGuard";
+import AuthLoadingIndicator from "./components/authLoadingIndicator/AuthLoadingIndicator.jsx";
+import AuthGuard from "./components/authGuard/AuthGuard.jsx";
 import { AuthContext } from "./context/AuthContext";
 
 // Page Components
