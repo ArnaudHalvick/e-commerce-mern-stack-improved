@@ -1,34 +1,36 @@
-// backend/utils/sendEmail.js
+// backend/utils/emails/sendEmail.js
 
 const nodemailer = require("nodemailer");
 const logger = require("../common/logger");
 
 /**
- * Send an email
+ * Send an email using Gmail SMTP
  * @param {Object} options - Email options
  * @param {string} options.email - Recipient email
  * @param {string} options.subject - Email subject
- * @param {string} options.message - Email plain text message
- * @param {string} options.html - HTML content of the email
+ * @param {string} options.message - Email plain text message (optional)
+ * @param {string} options.html - HTML content of the email (optional)
  * @returns {Promise} - Promise that resolves when email is sent
  */
 const sendEmail = async (options) => {
   try {
-    // Check if SMTP credentials are set
-    if (!process.env.SMTP_USER || !process.env.SMTP_PASSWORD) {
+    // Check if Gmail credentials are set
+    if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
       logger.error(
-        "SMTP credentials are not configured. Please set SMTP_USER and SMTP_PASSWORD in .env file."
+        "Gmail credentials are not configured. Please set GMAIL_USER and GMAIL_APP_PASSWORD in .env file."
       );
-      throw new Error("SMTP credentials are not configured");
+      throw new Error("Gmail credentials are not configured");
     }
 
-    // Create a transporter
+    // Create a transporter for Gmail
     const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: process.env.SMTP_PORT,
+      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true, // Use SSL
       auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASSWORD,
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_APP_PASSWORD, // App Password, not regular Gmail password
       },
       debug: process.env.NODE_ENV !== "production", // Only enable debug in non-production environments
     });
@@ -62,7 +64,7 @@ const sendEmail = async (options) => {
     // Define email options
     const mailOptions = {
       from: `"E-Commerce Store" <${
-        process.env.SMTP_FROM_EMAIL || "noreply@ecommerce.com"
+        process.env.GMAIL_USER || "noreply@ecommerce.com"
       }>`,
       to: options.email,
       subject: options.subject,
