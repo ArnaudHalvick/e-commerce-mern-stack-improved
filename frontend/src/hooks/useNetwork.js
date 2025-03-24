@@ -14,74 +14,73 @@ const useNetwork = (options = {}) => {
   const [reconnecting, setReconnecting] = useState(false);
   const { showError, showSuccess, showWarning } = useError();
 
-  // Use refs to track previous values and prevent unnecessary re-renders
+  // Use refs to track previous values and to hold merged options
   const prevOnlineState = useRef(navigator.onLine);
-  const optionsRef = useRef(options);
-
-  // Default options
-  const defaultOptions = {
+  const optionsRef = useRef({
     showToasts: true,
     offlineMessage:
       "You are currently offline. Some features may be unavailable.",
     onlineMessage: "Your connection has been restored.",
     slowConnectionMessage:
       "You have a slow internet connection. Some features may be slower than usual.",
-  };
-
-  // Merge default options with provided options
-  const config = { ...defaultOptions, ...options };
+    ...options,
+  });
 
   // Update options ref when options change
   useEffect(() => {
-    optionsRef.current = options;
+    optionsRef.current = {
+      showToasts: true,
+      offlineMessage:
+        "You are currently offline. Some features may be unavailable.",
+      onlineMessage: "Your connection has been restored.",
+      slowConnectionMessage:
+        "You have a slow internet connection. Some features may be slower than usual.",
+      ...options,
+    };
   }, [options]);
 
   useEffect(() => {
     // Handle coming online
     const handleOnline = () => {
-      // Only update state and show toast if state actually changed
       if (!prevOnlineState.current) {
         setIsOnline(true);
         setReconnecting(false);
         prevOnlineState.current = true;
 
-        if (config.showToasts) {
-          showSuccess(config.onlineMessage);
+        if (optionsRef.current.showToasts) {
+          showSuccess(optionsRef.current.onlineMessage);
         }
       }
     };
 
     // Handle going offline
     const handleOffline = () => {
-      // Only update state and show toast if state actually changed
       if (prevOnlineState.current) {
         setIsOnline(false);
         prevOnlineState.current = false;
 
-        if (config.showToasts) {
-          showError(config.offlineMessage);
+        if (optionsRef.current.showToasts) {
+          showError(optionsRef.current.offlineMessage);
         }
       }
     };
 
     // Handle connection change (for mobile devices)
     const handleConnectionChange = () => {
-      // Get connection information if available
       if ("connection" in navigator) {
         const { effectiveType } = navigator.connection;
-
-        // Only update if the connection type actually changed
-        if (effectiveType !== connectionType) {
-          setConnectionType(effectiveType);
-
-          // Show warning for slow connections
-          if (
-            (effectiveType === "2g" || effectiveType === "slow-2g") &&
-            config.showToasts
-          ) {
-            showWarning(config.slowConnectionMessage);
+        setConnectionType((prevType) => {
+          if (prevType !== effectiveType) {
+            if (
+              (effectiveType === "2g" || effectiveType === "slow-2g") &&
+              optionsRef.current.showToasts
+            ) {
+              showWarning(optionsRef.current.slowConnectionMessage);
+            }
+            return effectiveType;
           }
-        }
+          return prevType;
+        });
       }
     };
 
@@ -89,25 +88,16 @@ const useNetwork = (options = {}) => {
     window.addEventListener("online", handleOnline);
     window.addEventListener("offline", handleOffline);
 
-    // Setup connection monitoring if available
     if ("connection" in navigator) {
-      // Set initial connection type
       setConnectionType(navigator.connection.effectiveType);
-
-      // Listen for connection changes
       navigator.connection.addEventListener("change", handleConnectionChange);
     }
 
-    // Show initial offline message if offline and it's the first render
-    if (
-      !navigator.onLine &&
-      config.showToasts &&
-      !isOnline === navigator.onLine
-    ) {
-      showError(config.offlineMessage);
+    // Show initial offline message if needed
+    if (!navigator.onLine && optionsRef.current.showToasts) {
+      showError(optionsRef.current.offlineMessage);
     }
 
-    // Clean up event listeners
     return () => {
       window.removeEventListener("online", handleOnline);
       window.removeEventListener("offline", handleOffline);
@@ -119,7 +109,6 @@ const useNetwork = (options = {}) => {
         );
       }
     };
-    // Only re-run this effect if the toast functions change - config is handled through ref
   }, [showError, showSuccess, showWarning]);
 
   return {
