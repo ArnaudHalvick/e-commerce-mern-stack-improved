@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { InlineSpinner } from "../ui/SpinnerUtils";
 import "./authLoadingIndicator.css"; // Import dedicated CSS file
@@ -14,6 +14,13 @@ import "./authLoadingIndicator.css"; // Import dedicated CSS file
 const AuthLoadingIndicator = () => {
   const { loading, initialLoadComplete, inTransition } =
     useContext(AuthContext);
+
+  // Debug logging
+  useEffect(() => {
+    if (inTransition) {
+      console.log("AuthLoadingIndicator: In transition mode");
+    }
+  }, [inTransition]);
 
   // During login/logout transitions, block the entire UI with a more prominent indicator
   if (inTransition) {

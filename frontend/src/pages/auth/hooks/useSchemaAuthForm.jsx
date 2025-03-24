@@ -92,13 +92,23 @@ const useSchemaAuthForm = () => {
       showErrorToast: false,
       onSuccess: (result) => {
         showSuccess("Account created successfully!");
+        console.log("Signup result:", result); // Debug logging
         if (result && result.success && result.requiresVerification) {
-          navigate("/verify-pending", {
-            state: { email: formData.email },
-          });
+          console.log(
+            "Redirecting to verification page with email:",
+            formData.email
+          ); // Debug logging
+          // Ensure we wait for the redirect
+          setTimeout(() => {
+            navigate("/verify-pending", {
+              state: { email: formData.email },
+              replace: true, // Use replace to avoid back button issues
+            });
+          }, 0);
         }
       },
       onError: (error) => {
+        console.error("Signup error:", error); // Debug logging
         const formattedError = formatApiError(error);
         handleApiError(formattedError);
       },
@@ -258,7 +268,16 @@ const useSchemaAuthForm = () => {
         passwordConfirm: formData.confirmPassword,
       };
 
-      await executeSignup(signupData);
+      const result = await executeSignup(signupData);
+
+      // Directly handle navigation here as a fallback
+      if (result && result.success && result.requiresVerification) {
+        console.log("Navigating from handleSubmit");
+        navigate("/verify-pending", {
+          state: { email: formData.email },
+          replace: true,
+        });
+      }
     } else {
       if (!validateLoginForm()) return;
       await executeLogin(formData.email, formData.password);

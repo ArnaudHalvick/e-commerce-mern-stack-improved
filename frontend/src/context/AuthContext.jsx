@@ -387,18 +387,19 @@ const AuthContextProvider = (props) => {
         };
       } else {
         setError(data.message || "Signup failed");
+        setInTransition(false); // Make sure to end transition state on error
         return { success: false, message: data.message };
       }
     } catch (err) {
       console.error("Signup error:", err);
       setError("Signup failed. Please try again.");
+      setInTransition(false); // Make sure to end transition state on error
       return { success: false, message: "Signup failed. Please try again." };
     } finally {
       setLoading(false);
-      // If there was an error, end the transition state
-      if (error) {
-        setInTransition(false);
-      }
+      // Always ensure inTransition is set to false when we're done
+      // regardless of success or failure
+      setInTransition(false);
     }
   };
 

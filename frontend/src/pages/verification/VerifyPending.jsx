@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { requestEmailVerification } from "../../redux/slices/userSlice";
 
@@ -15,6 +15,7 @@ import "./VerifyEmail.css";
 const VerifyPending = () => {
   const location = useLocation();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const email = location.state?.email || "";
 
   const [resendStatus, setResendStatus] = useState({
@@ -22,6 +23,17 @@ const VerifyPending = () => {
     success: false,
     error: null,
   });
+
+  // Check if email is available, if not redirect to signup
+  useEffect(() => {
+    if (!email) {
+      console.log("No email found in state, redirecting to signup");
+      // Redirect after a small delay to allow development tools to capture logs
+      setTimeout(() => {
+        navigate("/signup", { replace: true });
+      }, 200);
+    }
+  }, [email, navigate]);
 
   const handleResendVerification = async () => {
     if (!email) {
