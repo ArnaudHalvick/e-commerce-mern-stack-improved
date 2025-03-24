@@ -1,5 +1,5 @@
 import React from "react";
-import { ErrorDemo } from "../components/errorHandling";
+import { ErrorDemo } from "../../components/errorHandling";
 
 /**
  * Error Demo Page - Demonstrates the error handling system

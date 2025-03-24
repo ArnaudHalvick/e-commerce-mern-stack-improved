@@ -13,14 +13,14 @@ import AuthGuard from "./components/authGuard/AuthGuard.jsx";
 import { AuthContext } from "./context/AuthContext";
 
 // Page Components
-import Shop from "./pages/Shop";
+import Shop from "./pages/shop/Shop.jsx";
 import ShopCategory from "./pages/shopCategory";
 import Product from "./pages/product";
 import Cart from "./pages/cart/Cart";
 import Auth from "./pages/auth";
 import Offers from "./pages/offers";
 import NotFound from "./pages/notFound";
-import ErrorDemoPage from "./pages/errorDemo";
+import ErrorDemoPage from "./pages/errorDemo/errorDemo";
 import {
   VerifyEmail,
   VerifyPending,
