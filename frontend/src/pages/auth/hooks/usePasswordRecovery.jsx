@@ -66,7 +66,7 @@ const usePasswordRecovery = () => {
         return await authApi.forgotPassword(email);
       },
       {
-        showErrorToast: false,
+        showErrorToast: true, // Enable toast for all errors
         onSuccess: (result) => {
           if (result && result.success) {
             setEmailSent(true);
@@ -82,7 +82,14 @@ const usePasswordRecovery = () => {
         },
         onError: (error) => {
           const formattedError = formatApiError(error);
-          handleApiError(formattedError);
+
+          // Handle 404 error for non-existent email with a user-friendly message
+          if (error.status === 404) {
+            setFieldError("email", "No account found with this email address");
+            // We don't need to call showError here since showErrorToast is true
+          } else {
+            handleApiError(formattedError);
+          }
         },
       }
     );
@@ -146,7 +153,13 @@ const usePasswordRecovery = () => {
       return;
     }
 
-    await executeRecoveryRequest(forgotPasswordEmail);
+    const result = await executeRecoveryRequest(forgotPasswordEmail);
+
+    // If the result indicates a handled error, we don't need to do anything else
+    // The error has already been handled by the onError callback in useAsync
+    if (result && result.handled && result.error) {
+      console.log("Error was handled by useAsync:", result.error.message);
+    }
   };
 
   // Handle password reset form changes
@@ -226,7 +239,12 @@ const usePasswordRecovery = () => {
       return;
     }
 
-    await executePasswordReset(resetFormData);
+    const result = await executePasswordReset(resetFormData);
+
+    // If the result indicates a handled error, we don't need to do anything else
+    if (result && result.handled && result.error) {
+      console.log("Error was handled by useAsync:", result.error.message);
+    }
   };
 
   return {

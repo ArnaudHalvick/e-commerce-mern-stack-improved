@@ -61,6 +61,29 @@ const useFormErrors = (initialErrors = {}) => {
     // Extract error message
     const errorMessage = error.message || "An unexpected error occurred";
 
+    // Handle specific error cases
+    if (error.status === 404) {
+      // Special handling for forgot password 404 errors
+      if (
+        error.config &&
+        error.config.url &&
+        error.config.url.includes("/forgot-password")
+      ) {
+        setFieldError("email", "No account found with this email address");
+      } else {
+        // For other 404 errors, set a general error
+        setFieldError("general", errorMessage);
+      }
+    } else if (error.status === 400) {
+      // For validation errors, set a general error if no field errors are provided
+      if (!error.fieldErrors || Object.keys(error.fieldErrors).length === 0) {
+        setFieldError("general", errorMessage);
+      }
+    } else {
+      // For other errors, set a general error
+      setFieldError("general", errorMessage);
+    }
+
     // Show toast notification if enabled
     if (showToast) {
       showError(errorMessage);

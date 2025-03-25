@@ -120,14 +120,22 @@ apiClient.interceptors.response.use(
       // Extract error message from response if available
       if (error.response.data) {
         if (typeof error.response.data === "string") {
-          errorResponse.message = error.response.data;
+          errorResponse.message = error.response.data || errorResponse.message;
         } else if (error.response.data.message) {
-          errorResponse.message = error.response.data.message;
+          errorResponse.message =
+            error.response.data.message || errorResponse.message;
         } else if (error.response.data.error) {
-          errorResponse.message = error.response.data.error;
+          errorResponse.message =
+            error.response.data.error || errorResponse.message;
         }
-      } else {
-        errorResponse.message = error.message;
+      }
+
+      // Add url context for specific error handling in formatApiError
+      if (error.config && error.config.url) {
+        errorResponse.config = {
+          url: error.config.url,
+          method: error.config.method,
+        };
       }
 
       // If the error was due to an expired token, try to refresh it

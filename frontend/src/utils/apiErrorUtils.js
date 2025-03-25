@@ -9,6 +9,17 @@ export const formatApiError = (error) => {
     return error;
   }
 
+  // Handle null or undefined error
+  if (!error) {
+    return {
+      message: "An unexpected error occurred",
+      status: 500,
+      formattedError: true,
+      fieldErrors: {},
+      originalError: error,
+    };
+  }
+
   const formattedError = {
     message: "An unexpected error occurred",
     status: 500,
@@ -25,11 +36,13 @@ export const formatApiError = (error) => {
     // Extract error message from response
     if (error.response.data) {
       if (typeof error.response.data === "string") {
-        formattedError.message = error.response.data;
+        formattedError.message = error.response.data || formattedError.message;
       } else if (error.response.data.message) {
-        formattedError.message = error.response.data.message;
+        formattedError.message =
+          error.response.data.message || formattedError.message;
       } else if (error.response.data.error) {
-        formattedError.message = error.response.data.error;
+        formattedError.message =
+          error.response.data.error || formattedError.message;
       }
 
       // Extract field validation errors if present
@@ -57,7 +70,17 @@ export const formatApiError = (error) => {
           "You do not have permission to access this resource";
         break;
       case 404:
-        formattedError.message = "The requested resource was not found";
+        // Special handling for user not found errors in password recovery flow
+        if (
+          error.config &&
+          error.config.url &&
+          error.config.url.includes("forgot-password")
+        ) {
+          formattedError.message = "No account found with this email address";
+        } else {
+          formattedError.message =
+            formattedError.message || "The requested resource was not found";
+        }
         break;
       case 409:
         formattedError.message =
@@ -86,6 +109,9 @@ export const formatApiError = (error) => {
   } else if (error.message) {
     // Something else happened while setting up the request
     formattedError.message = error.message;
+  } else if (typeof error === "object" && Object.keys(error).length === 0) {
+    // Empty error object case
+    formattedError.message = "An unexpected error occurred";
   }
 
   return formattedError;

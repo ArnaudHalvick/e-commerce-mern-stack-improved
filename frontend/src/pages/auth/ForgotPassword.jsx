@@ -1,5 +1,4 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import { ForgotPasswordForm } from "./components";
 import { usePasswordRecovery } from "./hooks";
 import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
@@ -14,8 +13,6 @@ import "../../components/form/FormSubmitButton.css";
  * Allows users to request a password reset link
  */
 const ForgotPassword = () => {
-  const navigate = useNavigate();
-
   const {
     forgotPasswordEmail,
     setForgotPasswordEmail,

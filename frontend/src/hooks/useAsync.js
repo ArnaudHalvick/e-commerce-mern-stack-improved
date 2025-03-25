@@ -32,7 +32,7 @@ const useAsync = (asyncFunction, options = {}) => {
   /**
    * Execute the async function with error handling
    * @param {...any} args - Arguments to pass to the async function
-   * @returns {Promise} - Promise that resolves to the result of the async function
+   * @returns {Promise} - Promise that resolves to the result of the async function or null on error
    */
   const execute = useCallback(
     async (...args) => {
@@ -72,7 +72,9 @@ const useAsync = (asyncFunction, options = {}) => {
           config.onError(err);
         }
 
-        return Promise.reject(err);
+        // Return null instead of rejecting - this prevents the error from propagating
+        // while still indicating that the operation failed
+        return { error: err, handled: true, success: false };
       } finally {
         setLoading(false);
       }
