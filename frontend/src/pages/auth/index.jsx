@@ -81,7 +81,7 @@ const Auth = ({ initialState }) => {
 
   return (
     <div className="auth-page">
-      <Breadcrumb routes={[{ label: "HOME", path: "/" }, { label: state }]} />
+      <Breadcrumb routes={[{ label: "Home", path: "/" }, { label: state }]} />
       <div className="auth-page__content">
         <div className="auth-page__container">
           <h1 className="auth-page__title">
