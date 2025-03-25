@@ -1,6 +1,7 @@
 .form-field {
   margin-bottom: 1rem;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .form-field__label {
@@ -18,6 +19,7 @@
 
 .form-field__input-container {
   position: relative;
+  width: 100%;
 }
 
 .form-input {
@@ -27,6 +29,7 @@
   border-radius: 0.25rem;
   font-size: 1rem;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  box-sizing: border-box;
 }
 
 .form-input:focus {
@@ -48,4 +51,39 @@
   font-size: 0.75rem;
   margin-top: 0.25rem;
   min-height: 1.25rem;
+}
+
+/* Responsive styles */
+@media screen and (max-width: 768px) {
+  .form-field {
+    margin-bottom: 0.875rem;
+  }
+
+  .form-field__label {
+    font-size: 0.9375rem;
+  }
+
+  .form-input {
+    padding: 0.625rem 0.875rem;
+    font-size: 0.9375rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .form-field {
+    margin-bottom: 0.75rem;
+  }
+
+  .form-field__label {
+    font-size: 0.875rem;
+  }
+
+  .form-input {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  .form-field__error {
+    font-size: 0.6875rem;
+  }
 }
