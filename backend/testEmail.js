@@ -13,12 +13,6 @@ const sendEmail = require("./utils/emails/sendEmail");
 // Get recipient email from command line arguments or use default
 const recipientEmail = process.argv[2] || "test@example.com";
 
-console.log("Email Configuration Test");
-console.log("----------------------");
-console.log(`Gmail User: ${process.env.GMAIL_USER}`);
-console.log(`Sending test to: ${recipientEmail}`);
-console.log("----------------------");
-
 async function runTest() {
   try {
     await sendEmail({
@@ -37,11 +31,7 @@ async function runTest() {
         </div>
       `,
     });
-
-    console.log("✅ Success! Test email sent successfully.");
   } catch (error) {
-    console.error("❌ Error sending test email:");
-    console.error(error.message);
     process.exit(1);
   }
 }

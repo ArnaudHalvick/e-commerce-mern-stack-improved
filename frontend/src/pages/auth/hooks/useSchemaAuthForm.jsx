@@ -98,16 +98,10 @@ const useSchemaAuthForm = () => {
     {
       showErrorToast: false,
       onSuccess: (result) => {
-        console.log("Signup result:", result); // Debug logging
-
         if (result && result.success) {
           showSuccess("Account created successfully!");
 
           if (result.requiresVerification) {
-            console.log(
-              "Redirecting to verification page with email:",
-              formData.email
-            ); // Debug logging
             // Ensure we wait for the redirect
             setTimeout(() => {
               navigate("/verify-pending", {
@@ -125,7 +119,6 @@ const useSchemaAuthForm = () => {
         }
       },
       onError: (error) => {
-        console.error("Signup error:", error); // Debug logging
         const formattedError = formatApiError(error);
         handleApiError(formattedError);
       },

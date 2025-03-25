@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useError } from "../../../context/ErrorContext";
 import useFormErrors from "../../../hooks/useFormErrors";
@@ -48,15 +48,6 @@ const usePasswordRecovery = () => {
     resetFormData.password,
     resetFormData.confirmPassword
   );
-
-  // If schema validation failed, we'll log it but continue with basic validation
-  useEffect(() => {
-    if (schemaError) {
-      console.log(
-        "Schema validation unavailable, using basic validation instead"
-      );
-    }
-  }, [schemaError]);
 
   // Request password recovery email
   const { execute: executeRecoveryRequest, loading: recoveryLoading } =
@@ -158,7 +149,7 @@ const usePasswordRecovery = () => {
     // If the result indicates a handled error, we don't need to do anything else
     // The error has already been handled by the onError callback in useAsync
     if (result && result.handled && result.error) {
-      console.log("Error was handled by useAsync:", result.error.message);
+      // Console log removed
     }
   };
 
@@ -181,7 +172,7 @@ const usePasswordRecovery = () => {
         }
       } catch (err) {
         // If schema validation fails, we'll just continue without it
-        console.log("Schema validation failed for field:", name);
+        // Console log removed
       }
     }
   };
@@ -204,7 +195,7 @@ const usePasswordRecovery = () => {
         }
       } catch (err) {
         // If schema validation fails, we'll just continue with basic validation
-        console.log("Schema validation failed during form submission");
+        // Console log removed
       }
     }
 
@@ -243,7 +234,7 @@ const usePasswordRecovery = () => {
 
     // If the result indicates a handled error, we don't need to do anything else
     if (result && result.handled && result.error) {
-      console.log("Error was handled by useAsync:", result.error.message);
+      // Console log removed
     }
   };
 

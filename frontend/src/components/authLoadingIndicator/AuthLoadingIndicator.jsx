@@ -15,13 +15,6 @@ const AuthLoadingIndicator = () => {
   const { loading, initialLoadComplete, inTransition } =
     useContext(AuthContext);
 
-  // Debug logging
-  useEffect(() => {
-    if (inTransition) {
-      console.log("AuthLoadingIndicator: In transition mode");
-    }
-  }, [inTransition]);
-
   // During login/logout transitions, block the entire UI with a more prominent indicator
   if (inTransition) {
     return (

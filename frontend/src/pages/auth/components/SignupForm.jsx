@@ -73,28 +73,6 @@ const SignupForm = ({
     return attributes;
   };
 
-  const DebugValidation = ({ schema }) => {
-    if (!process.env.NODE_ENV || process.env.NODE_ENV === "production") {
-      return null;
-    }
-
-    return (
-      <div
-        style={{
-          padding: "10px",
-          background: "#f5f5f5",
-          margin: "10px 0",
-          fontSize: "12px",
-        }}
-      >
-        <h4>Validation Debug</h4>
-        <pre>
-          {JSON.stringify(schema?.email || "No email validation", null, 2)}
-        </pre>
-      </div>
-    );
-  };
-
   return (
     <form className="auth-form" onSubmit={handleSubmit} noValidate>
       <div className="auth-form__fields">
@@ -211,8 +189,6 @@ const SignupForm = ({
           }}
         />
       </div>
-
-      <DebugValidation schema={validationSchema} />
     </form>
   );
 };

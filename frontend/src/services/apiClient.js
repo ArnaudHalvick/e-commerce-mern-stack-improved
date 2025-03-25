@@ -219,7 +219,6 @@ apiClient.interceptors.response.use(
     }
 
     // You can log errors to a monitoring service here
-    console.error("API Error:", errorResponse);
 
     return Promise.reject(errorResponse);
   }
@@ -236,7 +235,6 @@ export const cancelPendingRequests = (
 if (typeof window !== "undefined") {
   window.addEventListener("user:logout", () => {
     cancelPendingRequests("User initiated logout");
-    console.log("Canceled all pending API requests due to logout");
   });
 }
 

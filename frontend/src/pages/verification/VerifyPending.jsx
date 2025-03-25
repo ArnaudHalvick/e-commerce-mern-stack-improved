@@ -27,7 +27,6 @@ const VerifyPending = () => {
   // Check if email is available, if not redirect to signup
   useEffect(() => {
     if (!email) {
-      console.log("No email found in state, redirecting to signup");
       // Redirect after a small delay to allow development tools to capture logs
       setTimeout(() => {
         navigate("/signup", { replace: true });
