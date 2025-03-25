@@ -132,7 +132,7 @@ const ResetPasswordForm = ({
           disabled={loading}
           text="Reset Password"
           loadingText="Resetting..."
-          className="auth-form__submit"
+          className="auth-form__submit-btn"
         />
 
         <div className="auth-form__links">

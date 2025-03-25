@@ -43,8 +43,16 @@ const FormSubmitButton = ({
   const variantClass = variant ? `${baseClassName}--${variant}` : "";
   const loadingClass = isLoading ? `${baseClassName}--loading` : "";
 
-  const combinedClassName =
-    `${baseClassName} ${sizeClass} ${variantClass} ${loadingClass} ${className}`.trim();
+  // More efficient class combining - removes unnecessary spaces and empty classes
+  const combinedClassName = [
+    baseClassName,
+    sizeClass,
+    variantClass,
+    loadingClass,
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   return (
     <button

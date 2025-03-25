@@ -78,7 +78,7 @@ const ForgotPasswordForm = ({
           disabled={loading}
           text="Send Recovery Email"
           loadingText="Sending..."
-          className="auth-form__submit"
+          className="auth-form__submit-btn"
         />
 
         <div className="auth-form__links">
