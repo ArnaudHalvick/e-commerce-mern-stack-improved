@@ -35,7 +35,10 @@ const ForgotPasswordForm = ({
           password. If you don't see the email, check your spam folder.
         </p>
         <p>
-          <Link to="/login" className="auth-form__link">
+          <Link
+            to="/login"
+            className="auth-form__link auth-form__link--primary"
+          >
             Return to login
           </Link>
         </p>
