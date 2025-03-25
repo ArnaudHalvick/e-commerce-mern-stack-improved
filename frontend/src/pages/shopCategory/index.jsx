@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 
 // Components
 import CategoryHeader from "./components/CategoryHeader";
@@ -21,6 +21,7 @@ import "../../components/errorHandling/LoadingIndicator.css";
  * @param {String} props.banner - Banner image URL for the category
  */
 const ShopCategory = (props) => {
+  // The useCategoryProducts hook now uses useReducer and provides stable function identities
   const {
     displayedProducts,
     loading,
@@ -112,4 +113,12 @@ const ShopCategory = (props) => {
   );
 };
 
-export default ShopCategory;
+// Use memo to prevent unnecessary re-renders from parent components
+// The component itself will only re-render when props.category or props.banner changes
+// All internal state updates are now handled via reducer actions
+export default memo(ShopCategory, (prevProps, nextProps) => {
+  return (
+    prevProps.category === nextProps.category &&
+    prevProps.banner === nextProps.banner
+  );
+});
