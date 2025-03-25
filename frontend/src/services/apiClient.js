@@ -36,15 +36,28 @@ const processQueue = (error, token = null) => {
   failedQueue = [];
 };
 
+// Public API endpoints that don't require authentication
+const publicEndpoints = [
+  "/api/users/login",
+  "/api/users/signup",
+  "/api/users/forgot-password",
+  "/api/users/reset-password",
+  "/api/users/request-verification",
+  "/api/users/verify-email",
+  "/api/validation/password-reset",
+  "/api/validation/registration",
+];
+
 // Add a request interceptor to include auth token
 apiClient.interceptors.request.use(
   (config) => {
+    // Check if this is a public endpoint
+    const isPublicEndpoint = publicEndpoints.some((endpoint) =>
+      config.url.includes(endpoint)
+    );
+
     // If user is logged out, avoid authenticated requests
-    if (
-      isUserLoggedOut() &&
-      config.url !== "/api/users/login" &&
-      config.url !== "/api/users/signup"
-    ) {
+    if (isUserLoggedOut() && !isPublicEndpoint) {
       const error = new Error("User is logged out");
       error.config = config;
       error.isLoggedOutError = true; // Add a flag to identify this type of error

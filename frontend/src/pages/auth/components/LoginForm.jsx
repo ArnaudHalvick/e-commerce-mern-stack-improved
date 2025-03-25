@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { FormInputField, FormSubmitButton } from "../../../components/form";
 import PropTypes from "prop-types";
 
@@ -73,6 +74,12 @@ const LoginForm = ({
           autocomplete="current-password"
           {...getValidationAttributes("password")}
         />
+
+        <div className="auth-form__forgot-password">
+          <Link to="/forgot-password" className="auth-form__link">
+            Forgot your password?
+          </Link>
+        </div>
       </div>
 
       <div className="auth-form__actions">

@@ -18,6 +18,7 @@ module.exports = {
   // Model-specific validators
   getUserProfileValidation: extractors.getUserProfileValidation,
   getPasswordChangeValidation: extractors.getPasswordChangeValidation,
+  getPasswordResetValidation: extractors.getPasswordResetValidation,
 
   // Express validator middleware
   validateRegistration: middleware.validateRegistration,

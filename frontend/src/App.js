@@ -18,6 +18,8 @@ import ShopCategory from "./pages/shopCategory";
 import Product from "./pages/product";
 import Cart from "./pages/cart/Cart";
 import Auth from "./pages/auth";
+import ForgotPassword from "./pages/auth/ForgotPassword";
+import ResetPassword from "./pages/auth/ResetPassword";
 import Offers from "./pages/offers";
 import NotFound from "./pages/notFound";
 import ErrorDemoPage from "./pages/errorDemo/errorDemo";
@@ -133,6 +135,24 @@ function App() {
               element={
                 <UnauthenticatedRoute>
                   <Auth initialState="Signup" />
+                </UnauthenticatedRoute>
+              }
+            />
+
+            {/* Password Recovery Routes - Public */}
+            <Route
+              path="/forgot-password"
+              element={
+                <UnauthenticatedRoute>
+                  <ForgotPassword />
+                </UnauthenticatedRoute>
+              }
+            />
+            <Route
+              path="/reset-password/:token"
+              element={
+                <UnauthenticatedRoute>
+                  <ResetPassword />
                 </UnauthenticatedRoute>
               }
             />

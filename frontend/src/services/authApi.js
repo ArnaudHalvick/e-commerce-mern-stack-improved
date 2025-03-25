@@ -150,6 +150,57 @@ const authApi = {
       throw error;
     }
   },
+
+  /**
+   * Request password recovery email
+   * @param {string} email - User email to recover password for
+   * @returns {Promise} - Promise that resolves to password recovery request response
+   */
+  forgotPassword: async (email) => {
+    try {
+      const response = await apiClient.post("/api/users/forgot-password", {
+        email,
+      });
+      return response.data;
+    } catch (error) {
+      // Let the error interceptor handle formatting, just rethrow
+      throw error;
+    }
+  },
+
+  /**
+   * Reset password with token
+   * @param {string} token - Password reset token
+   * @param {string} password - New password
+   * @param {string} passwordConfirm - Password confirmation
+   * @returns {Promise} - Promise that resolves to password reset response
+   */
+  resetPassword: async (token, password, passwordConfirm) => {
+    try {
+      const response = await apiClient.post("/api/users/reset-password", {
+        token,
+        password,
+        passwordConfirm,
+      });
+      return response.data;
+    } catch (error) {
+      // Let the error interceptor handle formatting, just rethrow
+      throw error;
+    }
+  },
+
+  /**
+   * Get password reset validation rules
+   * @returns {Promise} - Promise that resolves to validation rules
+   */
+  getPasswordResetValidation: async () => {
+    try {
+      const response = await apiClient.get("/api/validation/password-reset");
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
 };
 
 export default authApi;

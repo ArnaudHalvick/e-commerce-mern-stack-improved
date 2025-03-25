@@ -24,7 +24,7 @@ const useSchemaValidation = (formType, isPublic = false) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch validation schema from backend
+  // Use effect to fetch validation schema on component mount
   useEffect(() => {
     const controller = new AbortController();
 
@@ -51,15 +51,56 @@ const useSchemaValidation = (formType, isPublic = false) => {
           config.headers["auth-token"] = token;
         }
 
-        const { data } = await axios.get(
-          getApiUrl(`validation/${formType}`),
-          config
-        );
+        try {
+          const { data } = await axios.get(
+            getApiUrl(`validation/${formType}`),
+            config
+          );
 
-        // Check if component is still mounted before updating state
-        if (!controller.signal.aborted) {
-          setValidationSchema(data);
-          setError(null);
+          // Check if component is still mounted before updating state
+          if (!controller.signal.aborted) {
+            setValidationSchema(data);
+            setError(null);
+          }
+        } catch (fetchErr) {
+          // Don't throw if we get a 404 or 500 error - we'll fall back to client-side validation
+          if (
+            fetchErr.response &&
+            (fetchErr.response.status === 404 ||
+              fetchErr.response.status === 500)
+          ) {
+            console.warn(
+              `Validation schema endpoint not available for ${formType}, using client-side validation`
+            );
+            setError(`Schema validation unavailable: ${fetchErr.message}`);
+
+            // For specific form types, set a default schema for basic validation
+            if (formType === "password-reset") {
+              setValidationSchema({
+                token: {
+                  required: true,
+                  requiredMessage: "Reset token is required",
+                },
+                password: {
+                  required: true,
+                  requiredMessage: "Password is required",
+                  minLength: 8,
+                  requiresUppercase: true,
+                  requiresNumber: true,
+                  requiresSpecial: true,
+                  message: "Password must meet the complexity requirements",
+                },
+                passwordConfirm: {
+                  required: true,
+                  requiredMessage: "Please confirm your password",
+                  message: "Passwords must match",
+                },
+              });
+            }
+          } else {
+            // Re-throw other errors to be handled by the outer catch
+            throw fetchErr;
+          }
         }
       } catch (err) {
         // Check if this was an abort error (e.g., component unmounted)
@@ -239,6 +280,7 @@ const useSchemaValidation = (formType, isPublic = false) => {
     return errors;
   };
 
+  // Return validation functions and state
   return {
     validateField,
     validateForm,
