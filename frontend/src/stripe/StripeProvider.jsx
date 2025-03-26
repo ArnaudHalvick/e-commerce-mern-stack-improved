@@ -3,8 +3,8 @@ import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import "./StripeProvider.css";
 
-// Initialize Stripe with your publishable key - with better error handling
-const stripePromise = (() => {
+// Initialize Stripe with your publishable key - outside the component to prevent re-initialization
+const initializeStripe = () => {
   try {
     const key = process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY;
     if (!key) {
@@ -18,10 +18,22 @@ const stripePromise = (() => {
     console.error("Error initializing Stripe:", error);
     return null;
   }
-})();
+};
+
+// Create the promise outside component to ensure it's only created once
+const stripePromise = initializeStripe();
+
+// Default options for Stripe Elements
+const defaultOptions = {
+  fonts: [
+    {
+      cssSrc: "https://fonts.googleapis.com/css?family=Roboto:400,500,700",
+    },
+  ],
+};
 
 const StripeProvider = ({ children }) => {
-  // Configure Stripe Elements with error handling
+  // Error component if Stripe fails to initialize
   if (!stripePromise) {
     return (
       <div className="stripe-error-container">
@@ -34,19 +46,11 @@ const StripeProvider = ({ children }) => {
     );
   }
 
-  const options = {
-    fonts: [
-      {
-        cssSrc: "https://fonts.googleapis.com/css?family=Roboto:400,500,700",
-      },
-    ],
-  };
-
   return (
-    <Elements stripe={stripePromise} options={options}>
+    <Elements stripe={stripePromise} options={defaultOptions}>
       {children}
     </Elements>
   );
 };
 
-export default StripeProvider;
+export default React.memo(StripeProvider);

@@ -114,10 +114,41 @@
   min-height: 20px;
   display: flex;
   align-items: center;
+  transition: border-color 0.3s ease;
+}
+
+.card-element-container:focus-within {
+  border-color: #ff4141;
+  box-shadow: 0 0 0 2px rgba(255, 65, 65, 0.1);
 }
 
 .stripe-element {
   width: 100%;
+  font-size: 16px;
+  color: #424770;
+}
+
+/* Stripe Element specific styles */
+.StripeElement {
+  width: 100%;
+}
+
+.StripeElement--focus {
+  box-shadow: none;
+}
+
+.StripeElement--invalid {
+  border-color: #e63535;
+}
+
+/* Placeholder styling for Stripe Elements */
+.StripeElement--empty .__PrivateStripeElement iframe {
+  color: #aab7c4;
+}
+
+/* Error styling for Stripe Elements */
+.StripeElement--invalid .__PrivateStripeElement iframe {
+  color: #9e2146;
 }
 
 .pay-button {

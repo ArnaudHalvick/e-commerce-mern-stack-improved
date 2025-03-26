@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import {
   useStripe,
   useElements,
@@ -13,8 +13,8 @@ import {
   confirmOrder,
   fetchCartSummary,
 } from "../../services/paymentService";
-import { clearCart } from "../../redux/slices/cartSlice"; // Fix: Import from Redux slice
-import authApi from "../../services/authApi"; // Import for user profile
+import { clearCart } from "../../redux/slices/cartSlice";
+import authApi from "../../services/authApi";
 import "./CheckoutPage.css";
 
 // List of countries with ISO codes
@@ -53,7 +53,6 @@ const CheckoutPage = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [clientSecret, setClientSecret] = useState("");
   const [cartSummary, setCartSummary] = useState(null);
   const [fetchingCartSummary, setFetchingCartSummary] = useState(true);
   const [shippingInfo, setShippingInfo] = useState({
@@ -65,21 +64,24 @@ const CheckoutPage = () => {
     phoneNumber: "",
   });
 
-  // Common options for card elements - fixed to work properly
-  const cardElementOptions = {
-    style: {
-      base: {
-        fontSize: "16px",
-        color: "#424770",
-        "::placeholder": {
-          color: "#aab7c4",
+  // Memoize card element options to prevent re-renders
+  const cardElementOptions = useMemo(
+    () => ({
+      style: {
+        base: {
+          fontSize: "16px",
+          color: "#424770",
+          "::placeholder": {
+            color: "#aab7c4",
+          },
+        },
+        invalid: {
+          color: "#9e2146",
         },
       },
-      invalid: {
-        color: "#9e2146",
-      },
-    },
-  };
+    }),
+    []
+  );
 
   // Load user profile and prefill shipping info
   useEffect(() => {
@@ -119,7 +121,7 @@ const CheckoutPage = () => {
     loadUserProfile();
   }, []);
 
-  // Wrap the shipping info validation function in useCallback
+  // Wrap the shipping info validation function in useCallback and memoize it
   const isShippingInfoValid = useCallback(() => {
     return (
       shippingInfo.address &&
@@ -129,7 +131,14 @@ const CheckoutPage = () => {
       shippingInfo.postalCode &&
       shippingInfo.phoneNumber
     );
-  }, [shippingInfo]);
+  }, [
+    shippingInfo.address,
+    shippingInfo.city,
+    shippingInfo.state,
+    shippingInfo.country,
+    shippingInfo.postalCode,
+    shippingInfo.phoneNumber,
+  ]);
 
   // Fetch cart summary on component mount
   useEffect(() => {
@@ -154,12 +163,13 @@ const CheckoutPage = () => {
     fetchSummary();
   }, []);
 
-  const handleShippingInfoChange = (e) => {
-    setShippingInfo({
-      ...shippingInfo,
-      [e.target.name]: e.target.value,
-    });
-  };
+  const handleShippingInfoChange = useCallback((e) => {
+    const { name, value } = e.target;
+    setShippingInfo((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  }, []);
 
   // Handle payment submission
   const handleSubmit = async (e) => {
@@ -181,7 +191,6 @@ const CheckoutPage = () => {
     try {
       // Create payment intent only when submitting the form
       const paymentData = await createPaymentIntent(shippingInfo);
-      setClientSecret(paymentData.clientSecret);
 
       // Confirm card payment with separated card elements
       const result = await stripe.confirmCardPayment(paymentData.clientSecret, {
@@ -228,23 +237,6 @@ const CheckoutPage = () => {
       setIsLoading(false);
     }
   };
-
-  // Add passive event listeners to improve touch performance
-  useEffect(() => {
-    const addPassiveListeners = () => {
-      const options = { passive: true };
-      document.addEventListener("touchstart", () => {}, options);
-      document.addEventListener("touchmove", () => {}, options);
-    };
-
-    addPassiveListeners();
-
-    // Cleanup on unmount
-    return () => {
-      document.removeEventListener("touchstart", () => {});
-      document.removeEventListener("touchmove", () => {});
-    };
-  }, []);
 
   return (
     <div className="checkout-page">
