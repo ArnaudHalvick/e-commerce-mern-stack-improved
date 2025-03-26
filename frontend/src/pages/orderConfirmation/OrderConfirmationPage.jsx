@@ -3,6 +3,7 @@ import { useParams, useLocation, Link } from "react-router-dom";
 import { getOrderById } from "../../services/paymentService";
 import Spinner from "../../components/ui/Spinner";
 import FormSubmitButton from "../../components/form/FormSubmitButton";
+import { getImageUrl } from "../../utils/imageUtils";
 import "./OrderConfirmationPage.css";
 
 const OrderConfirmationPage = () => {
@@ -172,7 +173,7 @@ const OrderConfirmationPage = () => {
             key={item._id || item.productId}
           >
             <div className="order-confirmation-item-image">
-              <img src={item.image} alt={item.name} />
+              <img src={getImageUrl(item.image)} alt={item.name} />
             </div>
             <div className="order-confirmation-item-details">
               <h3>{item.name}</h3>

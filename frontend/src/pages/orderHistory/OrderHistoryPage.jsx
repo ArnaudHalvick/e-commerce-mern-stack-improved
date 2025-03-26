@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { getMyOrders } from "../../services/paymentService";
 import Spinner from "../../components/ui/Spinner";
 import FormSubmitButton from "../../components/form/FormSubmitButton";
+import { getImageUrl } from "../../utils/imageUtils";
 import "./OrderHistoryPage.css";
 
 const OrderHistoryPage = () => {
@@ -134,7 +135,7 @@ const OrderHistoryPage = () => {
                 {order.items.slice(0, 3).map((item, index) => (
                   <div className="order-history-item-preview" key={index}>
                     <div className="order-history-item-image">
-                      <img src={item.image} alt={item.name} />
+                      <img src={getImageUrl(item.image)} alt={item.name} />
                     </div>
                     <div className="order-history-item-info">
                       <p className="order-history-item-name">{item.name}</p>
