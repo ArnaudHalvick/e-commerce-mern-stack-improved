@@ -15,6 +15,7 @@ const AppError = require("./utils/errors/AppError");
 const globalErrorHandler = require("./utils/errors/errorHandler");
 const logger = require("./utils/common/logger");
 const { sanitizeParams } = require("./middleware/validation");
+const { apiLimiter } = require("./middleware/rateLimit");
 
 // Import routes
 const productRoutes = require("./routes/productRoutes");
@@ -69,6 +70,9 @@ app.use(xssClean()); // Sanitize data against XSS attacks
 
 // Apply global request sanitization
 app.use(sanitizeParams); // Sanitize URL parameters for all routes
+
+// Apply a global rate limiter to all requests
+app.use("/api/", apiLimiter);
 
 // Connect to database
 connectDB();

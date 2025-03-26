@@ -291,6 +291,63 @@ const sendPasswordChangeNotification = async (user) => {
   }
 };
 
+/**
+ * Handle failed login attempt and account locking
+ * @param {Object} user - User document
+ * @returns {Object} - Result with account status
+ */
+const handleFailedLogin = async (user) => {
+  // Maximum failed attempts before locking
+  const MAX_ATTEMPTS = 5;
+  // Lock duration in milliseconds (15 minutes)
+  const LOCK_TIME = 15 * 60 * 1000;
+
+  // Increment login attempts
+  user.loginAttempts += 1;
+
+  // Lock account if attempts exceed threshold
+  if (user.loginAttempts >= MAX_ATTEMPTS) {
+    user.lockUntil = new Date(Date.now() + LOCK_TIME);
+    logger.warn(
+      `Account locked for user: ${user._id} after ${MAX_ATTEMPTS} failed attempts`
+    );
+  }
+
+  await user.save({ validateBeforeSave: false });
+
+  // Check if account is locked and return appropriate message
+  if (user.lockUntil && user.lockUntil > Date.now()) {
+    const timeRemaining = Math.ceil((user.lockUntil - Date.now()) / 60000); // in minutes
+    return {
+      success: false,
+      isLocked: true,
+      error: new AppError(
+        `Account temporarily locked. Please try again in ${timeRemaining} minutes`,
+        403
+      ),
+    };
+  }
+
+  return {
+    success: false,
+    isLocked: false,
+    error: new AppError("Invalid email or password", 401),
+  };
+};
+
+/**
+ * Reset failed login attempts if login is successful
+ * @param {Object} user - User document
+ */
+const resetLoginAttempts = async (user) => {
+  if (user.loginAttempts > 0 || user.lockUntil) {
+    user.loginAttempts = 0;
+    user.lockUntil = null;
+    await user.save({ validateBeforeSave: false });
+    logger.info(`Reset login attempts for user: ${user._id}`);
+  }
+};
+
 module.exports = {
   sendTokens,
   extractAndVerifyToken,
@@ -298,4 +355,6 @@ module.exports = {
   sendVerificationEmail,
   sendPasswordResetEmail,
   sendPasswordChangeNotification,
+  handleFailedLogin,
+  resetLoginAttempts,
 };

@@ -98,6 +98,14 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  loginAttempts: {
+    type: Number,
+    default: 0,
+  },
+  lockUntil: {
+    type: Date,
+    default: null,
+  },
   phone: {
     type: String,
     validate: {

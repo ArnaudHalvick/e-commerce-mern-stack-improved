@@ -11,6 +11,8 @@ const {
   sendVerificationEmail,
   sendPasswordResetEmail,
   sendPasswordChangeNotification,
+  handleFailedLogin,
+  resetLoginAttempts,
 } = require("../services/authService");
 
 /**
@@ -73,10 +75,15 @@ const loginUser = catchAsync(async (req, res, next) => {
     return next(new AppError("Invalid email or password", 401));
   }
 
-  // Check if password is correct
-  const isPasswordValid = await user.comparePassword(password);
-  if (!isPasswordValid) {
-    return next(new AppError("Invalid email or password", 401));
+  // Check if account is locked
+  if (user.lockUntil && user.lockUntil > Date.now()) {
+    const timeRemaining = Math.ceil((user.lockUntil - Date.now()) / 60000); // in minutes
+    return next(
+      new AppError(
+        `Account temporarily locked. Please try again in ${timeRemaining} minutes`,
+        403
+      )
+    );
   }
 
   // Check if account is disabled
@@ -88,6 +95,17 @@ const loginUser = catchAsync(async (req, res, next) => {
       )
     );
   }
+
+  // Check if password is correct
+  const isPasswordValid = await user.comparePassword(password);
+  if (!isPasswordValid) {
+    // Handle failed login attempt
+    const failedLoginResult = await handleFailedLogin(user);
+    return next(failedLoginResult.error);
+  }
+
+  // Reset login attempts on successful login
+  await resetLoginAttempts(user);
 
   // Send response with tokens
   sendTokens(user, 200, res);

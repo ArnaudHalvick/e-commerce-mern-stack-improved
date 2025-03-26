@@ -15,12 +15,18 @@ const {
   validatePasswordChange,
   validateProfileUpdate,
   validatePasswordReset,
-  sanitizeRequest,
 } = require("../validation");
+const { sanitizeRequest, sanitizeFields } = require("../middleware/sanitizers");
+const {
+  loginLimiter,
+  accountCreationLimiter,
+  passwordResetLimiter,
+} = require("../middleware/rateLimit");
 
 // Public routes - Authentication
 router.post(
   "/signup",
+  accountCreationLimiter,
   sanitizeRequest,
   isNotAuthenticated,
   validateRegistration,
@@ -28,6 +34,7 @@ router.post(
 );
 router.post(
   "/login",
+  loginLimiter,
   sanitizeRequest,
   isNotAuthenticated,
   validateLogin,
@@ -41,7 +48,12 @@ router.post(
 );
 router.get("/verify-email/:token", authController.verifyEmail);
 router.get("/verify-email", authController.verifyEmail);
-router.post("/forgot-password", sanitizeRequest, authController.forgotPassword);
+router.post(
+  "/forgot-password",
+  passwordResetLimiter,
+  sanitizeRequest,
+  authController.forgotPassword
+);
 router.post(
   "/reset-password",
   sanitizeRequest,
