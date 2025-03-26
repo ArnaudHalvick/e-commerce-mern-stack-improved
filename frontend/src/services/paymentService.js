@@ -1,8 +1,6 @@
 import axios from "axios";
 import { getAuthHeaders } from "./authService"; // Assuming you have an auth service
-
-// Fix the API URL - don't append /api in the middle, it should be at the end of your base URL
-const API_URL = `${process.env.REACT_APP_API_URL}api`;
+import { getApiUrl } from "../utils/apiUtils"; // Import utility function
 
 /**
  * Create a payment intent with the current cart and shipping info
@@ -12,7 +10,7 @@ const API_URL = `${process.env.REACT_APP_API_URL}api`;
 export const createPaymentIntent = async (shippingInfo) => {
   try {
     const response = await axios.post(
-      `${API_URL}/payment/create-payment-intent`,
+      getApiUrl("payment/create-payment-intent"),
       { shippingInfo },
       { headers: await getAuthHeaders() }
     );
@@ -33,7 +31,7 @@ export const createPaymentIntent = async (shippingInfo) => {
 export const confirmOrder = async (paymentIntentId, shippingInfo) => {
   try {
     const response = await axios.post(
-      `${API_URL}/payment/confirm-order`,
+      getApiUrl("payment/confirm-order"),
       { paymentIntentId, shippingInfo },
       { headers: await getAuthHeaders() }
     );
@@ -51,7 +49,7 @@ export const confirmOrder = async (paymentIntentId, shippingInfo) => {
  */
 export const getMyOrders = async () => {
   try {
-    const response = await axios.get(`${API_URL}/payment/my-orders`, {
+    const response = await axios.get(getApiUrl("payment/my-orders"), {
       headers: await getAuthHeaders(),
     });
 
@@ -69,7 +67,7 @@ export const getMyOrders = async () => {
  */
 export const getOrderById = async (orderId) => {
   try {
-    const response = await axios.get(`${API_URL}/payment/order/${orderId}`, {
+    const response = await axios.get(getApiUrl(`payment/order/${orderId}`), {
       headers: await getAuthHeaders(),
     });
 

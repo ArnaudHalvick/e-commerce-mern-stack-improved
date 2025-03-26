@@ -213,7 +213,7 @@ const OrderConfirmationPage = () => {
         <Link to="/account/orders" className="button secondary">
           View All Orders
         </Link>
-        <Link to="/shop" className="button primary">
+        <Link to="/offers" className="button primary">
           Continue Shopping
         </Link>
       </div>
