@@ -268,7 +268,7 @@ const processWebhook = catchAsync(async (req, res, next) => {
     );
   } catch (err) {
     logger.error(`Webhook signature verification failed: ${err.message}`);
-    return res.status(400).send(`Webhook Error: ${err.message}`);
+    return next(new AppError(`Webhook Error: ${err.message}`, 400));
   }
 
   // Handle different event types

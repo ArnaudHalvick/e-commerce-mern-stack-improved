@@ -4,6 +4,7 @@ const {
   extractAndVerifyToken,
   extractAndVerifyRefreshToken,
 } = require("../services/authService");
+const AppError = require("../utils/errors/AppError");
 
 /**
  * Middleware to ensure user is authenticated
@@ -12,10 +13,12 @@ const isAuthenticated = async (req, res, next) => {
   const result = await extractAndVerifyToken(req);
 
   if (!result.success) {
-    return res.status(401).json({
-      success: false,
-      message: result.message,
-    });
+    return next(
+      AppError.createAndLogError(result.message, 401, {
+        path: req.originalUrl,
+        method: req.method,
+      })
+    );
   }
 
   req.user = result.user;
@@ -34,10 +37,12 @@ const isNotAuthenticated = async (req, res, next) => {
   }
 
   // If we get here, user is authenticated
-  return res.status(403).json({
-    success: false,
-    message: "You are already logged in",
-  });
+  return next(
+    AppError.createAndLogError("You are already logged in", 403, {
+      userId: result.user._id,
+      path: req.originalUrl,
+    })
+  );
 };
 
 /**
@@ -47,10 +52,12 @@ const verifyRefreshToken = async (req, res, next) => {
   const result = await extractAndVerifyRefreshToken(req);
 
   if (!result.success) {
-    return res.status(401).json({
-      success: false,
-      message: result.message,
-    });
+    return next(
+      AppError.createAndLogError(result.message, 401, {
+        path: req.originalUrl,
+        cookies: !!req.cookies.refreshToken,
+      })
+    );
   }
 
   req.user = result.user;

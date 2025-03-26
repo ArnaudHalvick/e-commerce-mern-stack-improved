@@ -10,6 +10,7 @@ This document provides a comprehensive guide to the error handling system implem
 4. [Using the Error Handling System](#using-the-error-handling-system)
 5. [Environment-Specific Behavior](#environment-specific-behavior)
 6. [Logging Configuration](#logging-configuration)
+7. [Standardized Error Creation](#standardized-error-creation)
 
 ## Core Components
 
@@ -23,12 +24,32 @@ The `AppError` class extends the built-in `Error` object and adds properties for
 
 ```javascript
 class AppError extends Error {
-  constructor(message, statusCode) {
+  constructor(message, statusCode, errors = null) {
     super(message);
     this.statusCode = statusCode;
     this.status = `${statusCode}`.startsWith("4") ? "fail" : "error";
     this.isOperational = true;
+
+    // Add validation errors if provided
+    if (errors) {
+      this.errors = errors;
+    }
+
     Error.captureStackTrace(this, this.constructor);
+  }
+
+  // Standardized error creation and logging
+  static createAndLogError(message, statusCode, context = {}, errors = null) {
+    // Log based on status code severity
+    if (statusCode >= 500) {
+      logger.error(message, { ...context, statusCode });
+    } else if (statusCode >= 400) {
+      logger.warn(message, { ...context, statusCode });
+    } else {
+      logger.info(message, { ...context, statusCode });
+    }
+
+    return new AppError(message, statusCode, errors);
   }
 }
 ```
@@ -38,6 +59,7 @@ Key properties:
 - `statusCode`: HTTP status code for the error (e.g., 404, 500)
 - `status`: Either 'fail' (4XX errors) or 'error' (5XX errors)
 - `isOperational`: Flag indicating whether this is a known operational error or an unexpected programming error
+- `errors`: Optional validation errors object for detailed field validations
 
 ### 2. Async Error Wrapper (`catchAsync`)
 
@@ -162,6 +184,8 @@ For programming errors:
 
 ### Creating Operational Errors
 
+Standard approach:
+
 ```javascript
 // In synchronous code
 if (!user) {
@@ -174,6 +198,32 @@ if (!product) {
 }
 ```
 
+Recommended approach with automatic logging:
+
+```javascript
+// In synchronous code with context for better debugging
+if (!user) {
+  return next(
+    AppError.createAndLogError("User not found", 404, {
+      userId: req.params.id,
+      requestedBy: req.user?.id,
+    })
+  );
+}
+
+// For validation errors
+if (!isValid) {
+  return next(
+    AppError.createAndLogError(
+      "Validation failed",
+      400,
+      { providedFields: Object.keys(req.body) },
+      { field1: "Error message", field2: "Another error message" }
+    )
+  );
+}
+```
+
 ### Wrapping Async Controller Functions
 
 ```javascript
@@ -181,7 +231,11 @@ const getUser = catchAsync(async (req, res, next) => {
   const user = await User.findById(req.params.id);
 
   if (!user) {
-    return next(new AppError("User not found", 404));
+    return next(
+      AppError.createAndLogError("User not found", 404, {
+        userId: req.params.id,
+      })
+    );
   }
 
   res.status(200).json({
@@ -196,7 +250,13 @@ const getUser = catchAsync(async (req, res, next) => {
 ```javascript
 // At the end of your routes definitions in app.js
 app.all("*", (req, res, next) => {
-  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+  next(
+    AppError.createAndLogError(
+      `Can't find ${req.originalUrl} on this server!`,
+      404,
+      { method: req.method, originalUrl: req.originalUrl }
+    )
+  );
 });
 ```
 
@@ -240,3 +300,40 @@ HTTP requests are logged using Morgan middleware:
 
 - Development: `dev` format (colored, concise)
 - Production: `combined` format (Apache common log format)
+
+## Standardized Error Creation
+
+For consistent error handling and logging, use the `AppError.createAndLogError` method:
+
+```javascript
+// Basic error with appropriate logging
+AppError.createAndLogError("Resource not found", 404, { resourceId: id });
+
+// Error with detailed context
+AppError.createAndLogError("Authorization failed", 403, {
+  userId: req.user.id,
+  resourceId: req.params.id,
+  action: "delete",
+  userRole: req.user.role,
+});
+
+// Validation error with field errors
+AppError.createAndLogError(
+  "Validation failed",
+  400,
+  { formData: req.body },
+  {
+    name: "Name is required",
+    email: "Email format is invalid",
+  }
+);
+```
+
+Benefits of this approach:
+
+1. **Automatic logging** with appropriate severity level based on status code
+2. **Contextual information** in logs for easier debugging and monitoring
+3. **Consistent error format** across the application
+4. **Reduced boilerplate code** by combining error creation and logging
+
+When migrating existing error handling code, gradually replace direct `AppError` instantiation with the `createAndLogError` method to improve logging consistency and provide better debugging information.

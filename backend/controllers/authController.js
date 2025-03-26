@@ -23,7 +23,17 @@ const registerUser = catchAsync(async (req, res, next) => {
 
   if (!username || !email || !password) {
     return next(
-      new AppError("Please provide username, email and password", 400)
+      AppError.createAndLogError(
+        "Please provide username, email and password",
+        400,
+        {
+          provided: {
+            username: !!username,
+            email: !!email,
+            password: !!password,
+          },
+        }
+      )
     );
   }
 
@@ -32,7 +42,12 @@ const registerUser = catchAsync(async (req, res, next) => {
   const existingUser = await User.findOne({ normalizedEmail });
 
   if (existingUser) {
-    return next(new AppError("User with this email already exists", 400));
+    return next(
+      AppError.createAndLogError("User with this email already exists", 400, {
+        email,
+        normalizedEmail,
+      })
+    );
   }
 
   // Create new user

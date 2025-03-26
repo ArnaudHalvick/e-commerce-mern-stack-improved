@@ -200,8 +200,12 @@ UserSchema.pre("save", async function (next) {
     try {
       this.password = await bcrypt.hash(this.password, 12);
     } catch (error) {
-      console.error("Error hashing password:", error);
-      return next(error);
+      const enhancedError = new Error(
+        `Password hashing failed: ${error.message}`
+      );
+      enhancedError.name = "PasswordHashingError";
+      enhancedError.originalError = error;
+      return next(enhancedError);
     }
   }
 

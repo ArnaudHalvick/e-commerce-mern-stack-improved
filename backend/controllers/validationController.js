@@ -10,7 +10,7 @@
  * 3. Dynamic updates - changing rules in the backend automatically updates frontend validation
  */
 
-const asyncHandler = require("express-async-handler");
+const catchAsync = require("../utils/common/catchAsync");
 const User = require("../models/User");
 const {
   getUserProfileValidation,
@@ -35,16 +35,11 @@ const logger = require("../utils/common/logger");
  *   - phone (pattern)
  *   - address fields (street, city, state, zipCode, country)
  */
-const getProfileValidationRules = asyncHandler(async (req, res) => {
-  try {
-    const validationRules = getUserProfileValidation();
-    logger.info(`User ${req.user.id} requested profile validation rules`);
-    logger.debug("Returning validation rules:", validationRules);
-    res.json(validationRules);
-  } catch (error) {
-    logger.error("Error getting profile validation rules:", { error });
-    throw error;
-  }
+const getProfileValidationRules = catchAsync(async (req, res, next) => {
+  const validationRules = getUserProfileValidation();
+  logger.info(`User ${req.user.id} requested profile validation rules`);
+  logger.debug("Returning validation rules:", validationRules);
+  res.json(validationRules);
 });
 
 /**
@@ -61,15 +56,10 @@ const getProfileValidationRules = asyncHandler(async (req, res) => {
  *   - newPassword (with complexity requirements)
  *   - confirmPassword
  */
-const getPasswordValidationRules = asyncHandler(async (req, res) => {
-  try {
-    const validationRules = getPasswordChangeValidation();
-    logger.info(`User ${req.user.id} requested password validation rules`);
-    res.json(validationRules);
-  } catch (error) {
-    logger.error("Error getting password validation rules:", { error });
-    throw error;
-  }
+const getPasswordValidationRules = catchAsync(async (req, res, next) => {
+  const validationRules = getPasswordChangeValidation();
+  logger.info(`User ${req.user.id} requested password validation rules`);
+  res.json(validationRules);
 });
 
 /**
@@ -84,35 +74,30 @@ const getPasswordValidationRules = asyncHandler(async (req, res) => {
  * @access Public
  * @returns {Object} Validation rules for registration fields
  */
-const getRegistrationValidationRules = asyncHandler(async (req, res) => {
-  try {
-    // Extract validation rules from User model
-    const modelValidation = getModelValidation(User, [
-      "name",
-      "email",
-      "password",
-    ]);
+const getRegistrationValidationRules = catchAsync(async (req, res, next) => {
+  // Extract validation rules from User model
+  const modelValidation = getModelValidation(User, [
+    "name",
+    "email",
+    "password",
+  ]);
 
-    // Add password confirmation validation (this cannot be extracted from model)
-    const validationRules = {
-      ...modelValidation,
-      passwordConfirm: {
-        required: true,
-        requiredMessage: "Please confirm your password",
-        message: "Passwords must match",
-      },
-    };
+  // Add password confirmation validation (this cannot be extracted from model)
+  const validationRules = {
+    ...modelValidation,
+    passwordConfirm: {
+      required: true,
+      requiredMessage: "Please confirm your password",
+      message: "Passwords must match",
+    },
+  };
 
-    // Rename name to username for frontend consistency
-    validationRules.username = validationRules.name;
-    delete validationRules.name;
+  // Rename name to username for frontend consistency
+  validationRules.username = validationRules.name;
+  delete validationRules.name;
 
-    logger.info(`Registration validation rules requested`);
-    res.json(validationRules);
-  } catch (error) {
-    logger.error("Error getting registration validation rules:", { error });
-    throw error;
-  }
+  logger.info(`Registration validation rules requested`);
+  res.json(validationRules);
 });
 
 /**
@@ -129,15 +114,10 @@ const getRegistrationValidationRules = asyncHandler(async (req, res) => {
  *   - password (with complexity requirements)
  *   - passwordConfirm
  */
-const getPasswordResetValidationRules = asyncHandler(async (req, res) => {
-  try {
-    const validationRules = getPasswordResetValidation();
-    logger.info(`Password reset validation rules requested`);
-    res.json(validationRules);
-  } catch (error) {
-    logger.error("Error getting password reset validation rules:", { error });
-    throw error;
-  }
+const getPasswordResetValidationRules = catchAsync(async (req, res, next) => {
+  const validationRules = getPasswordResetValidation();
+  logger.info(`Password reset validation rules requested`);
+  res.json(validationRules);
 });
 
 module.exports = {

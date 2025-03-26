@@ -33,10 +33,19 @@ const sanitizeParams = (req, res, next) => {
 const validationErrorHandler = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
+    const firstError = errors.array()[0];
+
     return next(
-      new AppError(errors.array()[0].msg, 400, {
-        errors: errors.array(),
-      })
+      AppError.createAndLogError(
+        firstError.msg,
+        400,
+        {
+          method: req.method,
+          path: req.originalUrl,
+          body: req.body,
+        },
+        errors.array()
+      )
     );
   }
   next();

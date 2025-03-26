@@ -24,7 +24,15 @@ const createRateLimiter = (maxRequests, windowMs, message) => {
       message: message || "Too many requests, please try again later.",
     },
     handler: (req, res, next, options) => {
-      next(new AppError(options.message.message, 429));
+      next(
+        AppError.createAndLogError(options.message.message, 429, {
+          ip: req.ip,
+          path: req.originalUrl,
+          method: req.method,
+          maxRequests,
+          windowMs,
+        })
+      );
     },
     standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
     legacyHeaders: false, // Disable the `X-RateLimit-*` headers
@@ -36,7 +44,7 @@ const createRateLimiter = (maxRequests, windowMs, message) => {
  * Limits to 5 login attempts per 15 minutes window from the same IP
  */
 const loginLimiter = createRateLimiter(
-  5, // 5 attempts
+  10, // 5 attempts
   15 * 60 * 1000, // 15 minutes
   "Too many login attempts. Please try again after 15 minutes."
 );

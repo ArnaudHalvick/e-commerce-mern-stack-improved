@@ -126,7 +126,11 @@ const addProduct = catchAsync(async (req, res, next) => {
   const new_price = req.body.new_price || 0;
 
   if (!req.body.name) {
-    return next(new AppError("Product name is required", 400));
+    return next(
+      AppError.createAndLogError("Product name is required", 400, {
+        providedFields: Object.keys(req.body),
+      })
+    );
   }
 
   const product = new Product({
@@ -161,7 +165,11 @@ const removeProduct = catchAsync(async (req, res, next) => {
   const product = await Product.findById(req.params.id);
 
   if (!product) {
-    return next(new AppError("Product not found", 404));
+    return next(
+      AppError.createAndLogError("Product not found", 404, {
+        productId: req.params.id,
+      })
+    );
   }
 
   await Product.findByIdAndDelete(req.params.id);
