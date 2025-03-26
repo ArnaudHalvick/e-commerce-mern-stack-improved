@@ -1,3 +1,4 @@
+/* Checkout Page Specific Styles */
 .checkout-page {
   max-width: 1200px;
   margin: 0 auto;
@@ -26,8 +27,8 @@
   flex-wrap: wrap;
 }
 
-.shipping-form-container,
-.payment-form-container {
+.checkout-shipping-container,
+.checkout-payment-container {
   flex: 1;
   min-width: 300px;
   background-color: #fff;
@@ -36,7 +37,7 @@
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
 }
 
-.section-title {
+.checkout-section-title {
   font-size: 1.5rem;
   color: #333;
   margin-bottom: 1.5rem;
@@ -44,40 +45,40 @@
   border-bottom: 1px solid #f0f0f0;
 }
 
-.shipping-form,
-.payment-form {
+.checkout-shipping-form,
+.checkout-payment-form {
   width: 100%;
 }
 
-.form-group {
+.checkout-form-group {
   margin-bottom: 1.5rem;
 }
 
-.form-row {
+.checkout-form-row {
   display: flex;
   gap: 1rem;
   margin-bottom: 1.5rem;
 }
 
-.form-row .form-group {
+.checkout-form-row .checkout-form-group {
   flex: 1;
   margin-bottom: 0;
 }
 
 /* Special style for the card row */
-.form-row.card-row {
+.checkout-form-row.checkout-card-row {
   margin-bottom: 0.5rem;
 }
 
-.form-label {
+.checkout-form-label {
   display: block;
   margin-bottom: 0.5rem;
   font-weight: 500;
   color: #444;
 }
 
-.form-input,
-.form-select {
+.checkout-form-input,
+.checkout-form-select {
   width: 100%;
   padding: 0.8rem 1rem;
   border: 1px solid #e0e0e0;
@@ -88,7 +89,7 @@
   height: 48px;
 }
 
-.form-select {
+.checkout-form-select {
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -99,14 +100,14 @@
   padding-right: 2.5rem;
 }
 
-.form-input:focus,
-.form-select:focus {
+.checkout-form-input:focus,
+.checkout-form-select:focus {
   border-color: #ff4141;
   outline: none;
   box-shadow: 0 0 0 2px rgba(255, 65, 65, 0.1);
 }
 
-.card-element-container {
+.checkout-card-container {
   padding: 1rem;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
@@ -117,18 +118,18 @@
   transition: border-color 0.3s ease;
 }
 
-.card-element-container:focus-within {
+.checkout-card-container:focus-within {
   border-color: #ff4141;
   box-shadow: 0 0 0 2px rgba(255, 65, 65, 0.1);
 }
 
-.stripe-element {
+.checkout-stripe-element {
   width: 100%;
   font-size: 16px;
   color: #424770;
 }
 
-/* Stripe Element specific styles */
+/* Stripe Element specific styles - we can't change these class names */
 .StripeElement {
   width: 100%;
 }
@@ -151,55 +152,32 @@
   color: #9e2146;
 }
 
-.pay-button {
-  width: 100%;
-  background-color: #ff4141;
-  color: white;
-  padding: 1rem;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin-top: 1.5rem;
-}
-
-.pay-button:hover:not(:disabled) {
-  background-color: #e63535;
-}
-
-.pay-button:disabled {
-  background-color: #cccccc;
-  cursor: not-allowed;
-}
-
-.order-summary {
+.checkout-order-summary {
   background-color: #f9f9f9;
   border-radius: 8px;
   padding: 1.2rem;
   margin-bottom: 1.5rem;
 }
 
-.summary-title {
+.checkout-summary-title {
   font-size: 1.2rem;
   margin-bottom: 1rem;
   color: #333;
 }
 
-.order-summary-item {
+.checkout-summary-item {
   display: flex;
   justify-content: space-between;
   margin-bottom: 0.8rem;
   color: #555;
 }
 
-.item-label,
-.item-value {
+.checkout-item-label,
+.checkout-item-value {
   display: inline-block;
 }
 
-.order-summary-item.total {
+.checkout-summary-item.checkout-total {
   font-weight: 700;
   color: #333;
   font-size: 1.1rem;
@@ -208,8 +186,8 @@
   margin-top: 0.5rem;
 }
 
-.order-summary-loading,
-.order-summary-error {
+.checkout-summary-loading,
+.checkout-summary-error {
   background-color: #f9f9f9;
   border-radius: 8px;
   padding: 1.2rem;
@@ -218,13 +196,13 @@
   color: #555;
 }
 
-.order-summary-error {
+.checkout-summary-error {
   color: #c62828;
   background-color: #ffebee;
   border-left: 4px solid #c62828;
 }
 
-.test-card-info {
+.checkout-test-card-info {
   margin-top: 2rem;
   padding: 1rem;
   background-color: #f5f5f5;
@@ -232,13 +210,13 @@
   border-left: 4px solid #2196f3;
 }
 
-.test-card-title {
+.checkout-test-card-title {
   font-size: 1rem;
   color: #333;
   margin-bottom: 0.8rem;
 }
 
-.test-card-detail {
+.checkout-test-card-detail {
   margin: 0.3rem 0;
   color: #555;
   font-size: 0.9rem;
@@ -250,9 +228,9 @@
     flex-direction: column;
   }
 
-  .form-row {
+  .checkout-form-row {
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1rem;
   }
 
   .checkout-page {
@@ -260,70 +238,62 @@
   }
 
   .checkout-title {
-    font-size: 1.6rem;
+    font-size: 1.8rem;
   }
 
-  .section-title {
+  .checkout-section-title {
     font-size: 1.3rem;
   }
 
-  /* Keep card elements side by side even on smaller screens */
-  .form-row.card-row {
-    flex-direction: row;
+  .checkout-form-row.checkout-card-row {
+    flex-direction: column;
   }
 }
 
 @media (max-width: 480px) {
   .checkout-title {
-    font-size: 1.4rem;
+    font-size: 1.5rem;
     margin-bottom: 1.5rem;
   }
 
-  .shipping-form-container,
-  .payment-form-container {
+  .checkout-shipping-container,
+  .checkout-payment-container {
     padding: 1rem;
   }
 
-  .section-title {
+  .checkout-section-title {
     font-size: 1.2rem;
     margin-bottom: 1rem;
   }
 
-  .form-input,
-  .form-select,
-  .card-element-container {
-    font-size: 0.9rem;
+  .checkout-form-input,
+  .checkout-form-select {
     padding: 0.7rem;
+    font-size: 0.9rem;
+    height: 42px;
   }
 
-  .form-label {
+  .checkout-form-label {
     font-size: 0.9rem;
   }
 
-  .order-summary-item {
+  .checkout-summary-item {
     font-size: 0.9rem;
   }
 
-  .order-summary-item.total {
+  .checkout-summary-item.checkout-total {
     font-size: 1rem;
   }
 
-  .pay-button {
+  .checkout-test-card-title {
     font-size: 0.9rem;
-    padding: 0.8rem;
   }
 
-  .test-card-title {
-    font-size: 1rem;
-  }
-
-  .test-card-detail {
+  .checkout-test-card-detail {
     font-size: 0.8rem;
   }
 
-  /* For very small screens, stack the card fields */
-  .form-row.card-row {
-    flex-direction: column;
-    gap: 1rem;
+  .checkout-form-row.checkout-card-row {
+    margin-bottom: 0.3rem;
   }
 }

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useLocation, Link } from "react-router-dom";
 import { getOrderById } from "../../services/paymentService";
+import Spinner from "../../components/ui/Spinner";
+import FormSubmitButton from "../../components/form/FormSubmitButton";
 import "./OrderConfirmationPage.css";
 
 const OrderConfirmationPage = () => {
@@ -40,9 +42,8 @@ const OrderConfirmationPage = () => {
   if (loading) {
     return (
       <div className="order-confirmation-page">
-        <div className="loading-spinner">
-          <div className="spinner"></div>
-          <p>Loading order details...</p>
+        <div className="order-confirmation-loading-spinner">
+          <Spinner message="Loading order details..." size="large" />
         </div>
       </div>
     );
@@ -51,11 +52,16 @@ const OrderConfirmationPage = () => {
   if (error) {
     return (
       <div className="order-confirmation-page">
-        <div className="error-message">
+        <div className="order-confirmation-error-message">
           <h2>Error</h2>
           <p>{error}</p>
-          <Link to="/account/orders" className="button">
-            View All Orders
+          <Link to="/account/orders">
+            <FormSubmitButton
+              text="View All Orders"
+              type="button"
+              onClick={() => {}}
+              variant="secondary"
+            />
           </Link>
         </div>
       </div>
@@ -65,11 +71,16 @@ const OrderConfirmationPage = () => {
   if (!order) {
     return (
       <div className="order-confirmation-page">
-        <div className="error-message">
+        <div className="order-confirmation-error-message">
           <h2>Order Not Found</h2>
           <p>The order you're looking for could not be found.</p>
-          <Link to="/account/orders" className="button">
-            View All Orders
+          <Link to="/account/orders">
+            <FormSubmitButton
+              text="View All Orders"
+              type="button"
+              onClick={() => {}}
+              variant="secondary"
+            />
           </Link>
         </div>
       </div>
@@ -84,7 +95,7 @@ const OrderConfirmationPage = () => {
 
   return (
     <div className="order-confirmation-page">
-      <div className="success-icon">
+      <div className="order-confirmation-success-icon">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -95,35 +106,37 @@ const OrderConfirmationPage = () => {
       </div>
 
       <h1>Thank You For Your Order!</h1>
-      <p className="order-id">Order #{order._id}</p>
-      <p className="order-date">Placed on {formatDate(order.createdAt)}</p>
+      <p className="order-confirmation-id">Order #{order._id}</p>
+      <p className="order-confirmation-date">
+        Placed on {formatDate(order.createdAt)}
+      </p>
 
-      <div className="order-details-container">
-        <div className="order-details-section">
+      <div className="order-confirmation-details-container">
+        <div className="order-confirmation-section">
           <h2>Order Summary</h2>
-          <div className="order-summary">
-            <div className="summary-row">
+          <div className="order-confirmation-summary">
+            <div className="order-confirmation-summary-row">
               <span>Items Total:</span>
               <span>${order.itemsPrice.toFixed(2)}</span>
             </div>
-            <div className="summary-row">
+            <div className="order-confirmation-summary-row">
               <span>Shipping:</span>
               <span>${order.shippingAmount.toFixed(2)}</span>
             </div>
-            <div className="summary-row">
+            <div className="order-confirmation-summary-row">
               <span>Tax:</span>
               <span>${order.taxAmount.toFixed(2)}</span>
             </div>
-            <div className="summary-row total">
+            <div className="order-confirmation-summary-row order-confirmation-total">
               <span>Total:</span>
               <span>${order.totalAmount.toFixed(2)}</span>
             </div>
           </div>
         </div>
 
-        <div className="order-details-section">
+        <div className="order-confirmation-section">
           <h2>Shipping Information</h2>
-          <div className="shipping-info">
+          <div className="order-confirmation-shipping-info">
             <p>{order.shippingInfo.address}</p>
             <p>
               {order.shippingInfo.city}, {order.shippingInfo.state}{" "}
@@ -134,16 +147,16 @@ const OrderConfirmationPage = () => {
           </div>
         </div>
 
-        <div className="order-details-section">
+        <div className="order-confirmation-section">
           <h2>Payment Information</h2>
-          <div className="payment-info">
-            <div className="payment-row">
+          <div className="order-confirmation-payment-info">
+            <div className="order-confirmation-payment-row">
               <span>Method:</span>
               <span>Credit Card ({order.paymentInfo.paymentMethod})</span>
             </div>
-            <div className="payment-row">
+            <div className="order-confirmation-payment-row">
               <span>Status:</span>
-              <span className="payment-status success">
+              <span className="order-confirmation-payment-status order-confirmation-status-success">
                 {order.paymentInfo.status}
               </span>
             </div>
@@ -152,29 +165,34 @@ const OrderConfirmationPage = () => {
       </div>
 
       <h2>Order Items</h2>
-      <div className="order-items">
+      <div className="order-confirmation-items">
         {order.items.map((item) => (
-          <div className="order-item" key={item._id || item.productId}>
-            <div className="item-image">
+          <div
+            className="order-confirmation-item"
+            key={item._id || item.productId}
+          >
+            <div className="order-confirmation-item-image">
               <img src={item.image} alt={item.name} />
             </div>
-            <div className="item-details">
+            <div className="order-confirmation-item-details">
               <h3>{item.name}</h3>
-              <p className="item-size">Size: {item.size}</p>
-              <p className="item-quantity">Quantity: {item.quantity}</p>
+              <p className="order-confirmation-item-size">Size: {item.size}</p>
+              <p className="order-confirmation-item-quantity">
+                Quantity: {item.quantity}
+              </p>
             </div>
-            <div className="item-price">
+            <div className="order-confirmation-item-price">
               ${(item.price * item.quantity).toFixed(2)}
             </div>
           </div>
         ))}
       </div>
 
-      <div className="order-status-container">
+      <div className="order-confirmation-status-container">
         <h2>Order Status</h2>
-        <div className="order-status">
+        <div className="order-confirmation-status">
           <div
-            className={`status-step ${
+            className={`order-confirmation-status-step ${
               order.orderStatus === "Processing" ||
               order.orderStatus === "Shipped" ||
               order.orderStatus === "Delivered"
@@ -182,39 +200,49 @@ const OrderConfirmationPage = () => {
                 : ""
             }`}
           >
-            <div className="status-icon">1</div>
-            <div className="status-text">Processing</div>
+            <div className="order-confirmation-status-icon">1</div>
+            <div className="order-confirmation-status-text">Processing</div>
           </div>
-          <div className="status-line"></div>
+          <div className="order-confirmation-status-line"></div>
           <div
-            className={`status-step ${
+            className={`order-confirmation-status-step ${
               order.orderStatus === "Shipped" ||
               order.orderStatus === "Delivered"
                 ? "active"
                 : ""
             }`}
           >
-            <div className="status-icon">2</div>
-            <div className="status-text">Shipped</div>
+            <div className="order-confirmation-status-icon">2</div>
+            <div className="order-confirmation-status-text">Shipped</div>
           </div>
-          <div className="status-line"></div>
+          <div className="order-confirmation-status-line"></div>
           <div
-            className={`status-step ${
+            className={`order-confirmation-status-step ${
               order.orderStatus === "Delivered" ? "active" : ""
             }`}
           >
-            <div className="status-icon">3</div>
-            <div className="status-text">Delivered</div>
+            <div className="order-confirmation-status-icon">3</div>
+            <div className="order-confirmation-status-text">Delivered</div>
           </div>
         </div>
       </div>
 
-      <div className="actions">
-        <Link to="/account/orders" className="button secondary">
-          View All Orders
+      <div className="order-confirmation-actions">
+        <Link to="/account/orders">
+          <FormSubmitButton
+            text="View All Orders"
+            type="button"
+            onClick={() => {}}
+            variant="secondary"
+          />
         </Link>
-        <Link to="/offers" className="button primary">
-          Continue Shopping
+        <Link to="/offers">
+          <FormSubmitButton
+            text="Continue Shopping"
+            type="button"
+            onClick={() => {}}
+            variant="primary"
+          />
         </Link>
       </div>
     </div>

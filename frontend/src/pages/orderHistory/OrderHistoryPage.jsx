@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { getMyOrders } from "../../services/paymentService";
+import Spinner from "../../components/ui/Spinner";
+import FormSubmitButton from "../../components/form/FormSubmitButton";
 import "./OrderHistoryPage.css";
 
 const OrderHistoryPage = () => {
@@ -35,24 +37,23 @@ const OrderHistoryPage = () => {
   const getStatusBadgeClass = (status) => {
     switch (status) {
       case "Processing":
-        return "status-processing";
+        return "order-history-status-processing";
       case "Shipped":
-        return "status-shipped";
+        return "order-history-status-shipped";
       case "Delivered":
-        return "status-delivered";
+        return "order-history-status-delivered";
       case "Cancelled":
-        return "status-cancelled";
+        return "order-history-status-cancelled";
       default:
-        return "status-processing";
+        return "order-history-status-processing";
     }
   };
 
   if (loading) {
     return (
       <div className="order-history-page">
-        <div className="loading-spinner">
-          <div className="spinner"></div>
-          <p>Loading your orders...</p>
+        <div className="order-history-loading-spinner">
+          <Spinner message="Loading your orders..." size="large" />
         </div>
       </div>
     );
@@ -61,11 +62,16 @@ const OrderHistoryPage = () => {
   if (error) {
     return (
       <div className="order-history-page">
-        <div className="error-message">
+        <div className="order-history-error-message">
           <h2>Error</h2>
           <p>{error}</p>
-          <Link to="/" className="button">
-            Return to Home
+          <Link to="/">
+            <FormSubmitButton
+              text="Return to Home"
+              type="button"
+              onClick={() => {}}
+              variant="secondary"
+            />
           </Link>
         </div>
       </div>
@@ -77,8 +83,8 @@ const OrderHistoryPage = () => {
       <h1>Order History</h1>
 
       {orders.length === 0 ? (
-        <div className="no-orders">
-          <div className="empty-icon">
+        <div className="order-history-no-orders">
+          <div className="order-history-empty-icon">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -93,24 +99,29 @@ const OrderHistoryPage = () => {
             You haven't placed any orders yet. Start shopping to see your order
             history here.
           </p>
-          <Link to="/shop" className="button primary">
-            Start Shopping
+          <Link to="/shop">
+            <FormSubmitButton
+              text="Start Shopping"
+              type="button"
+              onClick={() => {}}
+              variant="primary"
+            />
           </Link>
         </div>
       ) : (
-        <div className="orders-container">
+        <div className="order-history-container">
           {orders.map((order) => (
-            <div className="order-card" key={order._id}>
-              <div className="order-header">
-                <div className="order-header-left">
+            <div className="order-history-card" key={order._id}>
+              <div className="order-history-header">
+                <div className="order-history-header-left">
                   <h2>Order #{order._id}</h2>
-                  <p className="order-date">
+                  <p className="order-history-date">
                     Placed on {formatDate(order.createdAt)}
                   </p>
                 </div>
-                <div className="order-header-right">
+                <div className="order-history-header-right">
                   <span
-                    className={`status-badge ${getStatusBadgeClass(
+                    className={`order-history-status-badge ${getStatusBadgeClass(
                       order.orderStatus
                     )}`}
                   >
@@ -119,15 +130,15 @@ const OrderHistoryPage = () => {
                 </div>
               </div>
 
-              <div className="order-items-preview">
+              <div className="order-history-items-preview">
                 {order.items.slice(0, 3).map((item, index) => (
-                  <div className="order-item-preview" key={index}>
-                    <div className="item-preview-image">
+                  <div className="order-history-item-preview" key={index}>
+                    <div className="order-history-item-image">
                       <img src={item.image} alt={item.name} />
                     </div>
-                    <div className="item-preview-info">
-                      <p className="item-name">{item.name}</p>
-                      <p className="item-details">
+                    <div className="order-history-item-info">
+                      <p className="order-history-item-name">{item.name}</p>
+                      <p className="order-history-item-details">
                         {item.quantity} × ${item.price.toFixed(2)}
                       </p>
                     </div>
@@ -135,24 +146,27 @@ const OrderHistoryPage = () => {
                 ))}
 
                 {order.items.length > 3 && (
-                  <div className="more-items">
+                  <div className="order-history-more-items">
                     +{order.items.length - 3} more item(s)
                   </div>
                 )}
               </div>
 
-              <div className="order-footer">
-                <div className="order-total">
+              <div className="order-history-footer">
+                <div className="order-history-total">
                   <span>Total:</span>
-                  <span className="total-price">
+                  <span className="order-history-total-price">
                     ${order.totalAmount.toFixed(2)}
                   </span>
                 </div>
-                <Link
-                  to={`/order-confirmation/${order._id}`}
-                  className="view-details-btn"
-                >
-                  View Details
+                <Link to={`/order-confirmation/${order._id}`}>
+                  <FormSubmitButton
+                    text="View Details"
+                    type="button"
+                    onClick={() => {}}
+                    variant="primary"
+                    size="small"
+                  />
                 </Link>
               </div>
             </div>

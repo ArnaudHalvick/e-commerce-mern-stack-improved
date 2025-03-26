@@ -14,6 +14,8 @@ import {
   fetchCartSummary,
 } from "../../services/paymentService";
 import { clearCart } from "../../redux/slices/cartSlice";
+import FormSubmitButton from "../../components/form/FormSubmitButton";
+import Spinner from "../../components/ui/Spinner";
 import authApi from "../../services/authApi";
 import "./CheckoutPage.css";
 
@@ -243,12 +245,12 @@ const CheckoutPage = () => {
       <h1 className="checkout-title">Checkout</h1>
       {error && <div className="checkout-error">{error}</div>}
       <div className="checkout-container">
-        <div className="shipping-form-container">
-          <h2 className="section-title">Shipping Information</h2>
-          <form className="shipping-form">
-            <div className="form-group">
-              <label htmlFor="address" className="form-label">
-                Address
+        <div className="checkout-shipping-container">
+          <h2 className="checkout-section-title">Shipping Information</h2>
+          <form className="checkout-shipping-form">
+            <div className="checkout-form-group">
+              <label htmlFor="address" className="checkout-form-label">
+                Street Address
               </label>
               <input
                 type="text"
@@ -256,15 +258,14 @@ const CheckoutPage = () => {
                 name="address"
                 value={shippingInfo.address}
                 onChange={handleShippingInfoChange}
+                className="checkout-form-input"
                 required
-                aria-label="Shipping address"
-                className="form-input"
               />
             </div>
 
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="city" className="form-label">
+            <div className="checkout-form-row">
+              <div className="checkout-form-group">
+                <label htmlFor="city" className="checkout-form-label">
                   City
                 </label>
                 <input
@@ -273,15 +274,14 @@ const CheckoutPage = () => {
                   name="city"
                   value={shippingInfo.city}
                   onChange={handleShippingInfoChange}
+                  className="checkout-form-input"
                   required
-                  aria-label="City"
-                  className="form-input"
                 />
               </div>
 
-              <div className="form-group">
-                <label htmlFor="state" className="form-label">
-                  State
+              <div className="checkout-form-group">
+                <label htmlFor="state" className="checkout-form-label">
+                  State/Province
                 </label>
                 <input
                   type="text"
@@ -289,37 +289,15 @@ const CheckoutPage = () => {
                   name="state"
                   value={shippingInfo.state}
                   onChange={handleShippingInfoChange}
+                  className="checkout-form-input"
                   required
-                  aria-label="State"
-                  className="form-input"
                 />
               </div>
             </div>
 
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="country" className="form-label">
-                  Country
-                </label>
-                <select
-                  id="country"
-                  name="country"
-                  value={shippingInfo.country}
-                  onChange={handleShippingInfoChange}
-                  required
-                  aria-label="Country"
-                  className="form-select"
-                >
-                  {COUNTRIES.map((country) => (
-                    <option key={country.code} value={country.code}>
-                      {country.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="postalCode" className="form-label">
+            <div className="checkout-form-row">
+              <div className="checkout-form-group">
+                <label htmlFor="postalCode" className="checkout-form-label">
                   Postal Code
                 </label>
                 <input
@@ -328,15 +306,34 @@ const CheckoutPage = () => {
                   name="postalCode"
                   value={shippingInfo.postalCode}
                   onChange={handleShippingInfoChange}
+                  className="checkout-form-input"
                   required
-                  aria-label="Postal code"
-                  className="form-input"
                 />
+              </div>
+
+              <div className="checkout-form-group">
+                <label htmlFor="country" className="checkout-form-label">
+                  Country
+                </label>
+                <select
+                  id="country"
+                  name="country"
+                  value={shippingInfo.country}
+                  onChange={handleShippingInfoChange}
+                  className="checkout-form-select"
+                  required
+                >
+                  {COUNTRIES.map((country) => (
+                    <option key={country.code} value={country.code}>
+                      {country.name}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
 
-            <div className="form-group">
-              <label htmlFor="phoneNumber" className="form-label">
+            <div className="checkout-form-group">
+              <label htmlFor="phoneNumber" className="checkout-form-label">
                 Phone Number
               </label>
               <input
@@ -345,116 +342,111 @@ const CheckoutPage = () => {
                 name="phoneNumber"
                 value={shippingInfo.phoneNumber}
                 onChange={handleShippingInfoChange}
+                className="checkout-form-input"
                 required
-                aria-label="Phone number"
-                className="form-input"
               />
             </div>
           </form>
         </div>
 
-        <div className="payment-form-container">
-          <h2 className="section-title">Payment Details</h2>
+        <div className="checkout-payment-container">
+          <h2 className="checkout-section-title">Payment Information</h2>
+
           {fetchingCartSummary ? (
-            <div className="order-summary-loading">
-              Loading order summary...
+            <div className="checkout-summary-loading">
+              <Spinner message="Loading cart summary..." size="small" />
             </div>
           ) : cartSummary ? (
-            <div className="order-summary">
-              <h3 className="summary-title">Order Summary</h3>
-              <div className="order-summary-item">
-                <span className="item-label">Subtotal:</span>
-                <span className="item-value">
+            <div className="checkout-order-summary">
+              <h3 className="checkout-summary-title">Order Summary</h3>
+              <div className="checkout-summary-item">
+                <span className="checkout-item-label">Subtotal:</span>
+                <span className="checkout-item-value">
                   ${cartSummary.subtotal.toFixed(2)}
                 </span>
               </div>
-              <div className="order-summary-item">
-                <span className="item-label">Tax:</span>
-                <span className="item-value">
-                  ${cartSummary.taxAmount.toFixed(2)}
-                </span>
-              </div>
-              <div className="order-summary-item">
-                <span className="item-label">Shipping:</span>
-                <span className="item-value">
+              <div className="checkout-summary-item">
+                <span className="checkout-item-label">Shipping:</span>
+                <span className="checkout-item-value">
                   ${cartSummary.shippingAmount.toFixed(2)}
                 </span>
               </div>
-              <div className="order-summary-item total">
-                <span className="item-label">Total:</span>
-                <span className="item-value">
+              <div className="checkout-summary-item">
+                <span className="checkout-item-label">Tax:</span>
+                <span className="checkout-item-value">
+                  ${cartSummary.taxAmount.toFixed(2)}
+                </span>
+              </div>
+              <div className="checkout-summary-item checkout-total">
+                <span className="checkout-item-label">Total:</span>
+                <span className="checkout-item-value">
                   ${cartSummary.amount.toFixed(2)}
                 </span>
               </div>
             </div>
           ) : (
-            <div className="order-summary-error">
-              Unable to load order summary. Please try again.
+            <div className="checkout-summary-error">
+              Failed to load cart summary
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="payment-form">
-            <div className="form-group">
-              <label htmlFor="card-number" className="form-label">
-                Card Number
-              </label>
-              <div className="card-element-container">
-                <CardNumberElement
-                  id="card-number"
-                  options={cardElementOptions}
-                  className="stripe-element"
-                />
+          <form className="checkout-payment-form" onSubmit={handleSubmit}>
+            <div className="checkout-form-row checkout-card-row">
+              <div className="checkout-form-group">
+                <label className="checkout-form-label">Card Number</label>
+                <div className="checkout-card-container">
+                  <CardNumberElement
+                    options={cardElementOptions}
+                    className="checkout-stripe-element"
+                  />
+                </div>
               </div>
             </div>
 
-            <div className="form-row card-row">
-              <div className="form-group">
-                <label htmlFor="card-expiry" className="form-label">
-                  Expiry Date
-                </label>
-                <div className="card-element-container">
+            <div className="checkout-form-row checkout-card-row">
+              <div className="checkout-form-group">
+                <label className="checkout-form-label">Expiration Date</label>
+                <div className="checkout-card-container">
                   <CardExpiryElement
-                    id="card-expiry"
                     options={cardElementOptions}
-                    className="stripe-element"
+                    className="checkout-stripe-element"
                   />
                 </div>
               </div>
 
-              <div className="form-group">
-                <label htmlFor="card-cvc" className="form-label">
-                  CVC
-                </label>
-                <div className="card-element-container">
+              <div className="checkout-form-group">
+                <label className="checkout-form-label">CVC</label>
+                <div className="checkout-card-container">
                   <CardCvcElement
-                    id="card-cvc"
                     options={cardElementOptions}
-                    className="stripe-element"
+                    className="checkout-stripe-element"
                   />
                 </div>
               </div>
             </div>
 
-            <button
+            <FormSubmitButton
               type="submit"
-              disabled={!stripe || isLoading || !isShippingInfoValid()}
-              className="pay-button"
-            >
-              {isLoading
-                ? "Processing..."
-                : `Pay $${
-                    cartSummary ? cartSummary.amount.toFixed(2) : "0.00"
-                  }`}
-            </button>
+              disabled={!stripe || !cartSummary}
+              isLoading={isLoading}
+              loadingText="Processing payment..."
+              text={`Pay $${
+                cartSummary ? cartSummary.amount.toFixed(2) : "0.00"
+              }`}
+              size="large"
+              variant="primary"
+            />
           </form>
 
-          <div className="test-card-info">
-            <h4 className="test-card-title">Test Card Details:</h4>
-            <p className="test-card-detail">Card Number: 4242 4242 4242 4242</p>
-            <p className="test-card-detail">
-              Expiry: Any future date (e.g., 12/25)
+          <div className="checkout-test-card-info">
+            <h4 className="checkout-test-card-title">
+              Test Card Information (For Development)
+            </h4>
+            <p className="checkout-test-card-detail">
+              Card Number: 4242 4242 4242 4242
             </p>
-            <p className="test-card-detail">CVC: Any 3 digits</p>
+            <p className="checkout-test-card-detail">Expiry: Any future date</p>
+            <p className="checkout-test-card-detail">CVC: Any 3 digits</p>
           </div>
         </div>
       </div>
