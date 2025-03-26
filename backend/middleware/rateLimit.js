@@ -74,7 +74,7 @@ const passwordResetLimiter = createRateLimiter(
  * Limits to 100 requests per 15 minutes window from the same IP
  */
 const apiLimiter = createRateLimiter(
-  100, // 100 requests
+  500, // 100 requests
   15 * 60 * 1000, // 15 minutes
   "Too many requests. Please try again later."
 );
