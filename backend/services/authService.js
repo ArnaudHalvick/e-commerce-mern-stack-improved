@@ -196,17 +196,21 @@ const sendVerificationEmail = async (
     }
     await user.save({ validateBeforeSave: false });
 
-    logger.error(
-      `Failed to send verification email to ${emailTarget}: ${error.message}`,
-      { error }
+    const appError = AppError.createAndLogError(
+      "Failed to send verification email. Please try again later.",
+      500,
+      {
+        email: emailTarget,
+        userId: user._id.toString(),
+        isEmailChange,
+        error: error.message,
+        errorStack: error.stack,
+      }
     );
 
     return {
       success: false,
-      error: new AppError(
-        "Failed to send verification email. Please try again later.",
-        500
-      ),
+      error: appError,
     };
   }
 };
@@ -246,17 +250,20 @@ const sendPasswordResetEmail = async (user) => {
     user.resetPasswordExpire = undefined;
     await user.save({ validateBeforeSave: false });
 
-    logger.error(
-      `Failed to send password reset email to ${user.email}: ${error.message}`,
-      { error }
+    const appError = AppError.createAndLogError(
+      "Failed to send reset email. Please try again later.",
+      500,
+      {
+        email: user.email,
+        userId: user._id.toString(),
+        error: error.message,
+        errorStack: error.stack,
+      }
     );
 
     return {
       success: false,
-      error: new AppError(
-        "Failed to send reset email. Please try again later.",
-        500
-      ),
+      error: appError,
     };
   }
 };
@@ -277,16 +284,19 @@ const sendPasswordChangeNotification = async (user) => {
     logger.info(`Password change notification email sent to: ${user.email}`);
     return { success: true };
   } catch (error) {
-    logger.error(
-      `Failed to send password change notification to ${user.email}: ${error.message}`,
-      { error }
+    const appError = AppError.createAndLogError(
+      "Failed to send password change notification. Your password was changed successfully.",
+      500,
+      {
+        email: user.email,
+        userId: user._id.toString(),
+        error: error.message,
+      }
     );
+
     return {
       success: false,
-      error: new AppError(
-        "Failed to send password change notification. Your password was changed successfully.",
-        500
-      ),
+      error: appError,
     };
   }
 };
@@ -318,20 +328,32 @@ const handleFailedLogin = async (user) => {
   // Check if account is locked and return appropriate message
   if (user.lockUntil && user.lockUntil > Date.now()) {
     const timeRemaining = Math.ceil((user.lockUntil - Date.now()) / 60000); // in minutes
+
+    const appError = AppError.createAndLogError(
+      `Account temporarily locked. Please try again in ${timeRemaining} minutes`,
+      403,
+      {
+        userId: user._id.toString(),
+        loginAttempts: user.loginAttempts,
+        lockUntil: user.lockUntil,
+        timeRemaining,
+      }
+    );
+
     return {
       success: false,
       isLocked: true,
-      error: new AppError(
-        `Account temporarily locked. Please try again in ${timeRemaining} minutes`,
-        403
-      ),
+      error: appError,
     };
   }
 
   return {
     success: false,
     isLocked: false,
-    error: new AppError("Invalid email or password", 401),
+    error: AppError.createAndLogError("Invalid email or password", 401, {
+      userId: user._id.toString(),
+      loginAttempts: user.loginAttempts,
+    }),
   };
 };
 

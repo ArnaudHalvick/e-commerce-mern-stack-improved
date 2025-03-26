@@ -24,11 +24,24 @@ const { getModelValidation } = require("../extractors/schemaToValidation");
 const validateResults = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    // Use AppError for consistent error handling
+    const firstError = errors.array()[0];
+
+    // Use AppError.createAndLogError for consistent error handling with logging
     return next(
-      new AppError(errors.array()[0].msg, 400, {
-        errors: errors.array(),
-      })
+      AppError.createAndLogError(
+        firstError.msg,
+        400,
+        {
+          method: req.method,
+          path: req.originalUrl,
+          body: req.body,
+          userErrors: errors.array().map((err) => ({
+            param: err.param,
+            msg: err.msg,
+          })),
+        },
+        errors.array()
+      )
     );
   }
   next();

@@ -13,7 +13,10 @@ const getUserById = async (userId) => {
 
   if (!user) {
     logger.warn(`Profile request for non-existent user ID: ${userId}`);
-    return { success: false, error: new AppError("User not found", 404) };
+    return {
+      success: false,
+      error: AppError.createAndLogError("User not found", 404, { userId }),
+    };
   }
 
   logger.info(`Profile retrieved for user: ${userId}`);
@@ -41,14 +44,23 @@ const updateUserProfile = async (userId, userData) => {
     logger.warn(
       `Profile update missing required name field for user: ${userId}`
     );
-    return { success: false, error: new AppError("Name is required", 400) };
+    return {
+      success: false,
+      error: AppError.createAndLogError("Name is required", 400, {
+        userId,
+        providedFields: Object.keys(userData),
+      }),
+    };
   }
 
   const user = await User.findById(userId);
 
   if (!user) {
     logger.warn(`Profile update for non-existent user ID: ${userId}`);
-    return { success: false, error: new AppError("User not found", 404) };
+    return {
+      success: false,
+      error: AppError.createAndLogError("User not found", 404, { userId }),
+    };
   }
 
   // Update user data
@@ -100,9 +112,14 @@ const changeUserPassword = async (userId, { currentPassword, newPassword }) => {
     logger.warn(`Password change missing required fields for user: ${userId}`);
     return {
       success: false,
-      error: new AppError(
+      error: AppError.createAndLogError(
         "Current password and new password are required",
-        400
+        400,
+        {
+          userId,
+          currentPasswordProvided: !!currentPassword,
+          newPasswordProvided: !!newPassword,
+        }
       ),
     };
   }
@@ -111,7 +128,10 @@ const changeUserPassword = async (userId, { currentPassword, newPassword }) => {
 
   if (!user) {
     logger.warn(`Password change for non-existent user ID: ${userId}`);
-    return { success: false, error: new AppError("User not found", 404) };
+    return {
+      success: false,
+      error: AppError.createAndLogError("User not found", 404, { userId }),
+    };
   }
 
   // Check if current password matches
@@ -123,7 +143,9 @@ const changeUserPassword = async (userId, { currentPassword, newPassword }) => {
     );
     return {
       success: false,
-      error: new AppError("Current password is incorrect", 401),
+      error: AppError.createAndLogError("Current password is incorrect", 401, {
+        userId,
+      }),
     };
   }
 
@@ -143,7 +165,11 @@ const disableUserAccount = async (userId, { password }) => {
     logger.warn(`Account disable attempt missing password for user: ${userId}`);
     return {
       success: false,
-      error: new AppError("Password is required to disable your account", 400),
+      error: AppError.createAndLogError(
+        "Password is required to disable your account",
+        400,
+        { userId }
+      ),
     };
   }
 
@@ -151,7 +177,10 @@ const disableUserAccount = async (userId, { password }) => {
 
   if (!user) {
     logger.warn(`Account disable attempt for non-existent user ID: ${userId}`);
-    return { success: false, error: new AppError("User not found", 404) };
+    return {
+      success: false,
+      error: AppError.createAndLogError("User not found", 404, { userId }),
+    };
   }
 
   // Verify password
@@ -161,7 +190,10 @@ const disableUserAccount = async (userId, { password }) => {
     logger.warn(
       `Failed account disable attempt (incorrect password) for user: ${userId}`
     );
-    return { success: false, error: new AppError("Incorrect password", 401) };
+    return {
+      success: false,
+      error: AppError.createAndLogError("Incorrect password", 401, { userId }),
+    };
   }
 
   // Disable account
@@ -181,7 +213,9 @@ const initiateEmailChange = async (userId, { email }) => {
     logger.warn(`Email change attempt missing new email for user: ${userId}`);
     return {
       success: false,
-      error: new AppError("New email address is required", 400),
+      error: AppError.createAndLogError("New email address is required", 400, {
+        userId,
+      }),
     };
   }
 
@@ -194,7 +228,11 @@ const initiateEmailChange = async (userId, { email }) => {
     );
     return {
       success: false,
-      error: new AppError("Please enter a valid email address", 400),
+      error: AppError.createAndLogError(
+        "Please enter a valid email address",
+        400,
+        { userId, email }
+      ),
     };
   }
 
@@ -212,7 +250,11 @@ const initiateEmailChange = async (userId, { email }) => {
     );
     return {
       success: false,
-      error: new AppError("Email is already in use by another account", 400),
+      error: AppError.createAndLogError(
+        "Email is already in use by another account",
+        400,
+        { userId, email }
+      ),
     };
   }
 
@@ -220,7 +262,10 @@ const initiateEmailChange = async (userId, { email }) => {
 
   if (!user) {
     logger.warn(`Email change attempt for non-existent user ID: ${userId}`);
-    return { success: false, error: new AppError("User not found", 404) };
+    return {
+      success: false,
+      error: AppError.createAndLogError("User not found", 404, { userId }),
+    };
   }
 
   // Check if new email is different from current
@@ -228,9 +273,10 @@ const initiateEmailChange = async (userId, { email }) => {
     logger.warn(`Email change attempt with same email for user: ${userId}`);
     return {
       success: false,
-      error: new AppError(
+      error: AppError.createAndLogError(
         "New email must be different from your current email",
-        400
+        400,
+        { userId }
       ),
     };
   }
