@@ -8,6 +8,7 @@
 const { body, validationResult } = require("express-validator");
 const User = require("../../models/User");
 const { normalizeEmail } = require("../../utils/emails/emailNormalizer");
+const AppError = require("../../utils/errors/AppError");
 const {
   getUserProfileValidation,
   getPasswordChangeValidation,
@@ -23,11 +24,12 @@ const { getModelValidation } = require("../extractors/schemaToValidation");
 const validateResults = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({
-      success: false,
-      message: errors.array()[0].msg, // Return the first error message
-      errors: errors.array(),
-    });
+    // Use AppError for consistent error handling
+    return next(
+      new AppError(errors.array()[0].msg, 400, {
+        errors: errors.array(),
+      })
+    );
   }
   next();
 };

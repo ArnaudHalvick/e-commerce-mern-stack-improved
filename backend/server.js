@@ -7,10 +7,14 @@ const path = require("path");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
+const helmet = require("helmet");
+const mongoSanitize = require("express-mongo-sanitize");
+const xssClean = require("xss-clean");
 const connectDB = require("./config/db");
 const AppError = require("./utils/errors/AppError");
 const globalErrorHandler = require("./utils/errors/errorHandler");
 const logger = require("./utils/common/logger");
+const { sanitizeParams } = require("./middleware/validation");
 
 // Import routes
 const productRoutes = require("./routes/productRoutes");
@@ -54,9 +58,17 @@ app.use(
     credentials: true,
   })
 );
-app.use(express.json());
+app.use(express.json({ limit: "10kb" })); // Limit JSON body size
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+// Security middleware
+app.use(helmet()); // Set security HTTP headers
+app.use(mongoSanitize()); // Sanitize data against NoSQL injection
+app.use(xssClean()); // Sanitize data against XSS attacks
+
+// Apply global request sanitization
+app.use(sanitizeParams); // Sanitize URL parameters for all routes
 
 // Connect to database
 connectDB();

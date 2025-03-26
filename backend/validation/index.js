@@ -4,6 +4,7 @@
  * This module centralizes all validation-related functionality:
  * - Schema extraction (used for frontend validation)
  * - Express validator middleware (used for backend validation)
+ * - Request sanitization middleware
  */
 
 const extractors = require("./extractors");
@@ -26,4 +27,8 @@ module.exports = {
   validatePasswordChange: middleware.validatePasswordChange,
   validateProfileUpdate: middleware.validateProfileUpdate,
   validatePasswordReset: middleware.validatePasswordReset,
+
+  // Sanitization middleware
+  sanitizeRequest: middleware.sanitizeRequest,
+  sanitizeFields: middleware.sanitizeFields,
 };

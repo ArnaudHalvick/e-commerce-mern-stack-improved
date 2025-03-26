@@ -15,28 +15,36 @@ const {
   validatePasswordChange,
   validateProfileUpdate,
   validatePasswordReset,
+  sanitizeRequest,
 } = require("../validation");
 
 // Public routes - Authentication
 router.post(
   "/signup",
+  sanitizeRequest,
   isNotAuthenticated,
   validateRegistration,
   authController.registerUser
 );
 router.post(
   "/login",
+  sanitizeRequest,
   isNotAuthenticated,
   validateLogin,
   authController.loginUser
 );
 router.post("/refresh-token", verifyRefreshToken, authController.refreshToken);
-router.post("/request-verification", authController.requestVerification);
+router.post(
+  "/request-verification",
+  sanitizeRequest,
+  authController.requestVerification
+);
 router.get("/verify-email/:token", authController.verifyEmail);
 router.get("/verify-email", authController.verifyEmail);
-router.post("/forgot-password", authController.forgotPassword);
+router.post("/forgot-password", sanitizeRequest, authController.forgotPassword);
 router.post(
   "/reset-password",
+  sanitizeRequest,
   validatePasswordReset,
   authController.resetPassword
 );
@@ -49,23 +57,27 @@ router.get("/verify-token", isAuthenticated, authController.verifyToken);
 router.get("/me", isAuthenticated, profileController.getUserProfile);
 router.put(
   "/profile",
+  sanitizeRequest,
   isAuthenticated,
   validateProfileUpdate,
   profileController.updateProfile
 );
 router.put(
   "/change-password",
+  sanitizeRequest,
   isAuthenticated,
   validatePasswordChange,
   profileController.changePassword
 );
 router.put(
   "/disable-account",
+  sanitizeRequest,
   isAuthenticated,
   profileController.disableAccount
 );
 router.post(
   "/change-email",
+  sanitizeRequest,
   isAuthenticated,
   profileController.requestEmailChange
 );
