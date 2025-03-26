@@ -164,6 +164,13 @@ const Navbar = () => {
                   My Profile
                 </Link>
                 <Link
+                  to="/account/orders"
+                  className="user-dropdown-link"
+                  onClick={() => setIsUserMenuOpen(false)}
+                >
+                  My Orders
+                </Link>
+                <Link
                   to="/cart"
                   className="user-dropdown-link"
                   onClick={() => setIsUserMenuOpen(false)}

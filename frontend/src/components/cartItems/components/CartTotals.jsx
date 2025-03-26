@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 /**
  * Component that displays cart total amounts
@@ -27,7 +28,9 @@ const CartTotals = ({ totalPrice }) => {
           ${totalPrice.toFixed(2)}
         </p>
       </div>
-      <button className="checkout-button">PROCEED TO CHECKOUT</button>
+      <Link to="/checkout" style={{ textDecoration: "none" }}>
+        <button className="checkout-button">PROCEED TO CHECKOUT</button>
+      </Link>
     </div>
   );
 };

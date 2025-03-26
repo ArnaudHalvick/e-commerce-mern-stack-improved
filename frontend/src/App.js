@@ -11,6 +11,10 @@ import { ErrorProvider } from "./context/ErrorContext";
 import AuthLoadingIndicator from "./components/authLoadingIndicator/AuthLoadingIndicator.jsx";
 import AuthGuard from "./components/authGuard/AuthGuard.jsx";
 import { AuthContext } from "./context/AuthContext";
+import StripeProvider from "./stripe/StripeProvider";
+import CheckoutPage from "./pages/checkout/CheckoutPage";
+import OrderConfirmationPage from "./pages/orderConfirmation/OrderConfirmationPage";
+import OrderHistoryPage from "./pages/orderHistory/OrderHistoryPage";
 
 // Page Components
 import Shop from "./pages/shop/Shop.jsx";
@@ -177,6 +181,35 @@ function App() {
 
             {/* Demo Routes - Public */}
             <Route path="/error-demo" element={<ErrorDemoPage />} />
+
+            {/* New routes with Stripe provider */}
+            <Route
+              path="/checkout"
+              element={
+                <StripeProvider>
+                  <CheckoutPage />
+                </StripeProvider>
+              }
+            />
+
+            <Route
+              path="/order-confirmation/:orderId"
+              element={
+                <ProtectedRoute>
+                  <OrderConfirmationPage />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Add a route for order history */}
+            <Route
+              path="/account/orders"
+              element={
+                <ProtectedRoute>
+                  <OrderHistoryPage />
+                </ProtectedRoute>
+              }
+            />
 
             {/* 404 Route - Public */}
             <Route path="*" element={<NotFound />} />

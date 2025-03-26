@@ -1,0 +1,260 @@
+.order-history-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.order-history-page h1 {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.loading-spinner,
+.error-message,
+.no-orders {
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #ff4141;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1.5rem;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.empty-icon {
+  color: #ccc;
+  width: 60px;
+  height: 60px;
+  margin-bottom: 1.5rem;
+}
+
+.no-orders h2 {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.no-orders p {
+  color: #666;
+  max-width: 400px;
+  margin: 0 auto 1.5rem;
+}
+
+.orders-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.order-card {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  padding: 1.5rem;
+  transition: transform 0.2s ease;
+}
+
+.order-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #f0f0f0;
+  margin-bottom: 1rem;
+}
+
+.order-header h2 {
+  font-size: 1.2rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.order-date {
+  color: #777;
+  font-size: 0.9rem;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.status-processing {
+  background-color: #fff8e1;
+  color: #ff8f00;
+}
+
+.status-shipped {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+
+.status-delivered {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.status-cancelled {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.order-items-preview {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 1rem 0;
+}
+
+.order-item-preview {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.item-preview-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.item-preview-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.item-preview-info {
+  font-size: 0.9rem;
+}
+
+.item-name {
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 0.2rem;
+}
+
+.item-details {
+  color: #777;
+  font-size: 0.8rem;
+}
+
+.more-items {
+  background-color: #f5f5f5;
+  border-radius: 50px;
+  padding: 0.3rem 0.8rem;
+  font-size: 0.8rem;
+  color: #666;
+  align-self: center;
+}
+
+.order-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid #f0f0f0;
+}
+
+.order-total {
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.total-price {
+  font-weight: 600;
+  color: #333;
+}
+
+.view-details-btn {
+  background-color: #ff4141;
+  color: white;
+  border-radius: 6px;
+  padding: 0.6rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.view-details-btn:hover {
+  background-color: #e63535;
+}
+
+.button {
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.button.primary {
+  background-color: #ff4141;
+  color: white;
+}
+
+.button.primary:hover {
+  background-color: #e63535;
+}
+
+@media (max-width: 768px) {
+  .order-history-page {
+    padding: 1.5rem;
+  }
+
+  .order-header {
+    flex-direction: column;
+  }
+
+  .order-header-right {
+    margin-top: 0.8rem;
+  }
+
+  .order-footer {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .order-total {
+    order: 2;
+  }
+
+  .view-details-btn {
+    order: 1;
+    width: 100%;
+    text-align: center;
+  }
+}

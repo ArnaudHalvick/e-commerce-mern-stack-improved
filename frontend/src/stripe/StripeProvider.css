@@ -1,0 +1,19 @@
+.stripe-error-container {
+  padding: 20px;
+  margin: 20px;
+  background-color: #ffebee;
+  color: #c62828;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.stripe-error-container h3 {
+  margin-top: 0;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.stripe-error-container p {
+  margin-bottom: 0;
+  color: #d32f2f;
+}
