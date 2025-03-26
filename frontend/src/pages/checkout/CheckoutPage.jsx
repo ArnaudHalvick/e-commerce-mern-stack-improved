@@ -1,5 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
+import {
+  useStripe,
+  useElements,
+  CardNumberElement,
+  CardExpiryElement,
+  CardCvcElement,
+} from "@stripe/react-stripe-js";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import {
@@ -7,7 +13,36 @@ import {
   confirmOrder,
 } from "../../services/paymentService";
 import { clearCart } from "../../redux/slices/cartSlice"; // Fix: Import from Redux slice
+import authApi from "../../services/authApi"; // Import for user profile
 import "./CheckoutPage.css";
+
+// List of countries with ISO codes
+const COUNTRIES = [
+  { code: "US", name: "United States" },
+  { code: "CA", name: "Canada" },
+  { code: "MX", name: "Mexico" },
+  { code: "AR", name: "Argentina" },
+  { code: "BR", name: "Brazil" },
+  { code: "GB", name: "United Kingdom" },
+  { code: "FR", name: "France" },
+  { code: "DE", name: "Germany" },
+  { code: "IT", name: "Italy" },
+  { code: "ES", name: "Spain" },
+  { code: "NL", name: "Netherlands" },
+  { code: "BE", name: "Belgium" },
+  { code: "PT", name: "Portugal" },
+  { code: "CH", name: "Switzerland" },
+  { code: "AT", name: "Austria" },
+  { code: "SE", name: "Sweden" },
+  { code: "NO", name: "Norway" },
+  { code: "DK", name: "Denmark" },
+  { code: "FI", name: "Finland" },
+  { code: "AU", name: "Australia" },
+  { code: "NZ", name: "New Zealand" },
+  { code: "JP", name: "Japan" },
+  { code: "CN", name: "China" },
+  { code: "IN", name: "India" },
+];
 
 const CheckoutPage = () => {
   const stripe = useStripe();
@@ -19,14 +54,69 @@ const CheckoutPage = () => {
   const [error, setError] = useState(null);
   const [clientSecret, setClientSecret] = useState("");
   const [paymentInfo, setPaymentInfo] = useState(null);
+  const [fetchingPaymentInfo, setFetchingPaymentInfo] = useState(true);
   const [shippingInfo, setShippingInfo] = useState({
     address: "",
     city: "",
     state: "",
-    country: "US",
+    country: "US", // Default to US
     postalCode: "",
     phoneNumber: "",
   });
+
+  // Common options for card elements - fixed to work properly
+  const cardElementOptions = {
+    style: {
+      base: {
+        fontSize: "16px",
+        color: "#424770",
+        "::placeholder": {
+          color: "#aab7c4",
+        },
+      },
+      invalid: {
+        color: "#9e2146",
+      },
+    },
+  };
+
+  // Load user profile and prefill shipping info
+  useEffect(() => {
+    const loadUserProfile = async () => {
+      try {
+        const userData = await authApi.getProfile();
+
+        // Only update shipping info fields that exist in user profile
+        const userAddress = userData.user.address || {};
+        const userPhone = userData.user.phone || "";
+
+        // Convert country name to country code if needed
+        let countryCode = userAddress.country || "US";
+        if (countryCode.length > 2) {
+          // If it's a full country name, try to match it to a code
+          const foundCountry = COUNTRIES.find(
+            (c) => c.name.toLowerCase() === countryCode.toLowerCase()
+          );
+          countryCode = foundCountry ? foundCountry.code : "US";
+        }
+
+        setShippingInfo((prevState) => ({
+          ...prevState,
+          address: userAddress.street || "",
+          city: userAddress.city || "",
+          state: userAddress.state || "",
+          country: countryCode,
+          postalCode: userAddress.zipCode || "",
+          phoneNumber: userPhone,
+        }));
+      } catch (err) {
+        console.error("Error loading user profile:", err);
+        // Don't show error to user - just use empty shipping info
+      }
+    };
+
+    loadUserProfile();
+  }, []);
 
   // Wrap the shipping info validation function in useCallback
   const isShippingInfoValid = useCallback(() => {
@@ -40,10 +130,43 @@ const CheckoutPage = () => {
     );
   }, [shippingInfo]);
 
-  // Initialize payment intent when component loads
+  // Initialize payment intent immediately when component loads
+  // Updated to fetch order summary first, before shipping info is complete
+  useEffect(() => {
+    const fetchInitialPaymentInfo = async () => {
+      try {
+        setFetchingPaymentInfo(true);
+        // First attempt with empty shipping info just to get order summary
+        const tempShippingInfo = {
+          address: "temp",
+          city: "temp",
+          state: "temp",
+          country: "US",
+          postalCode: "00000",
+          phoneNumber: "0000000000",
+        };
+
+        const data = await createPaymentIntent(tempShippingInfo);
+        setPaymentInfo({
+          amount: data.amount,
+          subtotal: data.subtotal,
+          taxAmount: data.taxAmount,
+          shippingAmount: data.shippingAmount,
+        });
+      } catch (err) {
+        console.error("Failed to fetch initial payment info:", err);
+      } finally {
+        setFetchingPaymentInfo(false);
+      }
+    };
+
+    fetchInitialPaymentInfo();
+  }, []);
+
+  // Create real payment intent when shipping info is complete
   useEffect(() => {
     const fetchPaymentIntent = async () => {
-      // Don't create a payment intent until shipping info is complete
+      // Only create a real payment intent when shipping info is complete
       if (!isShippingInfoValid()) return;
 
       try {
@@ -94,10 +217,10 @@ const CheckoutPage = () => {
     setIsLoading(true);
     setError(null);
 
-    // Confirm card payment
+    // Confirm card payment with separated card elements
     const result = await stripe.confirmCardPayment(clientSecret, {
       payment_method: {
-        card: elements.getElement(CardElement),
+        card: elements.getElement(CardNumberElement),
         billing_details: {
           name: "Customer Name", // Consider collecting this
           address: {
@@ -138,16 +261,35 @@ const CheckoutPage = () => {
     }
   };
 
+  // Add passive event listeners to improve touch performance
+  useEffect(() => {
+    const addPassiveListeners = () => {
+      const options = { passive: true };
+      document.addEventListener("touchstart", () => {}, options);
+      document.addEventListener("touchmove", () => {}, options);
+    };
+
+    addPassiveListeners();
+
+    // Cleanup on unmount
+    return () => {
+      document.removeEventListener("touchstart", () => {});
+      document.removeEventListener("touchmove", () => {});
+    };
+  }, []);
+
   return (
     <div className="checkout-page">
-      <h1>Checkout</h1>
+      <h1 className="checkout-title">Checkout</h1>
       {error && <div className="checkout-error">{error}</div>}
       <div className="checkout-container">
         <div className="shipping-form-container">
-          <h2>Shipping Information</h2>
-          <form>
+          <h2 className="section-title">Shipping Information</h2>
+          <form className="shipping-form">
             <div className="form-group">
-              <label htmlFor="address">Address</label>
+              <label htmlFor="address" className="form-label">
+                Address
+              </label>
               <input
                 type="text"
                 id="address"
@@ -155,12 +297,16 @@ const CheckoutPage = () => {
                 value={shippingInfo.address}
                 onChange={handleShippingInfoChange}
                 required
+                aria-label="Shipping address"
+                className="form-input"
               />
             </div>
 
             <div className="form-row">
               <div className="form-group">
-                <label htmlFor="city">City</label>
+                <label htmlFor="city" className="form-label">
+                  City
+                </label>
                 <input
                   type="text"
                   id="city"
@@ -168,11 +314,15 @@ const CheckoutPage = () => {
                   value={shippingInfo.city}
                   onChange={handleShippingInfoChange}
                   required
+                  aria-label="City"
+                  className="form-input"
                 />
               </div>
 
               <div className="form-group">
-                <label htmlFor="state">State</label>
+                <label htmlFor="state" className="form-label">
+                  State
+                </label>
                 <input
                   type="text"
                   id="state"
@@ -180,30 +330,38 @@ const CheckoutPage = () => {
                   value={shippingInfo.state}
                   onChange={handleShippingInfoChange}
                   required
+                  aria-label="State"
+                  className="form-input"
                 />
               </div>
             </div>
 
             <div className="form-row">
               <div className="form-group">
-                <label htmlFor="country">Country</label>
+                <label htmlFor="country" className="form-label">
+                  Country
+                </label>
                 <select
                   id="country"
                   name="country"
                   value={shippingInfo.country}
                   onChange={handleShippingInfoChange}
                   required
+                  aria-label="Country"
+                  className="form-select"
                 >
-                  <option value="US">United States</option>
-                  <option value="CA">Canada</option>
-                  <option value="GB">United Kingdom</option>
-                  <option value="AU">Australia</option>
-                  <option value="FR">France</option>
+                  {COUNTRIES.map((country) => (
+                    <option key={country.code} value={country.code}>
+                      {country.name}
+                    </option>
+                  ))}
                 </select>
               </div>
 
               <div className="form-group">
-                <label htmlFor="postalCode">Postal Code</label>
+                <label htmlFor="postalCode" className="form-label">
+                  Postal Code
+                </label>
                 <input
                   type="text"
                   id="postalCode"
@@ -211,12 +369,16 @@ const CheckoutPage = () => {
                   value={shippingInfo.postalCode}
                   onChange={handleShippingInfoChange}
                   required
+                  aria-label="Postal code"
+                  className="form-input"
                 />
               </div>
             </div>
 
             <div className="form-group">
-              <label htmlFor="phoneNumber">Phone Number</label>
+              <label htmlFor="phoneNumber" className="form-label">
+                Phone Number
+              </label>
               <input
                 type="tel"
                 id="phoneNumber"
@@ -224,56 +386,92 @@ const CheckoutPage = () => {
                 value={shippingInfo.phoneNumber}
                 onChange={handleShippingInfoChange}
                 required
+                aria-label="Phone number"
+                className="form-input"
               />
             </div>
           </form>
         </div>
 
         <div className="payment-form-container">
-          <h2>Payment Details</h2>
-          {paymentInfo && (
+          <h2 className="section-title">Payment Details</h2>
+          {fetchingPaymentInfo ? (
+            <div className="order-summary-loading">
+              Loading order summary...
+            </div>
+          ) : paymentInfo ? (
             <div className="order-summary">
-              <h3>Order Summary</h3>
+              <h3 className="summary-title">Order Summary</h3>
               <div className="order-summary-item">
-                <span>Subtotal:</span>
-                <span>${paymentInfo.subtotal.toFixed(2)}</span>
+                <span className="item-label">Subtotal:</span>
+                <span className="item-value">
+                  ${paymentInfo.subtotal.toFixed(2)}
+                </span>
               </div>
               <div className="order-summary-item">
-                <span>Tax:</span>
-                <span>${paymentInfo.taxAmount.toFixed(2)}</span>
+                <span className="item-label">Tax:</span>
+                <span className="item-value">
+                  ${paymentInfo.taxAmount.toFixed(2)}
+                </span>
               </div>
               <div className="order-summary-item">
-                <span>Shipping:</span>
-                <span>${paymentInfo.shippingAmount.toFixed(2)}</span>
+                <span className="item-label">Shipping:</span>
+                <span className="item-value">
+                  ${paymentInfo.shippingAmount.toFixed(2)}
+                </span>
               </div>
               <div className="order-summary-item total">
-                <span>Total:</span>
-                <span>${paymentInfo.amount.toFixed(2)}</span>
+                <span className="item-label">Total:</span>
+                <span className="item-value">
+                  ${paymentInfo.amount.toFixed(2)}
+                </span>
               </div>
+            </div>
+          ) : (
+            <div className="order-summary-error">
+              Unable to load order summary. Please try again.
             </div>
           )}
 
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} className="payment-form">
             <div className="form-group">
-              <label htmlFor="card-element">Credit or debit card</label>
+              <label htmlFor="card-number" className="form-label">
+                Card Number
+              </label>
               <div className="card-element-container">
-                <CardElement
-                  id="card-element"
-                  options={{
-                    style: {
-                      base: {
-                        fontSize: "16px",
-                        color: "#424770",
-                        "::placeholder": {
-                          color: "#aab7c4",
-                        },
-                      },
-                      invalid: {
-                        color: "#9e2146",
-                      },
-                    },
-                  }}
+                <CardNumberElement
+                  id="card-number"
+                  options={cardElementOptions}
+                  className="stripe-element"
                 />
+              </div>
+            </div>
+
+            <div className="form-row card-row">
+              <div className="form-group">
+                <label htmlFor="card-expiry" className="form-label">
+                  Expiry Date
+                </label>
+                <div className="card-element-container">
+                  <CardExpiryElement
+                    id="card-expiry"
+                    options={cardElementOptions}
+                    className="stripe-element"
+                  />
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="card-cvc" className="form-label">
+                  CVC
+                </label>
+                <div className="card-element-container">
+                  <CardCvcElement
+                    id="card-cvc"
+                    options={cardElementOptions}
+                    className="stripe-element"
+                  />
+                </div>
               </div>
             </div>
 
@@ -293,10 +491,12 @@ const CheckoutPage = () => {
           </form>
 
           <div className="test-card-info">
-            <h4>Test Card Details:</h4>
-            <p>Card Number: 4242 4242 4242 4242</p>
-            <p>Expiry: Any future date (e.g., 12/25)</p>
-            <p>CVC: Any 3 digits</p>
+            <h4 className="test-card-title">Test Card Details:</h4>
+            <p className="test-card-detail">Card Number: 4242 4242 4242 4242</p>
+            <p className="test-card-detail">
+              Expiry: Any future date (e.g., 12/25)
+            </p>
+            <p className="test-card-detail">CVC: Any 3 digits</p>
           </div>
         </div>
       </div>

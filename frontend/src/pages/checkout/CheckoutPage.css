@@ -4,7 +4,7 @@
   padding: 2rem;
 }
 
-.checkout-page h1 {
+.checkout-title {
   text-align: center;
   font-size: 2rem;
   margin-bottom: 2rem;
@@ -36,13 +36,17 @@
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
 }
 
-.shipping-form-container h2,
-.payment-form-container h2 {
+.section-title {
   font-size: 1.5rem;
   color: #333;
   margin-bottom: 1.5rem;
   padding-bottom: 0.8rem;
   border-bottom: 1px solid #f0f0f0;
+}
+
+.shipping-form,
+.payment-form {
+  width: 100%;
 }
 
 .form-group {
@@ -60,25 +64,43 @@
   margin-bottom: 0;
 }
 
-label {
+/* Special style for the card row */
+.form-row.card-row {
+  margin-bottom: 0.5rem;
+}
+
+.form-label {
   display: block;
   margin-bottom: 0.5rem;
   font-weight: 500;
   color: #444;
 }
 
-input,
-select {
+.form-input,
+.form-select {
   width: 100%;
   padding: 0.8rem 1rem;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   font-size: 1rem;
   transition: border-color 0.3s ease;
+  background-color: white;
+  height: 48px;
 }
 
-input:focus,
-select:focus {
+.form-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1em;
+  padding-right: 2.5rem;
+}
+
+.form-input:focus,
+.form-select:focus {
   border-color: #ff4141;
   outline: none;
   box-shadow: 0 0 0 2px rgba(255, 65, 65, 0.1);
@@ -89,6 +111,13 @@ select:focus {
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   background-color: #fff;
+  min-height: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.stripe-element {
+  width: 100%;
 }
 
 .pay-button {
@@ -121,7 +150,7 @@ select:focus {
   margin-bottom: 1.5rem;
 }
 
-.order-summary h3 {
+.summary-title {
   font-size: 1.2rem;
   margin-bottom: 1rem;
   color: #333;
@@ -134,6 +163,11 @@ select:focus {
   color: #555;
 }
 
+.item-label,
+.item-value {
+  display: inline-block;
+}
+
 .order-summary-item.total {
   font-weight: 700;
   color: #333;
@@ -141,6 +175,22 @@ select:focus {
   border-top: 1px solid #e0e0e0;
   padding-top: 0.8rem;
   margin-top: 0.5rem;
+}
+
+.order-summary-loading,
+.order-summary-error {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 1.2rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: #555;
+}
+
+.order-summary-error {
+  color: #c62828;
+  background-color: #ffebee;
+  border-left: 4px solid #c62828;
 }
 
 .test-card-info {
@@ -151,17 +201,19 @@ select:focus {
   border-left: 4px solid #2196f3;
 }
 
-.test-card-info h4 {
+.test-card-title {
+  font-size: 1rem;
   color: #333;
   margin-bottom: 0.8rem;
 }
 
-.test-card-info p {
+.test-card-detail {
   margin: 0.3rem 0;
   color: #555;
   font-size: 0.9rem;
 }
 
+/* Responsive styles */
 @media (max-width: 768px) {
   .checkout-container {
     flex-direction: column;
@@ -174,5 +226,73 @@ select:focus {
 
   .checkout-page {
     padding: 1rem;
+  }
+
+  .checkout-title {
+    font-size: 1.6rem;
+  }
+
+  .section-title {
+    font-size: 1.3rem;
+  }
+
+  /* Keep card elements side by side even on smaller screens */
+  .form-row.card-row {
+    flex-direction: row;
+  }
+}
+
+@media (max-width: 480px) {
+  .checkout-title {
+    font-size: 1.4rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .shipping-form-container,
+  .payment-form-container {
+    padding: 1rem;
+  }
+
+  .section-title {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+
+  .form-input,
+  .form-select,
+  .card-element-container {
+    font-size: 0.9rem;
+    padding: 0.7rem;
+  }
+
+  .form-label {
+    font-size: 0.9rem;
+  }
+
+  .order-summary-item {
+    font-size: 0.9rem;
+  }
+
+  .order-summary-item.total {
+    font-size: 1rem;
+  }
+
+  .pay-button {
+    font-size: 0.9rem;
+    padding: 0.8rem;
+  }
+
+  .test-card-title {
+    font-size: 1rem;
+  }
+
+  .test-card-detail {
+    font-size: 0.8rem;
+  }
+
+  /* For very small screens, stack the card fields */
+  .form-row.card-row {
+    flex-direction: column;
+    gap: 1rem;
   }
 }

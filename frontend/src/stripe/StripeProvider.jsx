@@ -13,7 +13,6 @@ const stripePromise = (() => {
       );
       return null;
     }
-    console.log("Using Stripe key:", key.substring(0, 8) + "...");
     return loadStripe(key);
   } catch (error) {
     console.error("Error initializing Stripe:", error);
