@@ -25,6 +25,7 @@ const uploadRoutes = require("./routes/uploadRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
 const errorDemoRoutes = require("./routes/errorDemoRoutes");
 const validationRoutes = require("./routes/validationRoutes");
+const paymentRoutes = require("./routes/paymentRoutes");
 
 // Initialize express app
 const app = express();
@@ -59,7 +60,16 @@ app.use(
     credentials: true,
   })
 );
-app.use(express.json({ limit: "10kb" })); // Limit JSON body size
+
+// Special handling for Stripe webhook (must be raw)
+app.use((req, res, next) => {
+  if (req.originalUrl === "/api/payment/webhook") {
+    next();
+  } else {
+    express.json({ limit: "10kb" })(req, res, next);
+  }
+});
+
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
@@ -91,6 +101,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/reviews", reviewRoutes);
+app.use("/api/payment", paymentRoutes);
 app.use("/api/error-demo", errorDemoRoutes);
 app.use("/api/validation", validationRoutes);
 
