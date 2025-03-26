@@ -52,6 +52,9 @@ POST /api/payment/create-payment-intent
 
 ```
 POST /api/payment/confirm-order
+
+To confirm a payment succeeded with CLI, use this command : stripe payment_intents confirm PAYMENT_ID --payment-method pm_card_visa
+EXAMPLE : stripe payment_intents confirm pi_3R6wg0P4vWrJMwjY1n36qBPD --payment-method pm_card_visa
 ```
 
 **Request Body:**

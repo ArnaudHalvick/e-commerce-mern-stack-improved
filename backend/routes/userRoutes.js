@@ -16,7 +16,7 @@ const {
   validateProfileUpdate,
   validatePasswordReset,
 } = require("../validation");
-const { sanitizeRequest, sanitizeFields } = require("../middleware/sanitizers");
+const { sanitizeRequest } = require("../middleware/sanitizers");
 const {
   loginLimiter,
   accountCreationLimiter,

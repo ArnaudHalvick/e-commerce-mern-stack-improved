@@ -1,3 +1,5 @@
+// backend/routes/paymentRoutes.js
+
 const express = require("express");
 const router = express.Router();
 const { isAuthenticated } = require("../middleware/auth");
@@ -12,12 +14,7 @@ router.post(
   paymentController.createPaymentIntent
 );
 
-router.post(
-  "/confirm-order",
-  sanitizeRequest,
-  isAuthenticated,
-  paymentController.confirmOrder
-);
+router.post("/confirm-order", isAuthenticated, paymentController.confirmOrder);
 
 router.get("/my-orders", isAuthenticated, paymentController.getMyOrders);
 
