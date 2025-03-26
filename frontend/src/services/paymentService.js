@@ -3,6 +3,23 @@ import { getAuthHeaders } from "./authService"; // Assuming you have an auth ser
 import { getApiUrl } from "../utils/apiUtils"; // Import utility function
 
 /**
+ * Fetch cart summary without creating a payment intent
+ * @returns {Promise<Object>} - Cart summary details
+ */
+export const fetchCartSummary = async () => {
+  try {
+    const response = await axios.get(getApiUrl("payment/cart-summary"), {
+      headers: await getAuthHeaders(),
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching cart summary:", error);
+    throw error;
+  }
+};
+
+/**
  * Create a payment intent with the current cart and shipping info
  * @param {Object} shippingInfo - Shipping information
  * @returns {Promise<Object>} - Payment intent details including client secret

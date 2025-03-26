@@ -11,6 +11,7 @@ import { useDispatch } from "react-redux";
 import {
   createPaymentIntent,
   confirmOrder,
+  fetchCartSummary,
 } from "../../services/paymentService";
 import { clearCart } from "../../redux/slices/cartSlice"; // Fix: Import from Redux slice
 import authApi from "../../services/authApi"; // Import for user profile
@@ -53,8 +54,8 @@ const CheckoutPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [clientSecret, setClientSecret] = useState("");
-  const [paymentInfo, setPaymentInfo] = useState(null);
-  const [fetchingPaymentInfo, setFetchingPaymentInfo] = useState(true);
+  const [cartSummary, setCartSummary] = useState(null);
+  const [fetchingCartSummary, setFetchingCartSummary] = useState(true);
   const [shippingInfo, setShippingInfo] = useState({
     address: "",
     city: "",
@@ -130,66 +131,28 @@ const CheckoutPage = () => {
     );
   }, [shippingInfo]);
 
-  // Initialize payment intent immediately when component loads
-  // Updated to fetch order summary first, before shipping info is complete
+  // Fetch cart summary on component mount
   useEffect(() => {
-    const fetchInitialPaymentInfo = async () => {
+    const fetchSummary = async () => {
       try {
-        setFetchingPaymentInfo(true);
-        // First attempt with empty shipping info just to get order summary
-        const tempShippingInfo = {
-          address: "temp",
-          city: "temp",
-          state: "temp",
-          country: "US",
-          postalCode: "00000",
-          phoneNumber: "0000000000",
-        };
-
-        const data = await createPaymentIntent(tempShippingInfo);
-        setPaymentInfo({
+        setFetchingCartSummary(true);
+        const data = await fetchCartSummary();
+        setCartSummary({
           amount: data.amount,
           subtotal: data.subtotal,
           taxAmount: data.taxAmount,
           shippingAmount: data.shippingAmount,
         });
       } catch (err) {
-        console.error("Failed to fetch initial payment info:", err);
+        console.error("Failed to fetch cart summary:", err);
+        setError("Failed to load cart summary. Please try again.");
       } finally {
-        setFetchingPaymentInfo(false);
+        setFetchingCartSummary(false);
       }
     };
 
-    fetchInitialPaymentInfo();
+    fetchSummary();
   }, []);
-
-  // Create real payment intent when shipping info is complete
-  useEffect(() => {
-    const fetchPaymentIntent = async () => {
-      // Only create a real payment intent when shipping info is complete
-      if (!isShippingInfoValid()) return;
-
-      try {
-        setIsLoading(true);
-        setError(null);
-
-        const data = await createPaymentIntent(shippingInfo);
-        setClientSecret(data.clientSecret);
-        setPaymentInfo({
-          amount: data.amount,
-          subtotal: data.subtotal,
-          taxAmount: data.taxAmount,
-          shippingAmount: data.shippingAmount,
-        });
-      } catch (err) {
-        setError(err.response?.data?.message || "Failed to initialize payment");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchPaymentIntent();
-  }, [shippingInfo, isShippingInfoValid]);
 
   const handleShippingInfoChange = (e) => {
     setShippingInfo({
@@ -207,57 +170,62 @@ const CheckoutPage = () => {
       return;
     }
 
-    if (!clientSecret) {
-      setError(
-        "Payment not initialized. Please check your shipping information."
-      );
+    if (!isShippingInfoValid()) {
+      setError("Please fill in all shipping information fields.");
       return;
     }
 
     setIsLoading(true);
     setError(null);
 
-    // Confirm card payment with separated card elements
-    const result = await stripe.confirmCardPayment(clientSecret, {
-      payment_method: {
-        card: elements.getElement(CardNumberElement),
-        billing_details: {
-          name: "Customer Name", // Consider collecting this
-          address: {
-            line1: shippingInfo.address,
-            city: shippingInfo.city,
-            state: shippingInfo.state,
-            postal_code: shippingInfo.postalCode,
-            country: shippingInfo.country,
+    try {
+      // Create payment intent only when submitting the form
+      const paymentData = await createPaymentIntent(shippingInfo);
+      setClientSecret(paymentData.clientSecret);
+
+      // Confirm card payment with separated card elements
+      const result = await stripe.confirmCardPayment(paymentData.clientSecret, {
+        payment_method: {
+          card: elements.getElement(CardNumberElement),
+          billing_details: {
+            name: "Customer Name", // Consider collecting this
+            address: {
+              line1: shippingInfo.address,
+              city: shippingInfo.city,
+              state: shippingInfo.state,
+              postal_code: shippingInfo.postalCode,
+              country: shippingInfo.country,
+            },
           },
         },
-      },
-    });
+      });
 
-    if (result.error) {
-      setError(result.error.message);
-      setIsLoading(false);
-    } else {
-      if (result.paymentIntent.status === "succeeded") {
-        try {
-          const orderData = await confirmOrder(
-            result.paymentIntent.id,
-            shippingInfo
-          );
+      if (result.error) {
+        setError(result.error.message);
+      } else {
+        if (result.paymentIntent.status === "succeeded") {
+          try {
+            const orderData = await confirmOrder(
+              result.paymentIntent.id,
+              shippingInfo
+            );
 
-          // Clear the cart after a successful order
-          dispatch(clearCart());
+            // Clear the cart after a successful order
+            dispatch(clearCart());
 
-          // Navigate to success page with order info
-          navigate(`/order-confirmation/${orderData.order._id}`, {
-            state: { orderDetails: orderData.order },
-          });
-        } catch (err) {
-          setError(err.response?.data?.message || "Failed to confirm order");
-        } finally {
-          setIsLoading(false);
+            // Navigate to success page with order info
+            navigate(`/order-confirmation/${orderData.order._id}`, {
+              state: { orderDetails: orderData.order },
+            });
+          } catch (err) {
+            setError(err.response?.data?.message || "Failed to confirm order");
+          }
         }
       }
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to process payment");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -395,35 +363,35 @@ const CheckoutPage = () => {
 
         <div className="payment-form-container">
           <h2 className="section-title">Payment Details</h2>
-          {fetchingPaymentInfo ? (
+          {fetchingCartSummary ? (
             <div className="order-summary-loading">
               Loading order summary...
             </div>
-          ) : paymentInfo ? (
+          ) : cartSummary ? (
             <div className="order-summary">
               <h3 className="summary-title">Order Summary</h3>
               <div className="order-summary-item">
                 <span className="item-label">Subtotal:</span>
                 <span className="item-value">
-                  ${paymentInfo.subtotal.toFixed(2)}
+                  ${cartSummary.subtotal.toFixed(2)}
                 </span>
               </div>
               <div className="order-summary-item">
                 <span className="item-label">Tax:</span>
                 <span className="item-value">
-                  ${paymentInfo.taxAmount.toFixed(2)}
+                  ${cartSummary.taxAmount.toFixed(2)}
                 </span>
               </div>
               <div className="order-summary-item">
                 <span className="item-label">Shipping:</span>
                 <span className="item-value">
-                  ${paymentInfo.shippingAmount.toFixed(2)}
+                  ${cartSummary.shippingAmount.toFixed(2)}
                 </span>
               </div>
               <div className="order-summary-item total">
                 <span className="item-label">Total:</span>
                 <span className="item-value">
-                  ${paymentInfo.amount.toFixed(2)}
+                  ${cartSummary.amount.toFixed(2)}
                 </span>
               </div>
             </div>
@@ -477,15 +445,13 @@ const CheckoutPage = () => {
 
             <button
               type="submit"
-              disabled={
-                !stripe || !clientSecret || isLoading || !isShippingInfoValid()
-              }
+              disabled={!stripe || isLoading || !isShippingInfoValid()}
               className="pay-button"
             >
               {isLoading
                 ? "Processing..."
                 : `Pay $${
-                    paymentInfo ? paymentInfo.amount.toFixed(2) : "0.00"
+                    cartSummary ? cartSummary.amount.toFixed(2) : "0.00"
                   }`}
             </button>
           </form>

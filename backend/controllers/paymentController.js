@@ -298,10 +298,44 @@ const processWebhook = catchAsync(async (req, res, next) => {
   res.status(200).json({ received: true });
 });
 
+/**
+ * Get cart summary without creating a payment intent
+ */
+const getCartSummary = catchAsync(async (req, res, next) => {
+  // Get cart data for the current user
+  const cart = await Cart.findOne({ user: req.user.id });
+
+  if (!cart || cart.items.length === 0) {
+    return next(new AppError("Your cart is empty", 400));
+  }
+
+  // Calculate subtotal from cart
+  const subtotal = cart.totalPrice;
+
+  // Calculate tax and shipping
+  const { taxAmount, shippingAmount } = calculateTaxAndShipping(subtotal);
+
+  // Calculate total amount
+  const totalAmount = subtotal + taxAmount + shippingAmount;
+
+  logger.info(
+    `Cart summary fetched for user ${req.user.id} with amount ${totalAmount}`
+  );
+
+  res.status(200).json({
+    success: true,
+    amount: totalAmount,
+    subtotal,
+    taxAmount,
+    shippingAmount,
+  });
+});
+
 module.exports = {
   createPaymentIntent,
   confirmOrder,
   getMyOrders,
   getOrderById,
   processWebhook,
+  getCartSummary,
 };

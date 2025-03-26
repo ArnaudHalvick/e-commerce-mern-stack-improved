@@ -6,6 +6,9 @@ const { isAuthenticated } = require("../middleware/auth");
 const paymentController = require("../controllers/paymentController");
 const { sanitizeRequest } = require("../middleware/sanitizers");
 
+// Get cart summary without creating payment intent
+router.get("/cart-summary", isAuthenticated, paymentController.getCartSummary);
+
 // Payment routes
 router.post(
   "/create-payment-intent",
