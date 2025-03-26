@@ -74,7 +74,21 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // Security middleware
-app.use(helmet()); // Set security HTTP headers
+// Configure Helmet with proper CSP settings for images
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        imgSrc: ["'self'", "data:", "blob:", ...allowedOrigins],
+        connectSrc: ["'self'", ...allowedOrigins],
+        // Add other directives as needed
+      },
+    },
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+    crossOriginEmbedderPolicy: false,
+  })
+); // Set security HTTP headers
 app.use(mongoSanitize()); // Sanitize data against NoSQL injection
 app.use(xssClean()); // Sanitize data against XSS attacks
 
@@ -91,6 +105,7 @@ connectDB();
 app.use(
   "/images",
   (req, res, next) => {
+    // Set appropriate CORS headers for images
     const origin = req.headers.origin;
     if (origin && allowedOrigins.includes(origin)) {
       res.header("Access-Control-Allow-Origin", origin);
@@ -98,6 +113,8 @@ app.use(
     }
     res.header("Access-Control-Allow-Methods", "GET");
     res.header("Access-Control-Allow-Headers", "Content-Type");
+    // Add Cross-Origin Resource Policy header
+    res.header("Cross-Origin-Resource-Policy", "cross-origin");
     next();
   },
   express.static(path.join(__dirname, "upload/images"))
