@@ -64,6 +64,11 @@ export const ErrorProvider = ({ children }) => {
    */
   const showError = useCallback(
     (message, duration = 5000) => {
+      if (typeof message === "object") {
+        // If an error object was passed instead of a string
+        const errorMessage = message.message || JSON.stringify(message);
+        return addToast(errorMessage, "error", duration);
+      }
       return addToast(message, "error", duration);
     },
     [addToast]

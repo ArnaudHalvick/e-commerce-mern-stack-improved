@@ -34,7 +34,11 @@ const ErrorDemo = () => {
     try {
       await api.get(`${apiPath}?statusCode=${statusCode}`);
     } catch (error) {
-      showError(error.message);
+      // Show error with status code if available
+      const errorMessage = error.status
+        ? `[${error.status}] ${error.message}`
+        : error.message;
+      showError(errorMessage);
     }
   };
 
@@ -57,6 +61,13 @@ const ErrorDemo = () => {
         This component demonstrates how to use the error handling system in your
         application.
       </p>
+      <div className="error-demo-info-box">
+        <p className="error-demo-note">
+          <strong>Note:</strong> You don't need to be logged in to use this demo
+          page. It's designed to demonstrate error handling capabilities
+          regardless of authentication status.
+        </p>
+      </div>
       <div className="error-demo-section">
         <h3>1. Toast Notifications</h3>
         <div className="error-demo-form">

@@ -25,32 +25,47 @@ const simulateError = catchAsync(async (req, res, next) => {
   // Handle different status codes with appropriate errors
   switch (code) {
     case 400:
-      return next(new AppError("Bad Request: " + message, 400));
+      return next(
+        new AppError(`Bad Request: ${message} (status=${code})`, 400)
+      );
 
     case 401:
-      return next(new AppError("Unauthorized: " + message, 401));
+      return next(
+        new AppError(`Unauthorized: ${message} (status=${code})`, 401)
+      );
 
     case 403:
-      return next(new AppError("Forbidden: " + message, 403));
+      return next(new AppError(`Forbidden: ${message} (status=${code})`, 403));
 
     case 404:
-      return next(new AppError("Not Found: " + message, 404));
+      return next(new AppError(`Not Found: ${message} (status=${code})`, 404));
 
     case 422:
-      return next(new AppError("Validation Error: " + message, 422));
+      return next(
+        new AppError(`Validation Error: ${message} (status=${code})`, 422)
+      );
 
     case 429:
-      return next(new AppError("Too Many Requests: " + message, 429));
+      return next(
+        new AppError(`Too Many Requests: ${message} (status=${code})`, 429)
+      );
 
     case 500:
     case 502:
     case 503:
     case 504:
-      return next(new AppError("Server Error: " + message, code));
+      return next(
+        new AppError(`Server Error: ${message} (status=${code})`, code)
+      );
 
     default:
       // If an invalid status code is provided, default to 500
-      return next(new AppError("Unknown Error: " + message, 500));
+      return next(
+        new AppError(
+          `Unknown Error: ${message} (defaulting to status=500)`,
+          500
+        )
+      );
   }
 });
 

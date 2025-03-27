@@ -39,12 +39,20 @@ const processQueue = (error, token = null) => {
 // Add a request interceptor to handle authentication
 api.interceptors.request.use(
   (config) => {
-    // If user is logged out, avoid authenticated requests
-    if (
-      isUserLoggedOut() &&
-      config.url !== "/api/users/login" &&
-      config.url !== "/api/users/signup"
-    ) {
+    // Special routes that don't require authentication
+    const publicRoutes = [
+      "/api/users/login",
+      "/api/users/signup",
+      "/api/error-demo", // Don't require authentication for error demo routes
+    ];
+
+    // Check if the current URL is a public route that doesn't need authentication
+    const isPublicRoute = publicRoutes.some((route) =>
+      config.url.startsWith(route)
+    );
+
+    // If user is logged out and not accessing a public route, reject the request
+    if (isUserLoggedOut() && !isPublicRoute) {
       const error = new Error("User is logged out");
       error.config = config;
       return Promise.reject(error);
@@ -87,9 +95,9 @@ api.interceptors.response.use(
 
     const originalRequest = error.config;
 
-    // Extract error details
+    // Extract error details from the response
     const errorResponse = {
-      message: "An unexpected error occurred",
+      message: error.response?.data?.message || "An unexpected error occurred",
       status: error.response?.status || 500,
       data: error.response?.data || {},
     };
@@ -175,39 +183,44 @@ api.interceptors.response.use(
       } finally {
         isRefreshing = false;
       }
-    }
+    } else {
+      // For non-auth related errors, preserve the server's error message
+      // instead of overriding it with our generic messages
 
-    // Handle specific HTTP status codes
-    switch (errorResponse.status) {
-      case 400:
-        errorResponse.message = errorResponse.data.message || "Invalid request";
-        break;
-      case 401:
-        errorResponse.message = "Your session has expired. Please log in again";
-        break;
-      case 403:
-        errorResponse.message =
-          "You do not have permission to access this resource";
-        break;
-      case 404:
-        errorResponse.message = "The requested resource was not found";
-        break;
-      case 422:
-        errorResponse.message =
-          errorResponse.data.message || "Validation error";
-        break;
-      case 429:
-        errorResponse.message = "Too many requests. Please try again later";
-        break;
-      case 500:
-      case 502:
-      case 503:
-      case 504:
-        errorResponse.message = "Server error. Please try again later";
-        break;
-      default:
-        errorResponse.message =
-          errorResponse.data.message || "An unexpected error occurred";
+      // Only provide fallback messages if the server didn't send one
+      if (!errorResponse.message) {
+        // Handle specific HTTP status codes
+        switch (errorResponse.status) {
+          case 400:
+            errorResponse.message = "Invalid request";
+            break;
+          case 401:
+            errorResponse.message =
+              "Your session has expired. Please log in again";
+            break;
+          case 403:
+            errorResponse.message =
+              "You do not have permission to access this resource";
+            break;
+          case 404:
+            errorResponse.message = "The requested resource was not found";
+            break;
+          case 422:
+            errorResponse.message = "Validation error";
+            break;
+          case 429:
+            errorResponse.message = "Too many requests. Please try again later";
+            break;
+          case 500:
+          case 502:
+          case 503:
+          case 504:
+            errorResponse.message = "Server error. Please try again later";
+            break;
+          default:
+            errorResponse.message = "An unexpected error occurred";
+        }
+      }
     }
 
     // You can log errors to a service here
