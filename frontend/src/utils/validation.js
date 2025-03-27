@@ -1,58 +1,9 @@
 /**
  * Utility functions for form validation
+ *
+ * Note: For email and password validation, use the schema-based validation
+ * from useSchemaValidation hook instead of these utility functions
  */
-
-/**
- * Validates an email address
- * @param {string} email - Email to validate
- * @returns {boolean} - True if valid, false otherwise
- */
-export const isValidEmail = (email) => {
-  // More permissive email regex that allows more valid email formats
-  const emailRegex =
-    /^([\w+-]+(?:\.[\w+-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,})$/i;
-  return emailRegex.test(email);
-};
-
-/**
- * Validates password strength requirements
- * @param {string} password - Password to validate
- * @returns {Object} - Validation result with success flag and message
- */
-export const validatePassword = (password) => {
-  if (!password || password.length < 8) {
-    return {
-      valid: false,
-      message: "Password must be at least 8 characters long",
-    };
-  }
-
-  if (!/[A-Z]/.test(password)) {
-    return {
-      valid: false,
-      message: "Password must contain at least one uppercase letter",
-    };
-  }
-
-  if (!/[a-z]/.test(password)) {
-    return {
-      valid: false,
-      message: "Password must contain at least one lowercase letter",
-    };
-  }
-
-  if (!/[0-9]/.test(password)) {
-    return {
-      valid: false,
-      message: "Password must contain at least one number",
-    };
-  }
-
-  return {
-    valid: true,
-    message: "Password is strong",
-  };
-};
 
 /**
  * Validates a phone number

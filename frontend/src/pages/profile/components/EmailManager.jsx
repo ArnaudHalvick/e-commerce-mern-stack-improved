@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { requestEmailChange } from "../../../redux/slices/userSlice";
 import { useError } from "../../../context/ErrorContext";
-import { isValidEmail } from "../../../utils/validation";
 
 const EmailManager = ({ user, validationSchema, showSuccess, showError }) => {
   const dispatch = useDispatch();
@@ -47,20 +46,28 @@ const EmailManager = ({ user, validationSchema, showSuccess, showError }) => {
 
   const validateEmail = (email, setError = true) => {
     let errorMessage = null;
+
+    // Check if schema validation is available
     if (!validationSchema?.email) {
-      if (email && !isValidEmail(email)) {
+      // Fallback validation if schema is not available
+      const emailRegex =
+        /^([\w+-]+(?:\.[\w+-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,})$/i;
+      if (email && !emailRegex.test(email)) {
         errorMessage = "Please enter a valid email address";
         if (setError) setFieldError(errorMessage);
         return false;
       }
       return true;
     }
+
+    // Use schema validation
     if (validationSchema.email.required && (!email || email.trim() === "")) {
       errorMessage =
         validationSchema.email.requiredMessage || "Email is required";
       if (setError) setFieldError(errorMessage);
       return false;
     }
+
     if (validationSchema.email.pattern && email) {
       try {
         const pattern = new RegExp(
@@ -75,18 +82,24 @@ const EmailManager = ({ user, validationSchema, showSuccess, showError }) => {
         }
       } catch (error) {
         console.error("Invalid regex pattern:", error);
-        if (!isValidEmail(email)) {
+        // Fallback validation
+        const emailRegex =
+          /^([\w+-]+(?:\.[\w+-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,})$/i;
+        if (!emailRegex.test(email)) {
           errorMessage = "Please enter a valid email address";
           if (setError) setFieldError(errorMessage);
           return false;
         }
       }
     }
+
+    // Business rule: email must be different
     if (email === user?.email) {
       errorMessage = "New email must be different from your current email";
       if (setError) setFieldError(errorMessage);
       return false;
     }
+
     return true;
   };
 
