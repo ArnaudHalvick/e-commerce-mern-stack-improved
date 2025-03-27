@@ -128,6 +128,22 @@ apiClient.interceptors.response.use(
           errorResponse.message =
             error.response.data.error || errorResponse.message;
         }
+
+        // Extract validation errors if available
+        if (
+          error.response.data.errors &&
+          Array.isArray(error.response.data.errors)
+        ) {
+          const fieldErrors = {};
+          // Parse validation errors from the backend
+          error.response.data.errors.forEach((err) => {
+            fieldErrors[err.param] = err.msg;
+          });
+
+          if (Object.keys(fieldErrors).length > 0) {
+            errorResponse.fieldErrors = fieldErrors;
+          }
+        }
       }
 
       // Add url context for specific error handling in formatApiError

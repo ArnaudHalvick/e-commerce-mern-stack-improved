@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import authApi from "../../../services/authApi";
 import { useError } from "../../../context/ErrorContext";
@@ -23,7 +23,6 @@ const useAuthForm = (formType = "login") => {
   const location = useLocation();
   const {
     errors: formErrors,
-    setFieldError,
     clearAllErrors: clearFormError,
     handleApiError: setFormError,
   } = useFormErrors();
@@ -40,18 +39,21 @@ const useAuthForm = (formType = "login") => {
   const [fieldErrors, setFieldErrors] = useState({});
 
   // Define which validation rules to use for each form type
-  const validationRules = {
-    login: {
-      email: true,
-      password: true,
-    },
-    register: {
-      name: true,
-      email: true,
-      password: true,
-      passwordConfirm: true,
-    },
-  };
+  const validationRules = useMemo(
+    () => ({
+      login: {
+        email: true,
+        password: true,
+      },
+      register: {
+        name: true,
+        email: true,
+        password: true,
+        passwordConfirm: true,
+      },
+    }),
+    []
+  );
 
   /**
    * Validate a single field
@@ -147,7 +149,13 @@ const useAuthForm = (formType = "login") => {
             if (result.token) {
               localStorage.setItem("auth-token", result.token);
             }
-            navigate(redirect);
+            // Don't navigate here - let the AuthContext handle navigation
+            return { success: true };
+          } else {
+            // If API returns success: false but no error thrown
+            setFieldErrors({
+              general: result.message || "Login failed. Please try again.",
+            });
           }
         } else {
           const userData = {
@@ -167,14 +175,27 @@ const useAuthForm = (formType = "login") => {
 
             // Navigate to login page
             navigate("/login", { replace: true });
+            return { success: true };
+          } else {
+            // If API returns success: false but no error thrown
+            setFieldErrors({
+              general:
+                result.message || "Registration failed. Please try again.",
+            });
           }
         }
       } catch (error) {
+        console.error(
+          `${formType === "login" ? "Login" : "Registration"} error:`,
+          error
+        );
         // handleError will set form errors via the useFormErrors hook
         setFormError(error);
       } finally {
         setLoading(false);
       }
+
+      return { success: false };
     },
     [
       formData,
@@ -185,6 +206,7 @@ const useAuthForm = (formType = "login") => {
       setFormError,
       validateFormData,
       showSuccess,
+      setFieldErrors,
     ]
   );
 

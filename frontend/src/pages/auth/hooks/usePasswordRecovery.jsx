@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import authApi from "../../../services/authApi";
 import { useError } from "../../../context/ErrorContext";
 import useFormErrors from "../../../hooks/useFormErrors";
@@ -21,7 +21,6 @@ import {
 const usePasswordRecovery = (mode = "forgot", token = "") => {
   const {
     errors: formErrors,
-    setFieldError,
     clearAllErrors: clearFormError,
     handleApiError: setFormError,
   } = useFormErrors();
@@ -47,16 +46,19 @@ const usePasswordRecovery = (mode = "forgot", token = "") => {
   }, [token]);
 
   // Define validation rules based on mode
-  const validationRules = {
-    forgot: {
-      email: true,
-    },
-    reset: {
-      password: true,
-      passwordConfirm: true,
-      token: true,
-    },
-  };
+  const validationRules = useMemo(
+    () => ({
+      forgot: {
+        email: true,
+      },
+      reset: {
+        password: true,
+        passwordConfirm: true,
+        token: true,
+      },
+    }),
+    []
+  );
 
   /**
    * Validate a single field

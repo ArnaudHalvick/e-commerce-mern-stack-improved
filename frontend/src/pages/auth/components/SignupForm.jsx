@@ -39,8 +39,21 @@ const SignupForm = ({
   // Only show validation feedback when user has started typing a password
   const showValidation = formData.password?.length > 0;
 
+  const handleFormSubmit = (e) => {
+    if (!termsAccepted) {
+      e.preventDefault();
+      if (errors && typeof errors === "object") {
+        errors.terms =
+          "You must accept the terms and conditions to create an account";
+      }
+      return;
+    }
+
+    handleSubmit(e);
+  };
+
   return (
-    <form className="auth-form" onSubmit={handleSubmit} noValidate>
+    <form className="auth-form" onSubmit={handleFormSubmit} noValidate>
       <div className="auth-form__fields">
         <FormInputField
           type="text"
@@ -149,7 +162,7 @@ const SignupForm = ({
           isLoading={loading}
           text="Create Account"
           loadingText="Creating account..."
-          disabled={!termsAccepted && !errors?.terms}
+          disabled={!termsAccepted}
           className="auth-form__submit-btn"
           size="medium"
           variant="primary"

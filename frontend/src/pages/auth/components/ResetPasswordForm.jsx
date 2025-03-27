@@ -27,14 +27,13 @@ const ResetPasswordForm = ({
 }) => {
   // Extract password validation fields
   const {
-    isValid,
     requirements: {
-      length: validLength,
-      uppercase: hasUppercase,
-      number: hasNumber,
-      special: specialChar,
-    },
-  } = passwordValidation;
+      length: validLength = false,
+      uppercase: hasUppercase = false,
+      number: hasNumber = false,
+      special: specialChar = false,
+    } = {},
+  } = passwordValidation || {};
 
   // Calculate if passwords match
   const match =

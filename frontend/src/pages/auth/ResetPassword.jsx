@@ -23,7 +23,6 @@ const ResetPassword = () => {
   const {
     formData,
     loading,
-    success,
     fieldErrors,
     formErrors,
     handleChange,
