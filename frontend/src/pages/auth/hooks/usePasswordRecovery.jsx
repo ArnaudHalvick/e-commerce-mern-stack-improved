@@ -1,257 +1,206 @@
-import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useState, useEffect, useCallback } from "react";
+import authApi from "../../../services/authApi";
 import { useError } from "../../../context/ErrorContext";
 import useFormErrors from "../../../hooks/useFormErrors";
-import useSchemaValidation from "../../../hooks/useSchemaValidation";
-import useAsync from "../../../hooks/useAsync";
-import usePasswordValidation from "./usePasswordValidation";
-import authApi from "../../../services/authApi";
-import { formatApiError } from "../../../utils/apiErrorUtils";
+import {
+  validateEmail,
+  validatePassword,
+  validatePasswordMatch,
+  validateForm,
+  isFormValid,
+} from "../../../utils/validation";
 
 /**
- * Custom hook for handling password recovery and reset workflow
- * @returns {Object} Recovery state and handlers
+ * Custom hook for password recovery functionality
+ * Handles both the forgot password and reset password flows
+ *
+ * @param {string} mode - 'forgot' or 'reset'
+ * @param {string} token - Reset token for password reset mode
+ * @returns {Object} State and handlers for the password recovery form
  */
-const usePasswordRecovery = () => {
-  const navigate = useNavigate();
-  const { token } = useParams();
-  const { showError, showSuccess } = useError();
+const usePasswordRecovery = (mode = "forgot", token = "") => {
+  const { setFormError, clearFormError, formErrors } = useFormErrors();
+  const { showSuccess } = useError();
 
-  // Form states
-  const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
-  const [emailSent, setEmailSent] = useState(false);
-  const [resetFormData, setResetFormData] = useState({
+  // Initialize form data based on mode
+  const [formData, setFormData] = useState({
+    email: "",
     password: "",
-    confirmPassword: "",
+    passwordConfirm: "",
+    token: token || "",
   });
 
-  // Error handling
-  const {
-    errors,
-    setFieldError,
-    clearFieldError,
-    clearAllErrors,
-    handleApiError,
-  } = useFormErrors();
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState({});
 
-  // Try to use schema validation, but handle failures gracefully
-  const {
-    validateField,
-    validateForm,
-    isLoading: schemaLoading,
-    schema: validationSchema,
-    error: schemaError,
-  } = useSchemaValidation("password-reset", true);
+  // Set token when it's provided
+  useEffect(() => {
+    if (token) {
+      setFormData((prev) => ({ ...prev, token }));
+    }
+  }, [token]);
 
-  // Use basic password validation regardless of schema
-  const passwordValidation = usePasswordValidation(
-    resetFormData.password,
-    resetFormData.confirmPassword
-  );
-
-  // Request password recovery email
-  const { execute: executeRecoveryRequest, loading: recoveryLoading } =
-    useAsync(
-      async (email) => {
-        clearAllErrors();
-        return await authApi.forgotPassword(email);
-      },
-      {
-        showErrorToast: true, // Enable toast for all errors
-        onSuccess: (result) => {
-          if (result && result.success) {
-            setEmailSent(true);
-            showSuccess(
-              "Password recovery email sent. Please check your inbox."
-            );
-          } else {
-            const errorMessage =
-              result?.message || "Failed to send recovery email";
-            showError(errorMessage);
-            setFieldError("email", errorMessage);
-          }
-        },
-        onError: (error) => {
-          const formattedError = formatApiError(error);
-
-          // Handle 404 error for non-existent email with a user-friendly message
-          if (error.status === 404) {
-            setFieldError("email", "No account found with this email address");
-            // We don't need to call showError here since showErrorToast is true
-          } else {
-            handleApiError(formattedError);
-          }
-        },
-      }
-    );
-
-  // Reset password with token
-  const { execute: executePasswordReset, loading: resetLoading } = useAsync(
-    async (data) => {
-      clearAllErrors();
-      return await authApi.resetPassword(
-        token,
-        data.password,
-        data.confirmPassword
-      );
+  // Define validation rules based on mode
+  const validationRules = {
+    forgot: {
+      email: true,
     },
-    {
-      showErrorToast: true, // Enable toast for reset password errors
-      onSuccess: (result) => {
-        if (result && result.success) {
-          showSuccess(
-            "Password has been reset successfully. You can now log in."
-          );
-          navigate("/login", {
-            replace: true,
-            state: {
-              message:
-                "Password reset successful. Please log in with your new password.",
-            },
-          });
-        } else {
-          const errorMessage = result?.message || "Failed to reset password";
-          showError(errorMessage);
-          setFieldError("general", errorMessage);
-        }
-      },
-      onError: (error) => {
-        const formattedError = formatApiError(error);
-        handleApiError(formattedError);
+    reset: {
+      password: true,
+      passwordConfirm: true,
+      token: true,
+    },
+  };
 
-        if (formattedError.general) {
-          showError(formattedError.general);
-        }
-      },
-    }
+  /**
+   * Validate a single field
+   */
+  const validateField = useCallback(
+    (name, value) => {
+      let errorMessage = "";
+
+      switch (name) {
+        case "email":
+          const emailResult = validateEmail(value);
+          if (!emailResult.isValid) errorMessage = emailResult.message;
+          break;
+
+        case "password":
+          const passwordResult = validatePassword(value);
+          if (!passwordResult.isValid) errorMessage = passwordResult.message;
+          break;
+
+        case "passwordConfirm":
+          const matchResult = validatePasswordMatch(formData.password, value);
+          if (!matchResult.isValid) errorMessage = matchResult.message;
+          break;
+
+        case "token":
+          if (!value || value.trim() === "") {
+            errorMessage = "Reset token is required";
+          } else if (value.length < 10) {
+            errorMessage = "Invalid reset token";
+          }
+          break;
+
+        default:
+          break;
+      }
+
+      setFieldErrors((prev) => ({
+        ...prev,
+        [name]: errorMessage,
+      }));
+
+      return errorMessage === "";
+    },
+    [formData.password]
   );
 
-  // Handle forgot password form submission
-  const handleForgotPasswordSubmit = async (e) => {
-    e.preventDefault();
-    clearAllErrors();
+  /**
+   * Validate the entire form
+   */
+  const validateFormData = useCallback(() => {
+    const errors = validateForm(formData, validationRules[mode]);
+    setFieldErrors(errors);
+    return isFormValid(errors);
+  }, [formData, mode, validationRules]);
 
-    // Validate email
-    if (!forgotPasswordEmail.trim()) {
-      setFieldError("email", "Email is required");
-      return;
-    }
+  /**
+   * Handle input changes
+   */
+  const handleChange = useCallback(
+    (e) => {
+      const { name, value } = e.target;
+      setFormData((prev) => ({ ...prev, [name]: value }));
 
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(forgotPasswordEmail)) {
-      setFieldError("email", "Please enter a valid email address");
-      return;
-    }
-
-    const result = await executeRecoveryRequest(forgotPasswordEmail);
-
-    // If the result indicates a handled error, we don't need to do anything else
-    // The error has already been handled by the onError callback in useAsync
-    if (result && result.handled && result.error) {
-      // Console log removed
-    }
-  };
-
-  // Handle password reset form changes
-  const handleResetFormChange = (e) => {
-    const { name, value } = e.target;
-    setResetFormData((prev) => ({ ...prev, [name]: value }));
-
-    // Clear previous error
-    if (errors[name]) {
-      clearFieldError(name);
-    }
-
-    // Validate field with schema if available (but don't rely on it)
-    if (validationSchema && !schemaError) {
-      try {
-        const fieldError = validateField(name, value);
-        if (fieldError) {
-          setFieldError(name, fieldError);
-        }
-      } catch (err) {
-        // If schema validation fails, we'll just continue without it
-        // Console log removed
+      // Clear any form-level errors when user starts typing
+      if (formErrors.error) {
+        clearFormError();
       }
-    }
-  };
+    },
+    [formErrors.error, clearFormError]
+  );
 
-  // Handle password reset form submission
-  const handleResetSubmit = async (e) => {
-    e.preventDefault();
-    clearAllErrors();
+  /**
+   * Handle form submission
+   */
+  const handleSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
+      clearFormError();
+      setSuccess(false);
 
-    // Try to validate with schema, but don't rely on it
-    let hasSchemaErrors = false;
-    if (validationSchema && !schemaError) {
-      try {
-        const validationErrors = validateForm(resetFormData);
-        if (Object.keys(validationErrors).length > 0) {
-          Object.entries(validationErrors).forEach(([field, error]) => {
-            setFieldError(field, error);
-          });
-          hasSchemaErrors = true;
-        }
-      } catch (err) {
-        // If schema validation fails, we'll just continue with basic validation
-        // Console log removed
+      // Validate form
+      if (!validateFormData()) {
+        return;
       }
-    }
 
-    // If schema validation found errors, don't continue
-    if (hasSchemaErrors) return;
+      setLoading(true);
 
-    // Basic validation checks (always run these regardless of schema)
-    if (!resetFormData.password) {
-      setFieldError("password", "Password is required");
-      return;
-    }
+      try {
+        if (mode === "forgot") {
+          const result = await authApi.forgotPassword(formData.email);
 
-    if (!resetFormData.confirmPassword) {
-      setFieldError("confirmPassword", "Please confirm your password");
-      return;
-    }
-
-    if (resetFormData.password !== resetFormData.confirmPassword) {
-      setFieldError("confirmPassword", "Passwords do not match");
-      return;
-    }
-
-    // Check password validation from the usePasswordValidation hook
-    if (!passwordValidation.isValid) {
-      passwordValidation.errors.forEach((error) => {
-        if (error.includes("match")) {
-          setFieldError("confirmPassword", error);
+          if (result.success) {
+            setSuccess(true);
+            showSuccess("Password reset instructions sent to your email");
+          }
         } else {
-          setFieldError("password", error);
+          const result = await authApi.resetPassword(
+            formData.token,
+            formData.password,
+            formData.passwordConfirm
+          );
+
+          if (result.success) {
+            setSuccess(true);
+            showSuccess("Password has been reset successfully");
+          }
         }
-      });
-      return;
-    }
+      } catch (error) {
+        setFormError(error);
+        setSuccess(false);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [
+      formData,
+      mode,
+      clearFormError,
+      setFormError,
+      validateFormData,
+      showSuccess,
+    ]
+  );
 
-    const result = await executePasswordReset(resetFormData);
-
-    // If the result indicates a handled error, we don't need to do anything else
-    if (result && result.handled && result.error) {
-      // Console log removed
-    }
-  };
+  /**
+   * Handle blur event (validate field on blur)
+   */
+  const handleBlur = useCallback(
+    (e) => {
+      const { name, value } = e.target;
+      validateField(name, value);
+    },
+    [validateField]
+  );
 
   return {
-    forgotPasswordEmail,
-    setForgotPasswordEmail,
-    emailSent,
-    resetFormData,
-    errors,
-    validationSchema,
-    passwordValidation,
-    recoveryLoading,
-    resetLoading,
-    schemaLoading,
-    handleForgotPasswordSubmit,
-    handleResetFormChange,
-    handleResetSubmit,
+    formData,
+    loading,
+    success,
+    fieldErrors,
+    formErrors,
+    handleChange,
+    handleSubmit,
+    handleBlur,
+    validatePassword: (password) => validateField("password", password),
+    validatePasswordMatch: (password, confirm) => {
+      setFormData((prev) => ({ ...prev, password, passwordConfirm: confirm }));
+      return validateField("passwordConfirm", confirm);
+    },
   };
 };
 

@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { requestEmailChange } from "../../../redux/slices/userSlice";
 import { useError } from "../../../context/ErrorContext";
+import { validateEmail } from "../../../utils/validation";
 
-const EmailManager = ({ user, validationSchema, showSuccess, showError }) => {
+const EmailManager = ({ user, showSuccess, showError }) => {
   const dispatch = useDispatch();
   const { showError: contextShowError, showSuccess: contextShowSuccess } =
     useError();
@@ -40,57 +41,19 @@ const EmailManager = ({ user, validationSchema, showSuccess, showError }) => {
     setEmailData({ email: e.target.value });
     setFieldError(null);
     if (e.target.value && e.target.value.trim() !== "") {
-      validateEmail(e.target.value, true);
+      validateEmailField(e.target.value, true);
     }
   };
 
-  const validateEmail = (email, setError = true) => {
+  const validateEmailField = (email, setError = true) => {
     let errorMessage = null;
 
-    // Check if schema validation is available
-    if (!validationSchema?.email) {
-      // Fallback validation if schema is not available
-      const emailRegex =
-        /^([\w+-]+(?:\.[\w+-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,})$/i;
-      if (email && !emailRegex.test(email)) {
-        errorMessage = "Please enter a valid email address";
-        if (setError) setFieldError(errorMessage);
-        return false;
-      }
-      return true;
-    }
-
-    // Use schema validation
-    if (validationSchema.email.required && (!email || email.trim() === "")) {
-      errorMessage =
-        validationSchema.email.requiredMessage || "Email is required";
+    // Validate email using our utility function
+    const validation = validateEmail(email);
+    if (!validation.isValid) {
+      errorMessage = validation.message;
       if (setError) setFieldError(errorMessage);
       return false;
-    }
-
-    if (validationSchema.email.pattern && email) {
-      try {
-        const pattern = new RegExp(
-          validationSchema.email.pattern,
-          validationSchema.email.patternFlags || "i"
-        );
-        if (!pattern.test(email)) {
-          errorMessage =
-            validationSchema.email.message || "Invalid email format";
-          if (setError) setFieldError(errorMessage);
-          return false;
-        }
-      } catch (error) {
-        console.error("Invalid regex pattern:", error);
-        // Fallback validation
-        const emailRegex =
-          /^([\w+-]+(?:\.[\w+-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,})$/i;
-        if (!emailRegex.test(email)) {
-          errorMessage = "Please enter a valid email address";
-          if (setError) setFieldError(errorMessage);
-          return false;
-        }
-      }
     }
 
     // Business rule: email must be different
@@ -182,10 +145,7 @@ const EmailManager = ({ user, validationSchema, showSuccess, showError }) => {
         >
           <div className="profile-form-group">
             <label htmlFor="email" className="profile-form-label">
-              Email Address{" "}
-              {validationSchema?.email?.required && (
-                <span className="profile-required">*</span>
-              )}
+              Email Address <span className="profile-required">*</span>
             </label>
             <input
               type="email"
@@ -193,7 +153,7 @@ const EmailManager = ({ user, validationSchema, showSuccess, showError }) => {
               name="email"
               value={emailData.email}
               onChange={handleEmailChange}
-              required={validationSchema?.email?.required}
+              required={true}
               className={getInputClass()}
               aria-invalid={fieldError ? "true" : "false"}
               aria-describedby={fieldError ? "email-error" : undefined}

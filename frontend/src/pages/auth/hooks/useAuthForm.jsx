@@ -1,310 +1,207 @@
-// frontend/src/pages/auth/hooks/useAuthForm.jsx
-
-import { useState, useContext, useCallback, useEffect, useRef } from "react";
-import { AuthContext } from "../../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useState, useCallback } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import authApi from "../../../services/authApi";
 import { useError } from "../../../context/ErrorContext";
-import { formatApiError } from "../../../utils/apiErrorUtils";
-
-import useSchemaValidation from "../../../hooks/useSchemaValidation";
 import useFormErrors from "../../../hooks/useFormErrors";
-import useAsync from "../../../hooks/useAsync";
-import useNetwork from "../../../hooks/useNetwork";
+import {
+  validateEmail,
+  validateName,
+  validatePassword,
+  validatePasswordMatch,
+  validateForm,
+  isFormValid,
+} from "../../../utils/validation";
 
-const useAuthForm = () => {
-  const [state, setState] = useState("Login");
+/**
+ * Custom hook for managing auth forms (login/register)
+ *
+ * @param {string} formType - The type of form ('login' or 'register')
+ * @returns {Object} Form state and handlers
+ */
+const useAuthForm = (formType = "login") => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { setFormError, clearFormError, formErrors } = useFormErrors();
+  const { showSuccess } = useError();
+
   const [formData, setFormData] = useState({
-    username: "",
+    name: "",
     email: "",
     password: "",
-    confirmPassword: "",
-  });
-  const [termsAccepted, setTermsAccepted] = useState(false);
-  const {
-    login: authLogin,
-    signup: authSignup,
-    error: authError,
-  } = useContext(AuthContext);
-  const navigate = useNavigate();
-  const { showError, showSuccess } = useError();
-
-  const {
-    errors,
-    setFieldError,
-    clearFieldError,
-    clearAllErrors,
-    setMultipleErrors,
-    handleApiError,
-  } = useFormErrors();
-
-  const { isOnline } = useNetwork({
-    showToasts: true,
-    offlineMessage: "You are currently offline. Please reconnect to continue.",
+    passwordConfirm: "",
   });
 
-  // Use the schema validation hook for registration forms
-  const {
-    validateField,
-    validateForm,
-    isLoading: schemaLoading,
-    schema: validationSchema,
-  } = useSchemaValidation("registration", true);
+  const [loading, setLoading] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState({});
 
-  // Track if validation has started for visual feedback
-  const [validationStarted, setValidationStarted] = useState({
-    password: false,
-    confirmPassword: false,
-    email: false,
-  });
-
-  const { execute: executeLogin, loading: loginLoading } = useAsync(
-    async (email, password) => {
-      clearAllErrors();
-      return await authLogin(email, password);
+  // Define which validation rules to use for each form type
+  const validationRules = {
+    login: {
+      email: true,
+      password: true,
     },
-    {
-      showErrorToast: false,
-      onSuccess: () => {
-        showSuccess("Login successful!");
-      },
-      onError: (error) => {
-        const formattedError = formatApiError(error);
-        handleApiError(formattedError);
-        if (error.emailVerificationNeeded) {
-          navigate("/verify-pending", {
-            state: { email: formData.email },
-          });
-        }
-      },
-    }
-  );
-
-  const { execute: executeSignup, loading: signupLoading } = useAsync(
-    async (userData) => {
-      clearAllErrors();
-      return await authSignup(userData);
+    register: {
+      name: true,
+      email: true,
+      password: true,
+      passwordConfirm: true,
     },
-    {
-      showErrorToast: false,
-      onSuccess: (result) => {
-        showSuccess("Account created successfully!");
-        if (result && result.success && result.requiresVerification) {
-          navigate("/verify-pending", {
-            state: { email: formData.email },
-          });
-        }
-      },
-      onError: (error) => {
-        const formattedError = formatApiError(error);
-        handleApiError(formattedError);
-      },
-    }
-  );
-
-  // Allow parent component to set the initial state
-  const setInitialState = useCallback(
-    (newState) => {
-      if (newState === "Login" || newState === "Signup") {
-        setState(newState);
-        clearAllErrors();
-      }
-    },
-    [clearAllErrors]
-  );
-
-  const switchState = () => {
-    setState((prev) => (prev === "Login" ? "Signup" : "Login"));
-    setFormData({
-      username: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-    });
-    clearAllErrors();
-    setTermsAccepted(false);
-    setValidationStarted({
-      password: false,
-      confirmPassword: false,
-      email: false,
-    });
   };
 
-  const changeHandler = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  /**
+   * Validate a single field
+   */
+  const validateField = useCallback(
+    (name, value) => {
+      let errorMessage = "";
 
-    // Clear previous error for this field
-    if (errors[name]) {
-      clearFieldError(name);
-    }
+      switch (name) {
+        case "name":
+          const nameResult = validateName(value);
+          if (!nameResult.isValid) errorMessage = nameResult.message;
+          break;
 
-    // Track validation has started for fields
-    if (name === "password" || name === "confirmPassword" || name === "email") {
-      setValidationStarted((prev) => ({
+        case "email":
+          const emailResult = validateEmail(value);
+          if (!emailResult.isValid) errorMessage = emailResult.message;
+          break;
+
+        case "password":
+          const passwordResult = validatePassword(value);
+          if (!passwordResult.isValid) errorMessage = passwordResult.message;
+          break;
+
+        case "passwordConfirm":
+          const matchResult = validatePasswordMatch(formData.password, value);
+          if (!matchResult.isValid) errorMessage = matchResult.message;
+          break;
+
+        default:
+          break;
+      }
+
+      setFieldErrors((prev) => ({
         ...prev,
-        [name]: true,
+        [name]: errorMessage,
       }));
-    }
 
-    // Use schema validation for fields
-    if (validationSchema && validationStarted[name]) {
-      const error = validateField(name, value);
-      if (error) {
-        setFieldError(name, error);
+      return errorMessage === "";
+    },
+    [formData.password]
+  );
+
+  /**
+   * Validate the entire form
+   */
+  const validateFormData = useCallback(() => {
+    const errors = validateForm(formData, validationRules[formType]);
+    setFieldErrors(errors);
+    return isFormValid(errors);
+  }, [formData, formType, validationRules]);
+
+  /**
+   * Handle input changes
+   */
+  const handleChange = useCallback(
+    (e) => {
+      const { name, value } = e.target;
+      setFormData((prev) => ({ ...prev, [name]: value }));
+
+      // Clear any form-level errors when user starts typing
+      if (formErrors.error) {
+        clearFormError();
       }
-    }
-  };
+    },
+    [formErrors.error, clearFormError]
+  );
 
-  const validateLoginForm = () => {
-    let isValid = true;
-    clearAllErrors();
-    if (!formData.email.trim()) {
-      setFieldError("email", "Email is required");
-      isValid = false;
-    }
-    if (!formData.password.trim()) {
-      setFieldError("password", "Password is required");
-      isValid = false;
-    }
-    return isValid;
-  };
+  /**
+   * Handle form submission
+   */
+  const handleSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
+      clearFormError();
 
-  const validateSignupForm = () => {
-    clearAllErrors();
-
-    // Validate all fields with backend schema
-    const validationErrors = validateForm({
-      username: formData.username,
-      email: formData.email,
-      password: formData.password,
-      passwordConfirm: formData.confirmPassword,
-    });
-
-    // Check for terms acceptance
-    if (!termsAccepted) {
-      validationErrors.terms = "You must accept the terms and conditions";
-    }
-
-    // Apply errors to form state
-    if (Object.keys(validationErrors).length > 0) {
-      setMultipleErrors(validationErrors);
-      return false;
-    }
-
-    return true;
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!isOnline) {
-      showError(
-        "You are offline. Please check your internet connection and try again."
-      );
-      return;
-    }
-    if (state === "Signup") {
-      if (!validateSignupForm()) return;
-      const signupData = {
-        username: formData.username,
-        email: formData.email,
-        password: formData.password,
-        passwordConfirm: formData.confirmPassword,
-      };
-      await executeSignup(signupData);
-    } else {
-      if (!validateLoginForm()) return;
-      await executeLogin(formData.email, formData.password);
-    }
-  };
-
-  // Check password validity against schema requirements
-  const checkPasswordValidity = () => {
-    if (!validationSchema || !validationSchema.password) {
-      return {
-        validLength: false,
-        hasNumber: false,
-        hasUppercase: false,
-        specialChar: false,
-        match: false,
-        validationStarted: false,
-        isValid: false,
-      };
-    }
-
-    // Extract password requirements from schema
-    const passwordSchema = validationSchema.password;
-    const minLength = passwordSchema.minLength || 8;
-
-    // Determine if requirements exist in the schema
-    const requiresUppercase = passwordSchema.requiresUppercase || false;
-    const requiresNumber = passwordSchema.requiresNumber || false;
-    const requiresSpecial = passwordSchema.requiresSpecial || false;
-
-    // Check actual password against requirements
-    const validLength = formData.password.length >= minLength;
-    const hasUppercase = !requiresUppercase || /[A-Z]/.test(formData.password);
-    const hasNumber = !requiresNumber || /\d/.test(formData.password);
-    const specialChar =
-      !requiresSpecial || /[!@#$%^&*(),.?":{}|<>]/.test(formData.password);
-
-    // Password matching check
-    const match =
-      formData.password === formData.confirmPassword &&
-      formData.password !== "";
-
-    // Determine if validation has started
-    const hasStarted = validationStarted.password;
-
-    // Password is valid if it meets all requirements
-    const isValid =
-      validLength &&
-      hasUppercase &&
-      hasNumber &&
-      specialChar &&
-      match &&
-      hasStarted;
-
-    return {
-      validLength,
-      hasNumber,
-      hasUppercase,
-      specialChar,
-      match,
-      validationStarted: hasStarted,
-      isValid,
-    };
-  };
-
-  // Use a ref to ensure we process the auth error only once per change.
-  const authErrorProcessed = useRef(false);
-
-  useEffect(() => {
-    if (authError && !authErrorProcessed.current) {
-      if (typeof authError === "string") {
-        setFieldError("general", authError);
-      } else if (authError.fieldErrors) {
-        setMultipleErrors(authError.fieldErrors);
+      // Validate form
+      if (!validateFormData()) {
+        return;
       }
-      authErrorProcessed.current = true;
-    } else if (!authError) {
-      authErrorProcessed.current = false;
-    }
-  }, [authError, setFieldError, setMultipleErrors]);
+
+      setLoading(true);
+
+      try {
+        // Determine redirect path
+        const redirect = location.state?.from?.pathname || "/";
+
+        if (formType === "login") {
+          const result = await authApi.login(formData.email, formData.password);
+
+          if (result.success) {
+            // Store auth token if returned
+            if (result.token) {
+              localStorage.setItem("auth-token", result.token);
+            }
+            navigate(redirect);
+          }
+        } else {
+          const userData = {
+            name: formData.name,
+            email: formData.email,
+            password: formData.password,
+            passwordConfirm: formData.passwordConfirm,
+          };
+
+          const result = await authApi.register(userData);
+
+          if (result.success) {
+            // Show success message
+            showSuccess(
+              "Registration successful! Please check your email to verify your account."
+            );
+
+            // Navigate to login page
+            navigate("/login", { replace: true });
+          }
+        }
+      } catch (error) {
+        // handleError will set form errors via the useFormErrors hook
+        setFormError(error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [
+      formData,
+      formType,
+      navigate,
+      location.state?.from?.pathname,
+      clearFormError,
+      setFormError,
+      validateFormData,
+      showSuccess,
+    ]
+  );
+
+  /**
+   * Handle blur event (validate field on blur)
+   */
+  const handleBlur = useCallback(
+    (e) => {
+      const { name, value } = e.target;
+      validateField(name, value);
+    },
+    [validateField]
+  );
 
   return {
-    state,
     formData,
-    termsAccepted,
-    loading: loginLoading || signupLoading || schemaLoading,
-    errors,
-    passwordValidation: checkPasswordValidity(),
-    schema: validationSchema,
-    isOffline: !isOnline,
-    setTermsAccepted,
-    switchState,
-    changeHandler,
+    loading,
+    fieldErrors,
+    handleChange,
     handleSubmit,
-    setInitialState,
+    handleBlur,
+    formErrors,
   };
 };
 

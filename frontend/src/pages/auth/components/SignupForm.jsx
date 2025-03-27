@@ -1,77 +1,43 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { FormInputField, FormSubmitButton } from "../../../components/form";
-import SchemaPasswordValidation from "./SchemaPasswordValidation";
+import PasswordValidation from "./PasswordValidation";
 
 /**
- * Signup form component with enhanced schema-based validation
+ * Signup form component
  *
  * @param {Object} props - Component props
  * @param {Object} props.formData - Form data values
- * @param {Function} props.changeHandler - Function to handle input changes
+ * @param {Function} props.handleChange - Function to handle input changes
  * @param {Boolean} props.loading - Loading state
  * @param {Object} props.errors - Field-level error messages
  * @param {Function} props.handleSubmit - Form submission handler
- * @param {Boolean} props.termsAccepted - Terms and conditions acceptance state
- * @param {Function} props.setTermsAccepted - Function to update terms acceptance state
- * @param {Object} props.passwordValidation - Password validation state
- * @param {Boolean} props.isOffline - Whether the user is offline
- * @param {Object} props.validationSchema - Validation schema from backend
- * @param {Boolean} props.isLoading - Loading state for SchemaPasswordValidation
+ * @param {Function} props.handleBlur - Function to handle input blur events
  */
 const SignupForm = ({
   formData,
-  changeHandler,
+  handleChange,
   loading,
   errors,
   handleSubmit,
-  termsAccepted,
-  setTermsAccepted,
-  passwordValidation,
-  isOffline,
-  validationSchema,
-  isLoading,
+  handleBlur,
 }) => {
-  const {
-    validLength,
-    hasUppercase,
-    hasNumber,
-    specialChar,
-    match,
-    validationStarted,
-  } = passwordValidation || {};
+  const [termsAccepted, setTermsAccepted] = useState(false);
+
+  // Password validation states
+  const passwordValidation = {
+    validLength: formData.password?.length >= 8,
+    hasUppercase: /[A-Z]/.test(formData.password || ""),
+    hasNumber: /[0-9]/.test(formData.password || ""),
+    specialChar: /[^A-Za-z0-9]/.test(formData.password || ""),
+    match:
+      formData.password === formData.confirmPassword &&
+      formData.password !== "",
+    validationStarted: formData.password?.length > 0,
+  };
 
   // Only show validation feedback when user has started typing a password
-  const showValidation = formData.password.length > 0;
-
-  // Get validation attributes for inputs based on schema
-  const getValidationAttributes = (fieldName) => {
-    if (!validationSchema) return {};
-
-    const fieldSchema = validationSchema[fieldName];
-    if (!fieldSchema) return {};
-
-    const attributes = {
-      required: fieldSchema.required || false,
-    };
-
-    // Add title with validation message
-    if (fieldSchema.message) {
-      attributes.title = fieldSchema.message;
-    }
-
-    // Add min length if it exists
-    if (fieldSchema.minLength) {
-      attributes.minLength = fieldSchema.minLength;
-    }
-
-    // Add max length if it exists
-    if (fieldSchema.maxLength) {
-      attributes.maxLength = fieldSchema.maxLength;
-    }
-
-    return attributes;
-  };
+  const showValidation = formData.password?.length > 0;
 
   return (
     <form className="auth-form" onSubmit={handleSubmit} noValidate>
@@ -81,12 +47,13 @@ const SignupForm = ({
           name="username"
           label="Your name"
           value={formData.username || ""}
-          onChange={changeHandler}
+          onChange={handleChange}
+          onBlur={handleBlur}
           error={errors?.username}
           placeholder="John Doe"
-          required={validationSchema?.username?.required}
+          required={true}
           className="auth-form__input"
-          {...getValidationAttributes("username")}
+          title="Please enter your name"
         />
 
         <FormInputField
@@ -94,12 +61,13 @@ const SignupForm = ({
           name="email"
           label="Email address"
           value={formData.email || ""}
-          onChange={changeHandler}
+          onChange={handleChange}
+          onBlur={handleBlur}
           error={errors?.email}
           placeholder="your@email.com"
-          required={validationSchema?.email?.required}
+          required={true}
           className="auth-form__input"
-          {...getValidationAttributes("email")}
+          title="Please enter a valid email address"
         />
 
         <FormInputField
@@ -107,16 +75,19 @@ const SignupForm = ({
           name="password"
           label="Password"
           value={formData.password || ""}
-          onChange={changeHandler}
+          onChange={handleChange}
+          onBlur={handleBlur}
           error={errors?.password}
           placeholder="Create a strong password"
           className={`auth-form__input ${
-            validationStarted ? "auth-form__input--validation-active" : ""
+            passwordValidation.validationStarted
+              ? "auth-form__input--validation-active"
+              : ""
           }`}
-          required={validationSchema?.password?.required}
+          required={true}
           aria-describedby="password-validation"
           autocomplete="new-password"
-          {...getValidationAttributes("password")}
+          title="Please create a strong password"
         />
 
         <FormInputField
@@ -124,31 +95,31 @@ const SignupForm = ({
           name="confirmPassword"
           label="Confirm password"
           value={formData.confirmPassword || ""}
-          onChange={changeHandler}
-          error={errors?.confirmPassword || errors?.passwordConfirm}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          error={errors?.confirmPassword}
           placeholder="Confirm your password"
           className={`auth-form__input ${
             formData.confirmPassword
-              ? match
+              ? passwordValidation.match
                 ? "auth-form__input--match"
                 : "auth-form__input--no-match"
               : ""
           }`}
-          required={validationSchema?.passwordConfirm?.required}
+          required={true}
           aria-describedby="password-match-validation"
           autocomplete="new-password"
+          title="Please confirm your password"
         />
 
-        <SchemaPasswordValidation
-          validLength={validLength}
-          hasUppercase={hasUppercase}
-          hasNumber={hasNumber}
-          specialChar={specialChar}
-          match={match}
+        <PasswordValidation
+          validLength={passwordValidation.validLength}
+          hasUppercase={passwordValidation.hasUppercase}
+          hasNumber={passwordValidation.hasNumber}
+          specialChar={passwordValidation.specialChar}
+          match={passwordValidation.match}
           showFeedback={showValidation}
           confirmPassword={formData.confirmPassword}
-          validationSchema={validationSchema}
-          isLoading={isLoading}
         />
       </div>
 
@@ -178,7 +149,7 @@ const SignupForm = ({
           isLoading={loading}
           text="Create Account"
           loadingText="Creating account..."
-          disabled={isOffline || (!termsAccepted && !errors?.terms)}
+          disabled={!termsAccepted && !errors?.terms}
           className="auth-form__submit-btn"
           size="medium"
           variant="primary"
@@ -190,25 +161,16 @@ const SignupForm = ({
 
 SignupForm.propTypes = {
   formData: PropTypes.object.isRequired,
-  changeHandler: PropTypes.func.isRequired,
+  handleChange: PropTypes.func.isRequired,
   loading: PropTypes.bool,
   errors: PropTypes.object,
   handleSubmit: PropTypes.func.isRequired,
-  termsAccepted: PropTypes.bool.isRequired,
-  setTermsAccepted: PropTypes.func.isRequired,
-  passwordValidation: PropTypes.object,
-  isOffline: PropTypes.bool,
-  validationSchema: PropTypes.object,
-  isLoading: PropTypes.bool,
+  handleBlur: PropTypes.func.isRequired,
 };
 
 SignupForm.defaultProps = {
   loading: false,
   errors: {},
-  isOffline: false,
-  passwordValidation: {},
-  validationSchema: null,
-  isLoading: false,
 };
 
 export default SignupForm;

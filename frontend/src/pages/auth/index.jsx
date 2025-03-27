@@ -7,7 +7,7 @@ import SignupForm from "./components/SignupForm";
 import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
 
 // Hooks
-import useSchemaAuthForm from "./hooks/useSchemaAuthForm";
+import { useAuthForm } from "./hooks";
 
 // Context
 import { AuthContext } from "../../context/AuthContext";
@@ -19,7 +19,6 @@ import "../../components/form/FormSubmitButton.css";
 
 /**
  * Auth component for handling user login and signup
- * Now using schema-based validation fetched from the backend
  */
 const Auth = ({ initialState }) => {
   const navigate = useNavigate();
@@ -30,21 +29,17 @@ const Auth = ({ initialState }) => {
     inTransition,
   } = useContext(AuthContext);
 
+  // Initialize with appropriate form type based on initialState
+  const formType = initialState === "Signup" ? "register" : "login";
   const {
-    state,
     formData,
-    termsAccepted,
     loading,
-    errors,
-    passwordValidation,
-    isOffline,
-    setTermsAccepted,
-    setInitialState,
-    changeHandler,
+    fieldErrors,
+    handleChange,
     handleSubmit,
-    schema: validationSchema,
-    isLoading: schemaLoading,
-  } = useSchemaAuthForm();
+    handleBlur,
+    formErrors,
+  } = useAuthForm(formType);
 
   // Redirect authenticated users away from login/signup pages.
   useEffect(() => {
@@ -57,27 +52,14 @@ const Auth = ({ initialState }) => {
     }
   }, [isAuthenticated, authLoading, navigate, location.state?.from]);
 
-  // Update form state based on the current route, only if it needs to change.
-  useEffect(() => {
-    const path = location.pathname;
-    const desiredState = path === "/login" ? "Login" : "Signup";
-    if (state !== desiredState) {
-      setInitialState(desiredState);
-    }
-  }, [location.pathname, state, setInitialState]);
-
-  // Set initial state if provided as prop
-  useEffect(() => {
-    if (initialState && state !== initialState) {
-      setInitialState(initialState);
-    }
-  }, [initialState, state, setInitialState]);
-
   // Skip showing loading indicator here since we're using AuthLoadingIndicator
   // This prevents the flickering when transitioning between pages
   if (authLoading && !inTransition) {
     return null;
   }
+
+  // Determine current state (Login or Signup) based on path
+  const state = location.pathname === "/login" ? "Login" : "Signup";
 
   return (
     <div className="auth-page">
@@ -88,36 +70,29 @@ const Auth = ({ initialState }) => {
             {state === "Signup" ? "Create Account" : "Login"}
           </h1>
 
-          {errors.general && (
+          {formErrors.error && (
             <div className="auth-page__error" role="alert">
-              {errors.general}
+              {formErrors.error}
             </div>
           )}
 
           {state === "Login" ? (
             <LoginForm
               formData={formData}
-              changeHandler={changeHandler}
+              handleChange={handleChange}
               loading={loading || inTransition}
-              errors={errors}
+              errors={fieldErrors}
               handleSubmit={handleSubmit}
-              isOffline={isOffline}
-              validationSchema={validationSchema}
-              isLoading={schemaLoading}
+              handleBlur={handleBlur}
             />
           ) : (
             <SignupForm
               formData={formData}
-              changeHandler={changeHandler}
+              handleChange={handleChange}
               loading={loading || inTransition}
-              isLoading={schemaLoading}
-              errors={errors}
+              errors={fieldErrors}
               handleSubmit={handleSubmit}
-              termsAccepted={termsAccepted}
-              setTermsAccepted={setTermsAccepted}
-              passwordValidation={passwordValidation}
-              isOffline={isOffline}
-              validationSchema={validationSchema}
+              handleBlur={handleBlur}
             />
           )}
 
