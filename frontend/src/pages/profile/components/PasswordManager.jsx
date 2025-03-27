@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useError } from "../../../context/ErrorContext";
+import { debounce } from "lodash";
 
 /**
  * PasswordManager component for handling password changes
@@ -18,6 +19,15 @@ const PasswordManager = ({
 }) => {
   const { showError } = useError();
   const [isFormValid, setIsFormValid] = useState(false);
+
+  // Add state to track individual password validations
+  const [passwordValidations, setPasswordValidations] = useState({
+    length: false,
+    uppercase: false,
+    number: false,
+    special: false,
+    match: false,
+  });
 
   // Validate form whenever password data or field errors change
   useEffect(() => {
@@ -42,6 +52,44 @@ const PasswordManager = ({
     // Form is valid if all fields have values and there are no errors
     setIsFormValid(!hasEmptyField && !hasFieldErrors);
   }, [passwordData, fieldErrors, validationSchema]);
+
+  // Add effect to validate individual password requirements
+  useEffect(() => {
+    const validatePassword = () => {
+      const { newPassword, confirmPassword } = passwordData;
+      if (!newPassword) {
+        setPasswordValidations({
+          length: false,
+          uppercase: false,
+          number: false,
+          special: false,
+          match: false,
+        });
+        return;
+      }
+
+      // Get min length requirement from schema or default to 8
+      const minLength = validationSchema?.newPassword?.minLength || 8;
+
+      // Validate each requirement
+      setPasswordValidations({
+        length: newPassword.length >= minLength,
+        uppercase: /[A-Z]/.test(newPassword),
+        number: /[0-9]/.test(newPassword),
+        special: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(newPassword),
+        match: confirmPassword && newPassword === confirmPassword,
+      });
+    };
+
+    // Debounce the validation to prevent too many rerenders
+    const debouncedValidate = debounce(validatePassword, 300);
+    debouncedValidate();
+
+    // Cleanup
+    return () => {
+      debouncedValidate.cancel();
+    };
+  }, [passwordData, validationSchema]);
 
   // Function to determine input class based on validation state
   const getInputClass = (fieldName) => {
@@ -81,39 +129,15 @@ const PasswordManager = ({
     return attributes;
   };
 
-  // Generate password requirements message based on validation schema
-  const getPasswordRequirements = () => {
-    if (!validationSchema?.newPassword) {
-      return "Password should be secure with a mix of characters.";
+  // Get minimum password length from schema
+  const getMinPasswordLength = () => {
+    // Get only the numeric value from the schema, ignore any text
+    const minLength = validationSchema?.newPassword?.minLength;
+    if (typeof minLength === "number") {
+      return minLength;
     }
-
-    const requirements = [];
-    const schema = validationSchema.newPassword;
-
-    if (schema.minLength) {
-      requirements.push(`at least ${schema.minLength} characters long`);
-    }
-
-    // Use explicit requirement flags if available instead of message parsing
-    if (schema.requiresUppercase) {
-      requirements.push("one uppercase letter");
-    } else if (schema.message && schema.message.includes("uppercase")) {
-      requirements.push("one uppercase letter");
-    }
-
-    if (schema.requiresNumber) {
-      requirements.push("one number");
-    } else if (schema.message && schema.message.includes("number")) {
-      requirements.push("one number");
-    }
-
-    if (schema.requiresSpecial) {
-      requirements.push("one special character");
-    } else if (schema.message && schema.message.includes("special")) {
-      requirements.push("one special character");
-    }
-
-    return `Password must be ${requirements.join(" and include ")}.`;
+    // Default to 8 if not specified
+    return 8;
   };
 
   // Handle form submission with validation
@@ -215,12 +239,44 @@ const PasswordManager = ({
                 {fieldErrors.newPassword}
               </p>
             )}
-            <p
+
+            <div
               className="profile-password-requirements"
               id="newPassword-requirements"
             >
-              {getPasswordRequirements()}
-            </p>
+              <p>Password requirements:</p>
+              <ul>
+                <li
+                  className={passwordValidations.length ? "valid" : "invalid"}
+                >
+                  At least {getMinPasswordLength()} characters
+                </li>
+                <li
+                  className={
+                    passwordValidations.uppercase ? "valid" : "invalid"
+                  }
+                >
+                  One uppercase letter
+                </li>
+                <li
+                  className={passwordValidations.number ? "valid" : "invalid"}
+                >
+                  One number
+                </li>
+                <li
+                  className={passwordValidations.special ? "valid" : "invalid"}
+                >
+                  One special character
+                </li>
+                {passwordData.confirmPassword && (
+                  <li
+                    className={passwordValidations.match ? "valid" : "invalid"}
+                  >
+                    Passwords match
+                  </li>
+                )}
+              </ul>
+            </div>
           </div>
 
           <div className="profile-form-group">

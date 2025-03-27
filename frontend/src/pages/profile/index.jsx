@@ -188,13 +188,67 @@ const Profile = () => {
     if (profileValidation.schema) {
       // Handle nested fields like address properly
       const flattenedData = { ...data };
-      if (data.address) {
+
+      // Process address fields separately
+      const hasAddressData =
+        data.address &&
+        Object.values(data.address).some(
+          (value) => value && typeof value === "string" && value.trim() !== ""
+        );
+
+      // Only validate address if it contains data
+      if (hasAddressData) {
         Object.keys(data.address).forEach((key) => {
           flattenedData[`address.${key}`] = data.address[key];
         });
       }
 
-      const validationErrors = profileValidation.validateForm(flattenedData);
+      const validationErrors = {};
+
+      // Validate fields other than address first
+      Object.keys(flattenedData).forEach((key) => {
+        // Skip address fields for now
+        if (key.startsWith("address.")) return;
+
+        // Phone is optional, so skip if empty
+        if (
+          key === "phone" &&
+          (!flattenedData[key] || flattenedData[key].trim() === "")
+        ) {
+          return;
+        }
+
+        const error = profileValidation.validateField(key, flattenedData[key]);
+        if (error) {
+          validationErrors[key] = error;
+        }
+      });
+
+      // Validate address fields separately if needed
+      if (hasAddressData) {
+        // Required address fields if any address data is provided
+        const requiredAddressFields = ["street", "city", "zipCode", "country"];
+
+        // Check if all required fields are present
+        let missingRequiredField = false;
+        requiredAddressFields.forEach((field) => {
+          const fieldName = `address.${field}`;
+          const value = flattenedData[fieldName];
+
+          if (!value || value.trim() === "") {
+            missingRequiredField = true;
+            validationErrors[fieldName] = `${
+              field.charAt(0).toUpperCase() + field.slice(1)
+            } is required`;
+          } else {
+            // Validate the field according to schema
+            const error = profileValidation.validateField(fieldName, value);
+            if (error) {
+              validationErrors[fieldName] = error;
+            }
+          }
+        });
+      }
 
       // Format errors with better field names
       const formattedErrors = {};
@@ -235,22 +289,95 @@ const Profile = () => {
   const handleSubmit = async (e, customFormData = null) => {
     e?.preventDefault();
     const dataToSubmit = customFormData || formData;
+
+    // Special handling for address updates
+    const isAddressUpdate =
+      dataToSubmit.address &&
+      Object.values(dataToSubmit.address).some((val) => val !== "");
+
     if (!validateForm(dataToSubmit)) {
       showError("Please fix the validation errors before submitting");
       return;
     }
+
     try {
-      await dispatch(updateUserProfile(dataToSubmit)).unwrap();
-      showSuccess("Profile updated successfully!");
-      const updatedData = {
-        ...user,
-        ...dataToSubmit,
-        name: dataToSubmit.name || user.name,
-        username: dataToSubmit.name || user.username,
-      };
-      setUpdatedUserData(updatedData);
+      // Ensure address fields are properly formatted for the backend
+      let formattedData = { ...dataToSubmit };
+
+      // If we're updating an address, ensure all fields are properly formatted
+      if (isAddressUpdate) {
+        // Ensure all address fields are present, even if empty
+        formattedData.address = {
+          street: dataToSubmit.address.street || "",
+          city: dataToSubmit.address.city || "",
+          state: dataToSubmit.address.state || "",
+          zipCode: dataToSubmit.address.zipCode || "",
+          country: dataToSubmit.address.country || "",
+        };
+
+        console.log(
+          "Formatted address data:",
+          JSON.stringify(formattedData, null, 2)
+        );
+      }
+
+      // Call updateUserProfile action and wait for the response
+      const updatedUser = await dispatch(
+        updateUserProfile(formattedData)
+      ).unwrap();
+
+      // Only show success and update data if we get a successful response
+      if (updatedUser) {
+        showSuccess("Profile updated successfully!");
+
+        // For address updates, verify the address was actually saved
+        if (isAddressUpdate) {
+          const addressSaved =
+            updatedUser.address &&
+            Object.keys(formattedData.address).every(
+              (key) => updatedUser.address[key] === formattedData.address[key]
+            );
+
+          if (!addressSaved) {
+            showError(
+              "Address may not have been saved correctly. Please verify your information."
+            );
+            console.error("Address update mismatch - sent vs received:", {
+              sent: formattedData.address,
+              received: updatedUser.address,
+            });
+          }
+        }
+
+        // Merge the updated user data with existing user data
+        const updatedData = {
+          ...user,
+          ...updatedUser,
+          name: updatedUser.name || user.name,
+          username: updatedUser.name || user.username,
+          address: updatedUser.address || user.address,
+          phone: updatedUser.phone || user.phone,
+        };
+
+        // Update local state
+        setUpdatedUserData(updatedData);
+
+        // Refresh the complete profile to ensure data is in sync with backend
+        await fetchUserProfile();
+      } else {
+        showError("Failed to update profile - no response from server");
+      }
     } catch (error) {
-      showError(error || "Failed to update profile");
+      // Handle different types of errors
+      if (error.validationErrors) {
+        // Format validation errors for display
+        const errorMessage = Object.values(error.validationErrors).join(". ");
+        showError(errorMessage || "Validation error in profile update");
+      } else if (typeof error === "string") {
+        showError(error);
+      } else {
+        showError(error.message || "Failed to update profile");
+      }
     }
   };
 

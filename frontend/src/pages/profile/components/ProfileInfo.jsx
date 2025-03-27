@@ -58,27 +58,35 @@ const ProfileInfo = ({
       return;
     }
 
-    // Check if all address fields have values (make all fields required regardless of backend schema)
-    const requiredAddressFields = [
-      "street",
-      "city",
-      "zipCode",
-      "country",
-      "state",
-    ]; // All fields are required
+    // Check if at least the critical address fields have values (street, city, zipCode, country)
+    const criticalAddressFields = ["street", "city", "zipCode", "country"];
 
-    // Check if all required address fields have values
-    const hasAllRequiredFields = requiredAddressFields.every(
+    // Check if there are any values in the address fields - at least one field must be filled
+    const hasAnyAddressField = Object.keys(formData.address).some(
       (field) =>
         formData.address[field] && formData.address[field].trim() !== ""
     );
+
+    // If no address fields are provided, form is valid (empty address is allowed)
+    if (!hasAnyAddressField) {
+      setIsAddressValid(true);
+      return;
+    }
+
+    // If address is being provided, critical fields are required
+    const hasAllCriticalFields = hasAnyAddressField
+      ? criticalAddressFields.every(
+          (field) =>
+            formData.address[field] && formData.address[field].trim() !== ""
+        )
+      : true;
 
     // Check if there are any address field errors
     const hasAddressErrors =
       fieldErrors?.address &&
       Object.keys(fieldErrors.address).some((key) => fieldErrors.address[key]);
 
-    setIsAddressValid(hasAllRequiredFields && !hasAddressErrors);
+    setIsAddressValid(hasAllCriticalFields && !hasAddressErrors);
   }, [formData, fieldErrors, validationSchema]);
 
   // Enhance this method to check for nested fields in the address
@@ -170,12 +178,17 @@ const ProfileInfo = ({
       return;
     }
 
-    // Keep name and phone as is, only update address
+    // Only update address data without requiring phone
     const addressData = {
       name: displayUserData?.name || formData.name,
-      phone: displayUserData?.phone || formData.phone,
       address: formData.address,
     };
+
+    // Keep phone only if it exists in user data, but don't make it a requirement
+    if (displayUserData?.phone || formData.phone) {
+      addressData.phone = displayUserData?.phone || formData.phone;
+    }
+
     handleSubmit(e, addressData);
     setIsEditingAddress(false);
   };

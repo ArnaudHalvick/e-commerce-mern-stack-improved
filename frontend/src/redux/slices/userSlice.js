@@ -9,6 +9,12 @@ export const updateUserProfile = createAsyncThunk(
   "user/updateProfile",
   async (userData, { rejectWithValue }) => {
     try {
+      // Debug the userData, especially for address updates
+      console.log(
+        "Profile update - data being sent to server:",
+        JSON.stringify(userData, null, 2)
+      );
+
       const token = localStorage.getItem("auth-token");
       const response = await axios.put(getApiUrl("users/profile"), userData, {
         headers: {
@@ -16,8 +22,26 @@ export const updateUserProfile = createAsyncThunk(
           "auth-token": token,
         },
       });
+
+      // Debug the response
+      console.log(
+        "Profile update - server response:",
+        JSON.stringify(response.data, null, 2)
+      );
+
+      // Check for success flag in the response
+      if (!response.data.success) {
+        return rejectWithValue(
+          response.data.message || "Profile update failed"
+        );
+      }
+
+      // Return the user data from the response
       return response.data.user;
     } catch (error) {
+      // Log the error for debugging
+      console.error("Profile update error:", error.response || error);
+
       // Handle validation errors
       if (error.response?.data?.errors) {
         // Format validation errors from express-validator
@@ -32,9 +56,13 @@ export const updateUserProfile = createAsyncThunk(
         });
       }
 
-      return rejectWithValue(
-        error.response?.data?.message || "Failed to update profile"
-      );
+      // Check for specific error types in the response
+      if (error.response?.data?.message) {
+        return rejectWithValue(error.response.data.message);
+      }
+
+      // Generic error message
+      return rejectWithValue("Failed to update profile. Please try again.");
     }
   }
 );

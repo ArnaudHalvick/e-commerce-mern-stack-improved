@@ -173,9 +173,16 @@ const useSchemaValidation = (formType, isPublic = false) => {
 
     if (!fieldSchema) return null;
 
-    // Required validation
+    // For phone field, only validate if a value is provided
+    const isPhoneField = name === "phone";
+    if (isPhoneField && (!value || value.trim() === "")) {
+      return null; // Skip validation for empty phone
+    }
+
+    // Required validation - except for phone which is always optional
     if (
       fieldSchema.required &&
+      !isPhoneField &&
       (!value || (typeof value === "string" && value.trim() === ""))
     ) {
       return fieldSchema.requiredMessage || `${displayName} is required`;

@@ -40,6 +40,13 @@ const getUserById = async (userId) => {
 const updateUserProfile = async (userId, userData) => {
   const { name, phone, address, profileImage } = userData;
 
+  // Log the incoming data for debugging
+  logger.debug(`Profile update request for user ${userId}:`, {
+    userData,
+    hasAddress: !!address,
+    addressFields: address ? Object.keys(address) : null,
+  });
+
   if (!name) {
     logger.warn(
       `Profile update missing required name field for user: ${userId}`
@@ -71,15 +78,42 @@ const updateUserProfile = async (userId, userData) => {
     user.phone = phone;
   }
 
-  // Update address if provided
+  // Debug existing address
+  logger.debug(
+    `Existing address for user ${userId} before update:`,
+    user.address
+  );
+
+  // Update address if provided - handle explicitly without any middleware interference
   if (address) {
-    user.address = {
-      street: address.street || "",
-      city: address.city || "",
-      state: address.state || "",
-      zipCode: address.zipCode || "",
-      country: address.country || "",
-    };
+    logger.debug(`Updating address for user ${userId}:`, address);
+
+    try {
+      // Set address fields individually to avoid issues with schema validation
+      if (user.address === undefined) {
+        user.address = {};
+      }
+
+      user.address.street = address.street || "";
+      user.address.city = address.city || "";
+      user.address.state = address.state || "";
+      user.address.zipCode = address.zipCode || "";
+      user.address.country = address.country || "";
+
+      // Mark the address field as modified to ensure it's saved
+      user.markModified("address");
+
+      logger.debug(`Address after assignment:`, user.address);
+    } catch (error) {
+      logger.error(`Error setting address fields for user ${userId}:`, error);
+      return {
+        success: false,
+        error: AppError.createAndLogError("Failed to update address", 500, {
+          userId,
+          errorMessage: error.message,
+        }),
+      };
+    }
   }
 
   // Handle profile image if provided
@@ -87,21 +121,49 @@ const updateUserProfile = async (userId, userData) => {
     user.profileImage = profileImage;
   }
 
-  await user.save();
+  try {
+    await user.save();
+    logger.info(`Profile updated for user: ${userId}`);
 
-  logger.info(`Profile updated for user: ${userId}`);
-  return {
-    success: true,
-    user: {
+    // Log the updated address if it was part of the update
+    if (address) {
+      logger.debug(
+        `Updated address in database for user ${userId}:`,
+        user.address
+      );
+    }
+
+    // Create a fresh copy of the user object to return
+    const updatedUser = {
       id: user._id,
       name: user.name,
       email: user.email,
       phone: user.phone,
-      address: user.address,
+      address: {
+        street: user.address?.street || "",
+        city: user.address?.city || "",
+        state: user.address?.state || "",
+        zipCode: user.address?.zipCode || "",
+        country: user.address?.country || "",
+      },
       isEmailVerified: user.isEmailVerified,
       profileImage: user.profileImage,
-    },
-  };
+    };
+
+    return {
+      success: true,
+      user: updatedUser,
+    };
+  } catch (error) {
+    logger.error(`Error saving profile for user ${userId}:`, error);
+    return {
+      success: false,
+      error: AppError.createAndLogError("Failed to update profile", 500, {
+        userId,
+        errorMessage: error.message,
+      }),
+    };
+  }
 };
 
 /**
