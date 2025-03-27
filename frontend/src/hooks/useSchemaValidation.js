@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { getApiUrl } from "../utils/apiUtils";
 
@@ -26,48 +26,12 @@ const useSchemaValidation = (formType, isPublic = false) => {
   const [error, setError] = useState(null);
 
   /**
-   * Normalizes array-based validators in the schema to a consistent format
-   * Converts [value, message] format to { value, message } format
-   *
-   * @param {Object} schema - The raw validation schema from backend
-   * @returns {Object} - The normalized schema with consistent validator formats
-   */
-  const normalizeSchema = (schema) => {
-    if (!schema) return null;
-
-    const normalizedSchema = { ...schema };
-
-    // Process each field in the schema
-    Object.keys(normalizedSchema).forEach((fieldName) => {
-      const field = normalizedSchema[fieldName];
-
-      // Handle nested objects (like address)
-      if (field && typeof field === "object" && !Array.isArray(field)) {
-        // Check if this is a nested validation object or a field properties object
-        const hasNestedValidators = Object.values(field).some(
-          (val) => typeof val === "object" && !Array.isArray(val)
-        );
-
-        if (hasNestedValidators) {
-          // This is a nested validation object (like address)
-          normalizedSchema[fieldName] = normalizeSchema(field);
-        } else {
-          // This is a field validation properties object
-          normalizeArrayValidators(field);
-        }
-      }
-    });
-
-    return normalizedSchema;
-  };
-
-  /**
-   * Helper function to normalize array validators within a field
+   * Helper function to normalize array validators within a field.
    * Converts properties like minLength: [8, "message"] to minLength: 8, minLengthMessage: "message"
    *
    * @param {Object} field - The field validation object
    */
-  const normalizeArrayValidators = (field) => {
+  const normalizeArrayValidators = useCallback((field) => {
     const arrayValidators = ["minLength", "maxLength", "min", "max"];
 
     arrayValidators.forEach((validator) => {
@@ -79,7 +43,46 @@ const useSchemaValidation = (formType, isPublic = false) => {
     });
 
     return field;
-  };
+  }, []);
+
+  /**
+   * Normalizes array-based validators in the schema to a consistent format.
+   * Converts [value, message] format to { value, message } format.
+   *
+   * @param {Object} schema - The raw validation schema from backend
+   * @returns {Object} - The normalized schema with consistent validator formats
+   */
+  const normalizeSchema = useCallback(
+    (schema) => {
+      if (!schema) return null;
+
+      const normalizedSchema = { ...schema };
+
+      // Process each field in the schema
+      Object.keys(normalizedSchema).forEach((fieldName) => {
+        const field = normalizedSchema[fieldName];
+
+        // Handle nested objects (like address)
+        if (field && typeof field === "object" && !Array.isArray(field)) {
+          // Check if this is a nested validation object or a field properties object
+          const hasNestedValidators = Object.values(field).some(
+            (val) => typeof val === "object" && !Array.isArray(val)
+          );
+
+          if (hasNestedValidators) {
+            // This is a nested validation object (like address)
+            normalizedSchema[fieldName] = normalizeSchema(field);
+          } else {
+            // This is a field validation properties object
+            normalizeArrayValidators(field);
+          }
+        }
+      });
+
+      return normalizedSchema;
+    },
+    [normalizeArrayValidators]
+  );
 
   // Use effect to fetch validation schema on component mount
   useEffect(() => {
@@ -164,7 +167,6 @@ const useSchemaValidation = (formType, isPublic = false) => {
       } catch (err) {
         // Check if this was an abort error (e.g., component unmounted)
         if (err.name === "AbortError" || err.name === "CanceledError") {
-          // Silently ignore abort errors - it's expected on component unmount
           return;
         }
 
@@ -173,7 +175,6 @@ const useSchemaValidation = (formType, isPublic = false) => {
           (err.message && err.message.includes("logged out")) ||
           err.isLoggedOut
         ) {
-          // Silently ignore logout errors
           return;
         }
 
@@ -199,10 +200,10 @@ const useSchemaValidation = (formType, isPublic = false) => {
     return () => {
       controller.abort();
     };
-  }, [formType, isPublic]);
+  }, [formType, isPublic, normalizeSchema]);
 
   /**
-   * Validate a single field against the schema
+   * Validate a single field against the schema.
    *
    * This function takes a field name and value and validates it against
    * the rules defined in the validation schema. It handles both top-level
@@ -302,7 +303,7 @@ const useSchemaValidation = (formType, isPublic = false) => {
   };
 
   /**
-   * Validate the entire form
+   * Validate the entire form.
    *
    * This function takes a form data object and validates all fields
    * against the validation schema.
