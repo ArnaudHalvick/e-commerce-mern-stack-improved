@@ -8,13 +8,9 @@
 
 .auth-page__content {
   width: 100%;
-  flex: 1;
   background-color: #f5f5f5;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
   margin-top: 1rem;
-  padding: 2rem 0 3rem;
+  padding: 2rem 0 2rem;
   min-height: calc(100vh - 150px);
 }
 
@@ -314,7 +310,7 @@
   .auth-page__content {
     margin-top: 0.5rem;
     align-items: flex-start;
-    padding: 1.5rem 0 2.5rem;
+    padding: 1.5rem 0 1.5rem;
   }
 
   .auth-form__success {
