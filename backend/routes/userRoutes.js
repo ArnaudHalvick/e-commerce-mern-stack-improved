@@ -9,13 +9,6 @@ const {
   isNotAuthenticated,
   verifyRefreshToken,
 } = require("../middleware/auth");
-const {
-  validateRegistration,
-  validateLogin,
-  validatePasswordChange,
-  validateProfileUpdate,
-  validatePasswordReset,
-} = require("../validation");
 const { sanitizeRequest } = require("../middleware/sanitizers");
 const {
   loginLimiter,
@@ -29,7 +22,6 @@ router.post(
   accountCreationLimiter,
   sanitizeRequest,
   isNotAuthenticated,
-  validateRegistration,
   authController.registerUser
 );
 router.post(
@@ -37,7 +29,6 @@ router.post(
   loginLimiter,
   sanitizeRequest,
   isNotAuthenticated,
-  validateLogin,
   authController.loginUser
 );
 router.post("/refresh-token", verifyRefreshToken, authController.refreshToken);
@@ -54,12 +45,7 @@ router.post(
   sanitizeRequest,
   authController.forgotPassword
 );
-router.post(
-  "/reset-password",
-  sanitizeRequest,
-  validatePasswordReset,
-  authController.resetPassword
-);
+router.post("/reset-password", sanitizeRequest, authController.resetPassword);
 
 // Protected routes - Authentication
 router.post("/logout", isAuthenticated, authController.logoutUser);
@@ -71,14 +57,12 @@ router.put(
   "/profile",
   sanitizeRequest,
   isAuthenticated,
-  validateProfileUpdate,
   profileController.updateProfile
 );
 router.put(
   "/change-password",
   sanitizeRequest,
   isAuthenticated,
-  validatePasswordChange,
   profileController.changePassword
 );
 router.put(
