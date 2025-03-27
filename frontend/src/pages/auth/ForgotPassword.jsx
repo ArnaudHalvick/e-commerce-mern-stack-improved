@@ -14,13 +14,14 @@ import "../../components/form/FormSubmitButton.css";
  */
 const ForgotPassword = () => {
   const {
-    forgotPasswordEmail,
-    setForgotPasswordEmail,
-    emailSent,
-    errors,
-    recoveryLoading,
-    handleForgotPasswordSubmit,
-  } = usePasswordRecovery();
+    formData,
+    loading,
+    success,
+    fieldErrors,
+    formErrors,
+    handleChange,
+    handleSubmit,
+  } = usePasswordRecovery("forgot");
 
   return (
     <div className="auth-page">
@@ -35,19 +36,21 @@ const ForgotPassword = () => {
         <div className="auth-page__container">
           <h1 className="auth-page__title">Forgot Password</h1>
 
-          {errors.general && (
+          {formErrors.general && (
             <div className="auth-page__error" role="alert">
-              {errors.general}
+              {formErrors.general}
             </div>
           )}
 
           <ForgotPasswordForm
-            email={forgotPasswordEmail}
-            setEmail={setForgotPasswordEmail}
-            handleSubmit={handleForgotPasswordSubmit}
-            errors={errors}
-            loading={recoveryLoading}
-            emailSent={emailSent}
+            email={formData.email}
+            setEmail={(value) =>
+              handleChange({ target: { name: "email", value } })
+            }
+            handleSubmit={handleSubmit}
+            errors={fieldErrors}
+            loading={loading}
+            emailSent={success}
           />
         </div>
       </div>

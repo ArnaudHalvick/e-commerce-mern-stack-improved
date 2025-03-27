@@ -21,7 +21,12 @@ import {
 const useAuthForm = (formType = "login") => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { setFormError, clearFormError, formErrors } = useFormErrors();
+  const {
+    errors: formErrors,
+    setFieldError,
+    clearAllErrors: clearFormError,
+    handleApiError: setFormError,
+  } = useFormErrors();
   const { showSuccess } = useError();
 
   const [formData, setFormData] = useState({
@@ -108,11 +113,11 @@ const useAuthForm = (formType = "login") => {
       setFormData((prev) => ({ ...prev, [name]: value }));
 
       // Clear any form-level errors when user starts typing
-      if (formErrors.error) {
+      if (formErrors.general) {
         clearFormError();
       }
     },
-    [formErrors.error, clearFormError]
+    [formErrors, clearFormError]
   );
 
   /**

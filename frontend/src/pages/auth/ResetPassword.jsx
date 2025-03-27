@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ResetPasswordForm } from "./components";
 import { usePasswordRecovery } from "./hooks";
+import { usePasswordValidation } from "./hooks";
 import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
 import { useError } from "../../context/ErrorContext";
 
@@ -20,15 +21,18 @@ const ResetPassword = () => {
   const { showError } = useError();
 
   const {
-    resetFormData,
-    errors,
-    validationSchema,
-    passwordValidation,
-    resetLoading,
-    schemaLoading,
-    handleResetFormChange,
-    handleResetSubmit,
-  } = usePasswordRecovery();
+    formData,
+    loading,
+    success,
+    fieldErrors,
+    formErrors,
+    handleChange,
+    handleSubmit,
+    handleBlur,
+  } = usePasswordRecovery("reset", token);
+
+  // Get password validation feedback
+  const passwordValidation = usePasswordValidation(formData.password);
 
   // Validate that we have a token
   useEffect(() => {
@@ -57,21 +61,20 @@ const ResetPassword = () => {
         <div className="auth-page__container">
           <h1 className="auth-page__title">Reset Password</h1>
 
-          {errors.general && (
+          {formErrors.general && (
             <div className="auth-page__error" role="alert">
-              {errors.general}
+              {formErrors.general}
             </div>
           )}
 
           <ResetPasswordForm
-            formData={resetFormData}
-            handleChange={handleResetFormChange}
-            handleSubmit={handleResetSubmit}
-            errors={errors}
-            loading={resetLoading}
+            formData={formData}
+            handleChange={handleChange}
+            handleSubmit={handleSubmit}
+            handleBlur={handleBlur}
+            errors={fieldErrors}
+            loading={loading}
             passwordValidation={passwordValidation}
-            validationSchema={validationSchema}
-            isLoading={schemaLoading}
           />
         </div>
       </div>

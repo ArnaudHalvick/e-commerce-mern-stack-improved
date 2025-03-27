@@ -70,9 +70,9 @@ const Auth = ({ initialState }) => {
             {state === "Signup" ? "Create Account" : "Login"}
           </h1>
 
-          {formErrors.error && (
+          {formErrors.general && (
             <div className="auth-page__error" role="alert">
-              {formErrors.error}
+              {formErrors.general}
             </div>
           )}
 

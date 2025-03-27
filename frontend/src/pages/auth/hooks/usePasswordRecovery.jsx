@@ -19,7 +19,12 @@ import {
  * @returns {Object} State and handlers for the password recovery form
  */
 const usePasswordRecovery = (mode = "forgot", token = "") => {
-  const { setFormError, clearFormError, formErrors } = useFormErrors();
+  const {
+    errors: formErrors,
+    setFieldError,
+    clearAllErrors: clearFormError,
+    handleApiError: setFormError,
+  } = useFormErrors();
   const { showSuccess } = useError();
 
   // Initialize form data based on mode
@@ -116,11 +121,11 @@ const usePasswordRecovery = (mode = "forgot", token = "") => {
       setFormData((prev) => ({ ...prev, [name]: value }));
 
       // Clear any form-level errors when user starts typing
-      if (formErrors.error) {
+      if (formErrors.general) {
         clearFormError();
       }
     },
-    [formErrors.error, clearFormError]
+    [formErrors, clearFormError]
   );
 
   /**
