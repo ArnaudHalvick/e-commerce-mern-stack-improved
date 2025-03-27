@@ -29,18 +29,14 @@ const PasswordManager = ({
     match: false,
   });
 
-  // Helper function to extract the numeric minimum password length
+  // Helper function to get the minimum password length from schema
   const getMinPasswordLength = () => {
     const minLength = validationSchema?.newPassword?.minLength;
-    if (Array.isArray(minLength)) {
-      return typeof minLength[0] === "number"
-        ? minLength[0]
-        : parseInt(minLength[0], 10) || 8;
-    }
+    // The schema is now normalized, so minLength is already a number
     if (typeof minLength === "number") {
       return minLength;
     }
-    return 8;
+    return 8; // Fallback default value
   };
 
   // Validate the entire form whenever password data or field errors change
@@ -116,10 +112,9 @@ const PasswordManager = ({
       attributes.title = fieldSchema.message;
     }
 
+    // Simply use the normalized values directly
     if (fieldSchema.minLength) {
-      attributes.minLength = Array.isArray(fieldSchema.minLength)
-        ? fieldSchema.minLength[0]
-        : fieldSchema.minLength;
+      attributes.minLength = fieldSchema.minLength;
     }
 
     if (fieldSchema.maxLength) {

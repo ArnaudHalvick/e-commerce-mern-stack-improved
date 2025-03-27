@@ -11,6 +11,7 @@ import { getApiUrl } from "../utils/apiUtils";
  *
  * Features:
  * - Automatically fetches validation rules from backend
+ * - Normalizes array-format validators (like [8, "message"]) into a consistent format
  * - Handles nested fields (like address.street)
  * - Provides real-time field validation
  * - Supports all common validation types: required, min/max length, patterns, etc.
@@ -23,6 +24,62 @@ const useSchemaValidation = (formType, isPublic = false) => {
   const [validationSchema, setValidationSchema] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  /**
+   * Normalizes array-based validators in the schema to a consistent format
+   * Converts [value, message] format to { value, message } format
+   *
+   * @param {Object} schema - The raw validation schema from backend
+   * @returns {Object} - The normalized schema with consistent validator formats
+   */
+  const normalizeSchema = (schema) => {
+    if (!schema) return null;
+
+    const normalizedSchema = { ...schema };
+
+    // Process each field in the schema
+    Object.keys(normalizedSchema).forEach((fieldName) => {
+      const field = normalizedSchema[fieldName];
+
+      // Handle nested objects (like address)
+      if (field && typeof field === "object" && !Array.isArray(field)) {
+        // Check if this is a nested validation object or a field properties object
+        const hasNestedValidators = Object.values(field).some(
+          (val) => typeof val === "object" && !Array.isArray(val)
+        );
+
+        if (hasNestedValidators) {
+          // This is a nested validation object (like address)
+          normalizedSchema[fieldName] = normalizeSchema(field);
+        } else {
+          // This is a field validation properties object
+          normalizeArrayValidators(field);
+        }
+      }
+    });
+
+    return normalizedSchema;
+  };
+
+  /**
+   * Helper function to normalize array validators within a field
+   * Converts properties like minLength: [8, "message"] to minLength: 8, minLengthMessage: "message"
+   *
+   * @param {Object} field - The field validation object
+   */
+  const normalizeArrayValidators = (field) => {
+    const arrayValidators = ["minLength", "maxLength", "min", "max"];
+
+    arrayValidators.forEach((validator) => {
+      if (Array.isArray(field[validator])) {
+        const [value, message] = field[validator];
+        field[validator] = value;
+        field[`${validator}Message`] = message;
+      }
+    });
+
+    return field;
+  };
 
   // Use effect to fetch validation schema on component mount
   useEffect(() => {
@@ -59,7 +116,9 @@ const useSchemaValidation = (formType, isPublic = false) => {
 
           // Check if component is still mounted before updating state
           if (!controller.signal.aborted) {
-            setValidationSchema(data);
+            // Normalize the schema before setting it
+            const normalizedData = normalizeSchema(data);
+            setValidationSchema(normalizedData);
             setError(null);
           }
         } catch (fetchErr) {
@@ -193,14 +252,20 @@ const useSchemaValidation = (formType, isPublic = false) => {
       return null;
     }
 
-    // Min length validation
+    // Min length validation - now using normalized value
     if (fieldSchema.minLength && value.length < fieldSchema.minLength) {
-      return `${displayName} must be at least ${fieldSchema.minLength} characters`;
+      return (
+        fieldSchema.minLengthMessage ||
+        `${displayName} must be at least ${fieldSchema.minLength} characters`
+      );
     }
 
-    // Max length validation
+    // Max length validation - now using normalized value
     if (fieldSchema.maxLength && value.length > fieldSchema.maxLength) {
-      return `${displayName} must be no more than ${fieldSchema.maxLength} characters`;
+      return (
+        fieldSchema.maxLengthMessage ||
+        `${displayName} must be no more than ${fieldSchema.maxLength} characters`
+      );
     }
 
     // Pattern validation

@@ -123,24 +123,14 @@ const ProfileInfo = ({
       attributes.required = true;
     }
 
-    // Add min length if it exists
+    // Add min length if it exists - schema is now normalized
     if (fieldSchema.minLength) {
-      attributes.minLength =
-        typeof fieldSchema.minLength === "number"
-          ? fieldSchema.minLength
-          : Array.isArray(fieldSchema.minLength)
-          ? fieldSchema.minLength[0]
-          : undefined;
+      attributes.minLength = fieldSchema.minLength;
     }
 
-    // Add max length if it exists
+    // Add max length if it exists - schema is now normalized
     if (fieldSchema.maxLength) {
-      attributes.maxLength =
-        typeof fieldSchema.maxLength === "number"
-          ? fieldSchema.maxLength
-          : Array.isArray(fieldSchema.maxLength)
-          ? fieldSchema.maxLength[0]
-          : undefined;
+      attributes.maxLength = fieldSchema.maxLength;
     }
 
     // Add title with validation message

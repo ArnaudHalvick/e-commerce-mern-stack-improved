@@ -52,14 +52,9 @@ const SchemaPasswordValidation = ({
     const schema = validationSchema.password;
     const requirements = [];
 
-    // Add minimum length requirement if specified
+    // Add minimum length requirement if specified - schema is now normalized
     if (schema.minLength) {
-      const minLength =
-        typeof schema.minLength === "number"
-          ? schema.minLength
-          : Array.isArray(schema.minLength)
-          ? schema.minLength[0]
-          : 8;
+      const minLength = schema.minLength;
 
       requirements.push({
         id: "length",
