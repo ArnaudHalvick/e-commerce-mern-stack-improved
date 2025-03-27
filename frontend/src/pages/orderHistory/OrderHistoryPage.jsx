@@ -100,7 +100,7 @@ const OrderHistoryPage = () => {
             You haven't placed any orders yet. Start shopping to see your order
             history here.
           </p>
-          <Link to="/shop">
+          <Link to="/offers">
             <FormSubmitButton
               text="Start Shopping"
               type="button"
