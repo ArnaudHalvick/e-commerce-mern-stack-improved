@@ -20,7 +20,7 @@ const PasswordManager = ({
   const { showError } = useError();
   const [isFormValid, setIsFormValid] = useState(false);
 
-  // Add state to track individual password validations
+  // State to track individual password validations
   const [passwordValidations, setPasswordValidations] = useState({
     length: false,
     uppercase: false,
@@ -29,18 +29,28 @@ const PasswordManager = ({
     match: false,
   });
 
-  // Validate form whenever password data or field errors change
+  // Helper function to extract the numeric minimum password length
+  const getMinPasswordLength = () => {
+    const minLength = validationSchema?.newPassword?.minLength;
+    if (Array.isArray(minLength)) {
+      return typeof minLength[0] === "number"
+        ? minLength[0]
+        : parseInt(minLength[0], 10) || 8;
+    }
+    if (typeof minLength === "number") {
+      return minLength;
+    }
+    return 8;
+  };
+
+  // Validate the entire form whenever password data or field errors change
   useEffect(() => {
-    // Check if we have validation schema and data
     if (!validationSchema || !passwordData) {
       setIsFormValid(false);
       return;
     }
 
-    // Check if any field is empty
     const hasEmptyField = Object.values(passwordData).some((val) => !val);
-
-    // Check if there are any field errors
     const hasFieldErrors =
       fieldErrors &&
       Object.keys(fieldErrors).some(
@@ -49,11 +59,10 @@ const PasswordManager = ({
           ["currentPassword", "newPassword", "confirmPassword"].includes(key)
       );
 
-    // Form is valid if all fields have values and there are no errors
     setIsFormValid(!hasEmptyField && !hasFieldErrors);
   }, [passwordData, fieldErrors, validationSchema]);
 
-  // Add effect to validate individual password requirements
+  // Validate individual password requirements with debouncing
   useEffect(() => {
     const validatePassword = () => {
       const { newPassword, confirmPassword } = passwordData;
@@ -68,10 +77,8 @@ const PasswordManager = ({
         return;
       }
 
-      // Get min length requirement from schema or default to 8
-      const minLength = validationSchema?.newPassword?.minLength || 8;
+      const minLength = getMinPasswordLength();
 
-      // Validate each requirement
       setPasswordValidations({
         length: newPassword.length >= minLength,
         uppercase: /[A-Z]/.test(newPassword),
@@ -81,17 +88,15 @@ const PasswordManager = ({
       });
     };
 
-    // Debounce the validation to prevent too many rerenders
     const debouncedValidate = debounce(validatePassword, 300);
     debouncedValidate();
 
-    // Cleanup
     return () => {
       debouncedValidate.cancel();
     };
   }, [passwordData, validationSchema]);
 
-  // Function to determine input class based on validation state
+  // Determine input class based on validation state
   const getInputClass = (fieldName) => {
     if (!fieldErrors) return "profile-form-input";
     return fieldErrors[fieldName]
@@ -99,29 +104,24 @@ const PasswordManager = ({
       : "profile-form-input";
   };
 
-  // Get validation attributes for a field
+  // Extract validation attributes for a field from the schema
   const getValidationAttributes = (fieldName) => {
     if (!validationSchema) return {};
-
     const fieldSchema = validationSchema[fieldName];
     if (!fieldSchema) return {};
 
     const attributes = {};
 
-    // Don't add pattern directly to HTML - we'll handle validation in JavaScript
-    // This avoids the regex syntax errors in browser validation
-
-    // Add title with validation message
     if (fieldSchema.message) {
       attributes.title = fieldSchema.message;
     }
 
-    // Add min length if it exists
     if (fieldSchema.minLength) {
-      attributes.minLength = fieldSchema.minLength;
+      attributes.minLength = Array.isArray(fieldSchema.minLength)
+        ? fieldSchema.minLength[0]
+        : fieldSchema.minLength;
     }
 
-    // Add max length if it exists
     if (fieldSchema.maxLength) {
       attributes.maxLength = fieldSchema.maxLength;
     }
@@ -129,28 +129,13 @@ const PasswordManager = ({
     return attributes;
   };
 
-  // Get minimum password length from schema
-  const getMinPasswordLength = () => {
-    // Get only the numeric value from the schema, ignore any text
-    const minLength = validationSchema?.newPassword?.minLength;
-    if (typeof minLength === "number") {
-      return minLength;
-    }
-    // Default to 8 if not specified
-    return 8;
-  };
-
   // Handle form submission with validation
   const handleSubmitWithValidation = (e) => {
     e.preventDefault();
-
-    // If form is not valid, show error and prevent submission
     if (!isFormValid) {
       showError("Please fix the validation errors before submitting");
       return;
     }
-
-    // Proceed with submission
     handlePasswordSubmit(e);
   };
 
