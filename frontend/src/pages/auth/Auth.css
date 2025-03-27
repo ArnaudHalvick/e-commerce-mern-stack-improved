@@ -290,70 +290,61 @@
 @media (max-width: 768px) {
   .auth-page__container {
     width: 90%;
-    padding: 1.5rem;
+    max-width: 37.5rem;
+    padding: 1.5rem 2rem;
   }
 
   .auth-form__fields {
-    gap: 1.2rem;
-  }
-
-  .auth-page__title {
-    font-size: 1.5rem;
-    margin: 15px 0;
-  }
-
-  .auth-form__input {
-    height: 3.5rem;
-    font-size: 1rem;
+    gap: 0.8rem;
   }
 
   .auth-page__content {
-    margin-top: 0.5rem;
-    align-items: flex-start;
-    padding: 1.5rem 0 1.5rem;
+    padding: 1.5rem 0;
+    min-height: calc(100vh - 120px);
   }
 
-  .auth-form__success {
-    padding: 1.25rem 1rem;
-  }
-
-  .auth-form__success h2 {
-    font-size: 1.3rem;
-  }
-
-  .auth-page__switch {
-    font-size: 0.9rem;
-    margin-top: 1rem;
-  }
-
-  .auth-form__link {
-    font-size: 0.9rem;
-    padding: 0.4rem 0.8rem;
-  }
-
-  .auth-form__link--primary {
-    padding: 0.6rem 1.2rem;
+  .auth-page__title {
+    margin: 10px 0;
+    font-size: 1.8rem;
   }
 
   .auth-form__actions {
-    gap: 1rem;
+    margin-top: 1.2rem;
+    gap: 1.2rem;
   }
 
   .auth-form__terms {
-    font-size: 0.85rem;
     padding: 0.8rem;
+    gap: 1rem;
+    margin-top: 1.2rem;
   }
 
-  .password-validation-feedback {
-    padding: 8px 12px;
+  .auth-form__links {
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-page__container {
+    width: 95%;
+    padding: 1.2rem 1.5rem;
   }
 
-  .password-validation-feedback__title {
-    font-size: 0.9rem;
+  .auth-page__content {
+    padding: 1rem 0;
   }
 
-  .password-validation-feedback__item {
-    font-size: 0.8rem;
+  .auth-form__input {
+    height: 2.8rem;
+  }
+
+  .auth-page__title {
+    font-size: 1.6rem;
+  }
+
+  .auth-form__submit-btn {
+    height: 3rem !important;
+    font-size: 1rem !important;
   }
 }
 

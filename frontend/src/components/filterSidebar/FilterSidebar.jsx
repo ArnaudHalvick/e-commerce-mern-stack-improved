@@ -26,11 +26,14 @@ const FilterSidebar = ({
   }, [clearAllFilters]);
 
   return (
-    <div className="filter-sidebar">
-      <div className="filter-section">
-        <h3 className="filter-section-title">
+    <div className="filtersidebar">
+      <div className="filtersidebar-section">
+        <h3 className="filtersidebar-section-title">
           Filters
-          <button className="clear-filters" onClick={onClearAllFilters}>
+          <button
+            className="filtersidebar-clear-btn"
+            onClick={onClearAllFilters}
+          >
             Clear All
           </button>
         </h3>
@@ -38,18 +41,18 @@ const FilterSidebar = ({
 
       {/* Category Filter - Only show if showCategoryFilter is true */}
       {showCategoryFilter && (
-        <div className="filter-section">
-          <h4 className="filter-section-subtitle">Category</h4>
-          <div className="filter-options">
+        <div className="filtersidebar-section">
+          <h4 className="filtersidebar-section-subtitle">Category</h4>
+          <div className="filtersidebar-options">
             {["men", "women", "kids"].map((category) => (
-              <label key={category} className="filter-checkbox">
+              <label key={category} className="filtersidebar-checkbox">
                 <input
                   type="checkbox"
-                  className="filter-checkbox-input"
+                  className="filtersidebar-checkbox-input"
                   checked={filters.category.includes(category)}
                   onChange={() => onFilterChange("category", category)}
                 />
-                <span className="checkmark"></span>
+                <span className="filtersidebar-checkmark"></span>
                 {category.charAt(0).toUpperCase() + category.slice(1)}
               </label>
             ))}
@@ -58,12 +61,12 @@ const FilterSidebar = ({
       )}
 
       {/* Price Range Filter */}
-      <div className="filter-section">
-        <h4 className="filter-section-subtitle">Price Range</h4>
-        <div className="price-inputs">
+      <div className="filtersidebar-section">
+        <h4 className="filtersidebar-section-subtitle">Price Range</h4>
+        <div className="filtersidebar-price-inputs">
           <input
             type="number"
-            className="price-input-field"
+            className="filtersidebar-price-field"
             min="0"
             max={filters.price.max}
             value={filters.price.min}
@@ -75,10 +78,10 @@ const FilterSidebar = ({
             }
             placeholder="Min"
           />
-          <span className="price-separator">-</span>
+          <span className="filtersidebar-price-separator">-</span>
           <input
             type="number"
-            className="price-input-field"
+            className="filtersidebar-price-field"
             min={filters.price.min}
             value={filters.price.max}
             onChange={(e) =>
@@ -93,34 +96,35 @@ const FilterSidebar = ({
       </div>
 
       {/* Discount Filter */}
-      <div className="filter-section">
-        <label className="filter-checkbox">
+      <div className="filtersidebar-section">
+        <label className="filtersidebar-checkbox">
           <input
             type="checkbox"
-            className="filter-checkbox-input"
+            className="filtersidebar-checkbox-input"
             checked={filters.discount}
             onChange={() => onFilterChange("discount", !filters.discount)}
           />
-          <span className="checkmark"></span>
+          <span className="filtersidebar-checkmark"></span>
           Discounted Items Only
         </label>
       </div>
 
       {/* Rating Filter */}
-      <div className="filter-section">
-        <h4 className="filter-section-subtitle">Rating</h4>
-        <div className="rating-filter">
+      <div className="filtersidebar-section">
+        <h4 className="filtersidebar-section-subtitle">Rating</h4>
+        <div className="filtersidebar-rating-filter">
           {[5, 4, 3, 2, 1].map((star) => (
             <div
               key={star}
-              className={`star-rating ${
+              className={`filtersidebar-star-rating ${
                 filters.rating === star ? "active" : ""
               }`}
               onClick={() =>
                 onFilterChange("rating", filters.rating === star ? 0 : star)
               }
             >
-              {star}★ & Up {filters.rating === star && "✓"}
+              {star}★ <span className="filtersidebar-rating-up-text">& Up</span>{" "}
+              {filters.rating === star && "✓"}
             </div>
           ))}
         </div>
@@ -128,18 +132,18 @@ const FilterSidebar = ({
 
       {/* Tags Filter */}
       {availableTags.length > 0 && (
-        <div className="filter-section">
-          <h4 className="filter-section-subtitle">Tags</h4>
-          <div className="filter-options">
+        <div className="filtersidebar-section">
+          <h4 className="filtersidebar-section-subtitle">Tags</h4>
+          <div className="filtersidebar-options">
             {availableTags.map((tag) => (
-              <label key={tag} className="filter-checkbox">
+              <label key={tag} className="filtersidebar-checkbox">
                 <input
                   type="checkbox"
-                  className="filter-checkbox-input"
+                  className="filtersidebar-checkbox-input"
                   checked={filters.tags.includes(tag)}
                   onChange={() => onFilterChange("tag", tag)}
                 />
-                <span className="checkmark"></span>
+                <span className="filtersidebar-checkmark"></span>
                 {tag}
               </label>
             ))}
@@ -149,18 +153,18 @@ const FilterSidebar = ({
 
       {/* Types Filter */}
       {availableTypes.length > 0 && (
-        <div className="filter-section">
-          <h4 className="filter-section-subtitle">Product Types</h4>
-          <div className="filter-options">
+        <div className="filtersidebar-section">
+          <h4 className="filtersidebar-section-subtitle">Product Types</h4>
+          <div className="filtersidebar-options">
             {availableTypes.map((type) => (
-              <label key={type} className="filter-checkbox">
+              <label key={type} className="filtersidebar-checkbox">
                 <input
                   type="checkbox"
-                  className="filter-checkbox-input"
+                  className="filtersidebar-checkbox-input"
                   checked={filters.types.includes(type)}
                   onChange={() => onFilterChange("type", type)}
                 />
-                <span className="checkmark"></span>
+                <span className="filtersidebar-checkmark"></span>
                 {type}
               </label>
             ))}

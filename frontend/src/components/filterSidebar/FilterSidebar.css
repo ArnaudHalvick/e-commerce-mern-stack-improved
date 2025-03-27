@@ -1,4 +1,4 @@
-.filter-sidebar {
+.filtersidebar {
   flex: 0 0 250px;
   border: 1px solid #e5e5e5;
   border-radius: 8px;
@@ -8,19 +8,19 @@
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
-.filter-section {
+.filtersidebar-section {
   margin-bottom: 1.5rem;
   border-bottom: 1px solid #f1f1f1;
   padding-bottom: 1.2rem;
 }
 
-.filter-section:last-child {
+.filtersidebar-section:last-child {
   border-bottom: none;
   padding-bottom: 0;
   margin-bottom: 0;
 }
 
-.filter-section-title {
+.filtersidebar-section-title {
   font-size: 1.2rem;
   font-weight: 600;
   margin-bottom: 1rem;
@@ -29,14 +29,14 @@
   align-items: center;
 }
 
-.filter-section-subtitle {
+.filtersidebar-section-subtitle {
   font-size: 1rem;
   font-weight: 500;
   margin-bottom: 0.8rem;
   color: #333;
 }
 
-.clear-filters {
+.filtersidebar-clear-btn {
   background: none;
   border: none;
   color: #4a00e0;
@@ -45,7 +45,7 @@
   font-weight: 500;
 }
 
-.filter-options {
+.filtersidebar-options {
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
@@ -55,25 +55,25 @@
 }
 
 /* Scrollbar styles for filter options */
-.filter-options::-webkit-scrollbar {
+.filtersidebar-options::-webkit-scrollbar {
   width: 6px;
 }
 
-.filter-options::-webkit-scrollbar-track {
+.filtersidebar-options::-webkit-scrollbar-track {
   background: #f1f1f1;
   border-radius: 10px;
 }
 
-.filter-options::-webkit-scrollbar-thumb {
+.filtersidebar-options::-webkit-scrollbar-thumb {
   background: #ccc;
   border-radius: 10px;
 }
 
-.filter-options::-webkit-scrollbar-thumb:hover {
+.filtersidebar-options::-webkit-scrollbar-thumb:hover {
   background: #aaa;
 }
 
-.filter-checkbox {
+.filtersidebar-checkbox {
   display: flex;
   align-items: center;
   position: relative;
@@ -84,7 +84,7 @@
   padding-left: 25px;
 }
 
-.filter-checkbox-input {
+.filtersidebar-checkbox-input {
   position: absolute;
   opacity: 0;
   cursor: pointer;
@@ -92,7 +92,7 @@
   width: 0;
 }
 
-.checkmark {
+.filtersidebar-checkmark {
   position: absolute;
   left: 0;
   height: 18px;
@@ -102,22 +102,22 @@
   border-radius: 3px;
 }
 
-.filter-checkbox-input:checked ~ .checkmark {
+.filtersidebar-checkbox-input:checked ~ .filtersidebar-checkmark {
   background-color: #4a00e0;
   border-color: #4a00e0;
 }
 
-.checkmark:after {
+.filtersidebar-checkmark:after {
   content: "";
   position: absolute;
   display: none;
 }
 
-.filter-checkbox-input:checked ~ .checkmark:after {
+.filtersidebar-checkbox-input:checked ~ .filtersidebar-checkmark:after {
   display: block;
 }
 
-.filter-checkbox .checkmark:after {
+.filtersidebar-checkbox .filtersidebar-checkmark:after {
   left: 6px;
   top: 2px;
   width: 5px;
@@ -127,13 +127,13 @@
   transform: rotate(45deg);
 }
 
-.price-inputs {
+.filtersidebar-price-inputs {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-.price-input-field {
+.filtersidebar-price-field {
   width: 80px;
   padding: 0.5rem;
   border: 1px solid #ccc;
@@ -141,68 +141,95 @@
   font-size: 0.9rem;
 }
 
-.price-separator {
+.filtersidebar-price-separator {
   color: #555;
 }
 
-.rating-filter {
+.filtersidebar-rating-filter {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
-.star-rating {
+.filtersidebar-star-rating {
   cursor: pointer;
   display: flex;
   align-items: center;
-  padding: 0.4rem;
+  padding: 0.4rem 0.6rem;
   border-radius: 4px;
-  transition: background-color 0.2s;
-}
-
-.star-rating:hover {
+  transition: background-color 0.2s, border-color 0.2s;
   background-color: #f9f9f9;
+  border: 1px solid #e0e0e0;
 }
 
-.star-rating.active {
+.filtersidebar-rating-up-text {
+  margin-left: 2px;
+}
+
+.filtersidebar-star-rating:hover {
+  background-color: #f0f0f0;
+  border-color: #d0d0d0;
+}
+
+.filtersidebar-star-rating.active {
   color: #4a00e0;
   font-weight: 500;
+  background-color: #f0ebff;
+  border-color: #c5b6ff;
 }
 
 /* Responsive Styles */
 @media screen and (max-width: 992px) {
-  .filter-sidebar {
+  .filtersidebar {
     flex: none;
     width: 100%;
     margin-bottom: 1.5rem;
   }
 
-  .filter-options {
+  .filtersidebar-options {
     max-height: 150px;
   }
 
   /* Allow filters to be shown in a grid on tablets */
-  .filter-section:not(:first-child) .filter-options {
+  .filtersidebar-section:not(:first-child) .filtersidebar-options {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Horizontal layout for rating filter on smaller screens */
+  .filtersidebar-rating-filter {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    justify-content: flex-start;
+  }
+
+  .filtersidebar-star-rating {
+    padding: 0.4rem 0.6rem;
+    margin-right: 0.2rem;
+  }
+
+  /* Hide "& up" text on smaller screens */
+  .filtersidebar-rating-up-text {
+    display: none;
   }
 }
 
 @media screen and (max-width: 576px) {
-  .filter-sidebar {
+  .filtersidebar {
     padding: 1rem;
   }
 
-  .filter-section-title {
+  .filtersidebar-section-title {
     font-size: 1.1rem;
   }
 
-  .filter-section-subtitle {
+  .filtersidebar-section-subtitle {
     font-size: 0.95rem;
   }
 
   /* Return to single column layout on mobile */
-  .filter-section:not(:first-child) .filter-options {
+  .filtersidebar-section:not(:first-child) .filtersidebar-options {
     display: flex;
     flex-direction: column;
   }
