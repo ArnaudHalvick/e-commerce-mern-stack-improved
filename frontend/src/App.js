@@ -186,9 +186,11 @@ function App() {
             <Route
               path="/checkout"
               element={
-                <StripeProvider>
-                  <CheckoutPage />
-                </StripeProvider>
+                <ProtectedRoute>
+                  <StripeProvider>
+                    <CheckoutPage />
+                  </StripeProvider>
+                </ProtectedRoute>
               }
             />
 
