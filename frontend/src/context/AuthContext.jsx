@@ -1,5 +1,3 @@
-// frontend/src/context/AuthContext.jsx
-
 import { createContext, useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -23,28 +21,23 @@ const AuthContextProvider = (props) => {
     () => localStorage.getItem("user-logged-out") === "true"
   );
   const [initialLoadComplete, setInitialLoadComplete] = useState(false);
-  // New state for transition during login/logout
   const [inTransition, setInTransition] = useState(false);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // Sync isUserLoggedOut with localStorage
+  // Sync isUserLoggedOut with localStorage on mount
   useEffect(() => {
     const isLoggedOut = localStorage.getItem("user-logged-out") === "true";
     setIsUserLoggedOut(isLoggedOut);
-
-    // Debug log
     console.log("AuthContext init - isUserLoggedOut:", isLoggedOut);
-
-    // Clear any stale token if user is marked as logged out
     if (isLoggedOut && localStorage.getItem("auth-token")) {
       console.log("Found token but user marked as logged out - clearing token");
       localStorage.removeItem("auth-token");
     }
   }, []);
 
-  // Helper function to normalize user data
+  // Helper to normalize user data
   const normalizeUserData = (userData) => {
     if (!userData) return null;
     return {
@@ -53,31 +46,26 @@ const AuthContextProvider = (props) => {
     };
   };
 
-  // Handle auth logout - Extracted to be used in multiple places
+  // Handle logout logic
   const handleLogout = useCallback(() => {
     console.log("Logout - Clearing auth state");
     localStorage.removeItem("auth-token");
     localStorage.setItem("user-logged-out", "true");
-
-    // Cancel any pending API requests to prevent state updates after logout
     cancelApiRequests("User initiated logout");
     cancelAxiosRequests("User initiated logout");
-
     setUserState(null);
     setIsAuthenticated(false);
-    setIsUserLoggedOut(true); // Set flag to prevent refresh attempts after logout
-    setAccountDisabled(false); // Reset account disabled flag
+    setIsUserLoggedOut(true);
+    setAccountDisabled(false);
     dispatch(resetCart());
     dispatch(clearUser());
-
     console.log("Logout - Auth state cleared, user-logged-out flag set");
   }, [dispatch]);
 
-  // Listen for token refresh failures
+  // Listen for token refresh failures and handle logout
   useEffect(() => {
     const handleTokenRefreshFailure = () => {
       handleLogout();
-      // Optional: redirect to login page or show notification
       navigate("/login", {
         state: {
           from: window.location.pathname,
@@ -90,7 +78,6 @@ const AuthContextProvider = (props) => {
       "auth:tokenRefreshFailed",
       handleTokenRefreshFailure
     );
-
     return () => {
       window.removeEventListener(
         "auth:tokenRefreshFailed",
@@ -99,29 +86,23 @@ const AuthContextProvider = (props) => {
     };
   }, [handleLogout, navigate]);
 
-  // Function to refresh the access token
+  // Refresh the access token
   const refreshAccessToken = useCallback(async () => {
     if (tokenRefreshInProgress || isUserLoggedOut) return null;
-
     try {
       setTokenRefreshInProgress(true);
-
       const response = await axios.post(
         `${API_BASE_URL}/api/users/refresh-token`,
         {},
-        { withCredentials: true } // Important to include cookies
+        { withCredentials: true }
       );
-
       if (response.data && response.data.success) {
-        // Store the new access token
         localStorage.setItem("auth-token", response.data.accessToken);
         return response.data.accessToken;
       }
-
       return null;
     } catch (error) {
       console.error("Failed to refresh token:", error);
-      // If refresh fails, clear auth state
       handleLogout();
       return null;
     } finally {
@@ -129,27 +110,26 @@ const AuthContextProvider = (props) => {
     }
   }, [tokenRefreshInProgress, handleLogout, isUserLoggedOut]);
 
-  // Memoized fetchUserProfile function
+  // Memoized function to fetch user profile
   const fetchUserProfile = useCallback(async () => {
     try {
       const token = localStorage.getItem("auth-token");
       if (!token) return null;
 
-      const response = await fetch(`${API_BASE_URL}/api/users/me`, {
+      let response = await fetch(`${API_BASE_URL}/api/users/me`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
           "auth-token": token,
         },
-        credentials: "include", // Include cookies for refresh token
+        credentials: "include",
       });
 
-      // If unauthorized, try to refresh the token and retry
+      // If unauthorized, attempt token refresh and retry
       if (response.status === 401) {
         const newToken = await refreshAccessToken();
         if (newToken) {
-          // Retry with the new token
-          const retryResponse = await fetch(`${API_BASE_URL}/api/users/me`, {
+          response = await fetch(`${API_BASE_URL}/api/users/me`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
@@ -157,9 +137,8 @@ const AuthContextProvider = (props) => {
             },
             credentials: "include",
           });
-
-          const retryData = await retryResponse.json();
-          if (retryResponse.ok && retryData.success) {
+          const retryData = await response.json();
+          if (response.ok && retryData.success) {
             const normalizedUser = normalizeUserData(retryData.user);
             setUserState(normalizedUser);
             dispatch(setUser(normalizedUser));
@@ -171,7 +150,6 @@ const AuthContextProvider = (props) => {
       }
 
       const data = await response.json();
-
       if (response.ok && data.success) {
         const normalizedUser = normalizeUserData(data.user);
         setUserState(normalizedUser);
@@ -179,7 +157,6 @@ const AuthContextProvider = (props) => {
         setIsAuthenticated(true);
         return normalizedUser;
       }
-
       return null;
     } catch (err) {
       console.error("Fetch profile error:", err);
@@ -187,7 +164,7 @@ const AuthContextProvider = (props) => {
     }
   }, [dispatch, refreshAccessToken]);
 
-  // Check if user is authenticated on load
+  // Check authentication status on load
   useEffect(() => {
     const checkAuthStatus = async () => {
       setLoading(true);
@@ -196,7 +173,6 @@ const AuthContextProvider = (props) => {
       console.log("CheckAuthStatus - Token exists:", !!token);
       console.log("CheckAuthStatus - isUserLoggedOut flag:", isUserLoggedOut);
 
-      // Skip token refresh if user is logged out or no token exists
       if (!token || isUserLoggedOut) {
         console.log(
           "CheckAuthStatus - Skipping auth check (no token or logged out)"
@@ -209,7 +185,7 @@ const AuthContextProvider = (props) => {
         return;
       }
 
-      // If we have a token, reset the logged out flag
+      // Reset logged-out flag if token is present
       if (token) {
         console.log(
           "CheckAuthStatus - Resetting isUserLoggedOut flag due to token presence"
@@ -219,7 +195,6 @@ const AuthContextProvider = (props) => {
       }
 
       try {
-        // Use the current token to verify with backend
         console.log("CheckAuthStatus - Verifying token with backend");
         const response = await fetch(`${API_BASE_URL}/api/users/verify-token`, {
           method: "GET",
@@ -227,7 +202,7 @@ const AuthContextProvider = (props) => {
             "Content-Type": "application/json",
             "auth-token": token,
           },
-          credentials: "include", // Include cookies for refresh token
+          credentials: "include",
         });
 
         const data = await response.json();
@@ -247,11 +222,8 @@ const AuthContextProvider = (props) => {
             "CheckAuthStatus - User authenticated:",
             normalizedUser.email
           );
-
-          // Fetch complete profile data
           await fetchUserProfile();
         } else {
-          // If token verification failed but it's not a 401, handle specific errors
           if (
             response.status === 403 &&
             data.message === "Your account has been disabled"
@@ -259,18 +231,14 @@ const AuthContextProvider = (props) => {
             setAccountDisabled(true);
             setError("Your account has been disabled. Please contact support.");
           } else if (response.status === 401) {
-            // Only attempt to refresh token if not logged out
             if (!isUserLoggedOut) {
               const newToken = await refreshAccessToken();
               if (newToken) {
-                // If refresh successful, retry auth check
                 await checkAuthStatus();
                 return;
               }
             }
           }
-
-          // If we reach here, auth failed or refresh failed
           handleLogout();
         }
       } catch (err) {
@@ -304,11 +272,9 @@ const AuthContextProvider = (props) => {
     setLoading(true);
     setError(null);
     setAccountDisabled(false);
-    setInTransition(true); // Start transition state to prevent flashing
+    setInTransition(true);
 
     console.log("Login - Attempting login for:", email);
-
-    // Clear logout flag on login attempt
     localStorage.removeItem("user-logged-out");
     setIsUserLoggedOut(false);
     console.log("Login - Reset isUserLoggedOut flag");
@@ -316,13 +282,10 @@ const AuthContextProvider = (props) => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/users/login`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
-        credentials: "include", // Important to include cookies
+        credentials: "include",
       });
-
       const data = await response.json();
       console.log(
         "Login - Response status:",
@@ -332,32 +295,21 @@ const AuthContextProvider = (props) => {
       );
 
       if (response.ok && data.success) {
-        // Store token first
         localStorage.setItem("auth-token", data.accessToken);
         console.log("Login - Auth token stored");
-
-        // Prepare user data
         const normalizedUser = normalizeUserData(data.user);
         console.log("Login - User authenticated:", normalizedUser.email);
-
-        // Update all states at once before navigation
         const updateAndNavigate = () => {
-          // Batch state updates
           setUserState(normalizedUser);
           dispatch(setUser(normalizedUser));
           setIsAuthenticated(true);
           setLoading(false);
-
-          // Small delay for a smooth transition
           setTimeout(() => {
             setInTransition(false);
             navigate("/");
           }, 300);
         };
-
-        // Fetch complete profile in the background
         fetchUserProfile().finally(updateAndNavigate);
-
         return { success: true };
       } else {
         if (
@@ -397,33 +349,24 @@ const AuthContextProvider = (props) => {
   const signup = async (userData) => {
     setLoading(true);
     setError(null);
-    setInTransition(true); // Start transition for signup too
-
+    setInTransition(true);
     try {
-      // Make sure we're passing the passwordConfirm property that backend expects
       const signupData = {
         ...userData,
         passwordConfirm: userData.passwordConfirm,
       };
-
       const response = await fetch(`${API_BASE_URL}/api/users/signup`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(signupData),
-        credentials: "include", // Include cookies
+        credentials: "include",
       });
-
       const data = await response.json();
 
       if (response.ok && data.success) {
         if (!data.requiresVerification) {
-          // Batch state updates
           localStorage.setItem("auth-token", data.accessToken);
           const normalizedUser = normalizeUserData(data.user);
-
-          // Add a short delay for smooth transition
           setTimeout(() => {
             setUserState(normalizedUser);
             dispatch(setUser(normalizedUser));
@@ -431,10 +374,8 @@ const AuthContextProvider = (props) => {
             setInTransition(false);
           }, 300);
         } else {
-          // End transition state if verification is required
           setInTransition(false);
         }
-
         setLoading(false);
         return {
           success: true,
@@ -444,17 +385,14 @@ const AuthContextProvider = (props) => {
         };
       } else {
         setError(data.message || "Signup failed");
-        setInTransition(false); // Make sure to end transition state on error
+        setInTransition(false);
         setLoading(false);
-        return {
-          success: false,
-          message: data.message || "Signup failed",
-        };
+        return { success: false, message: data.message || "Signup failed" };
       }
     } catch (err) {
       console.error("Signup error:", err);
       setError("Signup failed. Please try again.");
-      setInTransition(false); // Make sure to end transition state on error
+      setInTransition(false);
       setLoading(false);
       return {
         success: false,
@@ -465,39 +403,26 @@ const AuthContextProvider = (props) => {
 
   // Logout function
   const logout = async () => {
-    // Start transition state
     setInTransition(true);
-
-    // First set logged out flag to prevent new authenticated requests
     setIsUserLoggedOut(true);
     localStorage.setItem("user-logged-out", "true");
-
-    // Immediately clear local state to update UI
     setIsAuthenticated(false);
     setUserState(null);
     dispatch(clearUser());
     dispatch(resetCart());
-
-    // Remove token immediately
     localStorage.removeItem("auth-token");
-
-    // Cancel all pending requests to prevent 401 errors
     cancelApiRequests("User logged out");
     cancelAxiosRequests("User logged out");
 
     try {
-      // Call backend logout endpoint to clear refresh token cookie
       await fetch(`${API_BASE_URL}/api/users/logout`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include", // Include cookies
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
       });
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
-      // Add a small delay before navigation for a smooth transition
       setTimeout(() => {
         setInTransition(false);
         navigate("/");
@@ -506,11 +431,9 @@ const AuthContextProvider = (props) => {
   };
 
   if (!initialLoadComplete) {
-    // Return nothing or a minimal loader until initial auth check is complete
     return <div style={{ display: "none" }}></div>;
   }
 
-  // Context value
   const contextValue = {
     user,
     isAuthenticated,
@@ -518,8 +441,8 @@ const AuthContextProvider = (props) => {
     error,
     accountDisabled,
     initialLoadComplete,
-    inTransition, // Expose the transition state
-    isUserLoggedOut, // Expose the logged out flag
+    inTransition,
+    isUserLoggedOut,
     login,
     signup,
     logout,
@@ -527,7 +450,6 @@ const AuthContextProvider = (props) => {
     refreshAccessToken,
   };
 
-  // Debug log current auth state
   console.log("AuthContext - Current state:", {
     isAuthenticated,
     loading,
