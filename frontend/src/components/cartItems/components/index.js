@@ -1,4 +1,7 @@
 // Barrel export file for CartItems components
-export { default as CartItem } from "./CartItem";
-export { default as CartTotals } from "./CartTotals";
-export { default as PromoCodeSection } from "./PromoCodeSection";
+import CartItem from "./CartItem";
+import CartTotals from "./CartTotals";
+import PromoCodeSection from "./PromoCodeSection";
+import EmailVerificationBanner from "./EmailVerificationBanner";
+
+export { CartItem, CartTotals, PromoCodeSection, EmailVerificationBanner };

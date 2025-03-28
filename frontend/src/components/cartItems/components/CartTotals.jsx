@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../../../context/AuthContext";
 
 /**
  * Component that displays cart total amounts
@@ -8,6 +9,14 @@ import { Link } from "react-router-dom";
  * @param {Number} props.totalPrice - The total price of items in cart
  */
 const CartTotals = ({ totalPrice }) => {
+  const { user, isAuthenticated } = useContext(AuthContext);
+
+  // Check if user is authenticated and email is verified
+  const isEmailVerified = isAuthenticated && user?.isEmailVerified;
+
+  // If user is authenticated but email is not verified, show disabled button
+  const showDisabledCheckout = isAuthenticated && !isEmailVerified;
+
   return (
     <div className="cart-totals">
       <h2 className="cart-totals-title">Cart Totals</h2>
@@ -28,9 +37,26 @@ const CartTotals = ({ totalPrice }) => {
           ${totalPrice.toFixed(2)}
         </p>
       </div>
-      <Link to="/checkout" style={{ textDecoration: "none" }}>
-        <button className="checkout-button">PROCEED TO CHECKOUT</button>
-      </Link>
+
+      {showDisabledCheckout ? (
+        <button
+          className="cart-checkout-button disabled"
+          disabled={true}
+          aria-label="Email verification required for checkout"
+        >
+          VERIFY EMAIL TO CHECKOUT
+        </button>
+      ) : (
+        <Link to="/checkout" style={{ textDecoration: "none" }}>
+          <button className="cart-checkout-button">PROCEED TO CHECKOUT</button>
+        </Link>
+      )}
+
+      {showDisabledCheckout && (
+        <p className="cart-verification-note">
+          Please verify your email to proceed
+        </p>
+      )}
     </div>
   );
 };

@@ -14,17 +14,19 @@ const PromoCodeSection = () => {
   };
 
   return (
-    <div className="promo-code-section">
-      <p className="promo-code-text">If you have a promo code, Enter it here</p>
-      <div className="promo-code-input-container">
+    <div className="cart-promo-code-section">
+      <p className="cart-promo-code-text">
+        If you have a promo code, Enter it here
+      </p>
+      <div className="cart-promo-code-input-container">
         <input
           type="text"
-          className="promo-code-input"
+          className="cart-promo-code-input"
           placeholder="promo code"
           value={promoCode}
           onChange={(e) => setPromoCode(e.target.value)}
         />
-        <button className="promo-code-submit" onClick={handleSubmit}>
+        <button className="cart-promo-code-submit" onClick={handleSubmit}>
           Submit
         </button>
       </div>

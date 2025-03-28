@@ -30,6 +30,16 @@ const calculateTaxAndShipping = (subtotal) => {
 const createPaymentIntent = catchAsync(async (req, res, next) => {
   const { shippingInfo } = req.body;
 
+  // Double-check email verification status (in case middleware is bypassed)
+  if (!req.user.isEmailVerified) {
+    return next(
+      new AppError(
+        "Email verification required. Please verify your email address before proceeding to checkout.",
+        403
+      )
+    );
+  }
+
   if (!shippingInfo) {
     return next(new AppError("Shipping information is required", 400));
   }
@@ -87,6 +97,16 @@ const createPaymentIntent = catchAsync(async (req, res, next) => {
  */
 const confirmOrder = catchAsync(async (req, res, next) => {
   const { paymentIntentId, shippingInfo } = req.body;
+
+  // Double-check email verification status (in case middleware is bypassed)
+  if (!req.user.isEmailVerified) {
+    return next(
+      new AppError(
+        "Email verification required. Please verify your email address before proceeding to checkout.",
+        403
+      )
+    );
+  }
 
   if (!paymentIntentId || !shippingInfo) {
     return next(

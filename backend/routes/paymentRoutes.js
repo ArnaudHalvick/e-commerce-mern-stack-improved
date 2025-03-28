@@ -2,7 +2,7 @@
 
 const express = require("express");
 const router = express.Router();
-const { isAuthenticated } = require("../middleware/auth");
+const { isAuthenticated, isEmailVerified } = require("../middleware/auth");
 const paymentController = require("../controllers/paymentController");
 const { sanitizeRequest } = require("../middleware/sanitizers");
 
@@ -14,10 +14,16 @@ router.post(
   "/create-payment-intent",
   sanitizeRequest,
   isAuthenticated,
+  isEmailVerified,
   paymentController.createPaymentIntent
 );
 
-router.post("/confirm-order", isAuthenticated, paymentController.confirmOrder);
+router.post(
+  "/confirm-order",
+  isAuthenticated,
+  isEmailVerified,
+  paymentController.confirmOrder
+);
 
 router.get("/my-orders", isAuthenticated, paymentController.getMyOrders);
 

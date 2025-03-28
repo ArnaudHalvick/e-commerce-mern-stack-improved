@@ -158,7 +158,7 @@
   margin: 15px 0;
 }
 
-.checkout-button {
+.cart-checkout-button {
   width: 100%;
   padding: 12px;
   background-color: #4caf50;
@@ -172,27 +172,27 @@
   margin-bottom: 20px;
 }
 
-.checkout-button:hover {
+.cart-checkout-button:hover {
   background-color: #43a047;
 }
 
 /* Promo Code Section */
-.promo-code-section {
+.cart-promo-code-section {
   margin-top: 20px;
 }
 
-.promo-code-text {
+.cart-promo-code-text {
   font-size: 14px;
   color: #555;
   margin-bottom: 10px;
 }
 
-.promo-code-input-container {
+.cart-promo-code-input-container {
   display: flex;
   gap: 10px;
 }
 
-.promo-code-input {
+.cart-promo-code-input {
   flex: 1;
   padding: 10px;
   border: 1px solid #ddd;
@@ -200,7 +200,7 @@
   font-size: 14px;
 }
 
-.promo-code-submit {
+.cart-promo-code-submit {
   padding: 10px 15px;
   background-color: #333;
   color: white;
@@ -210,7 +210,7 @@
   transition: background-color 0.2s ease;
 }
 
-.promo-code-submit:hover {
+.cart-promo-code-submit:hover {
   background-color: #555;
 }
 
@@ -256,7 +256,7 @@
     font-size: 0.7rem;
   }
 
-  .checkout-button {
+  .cart-checkout-button {
     font-size: 0.8rem;
     padding: 0.8rem;
   }
@@ -278,7 +278,7 @@
 }
 
 /* Add animation for quantity changes */
-@keyframes highlight {
+@keyframes cart-highlight {
   0% {
     background-color: rgba(255, 255, 0, 0.3);
   }
@@ -325,4 +325,137 @@
     width: 60px;
     height: 60px;
   }
+}
+
+/* Email Verification Banner Styles */
+.cart-email-verification-banner {
+  background-color: #fff3cd;
+  border: 1px solid #ffeeba;
+  border-radius: 4px;
+  padding: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.cart-email-verification-content {
+  display: flex;
+  align-items: flex-start;
+}
+
+.cart-email-verification-icon {
+  color: #e6a700;
+  font-size: 24px;
+  margin-right: 15px;
+  margin-top: 4px;
+}
+
+.cart-email-verification-message {
+  flex: 1;
+}
+
+.cart-email-verification-title {
+  margin: 0 0 8px 0;
+  color: #856404;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.cart-email-verification-text {
+  margin: 0 0 12px 0;
+  color: #533f03;
+  font-size: 14px;
+}
+
+.cart-email-verification-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.cart-email-verification-resend-btn {
+  background-color: #e6a700;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.cart-email-verification-resend-btn:hover {
+  background-color: #d49700;
+}
+
+.cart-email-verification-resend-btn:disabled {
+  background-color: #eabf69;
+  cursor: not-allowed;
+}
+
+.cart-email-verification-refresh-btn {
+  background-color: #5a6268;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.cart-email-verification-refresh-btn:hover {
+  background-color: #4e555b;
+}
+
+.cart-email-verification-refresh-btn:disabled {
+  background-color: #8a8f93;
+  cursor: not-allowed;
+}
+
+.cart-email-verification-link {
+  color: #533f03;
+  text-decoration: underline;
+  font-size: 14px;
+}
+
+.cart-email-verification-link:hover {
+  color: #725702;
+}
+
+.cart-email-verification-success-message {
+  color: #155724 !important;
+  background-color: #d4edda;
+  border-color: #c3e6cb;
+  padding: 8px 12px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+
+.cart-email-verification-error-message {
+  color: #721c24 !important;
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+  padding: 8px 12px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+
+/* Disabled Checkout Button */
+.cart-checkout-button.disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.cart-checkout-button.disabled:hover {
+  background-color: #cccccc;
+}
+
+.cart-verification-note {
+  font-size: 12px;
+  color: #856404;
+  text-align: center;
+  margin-top: 8px;
 }

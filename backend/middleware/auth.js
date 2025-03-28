@@ -64,4 +64,42 @@ const verifyRefreshToken = async (req, res, next) => {
   next();
 };
 
-module.exports = { isAuthenticated, isNotAuthenticated, verifyRefreshToken };
+/**
+ * Middleware to ensure user's email is verified
+ * This middleware should be used after isAuthenticated
+ */
+const isEmailVerified = async (req, res, next) => {
+  // Check if user object exists (should be set by isAuthenticated)
+  if (!req.user) {
+    return next(
+      AppError.createAndLogError("User not authenticated", 401, {
+        path: req.originalUrl,
+        method: req.method,
+      })
+    );
+  }
+
+  // Check if user's email is verified
+  if (!req.user.isEmailVerified) {
+    return next(
+      AppError.createAndLogError(
+        "Email verification required. Please verify your email address before proceeding to checkout.",
+        403,
+        {
+          userId: req.user._id,
+          path: req.originalUrl,
+          email: req.user.email,
+        }
+      )
+    );
+  }
+
+  next();
+};
+
+module.exports = {
+  isAuthenticated,
+  isNotAuthenticated,
+  verifyRefreshToken,
+  isEmailVerified,
+};

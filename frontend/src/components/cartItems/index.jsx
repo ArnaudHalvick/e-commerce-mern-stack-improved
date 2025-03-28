@@ -1,5 +1,8 @@
 import "./CartItems.css";
+import { useContext } from "react";
 import { CartItem, CartTotals, PromoCodeSection } from "./components";
+import EmailVerificationBanner from "./components/EmailVerificationBanner";
+import { AuthContext } from "../../context/AuthContext";
 import useCart from "./hooks/useCart";
 import EmptyState from "../errorHandling/EmptyState";
 import "../errorHandling/LoadingIndicator.css";
@@ -9,6 +12,7 @@ import Spinner from "../ui/Spinner";
  * Cart display component showing all items in cart and totals
  */
 const CartItems = () => {
+  const { user, isAuthenticated } = useContext(AuthContext);
   const {
     items,
     localTotalPrice,
@@ -20,6 +24,10 @@ const CartItems = () => {
     handleAddItem,
     handleRemoveItem,
   } = useCart();
+
+  // Check if we should show the email verification banner
+  const showVerificationBanner =
+    isAuthenticated && user && !user.isEmailVerified;
 
   // Display loading message
   if (loading && items.length === 0) {
@@ -82,6 +90,9 @@ const CartItems = () => {
 
   return (
     <div className="cart-container">
+      {/* Email Verification Banner */}
+      {showVerificationBanner && <EmailVerificationBanner />}
+
       {/* Cart Table */}
       <table className="cart-table">
         <thead>

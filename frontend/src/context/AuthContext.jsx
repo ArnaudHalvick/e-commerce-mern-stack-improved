@@ -7,7 +7,7 @@ import {
   useCallback,
   useContext,
 } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { resetCart } from "../redux/slices/cartSlice";
 import { setUser, clearUser } from "../redux/slices/userSlice";
@@ -30,9 +30,13 @@ const AuthContextProvider = (props) => {
   );
   const [initialLoadComplete, setInitialLoadComplete] = useState(false);
   const [inTransition, setInTransition] = useState(false);
+  const [lastVerificationCheck, setLastVerificationCheck] = useState(
+    Date.now()
+  );
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
 
   useEffect(() => {
     const isLoggedOut = localStorage.getItem("user-logged-out") === "true";
@@ -41,6 +45,28 @@ const AuthContextProvider = (props) => {
       localStorage.removeItem("auth-token");
     }
   }, []);
+
+  // Check user profile when navigating to /cart or /checkout
+  useEffect(() => {
+    // Only check if the user is authenticated
+    if (isAuthenticated && user) {
+      // Only refresh if it's been more than 30 seconds since the last check
+      const timeSinceLastCheck = Date.now() - lastVerificationCheck;
+      const requiresRefresh = timeSinceLastCheck > 30000; // 30 seconds
+
+      // Check if we're on a page that requires a fresh verification check
+      const isCartOrCheckout =
+        location.pathname === "/cart" ||
+        location.pathname === "/checkout" ||
+        location.pathname.startsWith("/order-confirmation");
+
+      if (isCartOrCheckout && requiresRefresh) {
+        // Refresh the user profile to check verification status
+        fetchUserProfile();
+        setLastVerificationCheck(Date.now());
+      }
+    }
+  }, [location.pathname, isAuthenticated, user]);
 
   const normalizeUserData = (userData) => {
     if (!userData) return null;
@@ -140,6 +166,7 @@ const AuthContextProvider = (props) => {
             setUserState(normalizedUser);
             dispatch(setUser(normalizedUser));
             setIsAuthenticated(true);
+            setLastVerificationCheck(Date.now());
             return normalizedUser;
           }
         }
@@ -152,6 +179,7 @@ const AuthContextProvider = (props) => {
         setUserState(normalizedUser);
         dispatch(setUser(normalizedUser));
         setIsAuthenticated(true);
+        setLastVerificationCheck(Date.now());
         return normalizedUser;
       }
       return null;
@@ -390,6 +418,44 @@ const AuthContextProvider = (props) => {
       }, 300);
     }
   };
+
+  // Add an event listener for email verification required events
+  useEffect(() => {
+    const handleEmailVerificationRequired = (event) => {
+      const { message } = event.detail;
+
+      // If already on verification page, don't navigate
+      if (window.location.pathname.includes("/verify")) {
+        return;
+      }
+
+      // Show a notification or handle as needed
+      if (
+        window.confirm(
+          `${message} Would you like to go to the verification page?`
+        )
+      ) {
+        navigate("/verify-pending", {
+          state: {
+            from: window.location.pathname,
+            requiresVerification: true,
+          },
+        });
+      }
+    };
+
+    window.addEventListener(
+      "auth:emailVerificationRequired",
+      handleEmailVerificationRequired
+    );
+
+    return () => {
+      window.removeEventListener(
+        "auth:emailVerificationRequired",
+        handleEmailVerificationRequired
+      );
+    };
+  }, [navigate]);
 
   if (!initialLoadComplete) {
     return <div style={{ display: "none" }}></div>;

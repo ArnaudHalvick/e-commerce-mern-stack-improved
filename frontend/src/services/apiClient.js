@@ -116,6 +116,40 @@ apiClient.interceptors.response.use(
       });
     }
 
+    // Special handling for email verification errors
+    if (error.response && error.response.status === 403) {
+      const errorData = error.response.data;
+      const errorMessage = errorData?.message || "";
+
+      // Check if the error is related to email verification
+      if (
+        errorMessage.includes("Email verification required") ||
+        errorMessage.includes("verify your email")
+      ) {
+        // Dispatch a custom event that can be caught by other components
+        const verificationEvent = new CustomEvent(
+          "auth:emailVerificationRequired",
+          {
+            detail: {
+              message: errorMessage,
+              originalError: error,
+            },
+          }
+        );
+        window.dispatchEvent(verificationEvent);
+
+        // You could also show a notification here if needed
+
+        // Return a formatted error
+        return {
+          status: 403,
+          message: "Email verification required",
+          details: errorMessage,
+          requiresEmailVerification: true,
+        };
+      }
+    }
+
     // Default error response structure
     const errorResponse = {
       message: "An unexpected error occurred",

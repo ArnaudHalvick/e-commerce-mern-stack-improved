@@ -10,6 +10,7 @@ import { ToastContainer } from "./components/errorHandling";
 import { ErrorProvider } from "./context/ErrorContext";
 import AuthLoadingIndicator from "./components/authLoadingIndicator/AuthLoadingIndicator.jsx";
 import AuthGuard from "./components/authGuard/AuthGuard.jsx";
+import EmailVerificationGuard from "./components/authGuard/EmailVerificationGuard.jsx";
 import { AuthContext } from "./context/AuthContext";
 import StripeProvider from "./stripe/StripeProvider";
 import CheckoutPage from "./pages/checkout/CheckoutPage";
@@ -183,14 +184,16 @@ function App() {
             {/* Demo Routes - Public */}
             <Route path="/error-demo" element={<ErrorDemoPage />} />
 
-            {/* New routes with Stripe provider */}
+            {/* Protected routes that also require email verification */}
             <Route
               path="/checkout"
               element={
                 <ProtectedRoute>
-                  <StripeProvider>
-                    <CheckoutPage />
-                  </StripeProvider>
+                  <EmailVerificationGuard>
+                    <StripeProvider>
+                      <CheckoutPage />
+                    </StripeProvider>
+                  </EmailVerificationGuard>
                 </ProtectedRoute>
               }
             />
@@ -199,7 +202,9 @@ function App() {
               path="/order-confirmation/:orderId"
               element={
                 <ProtectedRoute>
-                  <OrderConfirmationPage />
+                  <EmailVerificationGuard>
+                    <OrderConfirmationPage />
+                  </EmailVerificationGuard>
                 </ProtectedRoute>
               }
             />
