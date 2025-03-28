@@ -23,16 +23,7 @@ import Spinner from "../../components/ui/Spinner";
 import "./Profile.css";
 
 // Import the validation functions
-import {
-  validateName,
-  validateEmail,
-  validatePhone,
-  validateAddress,
-  validatePassword,
-  validatePasswordMatch,
-  validateForm,
-  isFormValid,
-} from "../../utils/validation";
+import { validatePasswordMatch, validateForm } from "../../utils/validation";
 
 // Import the schemas
 import {
@@ -214,57 +205,6 @@ const Profile = () => {
         ...prev,
         ...errors,
       }));
-    }
-  };
-
-  const updateFieldError = (fieldName, childName, errorMessage) => {
-    if (childName) {
-      // For nested fields like address
-      setFieldErrors((prev) => {
-        // If error message is null, remove the error for this field
-        if (errorMessage === null) {
-          const updatedNestedErrors = { ...prev[fieldName] };
-          delete updatedNestedErrors[childName];
-
-          // If no more errors in this parent object, remove the entire parent
-          if (Object.keys(updatedNestedErrors).length === 0) {
-            const updatedErrors = { ...prev };
-            delete updatedErrors[fieldName];
-            return updatedErrors;
-          }
-
-          // Otherwise just update the parent with the modified nested errors
-          return {
-            ...prev,
-            [fieldName]: updatedNestedErrors,
-          };
-        }
-
-        // Add or update the error
-        return {
-          ...prev,
-          [fieldName]: {
-            ...prev[fieldName],
-            [childName]: errorMessage,
-          },
-        };
-      });
-    } else {
-      // For regular fields
-      setFieldErrors((prev) => {
-        // If error message is null, remove the error for this field
-        if (errorMessage === null) {
-          const updatedErrors = { ...prev };
-          delete updatedErrors[fieldName];
-          return updatedErrors;
-        }
-
-        // Add or update the error
-        return {
-          ...prev,
-          [fieldName]: errorMessage,
-        };
-      });
     }
   };
 
