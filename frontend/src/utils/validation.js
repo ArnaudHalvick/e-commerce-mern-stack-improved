@@ -1,23 +1,20 @@
 // frontend/src/utils/validation.js
 
 /**
- * Runtime Form Validation Utilities
+ * Form Validation Utilities
  *
- * This file contains reusable validation functions for handling runtime form validation.
- * These utilities validate user input according to the application's data model requirements
- * and provide consistent validation logic across the application.
+ * Provides reusable functions to validate user input against the application's validation schemas.
+ * Each function returns:
+ * - isValid: Boolean indicating if the input is valid.
+ * - message: Error message if validation failed, otherwise an empty string.
  *
- * Each validation function returns an object with:
- * - isValid: boolean indicating if validation passed
- * - message: error message if validation failed, empty string otherwise
- *
- * The main utility functions are:
- * - validateForm: Validates a form object against specified rules
- * - isFormValid: Checks if a validation result object contains any errors
- * - formatValidationErrors: Formats validation errors into a user-friendly message
+ * Functions include:
+ * - validateEmail, validateName, validatePassword, validatePasswordMatch, validatePhone, validateAddress
+ * - validateForm: Validates a complete form object based on given rules
+ * - isFormValid: Checks if the form has any validation errors
+ * - formatValidationErrors: Converts error object into a readable string
  */
 
-// Import schemas from validationSchemas.js
 import {
   nameSchema,
   emailSchema,
@@ -27,29 +24,7 @@ import {
 } from "./validationSchemas";
 
 /**
- * Validation utilities for form validation based on User model requirements.
- */
-
-// Email validation regex from User model.
-const EMAIL_REGEX =
-  /^([\w+-]+(?:\.[\w+-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,})$/i;
-
-// Password validation requirements from User model.
-const PASSWORD_MIN_LENGTH = 8;
-const PASSWORD_UPPERCASE_REGEX = /[A-Z]/;
-const PASSWORD_NUMBER_REGEX = /[0-9]/;
-const PASSWORD_SPECIAL_REGEX = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
-
-// Phone validation regex from User model.
-const PHONE_REGEX = /^[0-9]{10,15}$/;
-
-// ZIP/Postal code validation regex from User model.
-const ZIP_CODE_REGEX = /^[0-9a-zA-Z\-\s]{4,12}$/;
-
-/**
  * Validates an email address.
- * @param {string} email - The email to validate.
- * @returns {Object} - { isValid, message }
  */
 export const validateEmail = (email) => {
   const trimmedEmail = email?.trim() || "";
@@ -64,8 +39,6 @@ export const validateEmail = (email) => {
 
 /**
  * Validates a name.
- * @param {string} name - The name to validate.
- * @returns {Object} - { isValid, message }
  */
 export const validateName = (name) => {
   const trimmedName = name?.trim() || "";
@@ -88,9 +61,7 @@ export const validateName = (name) => {
 };
 
 /**
- * Validates a password based on User model requirements.
- * @param {string} password - The password to validate.
- * @returns {Object} - { isValid, message, details }
+ * Validates a password based on schema.
  */
 export const validatePassword = (password) => {
   const details = {
@@ -112,7 +83,6 @@ export const validatePassword = (password) => {
     };
   }
 
-  // Check each validator in the password schema
   for (const validator of passwordSchema.validators) {
     if (!validator.pattern.test(trimmedPassword)) {
       return {
@@ -127,10 +97,7 @@ export const validatePassword = (password) => {
 };
 
 /**
- * Validates that two passwords match.
- * @param {string} password - The password.
- * @param {string} confirmPassword - The confirmation password.
- * @returns {Object} - { isValid, message }
+ * Validates if password and confirmation match.
  */
 export const validatePasswordMatch = (password, confirmPassword) => {
   const trimmedConfirm = confirmPassword?.trim() || "";
@@ -145,11 +112,8 @@ export const validatePasswordMatch = (password, confirmPassword) => {
 
 /**
  * Validates a phone number.
- * @param {string} phone - Phone number to validate.
- * @returns {Object} - { isValid, message }
  */
 export const validatePhone = (phone) => {
-  // Phone is optional unless specified as required in the schema
   const trimmedPhone = phone?.trim() || "";
   if (!trimmedPhone && !phoneSchema.required) {
     return { isValid: true, message: "" };
@@ -169,15 +133,12 @@ export const validatePhone = (phone) => {
 };
 
 /**
- * Validates address fields.
- * @param {Object} address - The address object.
- * @returns {Object} - Object with validation results for each field.
+ * Validates an address object.
  */
 export const validateAddress = (address) => {
   if (!address) return {};
   const errors = {};
 
-  // Validate street
   if (
     addressSchema.street.required &&
     (!address.street || address.street.trim() === "")
@@ -190,7 +151,6 @@ export const validateAddress = (address) => {
     errors.street = addressSchema.street.message;
   }
 
-  // Validate city
   if (
     addressSchema.city.required &&
     (!address.city || address.city.trim() === "")
@@ -203,7 +163,6 @@ export const validateAddress = (address) => {
     errors.city = addressSchema.city.message;
   }
 
-  // Validate state
   if (
     addressSchema.state.required &&
     (!address.state || address.state.trim() === "")
@@ -216,7 +175,6 @@ export const validateAddress = (address) => {
     errors.state = addressSchema.state.message;
   }
 
-  // Validate zipCode
   if (
     addressSchema.zipCode.required &&
     (!address.zipCode || address.zipCode.trim() === "")
@@ -229,7 +187,6 @@ export const validateAddress = (address) => {
     errors.zipCode = addressSchema.zipCode.message;
   }
 
-  // Validate country
   if (
     addressSchema.country.required &&
     (!address.country || address.country.trim() === "")
@@ -246,15 +203,11 @@ export const validateAddress = (address) => {
 };
 
 /**
- * Validates a form object against specified rules.
- * @param {Object} formData - The form data to validate.
- * @param {Object} rules - An object specifying which validations to run.
- * @returns {Object} - An object with field names as keys and error messages as values.
+ * Validates a full form based on rule config.
  */
 export const validateForm = (formData, rules = {}) => {
   const errors = {};
 
-  // Validate username (or name) field.
   if (rules.username && formData.username !== undefined) {
     const result = validateName(formData.username);
     if (!result.isValid) errors.username = result.message;
@@ -263,19 +216,16 @@ export const validateForm = (formData, rules = {}) => {
     if (!result.isValid) errors.name = result.message;
   }
 
-  // Validate email.
   if (rules.email && formData.email !== undefined) {
     const result = validateEmail(formData.email);
     if (!result.isValid) errors.email = result.message;
   }
 
-  // Validate password.
   if (rules.password && formData.password !== undefined) {
     const result = validatePassword(formData.password);
     if (!result.isValid) errors.password = result.message;
   }
 
-  // Validate password confirmation.
   if (
     rules.confirmPassword &&
     formData.password !== undefined &&
@@ -298,13 +248,11 @@ export const validateForm = (formData, rules = {}) => {
     if (!result.isValid) errors.passwordConfirm = result.message;
   }
 
-  // Validate phone.
   if (rules.phone && formData.phone !== undefined) {
     const result = validatePhone(formData.phone);
     if (!result.isValid) errors.phone = result.message;
   }
 
-  // Validate address.
   if (rules.address && formData.address) {
     const addressErrors = validateAddress(formData.address);
     if (Object.keys(addressErrors).length > 0) errors.address = addressErrors;
@@ -314,24 +262,19 @@ export const validateForm = (formData, rules = {}) => {
 };
 
 /**
- * Check if a validation result object contains any errors.
- * @param {Object} errors - The validation errors object.
- * @returns {boolean} - Whether the form is valid (no errors).
+ * Checks whether the form has any errors.
  */
 export const isFormValid = (errors) => Object.keys(errors).length === 0;
 
 /**
- * Format validation errors into a user-friendly message.
- * @param {Object} errors - Object containing validation errors.
- * @returns {string} - Formatted error message.
+ * Formats errors into a human-readable message.
  */
 export const formatValidationErrors = (errors) => {
   if (!errors || Object.keys(errors).length === 0) return "";
-  // Handle nested errors (e.g., address).
-  const formattedErrors = Object.entries(errors).map(([key, value]) => {
-    return typeof value === "object" && value !== null && !Array.isArray(value)
+  const formattedErrors = Object.entries(errors).map(([_, value]) =>
+    typeof value === "object" && value !== null && !Array.isArray(value)
       ? Object.values(value).join(". ")
-      : value;
-  });
+      : value
+  );
   return formattedErrors.join(". ");
 };
