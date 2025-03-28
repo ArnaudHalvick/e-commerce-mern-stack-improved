@@ -1,6 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useError } from "../../../context/ErrorContext";
 import { debounce } from "lodash";
+import {
+  validatePassword,
+  validatePasswordMatch,
+} from "../../../utils/validation";
 
 /**
  * PasswordManager component for handling password changes
@@ -63,7 +67,7 @@ const PasswordManager = ({
   const minPasswordLength = getMinPasswordLength();
 
   useEffect(() => {
-    const validatePassword = () => {
+    const validatePasswordDetails = () => {
       const { newPassword, confirmPassword } = passwordData;
       if (!newPassword) {
         setPasswordValidations({
@@ -76,22 +80,67 @@ const PasswordManager = ({
         return;
       }
 
-      setPasswordValidations({
-        length: newPassword.length >= minPasswordLength,
-        uppercase: /[A-Z]/.test(newPassword),
-        number: /[0-9]/.test(newPassword),
-        special: /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(newPassword),
+      // Use validatePassword from validation.js to get consistent results
+      const result = validatePassword(newPassword);
+
+      // Set visual validations based on the validation result details
+      const newValidations = {
+        length: result.details.length,
+        uppercase: result.details.uppercase,
+        number: result.details.number,
+        special: result.details.special,
         match: confirmPassword && newPassword === confirmPassword,
-      });
+      };
+
+      setPasswordValidations(newValidations);
+
+      // Ensure field errors are in sync with validations
+      if (result.isValid) {
+        // If all password criteria are met but we still have a newPassword error, clear it
+        if (fieldErrors?.newPassword) {
+          // We don't modify fieldErrors directly, but we can trigger a change
+          // by calling handlePasswordInputChange with the current value
+          handlePasswordInputChange({
+            target: { name: "newPassword", value: newPassword },
+          });
+        }
+      }
+
+      // Same for password match validation
+      if (newValidations.match && fieldErrors?.confirmPassword) {
+        handlePasswordInputChange({
+          target: { name: "confirmPassword", value: confirmPassword },
+        });
+      }
     };
 
-    const debouncedValidate = debounce(validatePassword, 300);
+    const debouncedValidate = debounce(validatePasswordDetails, 300);
     debouncedValidate();
 
     return () => {
       debouncedValidate.cancel();
     };
-  }, [passwordData, minPasswordLength]);
+  }, [passwordData, minPasswordLength, fieldErrors, handlePasswordInputChange]);
+
+  // Handle form submission with validation
+  const handleSubmitWithValidation = (e) => {
+    e.preventDefault();
+
+    // Double-check all validations
+    const allRequirementsMet =
+      passwordValidations.length &&
+      passwordValidations.uppercase &&
+      passwordValidations.number &&
+      passwordValidations.special &&
+      passwordValidations.match;
+
+    if (!isFormValid || !allRequirementsMet) {
+      showError("Please fix the validation errors before submitting");
+      return;
+    }
+
+    handlePasswordSubmit(e);
+  };
 
   // Determine input class based on validation state
   const getInputClass = (fieldName) => {
@@ -123,16 +172,6 @@ const PasswordManager = ({
     }
 
     return attributes;
-  };
-
-  // Handle form submission with validation
-  const handleSubmitWithValidation = (e) => {
-    e.preventDefault();
-    if (!isFormValid) {
-      showError("Please fix the validation errors before submitting");
-      return;
-    }
-    handlePasswordSubmit(e);
   };
 
   return (

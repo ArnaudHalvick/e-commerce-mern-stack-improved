@@ -80,16 +80,31 @@ export const changePassword = createAsyncThunk(
           validationErrors,
         });
       }
-      if (error.response?.data?.message?.includes("current password")) {
+
+      // Handle specific error cases with clear error messages
+      const errorMessage = error.response?.data?.message;
+
+      if (errorMessage?.includes("current password")) {
         return rejectWithValue({
-          message: error.response?.data?.message,
+          message: errorMessage,
           validationErrors: {
             currentPassword: "Current password is incorrect",
           },
         });
       }
+
+      if (errorMessage?.includes("New password must be different")) {
+        return rejectWithValue({
+          message: errorMessage,
+          validationErrors: {
+            newPassword:
+              "New password must be different from your current password",
+          },
+        });
+      }
+
       return rejectWithValue({
-        message: error.response?.data?.message || "Failed to change password",
+        message: errorMessage || "Failed to change password",
       });
     }
   }

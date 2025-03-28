@@ -23,7 +23,11 @@ import Spinner from "../../components/ui/Spinner";
 import "./Profile.css";
 
 // Import the validation functions
-import { validatePasswordMatch, validateForm } from "../../utils/validation";
+import {
+  validatePasswordMatch,
+  validateForm,
+  validatePassword,
+} from "../../utils/validation";
 
 // Import the schemas
 import {
@@ -218,28 +222,86 @@ const Profile = () => {
       [name]: value,
     };
 
-    // Validate password fields
-    const errors = validateForm(
-      updatedPasswordData,
-      profilePasswordChangeSchema
-    );
-
-    // Special handling for confirmPassword - validate matching
-    if (name === "confirmPassword" || name === "newPassword") {
-      const matchResult = validatePasswordMatch(
-        name === "newPassword" ? value : passwordData.newPassword,
-        name === "confirmPassword" ? value : passwordData.confirmPassword
-      );
-
-      if (!matchResult.isValid) {
-        errors.confirmPassword = matchResult.message;
+    // First, check if the new password passes all requirements
+    if (name === "newPassword") {
+      const result = validatePassword(value);
+      if (result.isValid) {
+        // If valid, clear the newPassword error
+        setFieldErrors((prev) => ({
+          ...prev,
+          newPassword: undefined,
+        }));
+      } else {
+        // If invalid, set the appropriate error
+        setFieldErrors((prev) => ({
+          ...prev,
+          newPassword: result.message,
+        }));
       }
+
+      // Also check password match if confirmPassword exists
+      if (updatedPasswordData.confirmPassword) {
+        const matchResult = validatePasswordMatch(
+          value,
+          updatedPasswordData.confirmPassword
+        );
+
+        if (matchResult.isValid) {
+          setFieldErrors((prev) => ({
+            ...prev,
+            confirmPassword: undefined,
+          }));
+        } else {
+          setFieldErrors((prev) => ({
+            ...prev,
+            confirmPassword: matchResult.message,
+          }));
+        }
+      }
+
+      return;
     }
 
-    setFieldErrors((prev) => ({
-      ...prev,
-      ...errors,
-    }));
+    // For confirmPassword field
+    if (name === "confirmPassword") {
+      if (updatedPasswordData.newPassword) {
+        const matchResult = validatePasswordMatch(
+          updatedPasswordData.newPassword,
+          value
+        );
+
+        if (matchResult.isValid) {
+          setFieldErrors((prev) => ({
+            ...prev,
+            confirmPassword: undefined,
+          }));
+        } else {
+          setFieldErrors((prev) => ({
+            ...prev,
+            confirmPassword: matchResult.message,
+          }));
+        }
+      }
+
+      return;
+    }
+
+    // For currentPassword field - just validate it's not empty
+    if (name === "currentPassword") {
+      if (!value.trim()) {
+        setFieldErrors((prev) => ({
+          ...prev,
+          currentPassword: "Current password is required",
+        }));
+      } else {
+        setFieldErrors((prev) => ({
+          ...prev,
+          currentPassword: undefined,
+        }));
+      }
+
+      return;
+    }
   };
 
   const runValidation = (data) => {
@@ -353,17 +415,24 @@ const Profile = () => {
   const handlePasswordSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate password using schema
-    const errors = validateForm(passwordData, profilePasswordChangeSchema);
-
-    // Add confirm password validation
-    const matchResult = validatePasswordMatch(
+    // Check for validation errors before submitting
+    const hasCurrentPasswordError = !passwordData.currentPassword.trim();
+    const passwordValidation = validatePassword(passwordData.newPassword);
+    const matchValidation = validatePasswordMatch(
       passwordData.newPassword,
       passwordData.confirmPassword
     );
 
-    if (!matchResult.isValid) {
-      errors.confirmPassword = matchResult.message;
+    // Create error object
+    const errors = {};
+    if (hasCurrentPasswordError) {
+      errors.currentPassword = "Current password is required";
+    }
+    if (!passwordValidation.isValid) {
+      errors.newPassword = passwordValidation.message;
+    }
+    if (!matchValidation.isValid) {
+      errors.confirmPassword = matchValidation.message;
     }
 
     // Update field errors and return if validation fails
@@ -372,6 +441,7 @@ const Profile = () => {
         ...prev,
         ...errors,
       }));
+      showError("Please fix the validation errors before submitting");
       return;
     }
 
@@ -384,17 +454,17 @@ const Profile = () => {
       };
       await dispatch(changePassword(passwordPayload)).unwrap();
     } catch (error) {
+      // Display the error message to the user
+      if (error.message) {
+        showError(error.message);
+      }
+
+      // Update field errors from backend validation
       if (error.validationErrors) {
-        setFieldErrors(error.validationErrors);
-      } else if (
-        typeof error === "string" &&
-        error.includes("current password")
-      ) {
-        setFieldErrors({ currentPassword: "Current password is incorrect" });
-      } else {
-        showError(
-          typeof error === "string" ? error : "Failed to change password"
-        );
+        setFieldErrors((prev) => ({
+          ...prev,
+          ...error.validationErrors,
+        }));
       }
     }
   };
