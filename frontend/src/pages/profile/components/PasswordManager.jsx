@@ -1,10 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useError } from "../../../context/ErrorContext";
 import { debounce } from "lodash";
-import {
-  validatePassword,
-  validatePasswordMatch,
-} from "../../../utils/validation";
+import { validatePassword } from "../../../utils/validation";
 
 /**
  * PasswordManager component for handling password changes
