@@ -166,6 +166,11 @@ export const registrationFormSchema = {
 export const passwordResetFormSchema = {
   password: passwordSchema,
   confirmPassword: confirmPasswordSchema,
+  token: {
+    required: true,
+    minLength: 10,
+    message: "Invalid reset token",
+  },
 };
 
 /**

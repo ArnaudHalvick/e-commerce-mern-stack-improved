@@ -258,6 +258,16 @@ export const validateForm = (formData, rules = {}) => {
     if (Object.keys(addressErrors).length > 0) errors.address = addressErrors;
   }
 
+  // Validate token if it's a required field in the rules
+  if (rules.token && formData.token !== undefined) {
+    if (!formData.token || formData.token.trim() === "") {
+      errors.token = "Reset token is required";
+    } else if (formData.token.length < 10) {
+      // Minimum length check for token
+      errors.token = "Invalid reset token";
+    }
+  }
+
   return errors;
 };
 

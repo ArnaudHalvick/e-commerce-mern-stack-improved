@@ -12,6 +12,9 @@ import {
   isFormValid,
 } from "../../../utils/validation";
 
+// Import appropriate schemas
+import { passwordResetFormSchema } from "../../../utils/validationSchemas";
+
 /**
  * Custom hook for password recovery functionality
  * Handles both the forgot password and reset password flows
@@ -47,17 +50,13 @@ const usePasswordRecovery = (mode = "forgot", token = "") => {
     }
   }, [token]);
 
-  // Define validation rules based on mode
+  // Define validation rules based on mode, using imported schema for reset mode
   const validationRules = useMemo(
     () => ({
       forgot: {
         email: true,
       },
-      reset: {
-        password: true,
-        confirmPassword: true,
-        token: true,
-      },
+      reset: passwordResetFormSchema,
     }),
     []
   );
