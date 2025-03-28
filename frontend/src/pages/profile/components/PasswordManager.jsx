@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useError } from "../../../context/ErrorContext";
 import { debounce } from "lodash";
 
@@ -30,14 +30,10 @@ const PasswordManager = ({
   });
 
   // Helper function to get the minimum password length from schema
-  const getMinPasswordLength = () => {
+  const getMinPasswordLength = useCallback(() => {
     const minLength = validationSchema?.newPassword?.minLength;
-    // The schema is now normalized, so minLength is already a number
-    if (typeof minLength === "number") {
-      return minLength;
-    }
-    return 8; // Fallback default value
-  };
+    return typeof minLength === "number" ? minLength : 8;
+  }, [validationSchema]);
 
   // Validate the entire form whenever password data or field errors change
   useEffect(() => {
@@ -95,7 +91,7 @@ const PasswordManager = ({
     return () => {
       debouncedValidate.cancel();
     };
-  }, [passwordData, validationSchema]);
+  }, [passwordData, validationSchema, getMinPasswordLength]);
 
   // Determine input class based on validation state
   const getInputClass = (fieldName) => {
