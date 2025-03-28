@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import authApi from "../../../services/authApi";
 import { useError } from "../../../context/ErrorContext";
 import useFormErrors from "../../../hooks/useFormErrors";
@@ -20,7 +20,6 @@ import {
  */
 const useAuthForm = (formType = "login") => {
   const navigate = useNavigate();
-  const location = useLocation();
   const {
     errors: formErrors,
     clearAllErrors: clearFormError,
@@ -34,17 +33,13 @@ const useAuthForm = (formType = "login") => {
     password: "",
     confirmPassword: "",
   });
-
   const [loading, setLoading] = useState(false);
   const [fieldErrors, setFieldErrors] = useState({});
 
-  // Define which validation rules to use for each form type
+  // Define validation rules for each form type
   const validationRules = useMemo(
     () => ({
-      login: {
-        email: true,
-        password: true,
-      },
+      login: { email: true, password: true },
       register: {
         username: true,
         email: true,
@@ -63,35 +58,31 @@ const useAuthForm = (formType = "login") => {
       let errorMessage = "";
 
       switch (name) {
-        case "username":
-          const nameResult = validateName(value);
-          if (!nameResult.isValid) errorMessage = nameResult.message;
+        case "username": {
+          const result = validateName(value);
+          if (!result.isValid) errorMessage = result.message;
           break;
-
-        case "email":
-          const emailResult = validateEmail(value);
-          if (!emailResult.isValid) errorMessage = emailResult.message;
+        }
+        case "email": {
+          const result = validateEmail(value);
+          if (!result.isValid) errorMessage = result.message;
           break;
-
-        case "password":
-          const passwordResult = validatePassword(value);
-          if (!passwordResult.isValid) errorMessage = passwordResult.message;
+        }
+        case "password": {
+          const result = validatePassword(value);
+          if (!result.isValid) errorMessage = result.message;
           break;
-
-        case "confirmPassword":
-          const matchResult = validatePasswordMatch(formData.password, value);
-          if (!matchResult.isValid) errorMessage = matchResult.message;
+        }
+        case "confirmPassword": {
+          const result = validatePasswordMatch(formData.password, value);
+          if (!result.isValid) errorMessage = result.message;
           break;
-
+        }
         default:
           break;
       }
 
-      setFieldErrors((prev) => ({
-        ...prev,
-        [name]: errorMessage,
-      }));
-
+      setFieldErrors((prev) => ({ ...prev, [name]: errorMessage }));
       return errorMessage === "";
     },
     [formData.password]
@@ -113,11 +104,7 @@ const useAuthForm = (formType = "login") => {
     (e) => {
       const { name, value } = e.target;
       setFormData((prev) => ({ ...prev, [name]: value }));
-
-      // Clear any form-level errors when user starts typing
-      if (formErrors.general) {
-        clearFormError();
-      }
+      if (formErrors.general) clearFormError();
     },
     [formErrors, clearFormError]
   );
@@ -130,54 +117,41 @@ const useAuthForm = (formType = "login") => {
       e.preventDefault();
       clearFormError();
 
-      // Validate form
-      if (!validateFormData()) {
-        return;
-      }
+      if (!validateFormData()) return;
 
       setLoading(true);
 
       try {
         if (formType === "login") {
           const result = await authApi.login(formData.email, formData.password);
-
           if (result.success) {
-            // Store auth token if returned
             if (result.accessToken) {
               localStorage.setItem("auth-token", result.accessToken);
             }
-            // Don't navigate here - let the AuthContext handle navigation
+            // Let AuthContext handle further navigation
             return { success: true };
           } else {
-            // If API returns success: false but no error thrown
             setFieldErrors({
               general: result.message || "Login failed. Please try again.",
             });
           }
         } else {
-          // Prepare data for registration - backend expects username, email, password
           const userData = {
             username: formData.username,
             email: formData.email,
             password: formData.password,
           };
-
           const result = await authApi.register(userData);
-
           if (result.success) {
-            // Show success message
             showSuccess(
               "Registration successful! Please check your email to verify your account."
             );
-
-            // Navigate to verify-pending page instead of login
             navigate("/verify-pending", {
               replace: true,
               state: { email: formData.email },
             });
             return { success: true };
           } else {
-            // If API returns success: false but no error thrown
             setFieldErrors({
               general:
                 result.message || "Registration failed. Please try again.",
@@ -189,7 +163,6 @@ const useAuthForm = (formType = "login") => {
           `${formType === "login" ? "Login" : "Registration"} error:`,
           error
         );
-        // handleError will set form errors via the useFormErrors hook
         setFormError(error);
       } finally {
         setLoading(false);
@@ -205,7 +178,6 @@ const useAuthForm = (formType = "login") => {
       setFormError,
       validateFormData,
       showSuccess,
-      setFieldErrors,
     ]
   );
 
