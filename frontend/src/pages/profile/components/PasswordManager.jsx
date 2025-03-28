@@ -41,12 +41,16 @@ const PasswordManager = ({
 
   // Validate the entire form whenever password data or field errors change
   useEffect(() => {
-    if (!validationSchema || !passwordData) {
+    // If we're not changing password or there's no password data, form is invalid
+    if (!isChangingPassword || !passwordData) {
       setIsFormValid(false);
       return;
     }
 
+    // Check if any required fields are empty
     const hasEmptyField = Object.values(passwordData).some((val) => !val);
+
+    // Check if there are any field errors in password-related fields
     const hasFieldErrors =
       fieldErrors &&
       Object.keys(fieldErrors).some(
@@ -55,8 +59,9 @@ const PasswordManager = ({
           ["currentPassword", "newPassword", "confirmPassword"].includes(key)
       );
 
+    // Form is valid only if all fields are filled and there are no errors
     setIsFormValid(!hasEmptyField && !hasFieldErrors);
-  }, [passwordData, fieldErrors, validationSchema]);
+  }, [passwordData, fieldErrors, validationSchema, isChangingPassword]);
 
   // Validate individual password requirements with debouncing
   useEffect(() => {

@@ -30,9 +30,62 @@ import {
   validateAddress,
   validatePassword,
   validatePasswordMatch,
-  validateForm,
-  isFormValid,
+  validateForm as utilValidateForm,
 } from "../../utils/validation";
+
+// Basic validation schema for ProfileInfo and PasswordManager components
+const validationSchema = {
+  name: {
+    required: true,
+    minLength: 2,
+    maxLength: 30,
+    message: "Name should be between 2 and 30 characters",
+  },
+  phone: {
+    required: false,
+    message: "Phone number should be 10-15 digits",
+  },
+  address: {
+    street: {
+      required: true,
+      minLength: 3,
+      message: "Street address must be at least 3 characters long",
+    },
+    city: {
+      required: true,
+      minLength: 2,
+      message: "City must be at least 2 characters long",
+    },
+    state: {
+      required: true,
+      minLength: 2,
+      message: "State must be at least 2 characters long",
+    },
+    zipCode: {
+      required: true,
+      message: "Please enter a valid zip/postal code (4-12 characters)",
+    },
+    country: {
+      required: true,
+      minLength: 2,
+      message: "Country must be at least 2 characters long",
+    },
+  },
+  currentPassword: {
+    required: true,
+    message: "Current password is required",
+  },
+  newPassword: {
+    required: true,
+    minLength: 8,
+    message:
+      "Password must be at least 8 characters with uppercase, number, and special character",
+  },
+  confirmPassword: {
+    required: true,
+    message: "Passwords must match",
+  },
+};
 
 const Profile = () => {
   const {
@@ -103,6 +156,39 @@ const Profile = () => {
     }
   }, [user]);
 
+  // Initial validation after form data is populated
+  useEffect(() => {
+    if (formData.name) {
+      // Validate name
+      const nameResult = validateName(formData.name);
+      if (!nameResult.isValid) {
+        updateFieldError("name", null, nameResult.message);
+      }
+
+      // Validate phone if present
+      if (formData.phone) {
+        const phoneResult = validatePhone(formData.phone);
+        if (!phoneResult.isValid) {
+          updateFieldError("phone", null, phoneResult.message);
+        }
+      }
+
+      // Validate address fields if any are filled
+      const hasAddressData = Object.values(formData.address).some(
+        (val) => val && val.trim() !== ""
+      );
+      if (hasAddressData) {
+        const addressErrors = validateAddress(formData.address);
+        if (Object.keys(addressErrors).length > 0) {
+          // Update each address field error
+          Object.entries(addressErrors).forEach(([field, error]) => {
+            updateFieldError("address", field, error);
+          });
+        }
+      }
+    }
+  }, [formData.name]); // Only run when name is set, which happens after user data is loaded
+
   // Redirect if not authenticated
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
@@ -155,6 +241,7 @@ const Profile = () => {
           [child]: value,
         });
 
+        // Only update the specific field error, not the entire address object
         updateFieldError(parent, child, addressErrors[child] || null);
       }
     } else {
@@ -189,18 +276,52 @@ const Profile = () => {
 
   const updateFieldError = (fieldName, childName, errorMessage) => {
     if (childName) {
-      setFieldErrors((prev) => ({
-        ...prev,
-        [fieldName]: {
-          ...prev[fieldName],
-          [childName]: errorMessage,
-        },
-      }));
+      // For nested fields like address
+      setFieldErrors((prev) => {
+        // If error message is null, remove the error for this field
+        if (errorMessage === null) {
+          const updatedNestedErrors = { ...prev[fieldName] };
+          delete updatedNestedErrors[childName];
+
+          // If no more errors in this parent object, remove the entire parent
+          if (Object.keys(updatedNestedErrors).length === 0) {
+            const updatedErrors = { ...prev };
+            delete updatedErrors[fieldName];
+            return updatedErrors;
+          }
+
+          // Otherwise just update the parent with the modified nested errors
+          return {
+            ...prev,
+            [fieldName]: updatedNestedErrors,
+          };
+        }
+
+        // Add or update the error
+        return {
+          ...prev,
+          [fieldName]: {
+            ...prev[fieldName],
+            [childName]: errorMessage,
+          },
+        };
+      });
     } else {
-      setFieldErrors((prev) => ({
-        ...prev,
-        [fieldName]: errorMessage,
-      }));
+      // For regular fields
+      setFieldErrors((prev) => {
+        // If error message is null, remove the error for this field
+        if (errorMessage === null) {
+          const updatedErrors = { ...prev };
+          delete updatedErrors[fieldName];
+          return updatedErrors;
+        }
+
+        // Add or update the error
+        return {
+          ...prev,
+          [fieldName]: errorMessage,
+        };
+      });
     }
   };
 
@@ -220,6 +341,20 @@ const Profile = () => {
       case "newPassword":
         const passwordResult = validatePassword(value);
         if (!passwordResult.isValid) errorMessage = passwordResult.message;
+
+        // If confirm password already has a value, check if it still matches
+        if (passwordData.confirmPassword) {
+          const matchResult = validatePasswordMatch(
+            value,
+            passwordData.confirmPassword
+          );
+          // Update confirmPassword field error separately
+          updateFieldError(
+            "confirmPassword",
+            null,
+            !matchResult.isValid ? matchResult.message : null
+          );
+        }
         break;
 
       case "confirmPassword":
@@ -234,13 +369,11 @@ const Profile = () => {
         break;
     }
 
-    setFieldErrors((prev) => ({
-      ...prev,
-      [name]: errorMessage,
-    }));
+    // Update field error for the current field
+    updateFieldError(name, null, errorMessage);
   };
 
-  const validateForm = (data) => {
+  const runValidation = (data) => {
     // Define which fields to validate
     const validationRules = {
       name: true,
@@ -249,7 +382,7 @@ const Profile = () => {
     };
 
     // Validate the form data
-    const errors = validateForm(data, validationRules);
+    const errors = utilValidateForm(data, validationRules);
 
     // If there are errors, update the field errors state
     if (Object.keys(errors).length > 0) {
@@ -269,7 +402,7 @@ const Profile = () => {
       dataToSubmit.address &&
       Object.values(dataToSubmit.address).some((val) => val !== "");
 
-    if (!validateForm(dataToSubmit)) {
+    if (!runValidation(dataToSubmit)) {
       showError("Please fix the validation errors before submitting");
       return;
     }
@@ -348,13 +481,6 @@ const Profile = () => {
 
   const handlePasswordSubmit = async (e) => {
     e.preventDefault();
-
-    // Define validation rules for password change
-    const validationRules = {
-      currentPassword: true,
-      newPassword: true,
-      confirmPassword: true,
-    };
 
     // Perform validation
     const errors = {};
@@ -497,6 +623,7 @@ const Profile = () => {
             setFieldErrors={setFieldErrors}
             displayUserData={displayUserData}
             displayName={displayName}
+            validationSchema={validationSchema}
           />
           <PasswordManager
             passwordData={passwordData}
@@ -507,6 +634,7 @@ const Profile = () => {
             setIsChangingPassword={setIsChangingPassword}
             loading={loading}
             changingPassword={loadingStates?.changingPassword}
+            validationSchema={validationSchema}
           />
           <AccountManager
             handleDisableAccount={handleDisableAccount}

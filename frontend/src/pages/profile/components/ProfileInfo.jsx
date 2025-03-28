@@ -26,20 +26,13 @@ const ProfileInfo = ({
 
   // Validate basic info form when data or errors change
   useEffect(() => {
-    if (!validationSchema || !formData) {
+    if (!formData) {
       setIsBasicInfoValid(false);
       return;
     }
 
-    // Check if required fields have values
-    const requiredFields = Object.keys(validationSchema).filter(
-      (key) => validationSchema[key]?.required && key !== "address"
-    );
-
-    // Check if all required fields have values
-    const hasAllRequiredFields = requiredFields.every(
-      (field) => formData[field] && formData[field].trim() !== ""
-    );
+    // Name is required and must be valid
+    const hasValidName = formData.name && formData.name.trim().length >= 2;
 
     // Check if there are any field errors (excluding address errors)
     const hasFieldErrors =
@@ -48,12 +41,12 @@ const ProfileInfo = ({
         (key) => fieldErrors[key] && key !== "address"
       );
 
-    setIsBasicInfoValid(hasAllRequiredFields && !hasFieldErrors);
-  }, [formData, fieldErrors, validationSchema]);
+    setIsBasicInfoValid(hasValidName && !hasFieldErrors);
+  }, [formData, fieldErrors]);
 
   // Validate address form when data or errors change
   useEffect(() => {
-    if (!validationSchema?.address || !formData?.address) {
+    if (!formData?.address) {
       setIsAddressValid(false);
       return;
     }
@@ -87,7 +80,7 @@ const ProfileInfo = ({
       Object.keys(fieldErrors.address).some((key) => fieldErrors.address[key]);
 
     setIsAddressValid(hasAllCriticalFields && !hasAddressErrors);
-  }, [formData, fieldErrors, validationSchema]);
+  }, [formData, fieldErrors]);
 
   // Enhance this method to check for nested fields in the address
   const getInputClass = (fieldName, isNested = false) => {

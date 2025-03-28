@@ -1,10 +1,20 @@
 // frontend/src/utils/validation.js
 
 /**
- * Utility functions for form validation
+ * Runtime Form Validation Utilities
  *
- * Note: For email and password validation, use the schema-based validation
- * from useSchemaValidation hook instead of these utility functions.
+ * This file contains reusable validation functions for handling runtime form validation.
+ * These utilities validate user input according to the application's data model requirements
+ * and provide consistent validation logic across the application.
+ *
+ * Each validation function returns an object with:
+ * - isValid: boolean indicating if validation passed
+ * - message: error message if validation failed, empty string otherwise
+ *
+ * The main utility functions are:
+ * - validateForm: Validates a form object against specified rules
+ * - isFormValid: Checks if a validation result object contains any errors
+ * - formatValidationErrors: Formats validation errors into a user-friendly message
  */
 
 /**
