@@ -156,13 +156,13 @@
 
 /* Auth form error messages */
 .auth-page__error {
-  background-color: rgba(229, 57, 53, 0.1);
-  color: #e53935;
-  border-left: 3px solid #e53935;
+  background-color: #fff0f0;
+  border-left: 4px solid #ff5050;
+  color: #d32f2f;
   padding: 10px 15px;
+  border-radius: 4px;
   margin-bottom: 20px;
-  border-radius: 0 4px 4px 0;
-  font-size: 14px;
+  font-size: 0.9rem;
 }
 
 .auth-form__actions {
@@ -262,7 +262,7 @@
 /* Success message styling */
 .auth-form__success {
   text-align: center;
-  background-color: #f0f9f0;
+  background-color: #f0fff0;
   padding: 1.5rem;
   border-radius: 8px;
   border-left: 4px solid #4caf50;
@@ -373,4 +373,26 @@
   margin-bottom: 0.25rem;
   color: #555;
   font-size: 0.875rem;
+}
+
+.auth-page__success {
+  background-color: #f0fff0;
+  border-left: 4px solid #4caf50;
+  color: #388e3c;
+  padding: 10px 15px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

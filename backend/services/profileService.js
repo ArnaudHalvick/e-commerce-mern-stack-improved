@@ -211,6 +211,23 @@ const changeUserPassword = async (userId, { currentPassword, newPassword }) => {
     };
   }
 
+  // Check if new password is the same as current password
+  const isSamePassword = await user.comparePassword(newPassword);
+
+  if (isSamePassword) {
+    logger.warn(
+      `Password change attempt with same password for user: ${userId}`
+    );
+    return {
+      success: false,
+      error: AppError.createAndLogError(
+        "New password must be different from your current password",
+        400,
+        { userId }
+      ),
+    };
+  }
+
   // Set new password
   user.password = newPassword;
   await user.save();

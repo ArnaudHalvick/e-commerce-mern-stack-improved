@@ -11,6 +11,7 @@ import { useAuthForm } from "./hooks";
 
 // Context
 import { AuthContext } from "../../context/AuthContext";
+import { useError } from "../../context/ErrorContext";
 
 // Styles
 import "./Auth.css";
@@ -23,6 +24,7 @@ import "../../components/form/FormSubmitButton.css";
 const Auth = ({ initialState }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { showSuccess } = useError();
   const {
     isAuthenticated,
     loading: authLoading,
@@ -40,6 +42,26 @@ const Auth = ({ initialState }) => {
     handleBlur,
     formErrors,
   } = useAuthForm(formType);
+
+  // Show success message if redirected from password reset
+  useEffect(() => {
+    if (location.state?.passwordResetSuccess) {
+      showSuccess(
+        location.state.message ||
+          "Password reset successful. Please log in with your new password."
+      );
+
+      // Clear the message from location state after showing it
+      navigate(location.pathname, {
+        replace: true,
+        state: {
+          ...location.state,
+          passwordResetSuccess: undefined,
+          message: undefined,
+        },
+      });
+    }
+  }, [location.state, showSuccess, navigate, location.pathname]);
 
   // Redirect authenticated users away from login/signup pages.
   useEffect(() => {
@@ -70,6 +92,14 @@ const Auth = ({ initialState }) => {
           <h1 className="auth-page__title">
             {authMode === "Signup" ? "Create Account" : "Login"}
           </h1>
+
+          {/* Display success message from password reset if available */}
+          {location.state?.passwordResetSuccess && (
+            <div className="auth-page__success" role="alert">
+              {location.state.message ||
+                "Password reset successful. Please log in with your new password."}
+            </div>
+          )}
 
           {formErrors.general && (
             <div className="auth-page__error" role="alert">

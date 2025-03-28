@@ -1,6 +1,7 @@
 // frontend/src/pages/auth/hooks/usePasswordRecovery.jsx
 
 import { useState, useEffect, useCallback, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import authApi from "../../../services/authApi";
 import { useError } from "../../../context/ErrorContext";
 import useFormErrors from "../../../hooks/useFormErrors";
@@ -21,9 +22,15 @@ import { passwordResetFormSchema } from "../../../utils/validationSchemas";
  *
  * @param {string} mode - 'forgot' or 'reset'
  * @param {string} token - Reset token for password reset mode
+ * @param {boolean} redirectAfterReset - Whether to redirect after successful reset
  * @returns {Object} State and handlers for the password recovery form
  */
-const usePasswordRecovery = (mode = "forgot", token = "") => {
+const usePasswordRecovery = (
+  mode = "forgot",
+  token = "",
+  redirectAfterReset = true
+) => {
+  const navigate = useNavigate();
   const {
     errors: formErrors,
     clearAllErrors: clearFormError,
@@ -179,6 +186,20 @@ const usePasswordRecovery = (mode = "forgot", token = "") => {
             if (result.success) {
               setSuccess(true);
               showSuccess("Password has been reset successfully");
+
+              // Redirect to login page after successful password reset
+              if (redirectAfterReset) {
+                setTimeout(() => {
+                  navigate("/login", {
+                    replace: true,
+                    state: {
+                      passwordResetSuccess: true,
+                      message:
+                        "Your password has been reset successfully. Please login with your new password.",
+                    },
+                  });
+                }, 1500); // Delay to allow the user to see the success message
+              }
             }
           } catch (error) {
             // Don't redirect if we get a 401 during password reset
@@ -207,6 +228,8 @@ const usePasswordRecovery = (mode = "forgot", token = "") => {
       setFormError,
       validateFormData,
       showSuccess,
+      navigate,
+      redirectAfterReset,
     ]
   );
 

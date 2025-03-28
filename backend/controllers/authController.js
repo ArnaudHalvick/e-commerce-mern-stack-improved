@@ -212,10 +212,26 @@ const resetPassword = catchAsync(async (req, res, next) => {
   const user = await User.findOne({
     resetPasswordToken: hashedToken,
     resetPasswordExpire: { $gt: Date.now() },
-  });
+  }).select("+password");
 
   if (!user) {
     return next(new AppError("Invalid or expired token", 400));
+  }
+
+  // Check if new password is the same as current password
+  if (user.password) {
+    const isSamePassword = await user.comparePassword(password);
+    if (isSamePassword) {
+      logger.warn(
+        `Password reset attempt with same password for user: ${user._id}`
+      );
+      return next(
+        new AppError(
+          "New password must be different from your current password",
+          400
+        )
+      );
+    }
   }
 
   // Set new password and clear reset token fields
