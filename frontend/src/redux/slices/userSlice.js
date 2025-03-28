@@ -1,4 +1,4 @@
-// Path: frontend/src/redux/slices/userSlice.js
+// frontend/src/redux/slices/userSlice.js
 
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
@@ -9,7 +9,7 @@ export const updateUserProfile = createAsyncThunk(
   "user/updateProfile",
   async (userData, { rejectWithValue }) => {
     try {
-      // Debug the userData, especially for address updates
+      // Debug log for development
       console.log(
         "Profile update - data being sent to server:",
         JSON.stringify(userData, null, 2)
@@ -23,45 +23,33 @@ export const updateUserProfile = createAsyncThunk(
         },
       });
 
-      // Debug the response
+      // Debug log for development
       console.log(
         "Profile update - server response:",
         JSON.stringify(response.data, null, 2)
       );
 
-      // Check for success flag in the response
       if (!response.data.success) {
         return rejectWithValue(
           response.data.message || "Profile update failed"
         );
       }
-
-      // Return the user data from the response
       return response.data.user;
     } catch (error) {
-      // Log the error for debugging
       console.error("Profile update error:", error.response || error);
-
-      // Handle validation errors
       if (error.response?.data?.errors) {
-        // Format validation errors from express-validator
         const validationErrors = {};
         error.response.data.errors.forEach((err) => {
           validationErrors[err.param] = err.msg;
         });
-
         return rejectWithValue({
           message: error.response?.data?.message || "Failed to update profile",
           validationErrors,
         });
       }
-
-      // Check for specific error types in the response
       if (error.response?.data?.message) {
         return rejectWithValue(error.response.data.message);
       }
-
-      // Generic error message
       return rejectWithValue("Failed to update profile. Please try again.");
     }
   }
@@ -90,30 +78,20 @@ export const changePassword = createAsyncThunk(
           },
         }
       );
-
-      // Return response data
-      return {
-        ...response.data,
-        passwordChanged: true,
-      };
+      return { ...response.data, passwordChanged: true };
     } catch (error) {
-      // Handle validation errors from express-validator
       if (error.response?.data?.errors) {
         const validationErrors = {};
         error.response.data.errors.forEach((err) => {
-          // Map backend field names to frontend field names
           const fieldName =
             err.param === "newPasswordConfirm" ? "confirmPassword" : err.param;
           validationErrors[fieldName] = err.msg;
         });
-
         return rejectWithValue({
           message: error.response?.data?.message || "Failed to change password",
           validationErrors,
         });
       }
-
-      // Handle specific error cases
       if (error.response?.data?.message?.includes("current password")) {
         return rejectWithValue({
           message: error.response?.data?.message,
@@ -122,8 +100,6 @@ export const changePassword = createAsyncThunk(
           },
         });
       }
-
-      // Generic error
       return rejectWithValue({
         message: error.response?.data?.message || "Failed to change password",
       });
@@ -163,9 +139,7 @@ export const requestEmailVerification = createAsyncThunk(
     try {
       const response = await axios.post(
         getApiUrl("users/request-verification"),
-        {
-          email,
-        }
+        { email }
       );
       return response.data;
     } catch (error) {
@@ -199,17 +173,12 @@ export const verifyPasswordChange = createAsyncThunk(
   async (token, { rejectWithValue }) => {
     try {
       const url = getApiUrl(`users/verify-password-change?token=${token}`);
-
       const response = await axios.get(url);
       return response.data;
     } catch (error) {
       console.error("Password verification error:", error.response || error);
-
-      // Check if there's a structured error response
       if (error.response && error.response.data) {
         const errorData = error.response.data;
-
-        // Return tokenExpired flag if present
         if (errorData.tokenExpired) {
           return rejectWithValue({
             message:
@@ -218,12 +187,10 @@ export const verifyPasswordChange = createAsyncThunk(
             tokenExpired: true,
           });
         }
-
         return rejectWithValue({
           message: errorData.message || "Failed to verify password change",
         });
       }
-
       return rejectWithValue({
         message: "Failed to verify password change. Please try again later.",
       });
@@ -249,7 +216,6 @@ export const requestEmailChange = createAsyncThunk(
       );
       return response.data;
     } catch (error) {
-      // Handle error responses
       if (error.response?.data?.message) {
         return rejectWithValue(error.response.data.message);
       }
@@ -258,50 +224,36 @@ export const requestEmailChange = createAsyncThunk(
   }
 );
 
+// Define the initial state as a separate constant for easier maintenance
+const initialState = {
+  profile: null,
+  isEmailVerified: false,
+  verificationRequested: false,
+  emailChangeRequested: false,
+  loading: false,
+  loadingStates: {
+    verifyingEmail: false,
+    sendingVerification: false,
+    disablingAccount: false,
+    changingPassword: false,
+    updatingProfile: false,
+    changingEmail: false,
+  },
+  error: null,
+  passwordChanged: false,
+  passwordChangePending: false,
+  accountDisabled: false,
+};
+
 const userSlice = createSlice({
   name: "user",
-  initialState: {
-    profile: null,
-    isEmailVerified: false,
-    verificationRequested: false,
-    emailChangeRequested: false,
-    loading: false,
-    loadingStates: {
-      verifyingEmail: false,
-      sendingVerification: false,
-      disablingAccount: false,
-      changingPassword: false,
-      updatingProfile: false,
-      changingEmail: false,
-    },
-    error: null,
-    passwordChanged: false,
-    passwordChangePending: false,
-    accountDisabled: false,
-  },
+  initialState,
   reducers: {
     setUser: (state, action) => {
       state.profile = action.payload;
       state.isEmailVerified = action.payload?.isEmailVerified || false;
     },
-    clearUser: (state) => {
-      state.profile = null;
-      state.isEmailVerified = false;
-      state.verificationRequested = false;
-      state.emailChangeRequested = false;
-      state.passwordChanged = false;
-      state.passwordChangePending = false;
-      state.accountDisabled = false;
-      state.loading = false;
-      state.loadingStates = {
-        verifyingEmail: false,
-        sendingVerification: false,
-        disablingAccount: false,
-        changingPassword: false,
-        updatingProfile: false,
-        changingEmail: false,
-      };
-    },
+    clearUser: () => ({ ...initialState }),
     clearError: (state) => {
       state.error = null;
     },
@@ -312,7 +264,7 @@ const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Handle updateUserProfile
+      // updateUserProfile
       .addCase(updateUserProfile.pending, (state) => {
         state.loading = true;
         state.loadingStates.updatingProfile = true;
@@ -328,7 +280,7 @@ const userSlice = createSlice({
         state.loadingStates.updatingProfile = false;
         state.error = action.payload;
       })
-      // Handle changePassword
+      // changePassword
       .addCase(changePassword.pending, (state) => {
         state.loading = true;
         state.loadingStates.changingPassword = true;
@@ -336,7 +288,7 @@ const userSlice = createSlice({
         state.passwordChanged = false;
         state.passwordChangePending = false;
       })
-      .addCase(changePassword.fulfilled, (state, action) => {
+      .addCase(changePassword.fulfilled, (state) => {
         state.loading = false;
         state.loadingStates.changingPassword = false;
         state.passwordChanged = true;
@@ -348,7 +300,7 @@ const userSlice = createSlice({
         state.error = action.payload;
         state.passwordChangePending = false;
       })
-      // Handle disableAccount
+      // disableAccount
       .addCase(disableAccount.pending, (state) => {
         state.loading = true;
         state.loadingStates.disablingAccount = true;
@@ -365,7 +317,7 @@ const userSlice = createSlice({
         state.loadingStates.disablingAccount = false;
         state.error = action.payload;
       })
-      // Handle requestEmailVerification
+      // requestEmailVerification
       .addCase(requestEmailVerification.pending, (state) => {
         state.loading = true;
         state.loadingStates.sendingVerification = true;
@@ -381,7 +333,7 @@ const userSlice = createSlice({
         state.loadingStates.sendingVerification = false;
         state.error = action.payload;
       })
-      // Handle verifyEmail
+      // verifyEmail
       .addCase(verifyEmail.pending, (state) => {
         state.loading = true;
         state.loadingStates.verifyingEmail = true;
@@ -397,7 +349,7 @@ const userSlice = createSlice({
         state.loadingStates.verifyingEmail = false;
         state.error = action.payload;
       })
-      // Handle verifyPasswordChange
+      // verifyPasswordChange
       .addCase(verifyPasswordChange.pending, (state) => {
         state.loading = true;
         state.loadingStates.changingPassword = true;
@@ -414,13 +366,13 @@ const userSlice = createSlice({
         state.loadingStates.changingPassword = false;
         state.error = action.payload;
       })
-      // Handle requestEmailChange
+      // requestEmailChange
       .addCase(requestEmailChange.pending, (state) => {
         state.loading = true;
         state.loadingStates.changingEmail = true;
         state.error = null;
       })
-      .addCase(requestEmailChange.fulfilled, (state, action) => {
+      .addCase(requestEmailChange.fulfilled, (state) => {
         state.loading = false;
         state.loadingStates.changingEmail = false;
         state.emailChangeRequested = true;
