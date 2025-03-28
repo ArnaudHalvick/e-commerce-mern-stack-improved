@@ -29,7 +29,7 @@ const Auth = ({ initialState }) => {
     inTransition,
   } = useContext(AuthContext);
 
-  // Initialize with appropriate form type based on initialState
+  // Determine form type based on the initialState prop
   const formType = initialState === "Signup" ? "register" : "login";
   const {
     formData,
@@ -52,22 +52,23 @@ const Auth = ({ initialState }) => {
     }
   }, [isAuthenticated, authLoading, navigate, location.state?.from]);
 
-  // Skip showing loading indicator here since we're using AuthLoadingIndicator
-  // This prevents the flickering when transitioning between pages
+  // If authentication is still loading (using AuthLoadingIndicator elsewhere), skip rendering
   if (authLoading && !inTransition) {
     return null;
   }
 
-  // Determine current state (Login or Signup) based on path
-  const state = location.pathname === "/login" ? "Login" : "Signup";
+  // Determine current authentication mode based on URL path
+  const authMode = location.pathname === "/login" ? "Login" : "Signup";
 
   return (
     <div className="auth-page">
-      <Breadcrumb routes={[{ label: "Home", path: "/" }, { label: state }]} />
+      <Breadcrumb
+        routes={[{ label: "Home", path: "/" }, { label: authMode }]}
+      />
       <div className="auth-page__content">
         <div className="auth-page__container">
           <h1 className="auth-page__title">
-            {state === "Signup" ? "Create Account" : "Login"}
+            {authMode === "Signup" ? "Create Account" : "Login"}
           </h1>
 
           {formErrors.general && (
@@ -76,7 +77,7 @@ const Auth = ({ initialState }) => {
             </div>
           )}
 
-          {state === "Login" ? (
+          {authMode === "Login" ? (
             <LoginForm
               formData={formData}
               handleChange={handleChange}
@@ -97,14 +98,14 @@ const Auth = ({ initialState }) => {
           )}
 
           <p className="auth-page__switch">
-            {state === "Signup"
+            {authMode === "Signup"
               ? "Already have an account? "
               : "Don't have an account? "}
             <Link
               className="auth-page__switch-link"
-              to={state === "Signup" ? "/login" : "/signup"}
+              to={authMode === "Signup" ? "/login" : "/signup"}
             >
-              {state === "Signup" ? "Sign in" : "Sign up"}
+              {authMode === "Signup" ? "Sign in" : "Sign up"}
             </Link>
           </p>
         </div>

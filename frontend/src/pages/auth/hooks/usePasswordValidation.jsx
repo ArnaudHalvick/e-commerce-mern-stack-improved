@@ -1,3 +1,5 @@
+// frontend/src/pages/auth/hooks/usePasswordValidation.jsx
+
 import { useState, useEffect } from "react";
 import { validatePassword } from "../../../utils/validation";
 

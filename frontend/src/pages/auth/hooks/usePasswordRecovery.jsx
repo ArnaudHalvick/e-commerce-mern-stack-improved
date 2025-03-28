@@ -1,3 +1,5 @@
+// frontend/src/pages/auth/hooks/usePasswordRecovery.jsx
+
 import { useState, useEffect, useCallback, useMemo } from "react";
 import authApi from "../../../services/authApi";
 import { useError } from "../../../context/ErrorContext";
