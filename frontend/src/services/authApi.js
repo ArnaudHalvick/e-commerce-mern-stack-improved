@@ -1,3 +1,5 @@
+// frontend/src/services/authApi.js
+
 import apiClient from "./apiClient";
 
 /**

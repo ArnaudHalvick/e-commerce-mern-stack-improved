@@ -1,3 +1,5 @@
+// frontend/src/utils/axiosConfig.js
+
 import axios from "axios";
 import { API_BASE_URL } from "./apiUtils";
 
@@ -18,10 +20,16 @@ let failedQueue = [];
 // Create a cancel token source for requests that should be canceled on logout
 const cancelTokenSource = axios.CancelToken.source();
 
+// Public routes that don't require authentication
+const publicRoutes = [
+  "/api/users/login",
+  "/api/users/signup",
+  "/api/error-demo", // Error demo routes don't require authentication
+];
+
 // Function to check if user is logged out
-const isUserLoggedOut = () => {
-  return localStorage.getItem("user-logged-out") === "true";
-};
+const isUserLoggedOut = () =>
+  localStorage.getItem("user-logged-out") === "true";
 
 // Function to process the queue of failed requests
 const processQueue = (error, token = null) => {
@@ -32,20 +40,12 @@ const processQueue = (error, token = null) => {
       prom.resolve(token);
     }
   });
-
   failedQueue = [];
 };
 
 // Add a request interceptor to handle authentication
 api.interceptors.request.use(
   (config) => {
-    // Special routes that don't require authentication
-    const publicRoutes = [
-      "/api/users/login",
-      "/api/users/signup",
-      "/api/error-demo", // Don't require authentication for error demo routes
-    ];
-
     // Check if the current URL is a public route that doesn't need authentication
     const isPublicRoute = publicRoutes.some((route) =>
       config.url.startsWith(route)
@@ -58,10 +58,8 @@ api.interceptors.request.use(
       return Promise.reject(error);
     }
 
-    // Get token from local storage
+    // Get token from local storage and add to headers if available
     const token = localStorage.getItem("auth-token");
-
-    // If token exists, add to headers
     if (token) {
       config.headers["auth-token"] = token;
     }
@@ -77,25 +75,19 @@ api.interceptors.request.use(
 
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
 // Add a response interceptor to handle common errors
 api.interceptors.response.use(
-  (response) => {
-    return response;
-  },
+  (response) => response,
   async (error) => {
-    // If request was canceled, just return the rejected promise
+    // If request was canceled, simply reject
     if (axios.isCancel(error)) {
       return Promise.reject(error);
     }
 
     const originalRequest = error.config;
-
-    // Extract error details from the response
     const errorResponse = {
       message: error.response?.data?.message || "An unexpected error occurred",
       status: error.response?.status || 500,
@@ -109,7 +101,7 @@ api.interceptors.response.use(
         error.response?.data?.message === "Invalid token" ||
         error.response?.data?.message?.toLowerCase().includes("expired"));
 
-    // If the error is 401 Unauthorized and it's not a retry, attempt to refresh the token
+    // Attempt token refresh if error is 401 (or token expired) and not already retried
     if (
       (error.response?.status === 401 || isTokenExpiredError) &&
       !originalRequest._retry &&
@@ -117,7 +109,7 @@ api.interceptors.response.use(
       !originalRequest.url?.includes("refresh-token")
     ) {
       if (isRefreshing) {
-        // If already refreshing, add this request to the queue
+        // Queue the request if a refresh is already in progress
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
         })
@@ -125,9 +117,7 @@ api.interceptors.response.use(
             originalRequest.headers["auth-token"] = token;
             return api(originalRequest);
           })
-          .catch((err) => {
-            return Promise.reject(err);
-          });
+          .catch((err) => Promise.reject(err));
       }
 
       originalRequest._retry = true;
@@ -148,48 +138,37 @@ api.interceptors.response.use(
           // Update the auth header for the original request
           originalRequest.headers["auth-token"] = newToken;
 
-          // Process any queued requests with the new token
+          // Process queued requests
           processQueue(null, newToken);
-
           return api(originalRequest);
         } else {
-          // If refresh fails, process queue with error
+          // If refresh fails, process queue with error and mark as logged out
           processQueue(new Error("Refresh token failed"));
           localStorage.removeItem("auth-token");
           localStorage.setItem("user-logged-out", "true");
 
-          // Trigger redirect to login if needed (using event or other mechanism)
           if (typeof window !== "undefined") {
-            // Create and dispatch a custom event that AuthContext can listen for
             const event = new CustomEvent("auth:tokenRefreshFailed");
             window.dispatchEvent(event);
           }
-
           return Promise.reject(errorResponse);
         }
       } catch (refreshError) {
-        // If refresh request throws, process queue with error
         processQueue(refreshError);
         localStorage.removeItem("auth-token");
         localStorage.setItem("user-logged-out", "true");
 
-        // Trigger redirect to login if needed
         if (typeof window !== "undefined") {
           const event = new CustomEvent("auth:tokenRefreshFailed");
           window.dispatchEvent(event);
         }
-
         return Promise.reject(errorResponse);
       } finally {
         isRefreshing = false;
       }
     } else {
-      // For non-auth related errors, preserve the server's error message
-      // instead of overriding it with our generic messages
-
-      // Only provide fallback messages if the server didn't send one
+      // For non-auth related errors, use fallback messages if not provided by the server
       if (!errorResponse.message) {
-        // Handle specific HTTP status codes
         switch (errorResponse.status) {
           case 400:
             errorResponse.message = "Invalid request";
@@ -223,10 +202,7 @@ api.interceptors.response.use(
       }
     }
 
-    // You can log errors to a service here
     console.error("API Error:", errorResponse);
-
-    // Return a rejected promise with the enhanced error
     return Promise.reject(errorResponse);
   }
 );

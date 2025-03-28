@@ -32,7 +32,6 @@ const processQueue = (error, token = null) => {
       prom.resolve(token);
     }
   });
-
   failedQueue = [];
 };
 
@@ -60,7 +59,7 @@ apiClient.interceptors.request.use(
     if (isUserLoggedOut() && !isPublicEndpoint) {
       const error = new Error("User is logged out");
       error.config = config;
-      error.isLoggedOutError = true; // Add a flag to identify this type of error
+      error.isLoggedOutError = true; // Flag this type of error
       return Promise.reject(error);
     }
 
@@ -80,18 +79,14 @@ apiClient.interceptors.request.use(
 
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
 // Add a response interceptor to handle common error scenarios
 apiClient.interceptors.response.use(
-  (response) => {
-    return response;
-  },
+  (response) => response,
   async (error) => {
-    // If request was canceled, just return the rejected promise
+    // If request was canceled, simply return the rejected promise
     if (axios.isCancel(error)) {
       return Promise.reject(error);
     }
@@ -109,11 +104,10 @@ apiClient.interceptors.response.use(
     // Default error response structure
     const errorResponse = {
       message: "An unexpected error occurred",
-      status: 500, // Default status
+      status: 500,
       originalError: error,
     };
 
-    // Server responded with an error
     if (error.response) {
       errorResponse.status = error.response.status;
 
@@ -135,18 +129,16 @@ apiClient.interceptors.response.use(
           Array.isArray(error.response.data.errors)
         ) {
           const fieldErrors = {};
-          // Parse validation errors from the backend
           error.response.data.errors.forEach((err) => {
             fieldErrors[err.param] = err.msg;
           });
-
           if (Object.keys(fieldErrors).length > 0) {
             errorResponse.fieldErrors = fieldErrors;
           }
         }
       }
 
-      // Add url context for specific error handling in formatApiError
+      // Include request configuration details for debugging
       if (error.config && error.config.url) {
         errorResponse.config = {
           url: error.config.url,
@@ -154,16 +146,15 @@ apiClient.interceptors.response.use(
         };
       }
 
-      // If the error was due to an expired token, try to refresh it
+      // Handle token expiration: try to refresh the token
       if (
         error.response.status === 401 &&
         error.config &&
         !error.config._retry &&
-        !isRefreshing &&
         !isUserLoggedOut()
       ) {
         if (isRefreshing) {
-          // If already refreshing, add this request to the queue
+          // If refresh is already in progress, queue the request
           return new Promise((resolve, reject) => {
             failedQueue.push({ resolve, reject });
           })
@@ -171,9 +162,7 @@ apiClient.interceptors.response.use(
               error.config.headers["auth-token"] = token;
               return apiClient(error.config);
             })
-            .catch((err) => {
-              return Promise.reject(err);
-            });
+            .catch((err) => Promise.reject(err));
         }
 
         error.config._retry = true;
@@ -199,24 +188,20 @@ apiClient.interceptors.response.use(
 
             return apiClient(error.config);
           } else {
-            // If refresh fails, process queue with error
             processQueue(new Error("Refresh token failed"));
             localStorage.removeItem("auth-token");
             localStorage.setItem("user-logged-out", "true");
 
-            // Dispatch custom event for logout
             if (typeof window !== "undefined") {
               const event = new CustomEvent("auth:tokenRefreshFailed");
               window.dispatchEvent(event);
             }
           }
         } catch (refreshError) {
-          // If refresh request throws, process queue with error
           processQueue(refreshError);
           localStorage.removeItem("auth-token");
           localStorage.setItem("user-logged-out", "true");
 
-          // Dispatch custom event for logout
           if (typeof window !== "undefined") {
             const event = new CustomEvent("auth:tokenRefreshFailed");
             window.dispatchEvent(event);
@@ -234,8 +219,6 @@ apiClient.interceptors.response.use(
       errorResponse.message = error.message;
     }
 
-    // You can log errors to a monitoring service here
-
     return Promise.reject(errorResponse);
   }
 );
@@ -247,7 +230,7 @@ export const cancelPendingRequests = (
   cancelTokenSource.cancel(message);
 };
 
-// Add event listener for logout events
+// Listen for logout events to cancel pending requests
 if (typeof window !== "undefined") {
   window.addEventListener("user:logout", () => {
     cancelPendingRequests("User initiated logout");
