@@ -27,7 +27,7 @@
   }
 }
 
-/* ----- TABLE STYLES ----- */
+/* ----- CART TABLE STYLES ----- */
 .cart-table {
   width: 100%;
   border-collapse: collapse;
@@ -395,7 +395,7 @@
 }
 
 .cart-email-verification-refresh-btn {
-  background-color: #5a6268;
+  background-color: #17a2b8;
   color: white;
   border: none;
   padding: 8px 16px;
@@ -406,11 +406,11 @@
 }
 
 .cart-email-verification-refresh-btn:hover {
-  background-color: #4e555b;
+  background-color: #138496;
 }
 
 .cart-email-verification-refresh-btn:disabled {
-  background-color: #8a8f93;
+  background-color: #7acbd8;
   cursor: not-allowed;
 }
 
@@ -430,7 +430,14 @@
   border-color: #c3e6cb;
   padding: 8px 12px;
   border-radius: 4px;
-  margin-bottom: 12px;
+}
+
+.cart-email-verification-warning-message {
+  color: #856404 !important;
+  background-color: #fff3cd;
+  border: 1px solid #ffeeba;
+  padding: 8px 12px;
+  border-radius: 4px;
 }
 
 .cart-email-verification-error-message {
@@ -439,7 +446,6 @@
   border-color: #f5c6cb;
   padding: 8px 12px;
   border-radius: 4px;
-  margin-bottom: 12px;
 }
 
 /* Disabled Checkout Button */
@@ -454,8 +460,9 @@
 }
 
 .cart-verification-note {
-  font-size: 12px;
-  color: #856404;
   text-align: center;
-  margin-top: 8px;
+  color: #856404;
+  font-size: 12px;
+  margin-top: -15px;
+  margin-bottom: 15px;
 }

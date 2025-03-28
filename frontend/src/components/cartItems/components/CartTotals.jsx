@@ -54,7 +54,7 @@ const CartTotals = ({ totalPrice }) => {
 
       {showDisabledCheckout && (
         <p className="cart-verification-note">
-          Please verify your email to proceed
+          Please verify your email above to proceed
         </p>
       )}
     </div>

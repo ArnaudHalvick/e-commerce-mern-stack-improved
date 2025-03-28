@@ -1,23 +1,21 @@
 import React, { useContext } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
-import ErrorContext, { useError } from "../../context/ErrorContext";
 
 /**
  * Email Verification Guard component that protects routes from users with unverified emails
- * Will redirect unverified users to a verification pending page
+ * Will redirect unverified users to a verification pending page without errors
  *
  * @param {Object} props
  * @param {React.ReactNode} props.children - The components to render if email is verified
  */
 const EmailVerificationGuard = ({ children }) => {
   const { user, isAuthenticated, loading } = useContext(AuthContext);
-  const { showWarning } = useError();
   const location = useLocation();
 
-  // If still loading auth state, render children and let auth guard handle it
+  // If still loading auth state, show nothing temporarily
   if (loading) {
-    return children;
+    return null;
   }
 
   // If not authenticated, this will be handled by the regular ProtectedRoute
@@ -27,13 +25,7 @@ const EmailVerificationGuard = ({ children }) => {
 
   // If authenticated but email not verified, redirect to verification pending page
   if (user && !user.isEmailVerified) {
-    // Show warning toast notification
-    showWarning(
-      "Email verification required. Please verify your email address before proceeding to checkout.",
-      8000
-    );
-
-    // Redirect to verify pending page with return URL
+    // Simply redirect without trying to update any state during render
     return (
       <Navigate
         to="/verify-pending"
