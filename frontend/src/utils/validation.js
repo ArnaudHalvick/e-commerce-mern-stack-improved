@@ -224,8 +224,12 @@ export const validateForm = (formData, rules = {}) => {
   if (rules.password && formData.password !== undefined) {
     const result = validatePassword(formData.password);
     if (!result.isValid) errors.password = result.message;
+  } else if (rules.newPassword && formData.newPassword !== undefined) {
+    const result = validatePassword(formData.newPassword);
+    if (!result.isValid) errors.newPassword = result.message;
   }
 
+  // Handle both confirmPassword and passwordConfirm fields
   if (
     rules.confirmPassword &&
     formData.password !== undefined &&
@@ -233,6 +237,16 @@ export const validateForm = (formData, rules = {}) => {
   ) {
     const result = validatePasswordMatch(
       formData.password,
+      formData.confirmPassword
+    );
+    if (!result.isValid) errors.confirmPassword = result.message;
+  } else if (
+    rules.confirmPassword &&
+    formData.newPassword !== undefined &&
+    formData.confirmPassword !== undefined
+  ) {
+    const result = validatePasswordMatch(
+      formData.newPassword,
       formData.confirmPassword
     );
     if (!result.isValid) errors.confirmPassword = result.message;
@@ -246,6 +260,12 @@ export const validateForm = (formData, rules = {}) => {
       formData.passwordConfirm
     );
     if (!result.isValid) errors.passwordConfirm = result.message;
+  }
+
+  if (rules.currentPassword && formData.currentPassword !== undefined) {
+    if (!formData.currentPassword || formData.currentPassword.trim() === "") {
+      errors.currentPassword = "Current password is required";
+    }
   }
 
   if (rules.phone && formData.phone !== undefined) {

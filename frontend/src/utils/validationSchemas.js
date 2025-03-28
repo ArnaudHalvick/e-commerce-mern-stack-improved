@@ -56,7 +56,7 @@ export const passwordSchema = {
       message: "Password must contain at least 1 number",
     },
     {
-      pattern: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/,
+      pattern: /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/,
       message: "Password must contain at least 1 special character",
     },
   ],

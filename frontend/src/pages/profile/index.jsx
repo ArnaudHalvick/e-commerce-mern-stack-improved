@@ -22,7 +22,7 @@ import Spinner from "../../components/ui/Spinner";
 // CSS
 import "./Profile.css";
 
-// Import the validation functions and schemas
+// Import the validation functions
 import {
   validateName,
   validateEmail,
@@ -30,19 +30,16 @@ import {
   validateAddress,
   validatePassword,
   validatePasswordMatch,
-  validateForm as utilValidateForm,
+  validateForm,
+  isFormValid,
 } from "../../utils/validation";
 
-// Import the schemas from validationSchemas.js
+// Import the schemas
 import {
-  userSchema,
   profileBasicInfoSchema,
   profileAddressSchema,
   profilePasswordChangeSchema,
 } from "../../utils/validationSchemas";
-
-// Use the imported schema instead of defining a new one
-const validationSchema = userSchema;
 
 const Profile = () => {
   const {
@@ -116,32 +113,28 @@ const Profile = () => {
   // Initial validation after form data is populated
   useEffect(() => {
     if (formData.name) {
-      // Validate name
-      const nameResult = validateName(formData.name);
-      if (!nameResult.isValid) {
-        updateFieldError("name", null, nameResult.message);
-      }
-
-      // Validate phone if present
-      if (formData.phone) {
-        const phoneResult = validatePhone(formData.phone);
-        if (!phoneResult.isValid) {
-          updateFieldError("phone", null, phoneResult.message);
-        }
-      }
+      // Validate basic info using the imported schema
+      const basicInfoErrors = validateForm(formData, profileBasicInfoSchema);
 
       // Validate address fields if any are filled
       const hasAddressData = Object.values(formData.address).some(
         (val) => val && val.trim() !== ""
       );
+
       if (hasAddressData) {
-        const addressErrors = validateAddress(formData.address);
-        if (Object.keys(addressErrors).length > 0) {
-          // Update each address field error
-          Object.entries(addressErrors).forEach(([field, error]) => {
-            updateFieldError("address", field, error);
-          });
-        }
+        const addressErrors = validateForm(
+          { address: formData.address },
+          profileAddressSchema
+        );
+
+        // Update field errors state
+        setFieldErrors((prev) => ({
+          ...prev,
+          ...basicInfoErrors,
+          ...addressErrors,
+        }));
+      } else {
+        setFieldErrors(basicInfoErrors);
       }
     }
   }, [formData.name]); // Only run when name is set, which happens after user data is loaded
@@ -191,43 +184,36 @@ const Profile = () => {
         },
       });
 
-      // Validate with our new system
+      // Validate address fields using schema
       if (parent === "address") {
-        const addressErrors = validateAddress({
+        const updatedAddress = {
           ...formData.address,
           [child]: value,
-        });
+        };
 
-        // Only update the specific field error, not the entire address object
-        updateFieldError(parent, child, addressErrors[child] || null);
+        const addressErrors = validateForm(
+          { address: updatedAddress },
+          profileAddressSchema
+        );
+
+        setFieldErrors((prev) => ({
+          ...prev,
+          ...addressErrors,
+        }));
       }
     } else {
       setFormData({ ...formData, [name]: value });
 
-      // Validate with our new system
-      let errorMessage = null;
+      // Validate basic info fields using schema
+      const fieldToValidate = { [name]: value };
+      const errors = validateForm(fieldToValidate, {
+        [name]: profileBasicInfoSchema[name],
+      });
 
-      switch (name) {
-        case "name":
-          const nameResult = validateName(value);
-          if (!nameResult.isValid) errorMessage = nameResult.message;
-          break;
-
-        case "email":
-          const emailResult = validateEmail(value);
-          if (!emailResult.isValid) errorMessage = emailResult.message;
-          break;
-
-        case "phone":
-          const phoneResult = validatePhone(value);
-          if (!phoneResult.isValid) errorMessage = phoneResult.message;
-          break;
-
-        default:
-          break;
-      }
-
-      updateFieldError(name, null, errorMessage);
+      setFieldErrors((prev) => ({
+        ...prev,
+        ...errors,
+      }));
     }
   };
 
@@ -286,60 +272,48 @@ const Profile = () => {
     const { name, value } = e.target;
     setPasswordData((prev) => ({ ...prev, [name]: value }));
 
-    let errorMessage = null;
+    // Use profile password change schema for validation
+    const updatedPasswordData = {
+      ...passwordData,
+      [name]: value,
+    };
 
-    switch (name) {
-      case "currentPassword":
-        if (!value || value.trim() === "") {
-          errorMessage = "Current password is required";
-        }
-        break;
+    // Validate password fields
+    const errors = validateForm(
+      updatedPasswordData,
+      profilePasswordChangeSchema
+    );
 
-      case "newPassword":
-        const passwordResult = validatePassword(value);
-        if (!passwordResult.isValid) errorMessage = passwordResult.message;
+    // Special handling for confirmPassword - validate matching
+    if (name === "confirmPassword" || name === "newPassword") {
+      const matchResult = validatePasswordMatch(
+        name === "newPassword" ? value : passwordData.newPassword,
+        name === "confirmPassword" ? value : passwordData.confirmPassword
+      );
 
-        // If confirm password already has a value, check if it still matches
-        if (passwordData.confirmPassword) {
-          const matchResult = validatePasswordMatch(
-            value,
-            passwordData.confirmPassword
-          );
-          // Update confirmPassword field error separately
-          updateFieldError(
-            "confirmPassword",
-            null,
-            !matchResult.isValid ? matchResult.message : null
-          );
-        }
-        break;
-
-      case "confirmPassword":
-        const matchResult = validatePasswordMatch(
-          passwordData.newPassword,
-          value
-        );
-        if (!matchResult.isValid) errorMessage = matchResult.message;
-        break;
-
-      default:
-        break;
+      if (!matchResult.isValid) {
+        errors.confirmPassword = matchResult.message;
+      }
     }
 
-    // Update field error for the current field
-    updateFieldError(name, null, errorMessage);
+    setFieldErrors((prev) => ({
+      ...prev,
+      ...errors,
+    }));
   };
 
   const runValidation = (data) => {
-    // Define which fields to validate
-    const validationRules = {
-      name: true,
-      phone: true,
-      address: true,
-    };
+    // Define which schema to use based on the data
+    let validationSchema = profileBasicInfoSchema;
+    if (data.address && Object.values(data.address).some((val) => val !== "")) {
+      validationSchema = {
+        ...profileBasicInfoSchema,
+        ...profileAddressSchema,
+      };
+    }
 
     // Validate the form data
-    const errors = utilValidateForm(data, validationRules);
+    const errors = validateForm(data, validationSchema);
 
     // If there are errors, update the field errors state
     if (Object.keys(errors).length > 0) {
@@ -439,25 +413,15 @@ const Profile = () => {
   const handlePasswordSubmit = async (e) => {
     e.preventDefault();
 
-    // Perform validation
-    const errors = {};
+    // Validate password using schema
+    const errors = validateForm(passwordData, profilePasswordChangeSchema);
 
-    if (
-      !passwordData.currentPassword ||
-      passwordData.currentPassword.trim() === ""
-    ) {
-      errors.currentPassword = "Current password is required";
-    }
-
-    const passwordResult = validatePassword(passwordData.newPassword);
-    if (!passwordResult.isValid) {
-      errors.newPassword = passwordResult.message;
-    }
-
+    // Add confirm password validation
     const matchResult = validatePasswordMatch(
       passwordData.newPassword,
       passwordData.confirmPassword
     );
+
     if (!matchResult.isValid) {
       errors.confirmPassword = matchResult.message;
     }
@@ -580,7 +544,7 @@ const Profile = () => {
             setFieldErrors={setFieldErrors}
             displayUserData={displayUserData}
             displayName={displayName}
-            validationSchema={validationSchema}
+            validationSchema={profileBasicInfoSchema}
           />
           <PasswordManager
             passwordData={passwordData}
@@ -591,7 +555,7 @@ const Profile = () => {
             setIsChangingPassword={setIsChangingPassword}
             loading={loading}
             changingPassword={loadingStates?.changingPassword}
-            validationSchema={validationSchema}
+            validationSchema={profilePasswordChangeSchema}
           />
           <AccountManager
             handleDisableAccount={handleDisableAccount}

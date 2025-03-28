@@ -84,7 +84,7 @@ const PasswordManager = ({
         length: newPassword.length >= minLength,
         uppercase: /[A-Z]/.test(newPassword),
         number: /[0-9]/.test(newPassword),
-        special: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(newPassword),
+        special: /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(newPassword),
         match: confirmPassword && newPassword === confirmPassword,
       });
     };
