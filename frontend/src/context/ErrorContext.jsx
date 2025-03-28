@@ -1,3 +1,5 @@
+// frontend/src/context/ErrorContext.jsx
+
 import React, { createContext, useContext, useState, useCallback } from "react";
 
 /**
