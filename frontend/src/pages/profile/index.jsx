@@ -128,7 +128,7 @@ const Profile = () => {
         setFieldErrors(basicInfoErrors);
       }
     }
-  }, [formData.name]); // Only run when name is set, which happens after user data is loaded
+  }, [formData]); // Updated dependency array to include the entire formData
 
   // Redirect if not authenticated
   useEffect(() => {
