@@ -9,12 +9,6 @@ export const updateUserProfile = createAsyncThunk(
   "user/updateProfile",
   async (userData, { rejectWithValue }) => {
     try {
-      // Debug log for development
-      console.log(
-        "Profile update - data being sent to server:",
-        JSON.stringify(userData, null, 2)
-      );
-
       const token = localStorage.getItem("auth-token");
       const response = await axios.put(getApiUrl("users/profile"), userData, {
         headers: {
@@ -22,12 +16,6 @@ export const updateUserProfile = createAsyncThunk(
           "auth-token": token,
         },
       });
-
-      // Debug log for development
-      console.log(
-        "Profile update - server response:",
-        JSON.stringify(response.data, null, 2)
-      );
 
       if (!response.data.success) {
         return rejectWithValue(
@@ -176,7 +164,6 @@ export const verifyPasswordChange = createAsyncThunk(
       const response = await axios.get(url);
       return response.data;
     } catch (error) {
-      console.error("Password verification error:", error.response || error);
       if (error.response && error.response.data) {
         const errorData = error.response.data;
         if (errorData.tokenExpired) {

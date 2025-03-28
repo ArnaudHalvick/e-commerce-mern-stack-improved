@@ -74,10 +74,6 @@ const UnauthenticatedRoute = ({ children }) => {
 
   // If authenticated, redirect to home
   if (isAuthenticated) {
-    // Log for debugging
-    console.log(
-      "UnauthenticatedRoute: User is authenticated, redirecting to home"
-    );
     return <Navigate to="/" replace />;
   }
 

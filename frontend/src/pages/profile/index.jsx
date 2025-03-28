@@ -288,11 +288,6 @@ const Profile = () => {
           zipCode: dataToSubmit.address.zipCode || "",
           country: dataToSubmit.address.country || "",
         };
-
-        console.log(
-          "Formatted address data:",
-          JSON.stringify(formattedData, null, 2)
-        );
       }
 
       // Call updateUserProfile action and wait for the response
@@ -316,10 +311,6 @@ const Profile = () => {
             showError(
               "Address may not have been saved correctly. Please verify your information."
             );
-            console.error("Address update mismatch - sent vs received:", {
-              sent: formattedData.address,
-              received: updatedUser.address,
-            });
           }
         }
 
