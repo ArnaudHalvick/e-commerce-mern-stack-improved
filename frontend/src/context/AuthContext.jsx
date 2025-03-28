@@ -1,4 +1,12 @@
-import { createContext, useState, useEffect, useCallback } from "react";
+// frontend/src/context/AuthContext.jsx
+
+import {
+  createContext,
+  useState,
+  useEffect,
+  useCallback,
+  useContext,
+} from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { resetCart } from "../redux/slices/cartSlice";
@@ -450,20 +458,15 @@ const AuthContextProvider = (props) => {
     refreshAccessToken,
   };
 
-  console.log("AuthContext - Current state:", {
-    isAuthenticated,
-    loading,
-    initialLoadComplete,
-    inTransition,
-    isUserLoggedOut,
-    hasUser: !!user,
-  });
-
   return (
     <AuthContext.Provider value={contextValue}>
       {props.children}
     </AuthContext.Provider>
   );
+};
+
+export const useAuth = () => {
+  return useContext(AuthContext);
 };
 
 export default AuthContextProvider;

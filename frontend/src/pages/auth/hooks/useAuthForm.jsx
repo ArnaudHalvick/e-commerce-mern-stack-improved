@@ -2,6 +2,8 @@ import { useState, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import authApi from "../../../services/authApi";
 import { useError } from "../../../context/ErrorContext";
+// Import the AuthContext hook to access the login function
+import { useAuth } from "../../../context/AuthContext";
 import useFormErrors from "../../../hooks/useFormErrors";
 import {
   validateEmail,
@@ -26,6 +28,8 @@ const useAuthForm = (formType = "login") => {
     handleApiError: setFormError,
   } = useFormErrors();
   const { showSuccess } = useError();
+  // Retrieve the login function from AuthContext
+  const { login } = useAuth();
 
   const [formData, setFormData] = useState({
     username: "",
@@ -123,12 +127,12 @@ const useAuthForm = (formType = "login") => {
 
       try {
         if (formType === "login") {
+          // Call the auth API to get the token
           const result = await authApi.login(formData.email, formData.password);
           if (result.success) {
-            if (result.accessToken) {
-              localStorage.setItem("auth-token", result.accessToken);
-            }
-            // Let AuthContext handle further navigation
+            // Use the login function from AuthContext which handles clearing the
+            // 'user-logged-out' flag, storing the token, and updating the auth state.
+            login(result.accessToken);
             return { success: true };
           } else {
             setFieldErrors({
@@ -178,6 +182,7 @@ const useAuthForm = (formType = "login") => {
       setFormError,
       validateFormData,
       showSuccess,
+      login,
     ]
   );
 
