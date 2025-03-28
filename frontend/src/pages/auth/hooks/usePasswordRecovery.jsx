@@ -30,7 +30,7 @@ const usePasswordRecovery = (mode = "forgot", token = "") => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    passwordConfirm: "",
+    confirmPassword: "",
     token: token || "",
   });
 
@@ -53,7 +53,7 @@ const usePasswordRecovery = (mode = "forgot", token = "") => {
       },
       reset: {
         password: true,
-        passwordConfirm: true,
+        confirmPassword: true,
         token: true,
       },
     }),
@@ -78,7 +78,7 @@ const usePasswordRecovery = (mode = "forgot", token = "") => {
           if (!passwordResult.isValid) errorMessage = passwordResult.message;
           break;
 
-        case "passwordConfirm":
+        case "confirmPassword":
           const matchResult = validatePasswordMatch(formData.password, value);
           if (!matchResult.isValid) errorMessage = matchResult.message;
           break;
@@ -158,7 +158,7 @@ const usePasswordRecovery = (mode = "forgot", token = "") => {
           const result = await authApi.resetPassword(
             formData.token,
             formData.password,
-            formData.passwordConfirm
+            formData.confirmPassword
           );
 
           if (result.success) {
@@ -205,8 +205,8 @@ const usePasswordRecovery = (mode = "forgot", token = "") => {
     handleBlur,
     validatePassword: (password) => validateField("password", password),
     validatePasswordMatch: (password, confirm) => {
-      setFormData((prev) => ({ ...prev, password, passwordConfirm: confirm }));
-      return validateField("passwordConfirm", confirm);
+      setFormData((prev) => ({ ...prev, password, confirmPassword: confirm }));
+      return validateField("confirmPassword", confirm);
     },
   };
 };

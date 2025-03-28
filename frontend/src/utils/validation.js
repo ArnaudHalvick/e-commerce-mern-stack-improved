@@ -213,8 +213,15 @@ export const validateAddress = (address) => {
 export const validateForm = (formData, rules = {}) => {
   const errors = {};
 
-  // Validate name
-  if (rules.name && formData.name !== undefined) {
+  // Validate username (previously name)
+  if (rules.username && formData.username !== undefined) {
+    const nameResult = validateName(formData.username);
+    if (!nameResult.isValid) {
+      errors.username = nameResult.message;
+    }
+  }
+  // Keep backwards compatibility with name field
+  else if (rules.name && formData.name !== undefined) {
     const nameResult = validateName(formData.name);
     if (!nameResult.isValid) {
       errors.name = nameResult.message;
@@ -237,8 +244,22 @@ export const validateForm = (formData, rules = {}) => {
     }
   }
 
-  // Validate password confirmation
+  // Validate password confirmation (support both field names)
   if (
+    rules.confirmPassword &&
+    formData.password !== undefined &&
+    formData.confirmPassword !== undefined
+  ) {
+    const matchResult = validatePasswordMatch(
+      formData.password,
+      formData.confirmPassword
+    );
+    if (!matchResult.isValid) {
+      errors.confirmPassword = matchResult.message;
+    }
+  }
+  // Keep backwards compatibility with passwordConfirm field
+  else if (
     rules.passwordConfirm &&
     formData.password !== undefined &&
     formData.passwordConfirm !== undefined

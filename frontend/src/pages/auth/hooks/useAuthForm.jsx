@@ -29,10 +29,10 @@ const useAuthForm = (formType = "login") => {
   const { showSuccess } = useError();
 
   const [formData, setFormData] = useState({
-    name: "",
+    username: "",
     email: "",
     password: "",
-    passwordConfirm: "",
+    confirmPassword: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -46,10 +46,10 @@ const useAuthForm = (formType = "login") => {
         password: true,
       },
       register: {
-        name: true,
+        username: true,
         email: true,
         password: true,
-        passwordConfirm: true,
+        confirmPassword: true,
       },
     }),
     []
@@ -63,7 +63,7 @@ const useAuthForm = (formType = "login") => {
       let errorMessage = "";
 
       switch (name) {
-        case "name":
+        case "username":
           const nameResult = validateName(value);
           if (!nameResult.isValid) errorMessage = nameResult.message;
           break;
@@ -78,7 +78,7 @@ const useAuthForm = (formType = "login") => {
           if (!passwordResult.isValid) errorMessage = passwordResult.message;
           break;
 
-        case "passwordConfirm":
+        case "confirmPassword":
           const matchResult = validatePasswordMatch(formData.password, value);
           if (!matchResult.isValid) errorMessage = matchResult.message;
           break;
@@ -138,16 +138,13 @@ const useAuthForm = (formType = "login") => {
       setLoading(true);
 
       try {
-        // Determine redirect path
-        const redirect = location.state?.from?.pathname || "/";
-
         if (formType === "login") {
           const result = await authApi.login(formData.email, formData.password);
 
           if (result.success) {
             // Store auth token if returned
-            if (result.token) {
-              localStorage.setItem("auth-token", result.token);
+            if (result.accessToken) {
+              localStorage.setItem("auth-token", result.accessToken);
             }
             // Don't navigate here - let the AuthContext handle navigation
             return { success: true };
@@ -158,11 +155,11 @@ const useAuthForm = (formType = "login") => {
             });
           }
         } else {
+          // Prepare data for registration - backend expects username, email, password
           const userData = {
-            name: formData.name,
+            username: formData.username,
             email: formData.email,
             password: formData.password,
-            passwordConfirm: formData.passwordConfirm,
           };
 
           const result = await authApi.register(userData);
@@ -201,7 +198,6 @@ const useAuthForm = (formType = "login") => {
       formData,
       formType,
       navigate,
-      location.state?.from?.pathname,
       clearFormError,
       setFormError,
       validateFormData,

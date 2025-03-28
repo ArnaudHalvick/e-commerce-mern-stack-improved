@@ -31,6 +31,12 @@ const authApi = {
         email,
         password,
       });
+
+      // Store the access token if it exists
+      if (response.data.success && response.data.accessToken) {
+        localStorage.setItem("auth-token", response.data.accessToken);
+      }
+
       return response.data;
     } catch (error) {
       // Let the error interceptor handle formatting, just rethrow
@@ -172,15 +178,15 @@ const authApi = {
    * Reset password with token
    * @param {string} token - Password reset token
    * @param {string} password - New password
-   * @param {string} passwordConfirm - Password confirmation
+   * @param {string} confirmPassword - Password confirmation (used for frontend validation only)
    * @returns {Promise} - Promise that resolves to password reset response
    */
-  resetPassword: async (token, password, passwordConfirm) => {
+  resetPassword: async (token, password, confirmPassword) => {
     try {
+      // Only send token and password to backend - don't send confirmPassword
       const response = await apiClient.post("/api/users/reset-password", {
         token,
         password,
-        passwordConfirm,
       });
       return response.data;
     } catch (error) {
