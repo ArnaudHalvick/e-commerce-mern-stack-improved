@@ -34,18 +34,14 @@ const AuthContextProvider = (props) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // Sync isUserLoggedOut with localStorage on mount
   useEffect(() => {
     const isLoggedOut = localStorage.getItem("user-logged-out") === "true";
     setIsUserLoggedOut(isLoggedOut);
-    console.log("AuthContext init - isUserLoggedOut:", isLoggedOut);
     if (isLoggedOut && localStorage.getItem("auth-token")) {
-      console.log("Found token but user marked as logged out - clearing token");
       localStorage.removeItem("auth-token");
     }
   }, []);
 
-  // Helper to normalize user data
   const normalizeUserData = (userData) => {
     if (!userData) return null;
     return {
@@ -54,9 +50,7 @@ const AuthContextProvider = (props) => {
     };
   };
 
-  // Handle logout logic
   const handleLogout = useCallback(() => {
-    console.log("Logout - Clearing auth state");
     localStorage.removeItem("auth-token");
     localStorage.setItem("user-logged-out", "true");
     cancelApiRequests("User initiated logout");
@@ -67,10 +61,8 @@ const AuthContextProvider = (props) => {
     setAccountDisabled(false);
     dispatch(resetCart());
     dispatch(clearUser());
-    console.log("Logout - Auth state cleared, user-logged-out flag set");
   }, [dispatch]);
 
-  // Listen for token refresh failures and handle logout
   useEffect(() => {
     const handleTokenRefreshFailure = () => {
       handleLogout();
@@ -94,7 +86,6 @@ const AuthContextProvider = (props) => {
     };
   }, [handleLogout, navigate]);
 
-  // Refresh the access token
   const refreshAccessToken = useCallback(async () => {
     if (tokenRefreshInProgress || isUserLoggedOut) return null;
     try {
@@ -118,7 +109,6 @@ const AuthContextProvider = (props) => {
     }
   }, [tokenRefreshInProgress, handleLogout, isUserLoggedOut]);
 
-  // Memoized function to fetch user profile
   const fetchUserProfile = useCallback(async () => {
     try {
       const token = localStorage.getItem("auth-token");
@@ -133,7 +123,6 @@ const AuthContextProvider = (props) => {
         credentials: "include",
       });
 
-      // If unauthorized, attempt token refresh and retry
       if (response.status === 401) {
         const newToken = await refreshAccessToken();
         if (newToken) {
@@ -172,19 +161,12 @@ const AuthContextProvider = (props) => {
     }
   }, [dispatch, refreshAccessToken]);
 
-  // Check authentication status on load
   useEffect(() => {
     const checkAuthStatus = async () => {
       setLoading(true);
       const token = localStorage.getItem("auth-token");
 
-      console.log("CheckAuthStatus - Token exists:", !!token);
-      console.log("CheckAuthStatus - isUserLoggedOut flag:", isUserLoggedOut);
-
       if (!token || isUserLoggedOut) {
-        console.log(
-          "CheckAuthStatus - Skipping auth check (no token or logged out)"
-        );
         setIsAuthenticated(false);
         setUserState(null);
         dispatch(clearUser());
@@ -193,17 +175,12 @@ const AuthContextProvider = (props) => {
         return;
       }
 
-      // Reset logged-out flag if token is present
       if (token) {
-        console.log(
-          "CheckAuthStatus - Resetting isUserLoggedOut flag due to token presence"
-        );
         localStorage.removeItem("user-logged-out");
         setIsUserLoggedOut(false);
       }
 
       try {
-        console.log("CheckAuthStatus - Verifying token with backend");
         const response = await fetch(`${API_BASE_URL}/api/users/verify-token`, {
           method: "GET",
           headers: {
@@ -214,11 +191,6 @@ const AuthContextProvider = (props) => {
         });
 
         const data = await response.json();
-        console.log(
-          "CheckAuthStatus - Token verification response:",
-          response.status,
-          data.success
-        );
 
         if (response.ok && data.success) {
           const normalizedUser = normalizeUserData(data.user);
@@ -226,10 +198,6 @@ const AuthContextProvider = (props) => {
           dispatch(setUser(normalizedUser));
           setIsAuthenticated(true);
           setAccountDisabled(false);
-          console.log(
-            "CheckAuthStatus - User authenticated:",
-            normalizedUser.email
-          );
           await fetchUserProfile();
         } else {
           if (
@@ -253,11 +221,9 @@ const AuthContextProvider = (props) => {
         console.error("Auth verification error:", err);
         handleLogout();
         if (
-          err.message === "Failed to fetch" ||
-          err.message.includes("Network")
+          err.message !== "Failed to fetch" &&
+          !err.message.includes("Network")
         ) {
-          // Optionally handle network errors
-        } else {
           setError("Authentication verification failed");
         }
       } finally {
@@ -275,17 +241,14 @@ const AuthContextProvider = (props) => {
     isUserLoggedOut,
   ]);
 
-  // Login function
   const login = async (email, password) => {
     setLoading(true);
     setError(null);
     setAccountDisabled(false);
     setInTransition(true);
 
-    console.log("Login - Attempting login for:", email);
     localStorage.removeItem("user-logged-out");
     setIsUserLoggedOut(false);
-    console.log("Login - Reset isUserLoggedOut flag");
 
     try {
       const response = await fetch(`${API_BASE_URL}/api/users/login`, {
@@ -295,18 +258,10 @@ const AuthContextProvider = (props) => {
         credentials: "include",
       });
       const data = await response.json();
-      console.log(
-        "Login - Response status:",
-        response.status,
-        "success:",
-        data.success
-      );
 
       if (response.ok && data.success) {
         localStorage.setItem("auth-token", data.accessToken);
-        console.log("Login - Auth token stored");
         const normalizedUser = normalizeUserData(data.user);
-        console.log("Login - User authenticated:", normalizedUser.email);
         const updateAndNavigate = () => {
           setUserState(normalizedUser);
           dispatch(setUser(normalizedUser));
@@ -353,7 +308,6 @@ const AuthContextProvider = (props) => {
     }
   };
 
-  // Signup function
   const signup = async (userData) => {
     setLoading(true);
     setError(null);
@@ -409,7 +363,6 @@ const AuthContextProvider = (props) => {
     }
   };
 
-  // Logout function
   const logout = async () => {
     setInTransition(true);
     setIsUserLoggedOut(true);
