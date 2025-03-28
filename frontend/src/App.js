@@ -64,15 +64,20 @@ const ProtectedRoute = ({ children }) => {
  * Route that's only accessible when NOT authenticated
  */
 const UnauthenticatedRoute = ({ children }) => {
-  const { isAuthenticated, loading } = useContext(AuthContext);
+  const { isAuthenticated, loading, initialLoadComplete } =
+    useContext(AuthContext);
 
-  // If still loading auth state, show nothing
-  if (loading) {
+  // Wait for initial authentication check to complete
+  if (loading || !initialLoadComplete) {
     return <AuthGuard>{children}</AuthGuard>;
   }
 
   // If authenticated, redirect to home
   if (isAuthenticated) {
+    // Log for debugging
+    console.log(
+      "UnauthenticatedRoute: User is authenticated, redirecting to home"
+    );
     return <Navigate to="/" replace />;
   }
 

@@ -33,6 +33,15 @@ const AuthContextProvider = (props) => {
   useEffect(() => {
     const isLoggedOut = localStorage.getItem("user-logged-out") === "true";
     setIsUserLoggedOut(isLoggedOut);
+
+    // Debug log
+    console.log("AuthContext init - isUserLoggedOut:", isLoggedOut);
+
+    // Clear any stale token if user is marked as logged out
+    if (isLoggedOut && localStorage.getItem("auth-token")) {
+      console.log("Found token but user marked as logged out - clearing token");
+      localStorage.removeItem("auth-token");
+    }
   }, []);
 
   // Helper function to normalize user data
@@ -46,14 +55,22 @@ const AuthContextProvider = (props) => {
 
   // Handle auth logout - Extracted to be used in multiple places
   const handleLogout = useCallback(() => {
+    console.log("Logout - Clearing auth state");
     localStorage.removeItem("auth-token");
     localStorage.setItem("user-logged-out", "true");
+
+    // Cancel any pending API requests to prevent state updates after logout
+    cancelApiRequests("User initiated logout");
+    cancelAxiosRequests("User initiated logout");
+
     setUserState(null);
     setIsAuthenticated(false);
     setIsUserLoggedOut(true); // Set flag to prevent refresh attempts after logout
     setAccountDisabled(false); // Reset account disabled flag
     dispatch(resetCart());
     dispatch(clearUser());
+
+    console.log("Logout - Auth state cleared, user-logged-out flag set");
   }, [dispatch]);
 
   // Listen for token refresh failures
@@ -176,8 +193,14 @@ const AuthContextProvider = (props) => {
       setLoading(true);
       const token = localStorage.getItem("auth-token");
 
+      console.log("CheckAuthStatus - Token exists:", !!token);
+      console.log("CheckAuthStatus - isUserLoggedOut flag:", isUserLoggedOut);
+
       // Skip token refresh if user is logged out or no token exists
       if (!token || isUserLoggedOut) {
+        console.log(
+          "CheckAuthStatus - Skipping auth check (no token or logged out)"
+        );
         setIsAuthenticated(false);
         setUserState(null);
         dispatch(clearUser());
@@ -186,8 +209,18 @@ const AuthContextProvider = (props) => {
         return;
       }
 
+      // If we have a token, reset the logged out flag
+      if (token) {
+        console.log(
+          "CheckAuthStatus - Resetting isUserLoggedOut flag due to token presence"
+        );
+        localStorage.removeItem("user-logged-out");
+        setIsUserLoggedOut(false);
+      }
+
       try {
         // Use the current token to verify with backend
+        console.log("CheckAuthStatus - Verifying token with backend");
         const response = await fetch(`${API_BASE_URL}/api/users/verify-token`, {
           method: "GET",
           headers: {
@@ -198,6 +231,11 @@ const AuthContextProvider = (props) => {
         });
 
         const data = await response.json();
+        console.log(
+          "CheckAuthStatus - Token verification response:",
+          response.status,
+          data.success
+        );
 
         if (response.ok && data.success) {
           const normalizedUser = normalizeUserData(data.user);
@@ -205,6 +243,10 @@ const AuthContextProvider = (props) => {
           dispatch(setUser(normalizedUser));
           setIsAuthenticated(true);
           setAccountDisabled(false);
+          console.log(
+            "CheckAuthStatus - User authenticated:",
+            normalizedUser.email
+          );
 
           // Fetch complete profile data
           await fetchUserProfile();
@@ -264,9 +306,12 @@ const AuthContextProvider = (props) => {
     setAccountDisabled(false);
     setInTransition(true); // Start transition state to prevent flashing
 
+    console.log("Login - Attempting login for:", email);
+
     // Clear logout flag on login attempt
     localStorage.removeItem("user-logged-out");
     setIsUserLoggedOut(false);
+    console.log("Login - Reset isUserLoggedOut flag");
 
     try {
       const response = await fetch(`${API_BASE_URL}/api/users/login`, {
@@ -279,13 +324,21 @@ const AuthContextProvider = (props) => {
       });
 
       const data = await response.json();
+      console.log(
+        "Login - Response status:",
+        response.status,
+        "success:",
+        data.success
+      );
 
       if (response.ok && data.success) {
         // Store token first
         localStorage.setItem("auth-token", data.accessToken);
+        console.log("Login - Auth token stored");
 
         // Prepare user data
         const normalizedUser = normalizeUserData(data.user);
+        console.log("Login - User authenticated:", normalizedUser.email);
 
         // Update all states at once before navigation
         const updateAndNavigate = () => {
@@ -466,12 +519,23 @@ const AuthContextProvider = (props) => {
     accountDisabled,
     initialLoadComplete,
     inTransition, // Expose the transition state
+    isUserLoggedOut, // Expose the logged out flag
     login,
     signup,
     logout,
     fetchUserProfile,
     refreshAccessToken,
   };
+
+  // Debug log current auth state
+  console.log("AuthContext - Current state:", {
+    isAuthenticated,
+    loading,
+    initialLoadComplete,
+    inTransition,
+    isUserLoggedOut,
+    hasUser: !!user,
+  });
 
   return (
     <AuthContext.Provider value={contextValue}>

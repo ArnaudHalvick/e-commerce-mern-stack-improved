@@ -170,8 +170,11 @@ const useAuthForm = (formType = "login") => {
               "Registration successful! Please check your email to verify your account."
             );
 
-            // Navigate to login page
-            navigate("/login", { replace: true });
+            // Navigate to verify-pending page instead of login
+            navigate("/verify-pending", {
+              replace: true,
+              state: { email: formData.email },
+            });
             return { success: true };
           } else {
             // If API returns success: false but no error thrown
