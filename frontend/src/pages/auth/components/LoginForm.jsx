@@ -50,7 +50,7 @@ const LoginForm = ({
           placeholder="Your password"
           required={true}
           className="auth-form__input"
-          autocomplete="current-password"
+          autoComplete="current-password"
           title="Please enter your password"
         />
 
