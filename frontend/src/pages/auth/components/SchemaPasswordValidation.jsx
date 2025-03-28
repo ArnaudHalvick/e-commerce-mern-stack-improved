@@ -1,12 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { passwordSchema } from "../../../utils/validationSchemas";
 
 /**
- * Password validation feedback component based on backend validation schema
+ * Password validation feedback component based on validation schema
  *
  * This component displays real-time validation feedback for password fields based on the
- * validation rules fetched from the backend. It adapts dynamically if the rules change
- * on the backend.
+ * validation rules from validationSchemas.js. It adapts dynamically if the rules change.
  *
  * @param {Object} props Component props
  * @param {boolean} props.validLength Whether password meets length requirements
@@ -16,7 +16,7 @@ import PropTypes from "prop-types";
  * @param {boolean} props.match Whether passwords match
  * @param {boolean} props.showFeedback Whether to show validation feedback
  * @param {string} props.confirmPassword Confirmation password value
- * @param {Object} props.validationSchema Validation schema from backend
+ * @param {Object} props.customValidationSchema Optional custom validation schema to override the default
  * @param {boolean} props.isLoading Whether the validation schema is still loading
  */
 const SchemaPasswordValidation = ({
@@ -27,120 +27,42 @@ const SchemaPasswordValidation = ({
   match,
   showFeedback,
   confirmPassword,
-  validationSchema,
+  customValidationSchema,
   isLoading,
 }) => {
-  // Don't render anything if we shouldn't show feedback yet or no schema
+  // Don't render anything if we shouldn't show feedback yet
   if (!showFeedback) return null;
 
-  // Show loading indicator if schema is still loading
-  if (isLoading) {
-    return (
-      <div className="password-validation-feedback" aria-live="polite">
-        <p>Loading password requirements...</p>
-      </div>
-    );
-  }
+  // Use the custom schema if provided, otherwise use the default password schema
+  const schema = customValidationSchema || passwordSchema;
 
-  // Don't show anything if we don't have a schema
-  if (!validationSchema?.password) {
-    return null;
-  }
+  // Build requirements based on the schema
+  const requirements = [
+    {
+      id: "length",
+      text: `At least ${schema.minLength} characters long`,
+      isValid: validLength,
+      isLoading,
+    },
+  ];
 
-  // Extract validation requirements from schema
-  const getRequirements = () => {
-    const schema = validationSchema.password;
-    const requirements = [];
+  // Add validator requirements from the schema
+  if (schema.validators) {
+    schema.validators.forEach((validator, index) => {
+      let validation = false;
 
-    // Add minimum length requirement if specified - schema is now normalized
-    if (schema.minLength) {
-      const minLength = schema.minLength;
+      // Match validation status with the right prop based on index/pattern
+      if (index === 0) validation = hasUppercase;
+      else if (index === 1) validation = hasNumber;
+      else if (index === 2) validation = specialChar;
 
       requirements.push({
-        id: "length",
-        text: `At least ${minLength} characters long`,
-        isValid: validLength,
+        id: `validator-${index}`,
+        text: validator.message,
+        isValid: validation,
+        isLoading,
       });
-    }
-
-    // Check if we need to look for explicit requiresX flags or extract from message
-    const needsToInferFromMessage =
-      !schema.requiresUppercase &&
-      !schema.requiresNumber &&
-      !schema.requiresSpecial;
-
-    // Check explicit requirement flags (from our updated extractor)
-    if (
-      schema.requiresUppercase ||
-      (needsToInferFromMessage &&
-        schema.message?.toLowerCase().includes("uppercase"))
-    ) {
-      requirements.push({
-        id: "uppercase",
-        text: "At least 1 uppercase letter",
-        isValid: hasUppercase,
-      });
-    }
-
-    if (
-      schema.requiresNumber ||
-      (needsToInferFromMessage &&
-        schema.message?.toLowerCase().includes("number"))
-    ) {
-      requirements.push({
-        id: "number",
-        text: "At least 1 number",
-        isValid: hasNumber,
-      });
-    }
-
-    if (
-      schema.requiresSpecial ||
-      (needsToInferFromMessage &&
-        schema.message?.toLowerCase().includes("special"))
-    ) {
-      requirements.push({
-        id: "special",
-        text: "At least 1 special character",
-        isValid: specialChar,
-      });
-    }
-
-    // If we still have no requirements but have a pattern, add the standard set
-    if (requirements.length <= 1 && schema.pattern) {
-      if (!requirements.some((r) => r.id === "uppercase")) {
-        requirements.push({
-          id: "uppercase",
-          text: "At least 1 uppercase letter",
-          isValid: hasUppercase,
-        });
-      }
-
-      if (!requirements.some((r) => r.id === "number")) {
-        requirements.push({
-          id: "number",
-          text: "At least 1 number",
-          isValid: hasNumber,
-        });
-      }
-
-      if (!requirements.some((r) => r.id === "special")) {
-        requirements.push({
-          id: "special",
-          text: "At least 1 special character",
-          isValid: specialChar,
-        });
-      }
-    }
-
-    return requirements;
-  };
-
-  const requirements = getRequirements();
-
-  // Don't show an empty list
-  if (requirements.length === 0) {
-    return null;
+    });
   }
 
   return (
@@ -198,7 +120,7 @@ SchemaPasswordValidation.propTypes = {
   match: PropTypes.bool,
   showFeedback: PropTypes.bool.isRequired,
   confirmPassword: PropTypes.string,
-  validationSchema: PropTypes.object,
+  customValidationSchema: PropTypes.object,
   isLoading: PropTypes.bool,
 };
 
@@ -209,7 +131,7 @@ SchemaPasswordValidation.defaultProps = {
   specialChar: false,
   match: false,
   confirmPassword: "",
-  validationSchema: null,
+  customValidationSchema: null,
   isLoading: false,
 };
 

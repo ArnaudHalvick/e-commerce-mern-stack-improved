@@ -17,6 +17,15 @@
  * - formatValidationErrors: Formats validation errors into a user-friendly message
  */
 
+// Import schemas from validationSchemas.js
+import {
+  nameSchema,
+  emailSchema,
+  passwordSchema,
+  phoneSchema,
+  addressSchema,
+} from "./validationSchemas";
+
 /**
  * Validation utilities for form validation based on User model requirements.
  */
@@ -44,11 +53,11 @@ const ZIP_CODE_REGEX = /^[0-9a-zA-Z\-\s]{4,12}$/;
  */
 export const validateEmail = (email) => {
   const trimmedEmail = email?.trim() || "";
-  if (!trimmedEmail) {
+  if (!trimmedEmail && emailSchema.required) {
     return { isValid: false, message: "Email is required" };
   }
-  if (!EMAIL_REGEX.test(trimmedEmail)) {
-    return { isValid: false, message: "Please enter a valid email" };
+  if (trimmedEmail && !emailSchema.pattern.test(trimmedEmail)) {
+    return { isValid: false, message: emailSchema.message };
   }
   return { isValid: true, message: "" };
 };
@@ -60,17 +69,20 @@ export const validateEmail = (email) => {
  */
 export const validateName = (name) => {
   const trimmedName = name?.trim() || "";
-  if (!trimmedName) {
+  if (!trimmedName && nameSchema.required) {
     return { isValid: false, message: "Name is required" };
   }
-  if (trimmedName.length < 2) {
+  if (trimmedName.length < nameSchema.minLength) {
     return {
       isValid: false,
-      message: "Name should have more than 2 characters",
+      message: `Name should have more than ${nameSchema.minLength} characters`,
     };
   }
-  if (trimmedName.length > 30) {
-    return { isValid: false, message: "Name cannot exceed 30 characters" };
+  if (trimmedName.length > nameSchema.maxLength) {
+    return {
+      isValid: false,
+      message: `Name cannot exceed ${nameSchema.maxLength} characters`,
+    };
   }
   return { isValid: true, message: "" };
 };
@@ -82,44 +94,35 @@ export const validateName = (name) => {
  */
 export const validatePassword = (password) => {
   const details = {
-    length: password && password.length >= PASSWORD_MIN_LENGTH,
-    uppercase: password && PASSWORD_UPPERCASE_REGEX.test(password),
-    number: password && PASSWORD_NUMBER_REGEX.test(password),
-    special: password && PASSWORD_SPECIAL_REGEX.test(password),
+    length: password && password.length >= passwordSchema.minLength,
+    uppercase: password && passwordSchema.validators[0].pattern.test(password),
+    number: password && passwordSchema.validators[1].pattern.test(password),
+    special: password && passwordSchema.validators[2].pattern.test(password),
   };
 
   const trimmedPassword = password?.trim() || "";
-  if (!trimmedPassword) {
+  if (!trimmedPassword && passwordSchema.required) {
     return { isValid: false, message: "Password is required", details };
   }
-  if (trimmedPassword.length < PASSWORD_MIN_LENGTH) {
+  if (trimmedPassword.length < passwordSchema.minLength) {
     return {
       isValid: false,
-      message: `Password should be at least ${PASSWORD_MIN_LENGTH} characters long`,
+      message: `Password should be at least ${passwordSchema.minLength} characters long`,
       details,
     };
   }
-  if (!PASSWORD_UPPERCASE_REGEX.test(trimmedPassword)) {
-    return {
-      isValid: false,
-      message: "Password must contain at least 1 uppercase letter",
-      details,
-    };
+
+  // Check each validator in the password schema
+  for (const validator of passwordSchema.validators) {
+    if (!validator.pattern.test(trimmedPassword)) {
+      return {
+        isValid: false,
+        message: validator.message,
+        details,
+      };
+    }
   }
-  if (!PASSWORD_NUMBER_REGEX.test(trimmedPassword)) {
-    return {
-      isValid: false,
-      message: "Password must contain at least 1 number",
-      details,
-    };
-  }
-  if (!PASSWORD_SPECIAL_REGEX.test(trimmedPassword)) {
-    return {
-      isValid: false,
-      message: "Password must contain at least 1 special character",
-      details,
-    };
-  }
+
   return { isValid: true, message: "", details };
 };
 
@@ -146,16 +149,20 @@ export const validatePasswordMatch = (password, confirmPassword) => {
  * @returns {Object} - { isValid, message }
  */
 export const validatePhone = (phone) => {
-  // Phone is optional.
+  // Phone is optional unless specified as required in the schema
   const trimmedPhone = phone?.trim() || "";
-  if (!trimmedPhone) {
+  if (!trimmedPhone && !phoneSchema.required) {
     return { isValid: true, message: "" };
   }
+  if (!trimmedPhone && phoneSchema.required) {
+    return { isValid: false, message: "Phone number is required" };
+  }
+
   const cleanPhone = trimmedPhone.replace(/\s+/g, "");
-  if (!PHONE_REGEX.test(cleanPhone)) {
+  if (!phoneSchema.pattern.test(cleanPhone)) {
     return {
       isValid: false,
-      message: "Please enter a valid phone number (10-15 digits)",
+      message: phoneSchema.message,
     };
   }
   return { isValid: true, message: "" };
@@ -170,21 +177,71 @@ export const validateAddress = (address) => {
   if (!address) return {};
   const errors = {};
 
-  if (address.street && address.street.trim().length < 3) {
-    errors.street = "Street address must be at least 3 characters long";
+  // Validate street
+  if (
+    addressSchema.street.required &&
+    (!address.street || address.street.trim() === "")
+  ) {
+    errors.street = "Street address is required";
+  } else if (
+    address.street &&
+    address.street.trim().length < addressSchema.street.minLength
+  ) {
+    errors.street = addressSchema.street.message;
   }
-  if (address.city && address.city.trim().length < 2) {
-    errors.city = "City must be at least 2 characters long";
+
+  // Validate city
+  if (
+    addressSchema.city.required &&
+    (!address.city || address.city.trim() === "")
+  ) {
+    errors.city = "City is required";
+  } else if (
+    address.city &&
+    address.city.trim().length < addressSchema.city.minLength
+  ) {
+    errors.city = addressSchema.city.message;
   }
-  if (address.state && address.state.trim().length < 2) {
-    errors.state = "State must be at least 2 characters long";
+
+  // Validate state
+  if (
+    addressSchema.state.required &&
+    (!address.state || address.state.trim() === "")
+  ) {
+    errors.state = "State is required";
+  } else if (
+    address.state &&
+    address.state.trim().length < addressSchema.state.minLength
+  ) {
+    errors.state = addressSchema.state.message;
   }
-  if (address.zipCode && !ZIP_CODE_REGEX.test(address.zipCode)) {
-    errors.zipCode = "Please enter a valid zip/postal code (4-12 characters)";
+
+  // Validate zipCode
+  if (
+    addressSchema.zipCode.required &&
+    (!address.zipCode || address.zipCode.trim() === "")
+  ) {
+    errors.zipCode = "Zip/Postal code is required";
+  } else if (
+    address.zipCode &&
+    !addressSchema.zipCode.pattern.test(address.zipCode)
+  ) {
+    errors.zipCode = addressSchema.zipCode.message;
   }
-  if (address.country && address.country.trim().length < 2) {
-    errors.country = "Country must be at least 2 characters long";
+
+  // Validate country
+  if (
+    addressSchema.country.required &&
+    (!address.country || address.country.trim() === "")
+  ) {
+    errors.country = "Country is required";
+  } else if (
+    address.country &&
+    address.country.trim().length < addressSchema.country.minLength
+  ) {
+    errors.country = addressSchema.country.message;
   }
+
   return errors;
 };
 

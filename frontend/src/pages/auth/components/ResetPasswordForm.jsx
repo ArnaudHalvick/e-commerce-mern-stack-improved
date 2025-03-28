@@ -2,7 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { FormInputField, FormSubmitButton } from "../../../components/form";
-import PasswordValidation from "./PasswordValidation";
+import SchemaPasswordValidation from "./SchemaPasswordValidation";
+import { passwordSchema } from "../../../utils/validationSchemas";
 
 /**
  * Reset Password form component
@@ -14,7 +15,6 @@ import PasswordValidation from "./PasswordValidation";
  * @param {Function} props.handleBlur - Function to handle blur events
  * @param {Object} props.errors - Error messages
  * @param {boolean} props.loading - Loading state
- * @param {Object} props.passwordValidation - Password validation state
  */
 const ResetPasswordForm = ({
   formData,
@@ -23,24 +23,27 @@ const ResetPasswordForm = ({
   handleBlur,
   errors,
   loading,
-  passwordValidation,
 }) => {
-  // Extract password validation fields
-  const {
-    requirements: {
-      length: validLength = false,
-      uppercase: hasUppercase = false,
-      number: hasNumber = false,
-      special: specialChar = false,
-    } = {},
-  } = passwordValidation || {};
+  // Password validation states based on schema requirements
+  const passwordValidation = {
+    validLength: formData.password?.length >= passwordSchema.minLength,
+    hasUppercase:
+      formData.password &&
+      passwordSchema.validators[0].pattern.test(formData.password),
+    hasNumber:
+      formData.password &&
+      passwordSchema.validators[1].pattern.test(formData.password),
+    specialChar:
+      formData.password &&
+      passwordSchema.validators[2].pattern.test(formData.password),
+  };
 
   // Calculate if passwords match
   const match =
     formData.password === formData.confirmPassword && formData.password !== "";
 
   // Only show validation feedback when user has started typing a password
-  const showValidation = formData.password.length > 0;
+  const showValidation = formData.password?.length > 0;
 
   return (
     <form className="auth-form" onSubmit={handleSubmit} noValidate>
@@ -86,15 +89,15 @@ const ResetPasswordForm = ({
               : ""
           }`}
           required
-          aria-describedby="password-match-validation"
+          aria-describedby="password-validation"
           autocomplete="new-password"
         />
 
-        <PasswordValidation
-          validLength={validLength}
-          hasUppercase={hasUppercase}
-          hasNumber={hasNumber}
-          specialChar={specialChar}
+        <SchemaPasswordValidation
+          validLength={passwordValidation.validLength}
+          hasUppercase={passwordValidation.hasUppercase}
+          hasNumber={passwordValidation.hasNumber}
+          specialChar={passwordValidation.specialChar}
           match={match}
           showFeedback={showValidation}
           confirmPassword={formData.confirmPassword}
@@ -109,18 +112,14 @@ const ResetPasswordForm = ({
 
       <div className="auth-form__actions">
         <FormSubmitButton
-          isLoading={loading}
-          disabled={loading}
           text="Reset Password"
-          loadingText="Resetting..."
-          className="auth-form__submit-btn"
+          loadingText="Resetting Password..."
+          isLoading={loading}
+          className="auth-form__submit"
         />
-
-        <div className="auth-form__links">
-          <Link to="/login" className="auth-form__link">
-            Back to login
-          </Link>
-        </div>
+        <Link to="/login" className="auth-form__secondary-link">
+          Back to Login
+        </Link>
       </div>
     </form>
   );
@@ -133,7 +132,12 @@ ResetPasswordForm.propTypes = {
   handleBlur: PropTypes.func,
   errors: PropTypes.object,
   loading: PropTypes.bool,
-  passwordValidation: PropTypes.object,
+};
+
+ResetPasswordForm.defaultProps = {
+  handleBlur: () => {},
+  errors: {},
+  loading: false,
 };
 
 export default ResetPasswordForm;

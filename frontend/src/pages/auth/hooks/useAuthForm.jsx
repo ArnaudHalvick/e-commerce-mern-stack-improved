@@ -14,6 +14,12 @@ import {
   isFormValid,
 } from "../../../utils/validation";
 
+// Import validation schemas
+import {
+  loginFormSchema,
+  registrationFormSchema,
+} from "../../../utils/validationSchemas";
+
 /**
  * Custom hook for managing auth forms (login/register)
  *
@@ -40,7 +46,7 @@ const useAuthForm = (formType = "login") => {
   const [loading, setLoading] = useState(false);
   const [fieldErrors, setFieldErrors] = useState({});
 
-  // Define validation rules for each form type
+  // Use form schemas for validation rules
   const validationRules = useMemo(
     () => ({
       login: { email: true, password: true },
@@ -53,6 +59,11 @@ const useAuthForm = (formType = "login") => {
     }),
     []
   );
+
+  // Get the appropriate schema based on form type
+  const getSchema = useCallback(() => {
+    return formType === "login" ? loginFormSchema : registrationFormSchema;
+  }, [formType]);
 
   /**
    * Validate a single field

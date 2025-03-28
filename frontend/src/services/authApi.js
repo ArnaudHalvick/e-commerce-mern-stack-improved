@@ -196,19 +196,6 @@ const authApi = {
       throw error;
     }
   },
-
-  /**
-   * Get password reset validation rules
-   * @returns {Promise} - Promise that resolves to validation rules
-   */
-  getPasswordResetValidation: async () => {
-    try {
-      const response = await apiClient.get("/api/validation/password-reset");
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
-  },
 };
 
 export default authApi;

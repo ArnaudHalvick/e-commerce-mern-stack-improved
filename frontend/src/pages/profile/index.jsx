@@ -22,7 +22,7 @@ import Spinner from "../../components/ui/Spinner";
 // CSS
 import "./Profile.css";
 
-// Import the new validation functions
+// Import the validation functions and schemas
 import {
   validateName,
   validateEmail,
@@ -33,59 +33,16 @@ import {
   validateForm as utilValidateForm,
 } from "../../utils/validation";
 
-// Basic validation schema for ProfileInfo and PasswordManager components
-const validationSchema = {
-  name: {
-    required: true,
-    minLength: 2,
-    maxLength: 30,
-    message: "Name should be between 2 and 30 characters",
-  },
-  phone: {
-    required: false,
-    message: "Phone number should be 10-15 digits",
-  },
-  address: {
-    street: {
-      required: true,
-      minLength: 3,
-      message: "Street address must be at least 3 characters long",
-    },
-    city: {
-      required: true,
-      minLength: 2,
-      message: "City must be at least 2 characters long",
-    },
-    state: {
-      required: true,
-      minLength: 2,
-      message: "State must be at least 2 characters long",
-    },
-    zipCode: {
-      required: true,
-      message: "Please enter a valid zip/postal code (4-12 characters)",
-    },
-    country: {
-      required: true,
-      minLength: 2,
-      message: "Country must be at least 2 characters long",
-    },
-  },
-  currentPassword: {
-    required: true,
-    message: "Current password is required",
-  },
-  newPassword: {
-    required: true,
-    minLength: 8,
-    message:
-      "Password must be at least 8 characters with uppercase, number, and special character",
-  },
-  confirmPassword: {
-    required: true,
-    message: "Passwords must match",
-  },
-};
+// Import the schemas from validationSchemas.js
+import {
+  userSchema,
+  profileBasicInfoSchema,
+  profileAddressSchema,
+  profilePasswordChangeSchema,
+} from "../../utils/validationSchemas";
+
+// Use the imported schema instead of defining a new one
+const validationSchema = userSchema;
 
 const Profile = () => {
   const {

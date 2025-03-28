@@ -43,8 +43,6 @@ const publicEndpoints = [
   "/api/users/reset-password",
   "/api/users/request-verification",
   "/api/users/verify-email",
-  "/api/validation/password-reset",
-  "/api/validation/registration",
 ];
 
 // Add a request interceptor to include auth token

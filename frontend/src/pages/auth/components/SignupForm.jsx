@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { FormInputField, FormSubmitButton } from "../../../components/form";
-import PasswordValidation from "./PasswordValidation";
+import SchemaPasswordValidation from "./SchemaPasswordValidation";
+import { passwordSchema } from "../../../utils/validationSchemas";
 
 /**
  * Signup form component
@@ -24,12 +25,18 @@ const SignupForm = ({
 }) => {
   const [termsAccepted, setTermsAccepted] = useState(false);
 
-  // Password validation states
+  // Password validation states based on schema requirements
   const passwordValidation = {
-    validLength: formData.password?.length >= 8,
-    hasUppercase: /[A-Z]/.test(formData.password || ""),
-    hasNumber: /[0-9]/.test(formData.password || ""),
-    specialChar: /[^A-Za-z0-9]/.test(formData.password || ""),
+    validLength: formData.password?.length >= passwordSchema.minLength,
+    hasUppercase:
+      formData.password &&
+      passwordSchema.validators[0].pattern.test(formData.password),
+    hasNumber:
+      formData.password &&
+      passwordSchema.validators[1].pattern.test(formData.password),
+    specialChar:
+      formData.password &&
+      passwordSchema.validators[2].pattern.test(formData.password),
     match:
       formData.password === formData.confirmPassword &&
       formData.password !== "",
@@ -106,7 +113,7 @@ const SignupForm = ({
         <FormInputField
           type="password"
           name="confirmPassword"
-          label="Confirm password"
+          label="Confirm Password"
           value={formData.confirmPassword || ""}
           onChange={handleChange}
           onBlur={handleBlur}
@@ -120,12 +127,12 @@ const SignupForm = ({
               : ""
           }`}
           required={true}
-          aria-describedby="password-match-validation"
+          aria-describedby="password-validation"
           autocomplete="new-password"
           title="Please confirm your password"
         />
 
-        <PasswordValidation
+        <SchemaPasswordValidation
           validLength={passwordValidation.validLength}
           hasUppercase={passwordValidation.hasUppercase}
           hasNumber={passwordValidation.hasNumber}
@@ -178,12 +185,13 @@ SignupForm.propTypes = {
   loading: PropTypes.bool,
   errors: PropTypes.object,
   handleSubmit: PropTypes.func.isRequired,
-  handleBlur: PropTypes.func.isRequired,
+  handleBlur: PropTypes.func,
 };
 
 SignupForm.defaultProps = {
   loading: false,
   errors: {},
+  handleBlur: () => {},
 };
 
 export default SignupForm;
