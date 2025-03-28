@@ -48,12 +48,12 @@ const publicEndpoints = [
 // Add a request interceptor to include auth token
 apiClient.interceptors.request.use(
   (config) => {
-    // Check if this is a public endpoint
+    // Check if this is a public endpoint that doesn't require authentication
     const isPublicEndpoint = publicEndpoints.some((endpoint) =>
       config.url.includes(endpoint)
     );
 
-    // If user is logged out, avoid authenticated requests
+    // If user is logged out, only allow public endpoint requests
     if (isUserLoggedOut() && !isPublicEndpoint) {
       const error = new Error("User is logged out");
       error.config = config;
@@ -70,7 +70,9 @@ apiClient.interceptors.request.use(
     if (
       !config.url.includes("/api/users/login") &&
       !config.url.includes("/api/users/signup") &&
-      !config.url.includes("/api/users/refresh-token")
+      !config.url.includes("/api/users/refresh-token") &&
+      !config.url.includes("/api/users/forgot-password") &&
+      !config.url.includes("/api/users/reset-password")
     ) {
       config.cancelToken = cancelTokenSource.token;
     }
@@ -91,6 +93,21 @@ apiClient.interceptors.response.use(
 
     // Special case for logged out errors
     if (error.isLoggedOutError) {
+      // Check if this is a password recovery related endpoint
+      if (
+        error.config &&
+        (error.config.url.includes("/api/users/forgot-password") ||
+          error.config.url.includes("/api/users/reset-password"))
+      ) {
+        // Allow password recovery to proceed even when logged out
+        return Promise.reject({
+          message: "Enter your email to receive recovery instructions",
+          status: 401,
+          originalError: error,
+          isPasswordRecovery: true,
+        });
+      }
+
       return Promise.reject({
         message: "User is logged out",
         status: 401,

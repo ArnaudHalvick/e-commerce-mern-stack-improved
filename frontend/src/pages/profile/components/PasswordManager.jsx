@@ -57,9 +57,11 @@ const PasswordManager = ({
 
     // Form is valid only if all fields are filled and there are no errors
     setIsFormValid(!hasEmptyField && !hasFieldErrors);
-  }, [passwordData, fieldErrors, validationSchema, isChangingPassword]);
+  }, [passwordData, fieldErrors, isChangingPassword]);
 
   // Validate individual password requirements with debouncing
+  const minPasswordLength = getMinPasswordLength();
+
   useEffect(() => {
     const validatePassword = () => {
       const { newPassword, confirmPassword } = passwordData;
@@ -74,10 +76,8 @@ const PasswordManager = ({
         return;
       }
 
-      const minLength = getMinPasswordLength();
-
       setPasswordValidations({
-        length: newPassword.length >= minLength,
+        length: newPassword.length >= minPasswordLength,
         uppercase: /[A-Z]/.test(newPassword),
         number: /[0-9]/.test(newPassword),
         special: /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(newPassword),
@@ -91,7 +91,7 @@ const PasswordManager = ({
     return () => {
       debouncedValidate.cancel();
     };
-  }, [passwordData, validationSchema, getMinPasswordLength]);
+  }, [passwordData, minPasswordLength]);
 
   // Determine input class based on validation state
   const getInputClass = (fieldName) => {
@@ -230,7 +230,7 @@ const PasswordManager = ({
                 <li
                   className={passwordValidations.length ? "valid" : "invalid"}
                 >
-                  At least {getMinPasswordLength()} characters
+                  At least {minPasswordLength} characters
                 </li>
                 <li
                   className={

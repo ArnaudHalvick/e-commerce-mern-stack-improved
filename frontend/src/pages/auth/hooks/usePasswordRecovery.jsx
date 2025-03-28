@@ -149,22 +149,48 @@ const usePasswordRecovery = (mode = "forgot", token = "") => {
 
       try {
         if (mode === "forgot") {
-          const result = await authApi.forgotPassword(formData.email);
+          try {
+            const result = await authApi.forgotPassword(formData.email);
 
-          if (result.success) {
-            setSuccess(true);
-            showSuccess("Password reset instructions sent to your email");
+            if (result.success) {
+              setSuccess(true);
+              showSuccess("Password reset instructions sent to your email");
+            }
+          } catch (error) {
+            // Don't redirect if we get a 401 during password recovery
+            if (error.status === 401 && error.message.includes("logged out")) {
+              setFormError({
+                message:
+                  "Please enter your email to receive recovery instructions",
+              });
+            } else {
+              setFormError(error);
+            }
+            setSuccess(false);
           }
         } else {
-          const result = await authApi.resetPassword(
-            formData.token,
-            formData.password,
-            formData.confirmPassword
-          );
+          try {
+            const result = await authApi.resetPassword(
+              formData.token,
+              formData.password,
+              formData.confirmPassword
+            );
 
-          if (result.success) {
-            setSuccess(true);
-            showSuccess("Password has been reset successfully");
+            if (result.success) {
+              setSuccess(true);
+              showSuccess("Password has been reset successfully");
+            }
+          } catch (error) {
+            // Don't redirect if we get a 401 during password reset
+            if (error.status === 401 && error.message.includes("logged out")) {
+              setFormError({
+                message:
+                  "Your password reset link may have expired. Please request a new one.",
+              });
+            } else {
+              setFormError(error);
+            }
+            setSuccess(false);
           }
         }
       } catch (error) {
