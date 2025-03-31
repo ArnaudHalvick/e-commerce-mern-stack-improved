@@ -54,6 +54,7 @@ const CheckoutPage = () => {
   const [cartSummary, setCartSummary] = useState(null);
   const [fetchingCartSummary, setFetchingCartSummary] = useState(true);
   const [shippingInfo, setShippingInfo] = useState({
+    name: "",
     address: "",
     city: "",
     state: "",
@@ -104,11 +105,12 @@ const CheckoutPage = () => {
 
         setShippingInfo((prevState) => ({
           ...prevState,
+          name: userData.name || userData.username || "",
           address: userAddress.street || "",
           city: userAddress.city || "",
           state: userAddress.state || "",
           country: countryCode,
-          postalCode: userAddress.zipCode || "",
+          postalCode: userAddress.zipCode || userAddress.postalCode || "",
           phoneNumber: userPhone,
         }));
       } catch (err) {
@@ -123,6 +125,7 @@ const CheckoutPage = () => {
   // Wrap the shipping info validation function in useCallback and memoize it
   const isShippingInfoValid = useCallback(() => {
     return (
+      shippingInfo.name &&
       shippingInfo.address &&
       shippingInfo.city &&
       shippingInfo.state &&
@@ -131,6 +134,7 @@ const CheckoutPage = () => {
       shippingInfo.phoneNumber
     );
   }, [
+    shippingInfo.name,
     shippingInfo.address,
     shippingInfo.city,
     shippingInfo.state,
@@ -188,8 +192,8 @@ const CheckoutPage = () => {
     setError(null);
 
     try {
-      // Format shipping address for API
-      const formattedAddress = {
+      // Format shipping address for API - the backend expects a nested structure
+      const shippingAddress = {
         street: shippingInfo.address,
         city: shippingInfo.city,
         state: shippingInfo.state,
@@ -197,10 +201,17 @@ const CheckoutPage = () => {
         country: shippingInfo.country,
       };
 
+      // Format shipping information as expected by the backend
+      const shippingData = {
+        shippingAddress,
+        shippingMethod: "standard",
+        name: shippingInfo.name,
+        phoneNumber: shippingInfo.phoneNumber,
+      };
+
       // 1. Create a payment intent on the server
       const intentResponse = await paymentsService.createPaymentIntent(
-        formattedAddress,
-        "standard"
+        shippingData
       );
       const { clientSecret } = intentResponse;
 
@@ -215,7 +226,7 @@ const CheckoutPage = () => {
           payment_method: {
             card: cardElement,
             billing_details: {
-              name: shippingInfo.name || "Customer",
+              name: shippingInfo.name,
               address: {
                 line1: shippingInfo.address,
                 city: shippingInfo.city,
@@ -234,9 +245,22 @@ const CheckoutPage = () => {
       if (paymentIntent.status === "succeeded") {
         // 3. Confirm the order
         const paymentMethodId = paymentIntent.payment_method;
+
+        // Format shipping info for the backend
+        const formattedShippingInfo = {
+          address: shippingInfo.address,
+          city: shippingInfo.city,
+          state: shippingInfo.state,
+          country: shippingInfo.country,
+          postalCode: shippingInfo.postalCode,
+          phoneNumber: shippingInfo.phoneNumber,
+          name: shippingInfo.name,
+        };
+
         const orderResponse = await paymentsService.confirmOrder(
           paymentIntent.id,
-          paymentMethodId
+          paymentMethodId,
+          formattedShippingInfo
         );
 
         // 4. Clear the cart and redirect to the order confirmation page
@@ -261,6 +285,21 @@ const CheckoutPage = () => {
         <div className="checkout-shipping-container">
           <h2 className="checkout-section-title">Shipping Information</h2>
           <form className="checkout-shipping-form">
+            <div className="checkout-form-group">
+              <label htmlFor="name" className="checkout-form-label">
+                Name
+              </label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                value={shippingInfo.name}
+                onChange={handleShippingInfoChange}
+                className="checkout-form-input"
+                required
+              />
+            </div>
+
             <div className="checkout-form-group">
               <label htmlFor="address" className="checkout-form-label">
                 Street Address

@@ -20,21 +20,37 @@ export const getCartSummary = async () => {
 
 /**
  * Initialize payment intent
- * @param {Object} shippingAddress - The shipping address
- * @param {string} shippingMethod - The shipping method
+ * @param {Object} shippingData - Object containing shipping information
+ * @param {Object} shippingData.shippingAddress - The shipping address
+ * @param {string} shippingData.shippingMethod - The shipping method
+ * @param {string} shippingData.name - Customer name
+ * @param {string} shippingData.phoneNumber - Customer phone number
  * @returns {Promise} Promise with client secret and payment intent ID
  */
-export const createPaymentIntent = async (
-  shippingAddress,
-  shippingMethod = "standard"
-) => {
+export const createPaymentIntent = async (shippingData) => {
   try {
+    // Ensure shipping data is properly formatted
+    if (!shippingData || !shippingData.shippingAddress) {
+      throw new Error("Shipping information is required");
+    }
+
+    // Format the request body according to the backend's expected format
+    const requestBody = {
+      shippingInfo: {
+        address: shippingData.shippingAddress.street,
+        city: shippingData.shippingAddress.city,
+        state: shippingData.shippingAddress.state,
+        country: shippingData.shippingAddress.country,
+        postalCode: shippingData.shippingAddress.zip,
+        phoneNumber: shippingData.phoneNumber,
+        name: shippingData.name,
+      },
+      shippingMethod: shippingData.shippingMethod,
+    };
+
     const response = await apiClient.post(
       "/api/payment/create-payment-intent",
-      {
-        shippingAddress,
-        shippingMethod,
-      }
+      requestBody
     );
     return response.data;
   } catch (error) {
@@ -46,13 +62,19 @@ export const createPaymentIntent = async (
  * Confirm order after payment
  * @param {string} paymentIntentId - Stripe payment intent ID
  * @param {string} paymentMethodId - Stripe payment method ID
+ * @param {Object} shippingInfo - Shipping information for the order
  * @returns {Promise} Promise with order confirmation data
  */
-export const confirmOrder = async (paymentIntentId, paymentMethodId) => {
+export const confirmOrder = async (
+  paymentIntentId,
+  paymentMethodId,
+  shippingInfo
+) => {
   try {
     const response = await apiClient.post("/api/payment/confirm-order", {
       paymentIntentId,
       paymentMethodId,
+      shippingInfo: shippingInfo,
     });
     return response.data;
   } catch (error) {
