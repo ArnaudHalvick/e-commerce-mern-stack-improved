@@ -1,0 +1,77 @@
+/* Disable Account Modal Styles */
+.disable-account-modal__warning {
+  background-color: rgba(255, 193, 7, 0.1);
+  border-left: 4px solid #ffc107;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1.5rem;
+  border-radius: 4px;
+}
+
+.disable-account-modal__warning p {
+  margin: 0;
+  line-height: 1.5;
+  color: #856404;
+}
+
+.disable-account-modal__form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.disable-account-modal__form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.disable-account-modal__label {
+  font-weight: 500;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+.disable-account-modal__input {
+  padding: 0.7rem 1rem;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.disable-account-modal__input:focus {
+  outline: none;
+  border-color: #80bdff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.disable-account-modal__input--error {
+  border-color: #dc3545;
+}
+
+.disable-account-modal__input--error:focus {
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+.disable-account-modal__error-message {
+  color: #dc3545;
+  font-size: 0.85rem;
+  margin-top: 0.3rem;
+  animation: fade-in 0.3s ease;
+}
+
+.disable-account-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
