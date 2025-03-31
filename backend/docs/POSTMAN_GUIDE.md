@@ -1,6 +1,6 @@
-# Postman Collection Guide
+# E-Commerce MERN Stack API - Postman Guide
 
-This guide explains how to use the Postman collection file to test the API endpoints of the e-commerce backend.
+This guide explains how to use the Postman collection to test the API endpoints of the E-Commerce MERN Stack backend.
 
 ## Getting Started
 
@@ -23,9 +23,14 @@ This guide explains how to use the Postman collection file to test the API endpo
      - `productId` (leave the value empty for now)
      - `productSlug` (leave the value empty for now)
      - `verificationToken` (leave the value empty for now)
+     - `resetToken` (leave the value empty for now)
+     - `reviewId` (leave the value empty for now)
+     - `orderId` (leave the value empty for now)
+     - `paymentIntentId` (leave the value empty for now)
+     - `paymentMethodId` (leave the value empty for now)
    - Click "Save"
 
-2. Select your new environment from the dropdown menu in the top right corner.
+2. Select your environment from the dropdown menu in the top right corner.
 
 ## Testing the API
 
@@ -33,53 +38,135 @@ This guide explains how to use the Postman collection file to test the API endpo
 
 1. Start with the "Health Check" request to ensure the API is running.
 2. Register a new user using the "Register User" request.
-3. Log in with the new user using the "Login User" request.
-4. When you receive a response, copy the `accessToken` value from the response and set it in your environment variables.
-5. Now you can use endpoints that require authentication.
+3. Verify your email if required:
+   - Send a verification request using "Request Email Verification"
+   - Check your email (or database) for the verification token
+   - Add the token to your environment variables as `verificationToken`
+   - Use the "Verify Email with Token" request
+4. Log in with the user using the "Login User" request.
+5. When you receive a response, copy the `accessToken` value from the response JSON and set it in your environment variables.
+6. Now you can use endpoints that require authentication.
 
-### Testing Products
+### Authentication Maintenance
 
-1. Use the "Get All Products" request to retrieve all products.
+- The access token expires after a period of time (typically 15-30 minutes)
+- When it expires, use the "Refresh Token" request to get a new token
+- This works because a refresh token is stored in a cookie
+- Ensure your Postman settings have "Automatically follow redirects" enabled and "Save cookies" enabled
+
+### User Management
+
+1. Once logged in, you can view your profile with "Get User Profile".
+2. Update your profile with "Update Profile".
+3. Change your password with "Change Password".
+4. If you want to test password reset:
+   - Use "Forgot Password" first
+   - Check your email (or database) for the reset token
+   - Add the token to your environment as `resetToken`
+   - Use "Reset Password" to set a new password
+5. Use "Logout User" when you're finished.
+
+### Products
+
+1. Use "Get All Products" to retrieve all products.
 2. From the response, copy a product ID and set it as the `productId` environment variable.
-3. Similarly, copy a product slug and set it as the `productSlug` environment variable.
-4. Now you can test the "Get Product by ID" and "Get Product by Slug" requests.
+3. Also copy a product slug and set it as the `productSlug` environment variable.
+4. Now you can test "Get Product by ID" and "Get Product by Slug" requests.
+5. Try filtering products with the category, type, and tag endpoints.
+6. Use "Get Related Products" to find products similar to one you've selected.
 
-### Testing Reviews
+### Cart Operations
+
+Make sure you're authenticated first, then:
+
+1. Use "Add to Cart" to add a product to your cart.
+2. Use "Get Cart" to view your cart contents.
+3. Use "Update Cart Item" to modify quantity or other attributes.
+4. Use "Remove from Cart" to remove an item.
+5. Use "Clear Cart" to empty your cart.
+
+### Reviews
 
 Once you have a valid `productId` and are authenticated:
 
-1. Use the "Add Review" request to add a review for a product.
-2. Then use the "Get Product Reviews" request to see reviews for that product.
+1. Use "Add Review" to add a review for a product.
+2. From the response, save the review ID to your `reviewId` environment variable.
+3. Use "Get Product Reviews" to see all reviews for that product.
+4. You can "Update Review" or "Delete Review" if needed.
+5. Test marking a review as helpful with "Mark Review as Helpful".
 
-### Testing Cart Operations
+### Checkout Process
 
-Ensure you're authenticated:
+To test the payment process:
 
-1. Use "Add to Cart" to add a product to your cart.
-2. Use "Get Cart" to view your cart.
-3. Use "Update Cart Item" to modify quantity or size.
-4. Use "Remove from Cart" to remove an item.
-5. Finally, use "Clear Cart" to empty your cart.
+1. Add items to your cart and ensure you're authenticated.
+2. Get a summary of your cart with "Get Cart Summary".
+3. Create a payment intent with "Create Payment Intent".
+4. From the response, save the payment intent ID to your `paymentIntentId` environment variable.
+5. In a real application, you would collect payment method details from the user.
+   - For testing, you can use Stripe's test cards (e.g., 4242 4242 4242 4242).
+   - Save the payment method ID to your `paymentMethodId` environment variable.
+6. Confirm the order with "Confirm Order".
+7. View your orders with "Get My Orders".
+8. From the orders list, save an order ID to your `orderId` environment variable.
+9. Get details of a specific order with "Get Order by ID".
 
-## Error Testing
+### Error Testing
 
 You can test error handling using the "Error Demo Routes" folder:
 
-1. "Test Bad Request Error" - Tests 400 error handling
-2. "Test Not Found Error" - Tests 404 error handling
-3. "Test Server Error" - Tests 500 error handling
+1. "Test Error" - Triggers a server error (500)
+2. "Validation Error" - Triggers a validation error (400)
+3. "Delayed Success" - Simulates a delayed response to test loading states
 
-## Environment Variables
+## Important Notes
 
-The collection uses these key variables:
+### API Base URL
 
-- `accessToken`: The JWT access token received after logging in
-- `productId`: ID of a product to use in requests
-- `productSlug`: Slug of a product to use in requests
-- `verificationToken`: Token for email verification (obtained from email or DB)
+The collection uses `http://localhost:4000` as the base URL. If your API is running on a different URL, you'll need to update the requests:
 
-Update these variables as you interact with the API for seamless testing.
+1. You can create a "base_url" environment variable and update all requests
+2. Or you can edit each request manually
+3. Or use Postman's "Find and Replace" feature
 
-## API Base URL
+### Authentication
 
-The collection uses `http://localhost:4000` as the base URL. If your API is running on a different URL, you'll need to update all request URLs.
+- Most endpoints require authentication via the `Authorization: Bearer {{accessToken}}` header
+- The token expires after a set time, so you may need to re-login or refresh the token
+- Some endpoints require verified email status
+
+### Rate Limiting
+
+The API implements rate limiting on certain sensitive endpoints:
+
+- Login
+- Registration
+- Password Reset
+
+If you make too many requests in a short period, you'll receive a 429 (Too Many Requests) error.
+
+### CORS Policy
+
+The API has CORS protection. If you're testing from a different origin, ensure that origin is allowed in the server configuration.
+
+## Troubleshooting
+
+1. **Authentication issues:**
+
+   - Check that your `accessToken` is set correctly
+   - Ensure the token hasn't expired
+   - Try logging in again to get a fresh token
+
+2. **404 errors:**
+
+   - Verify the endpoint path is correct
+   - Check that the specified resource exists (e.g., correct product ID)
+
+3. **Validation errors:**
+
+   - Check the response body for details about what validation failed
+   - Ensure all required fields are provided with proper values
+
+4. **500 server errors:**
+   - Check the server logs for details
+   - This indicates a bug in the API implementation

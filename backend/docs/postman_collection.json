@@ -119,40 +119,6 @@
           }
         },
         {
-          "name": "Logout User",
-          "request": {
-            "method": "POST",
-            "url": {
-              "raw": "http://localhost:4000/api/users/logout",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "4000",
-              "path": ["api", "users", "logout"]
-            },
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}"
-              }
-            ],
-            "description": "Logout the user"
-          }
-        },
-        {
-          "name": "Refresh Token",
-          "request": {
-            "method": "POST",
-            "url": {
-              "raw": "http://localhost:4000/api/users/refresh-token",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "4000",
-              "path": ["api", "users", "refresh-token"]
-            },
-            "description": "Get a new access token using the refresh token"
-          }
-        },
-        {
           "name": "Change Password",
           "request": {
             "method": "PUT",
@@ -181,27 +147,7 @@
           }
         },
         {
-          "name": "Disable Account",
-          "request": {
-            "method": "PUT",
-            "url": {
-              "raw": "http://localhost:4000/api/users/disable-account",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "4000",
-              "path": ["api", "users", "disable-account"]
-            },
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}"
-              }
-            ],
-            "description": "Disable the user's account"
-          }
-        },
-        {
-          "name": "Request Verification",
+          "name": "Request Email Verification",
           "request": {
             "method": "POST",
             "url": {
@@ -265,27 +211,161 @@
           }
         },
         {
-          "name": "Verify Email with Email Change",
+          "name": "Forgot Password",
           "request": {
-            "method": "GET",
+            "method": "POST",
             "url": {
-              "raw": "http://localhost:4000/api/users/verify-email?token={{verificationToken}}&isEmailChange=true",
+              "raw": "http://localhost:4000/api/users/forgot-password",
               "protocol": "http",
               "host": ["localhost"],
               "port": "4000",
-              "path": ["api", "users", "verify-email"],
-              "query": [
-                {
-                  "key": "token",
-                  "value": "{{verificationToken}}"
-                },
-                {
-                  "key": "isEmailChange",
-                  "value": "true"
-                }
-              ]
+              "path": ["api", "users", "forgot-password"]
             },
-            "description": "Verify email for email change"
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\"\n}"
+            },
+            "description": "Request password reset"
+          }
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "http://localhost:4000/api/users/reset-password",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "users", "reset-password"]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"{{resetToken}}\",\n  \"password\": \"NewPassword123!\"\n}"
+            },
+            "description": "Reset password with token"
+          }
+        },
+        {
+          "name": "Logout User",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "http://localhost:4000/api/users/logout",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "users", "logout"]
+            },
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "description": "Logout the user"
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "http://localhost:4000/api/users/refresh-token",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "users", "refresh-token"]
+            },
+            "description": "Get a new access token using the refresh token (cookie)"
+          }
+        },
+        {
+          "name": "Verify Token",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:4000/api/users/verify-token",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "users", "verify-token"]
+            },
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "description": "Verify if the access token is valid"
+          }
+        },
+        {
+          "name": "Disable Account",
+          "request": {
+            "method": "PUT",
+            "url": {
+              "raw": "http://localhost:4000/api/users/disable-account",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "users", "disable-account"]
+            },
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Testing account disable feature\"\n}"
+            },
+            "description": "Disable the user's account"
+          }
+        },
+        {
+          "name": "Change Email",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "http://localhost:4000/api/users/change-email",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "users", "change-email"]
+            },
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"newEmail\": \"new-email@example.com\"\n}"
+            },
+            "description": "Request email change"
           }
         }
       ]
@@ -305,46 +385,6 @@
               "path": ["api", "products", "all-products"]
             },
             "description": "Get all products"
-          }
-        },
-        {
-          "name": "Get Product by ID",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "http://localhost:4000/api/products/:id",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "4000",
-              "path": ["api", "products", ":id"],
-              "variable": [
-                {
-                  "key": "id",
-                  "value": "{{productId}}"
-                }
-              ]
-            },
-            "description": "Get a product by ID"
-          }
-        },
-        {
-          "name": "Get Product by Slug",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "http://localhost:4000/api/products/slug/:slug",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "4000",
-              "path": ["api", "products", "slug", ":slug"],
-              "variable": [
-                {
-                  "key": "slug",
-                  "value": "{{productSlug}}"
-                }
-              ]
-            },
-            "description": "Get a product by slug"
           }
         },
         {
@@ -372,7 +412,7 @@
               "port": "4000",
               "path": ["api", "products", "featured-women"]
             },
-            "description": "Get featured women products"
+            "description": "Get featured products for women"
           }
         },
         {
@@ -388,7 +428,7 @@
               "variable": [
                 {
                   "key": "tag",
-                  "value": "sale"
+                  "value": "new"
                 }
               ]
             },
@@ -408,7 +448,7 @@
               "variable": [
                 {
                   "key": "type",
-                  "value": "pants"
+                  "value": "shirt"
                 }
               ]
             },
@@ -436,15 +476,62 @@
           }
         },
         {
+          "name": "Get Product by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:4000/api/products/:id",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "products", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{productId}}"
+                }
+              ]
+            },
+            "description": "Get a product by its ID"
+          }
+        },
+        {
+          "name": "Get Product by Slug",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:4000/api/products/slug/:slug",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "products", "slug", ":slug"],
+              "variable": [
+                {
+                  "key": "slug",
+                  "value": "{{productSlug}}"
+                }
+              ]
+            },
+            "description": "Get a product by its slug"
+          }
+        },
+        {
           "name": "Get Related Products",
           "request": {
             "method": "GET",
             "url": {
-              "raw": "http://localhost:4000/api/products/related/:category/:productId?",
+              "raw": "http://localhost:4000/api/products/related/:category/:productId?/:productSlug?",
               "protocol": "http",
               "host": ["localhost"],
               "port": "4000",
-              "path": ["api", "products", "related", ":category", ":productId"],
+              "path": [
+                "api",
+                "products",
+                "related",
+                ":category",
+                ":productId",
+                ":productSlug"
+              ],
               "variable": [
                 {
                   "key": "category",
@@ -453,14 +540,18 @@
                 {
                   "key": "productId",
                   "value": "{{productId}}"
+                },
+                {
+                  "key": "productSlug",
+                  "value": "{{productSlug}}"
                 }
               ]
             },
-            "description": "Get related products"
+            "description": "Get related products by category excluding current product"
           }
         },
         {
-          "name": "Add Product",
+          "name": "Add Product (Admin)",
           "request": {
             "method": "POST",
             "url": {
@@ -472,23 +563,23 @@
             },
             "header": [
               {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
                 "key": "Authorization",
                 "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"New Product\",\n  \"shortDescription\": \"A short description\",\n  \"longDescription\": \"A longer description of the product\",\n  \"category\": \"women\",\n  \"new_price\": 59.99,\n  \"old_price\": 79.99,\n  \"images\": [\"image-url-1.jpg\", \"image-url-2.jpg\"],\n  \"mainImageIndex\": 0,\n  \"tags\": [\"new\", \"featured\"],\n  \"types\": [\"shirt\"],\n  \"available\": true\n}"
+              "raw": "{\n  \"name\": \"Test Product\",\n  \"category\": \"men\",\n  \"price\": 29.99,\n  \"description\": \"This is a test product\",\n  \"image\": \"/images/default.jpg\",\n  \"type\": \"shirt\",\n  \"tags\": [\"new\", \"featured\"],\n  \"sizes\": [\"S\", \"M\", \"L\"],\n  \"colors\": [\"red\", \"blue\"],\n  \"brand\": \"Test Brand\"\n}"
             },
-            "description": "Add a new product"
+            "description": "Add a new product (admin only)"
           }
         },
         {
-          "name": "Remove Product",
+          "name": "Remove Product (Admin)",
           "request": {
             "method": "POST",
             "url": {
@@ -500,19 +591,19 @@
             },
             "header": [
               {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
                 "key": "Authorization",
                 "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
               }
             ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"id\": \"{{productId}}\"\n}"
             },
-            "description": "Remove a product"
+            "description": "Remove a product (admin only)"
           }
         }
       ]
@@ -553,47 +644,19 @@
             },
             "header": [
               {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
                 "key": "Authorization",
                 "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"productId\": \"{{productId}}\",\n  \"quantity\": 1,\n  \"size\": \"M\"\n}"
+              "raw": "{\n  \"productId\": \"{{productId}}\",\n  \"quantity\": 1,\n  \"size\": \"M\",\n  \"color\": \"blue\"\n}"
             },
-            "description": "Add an item to the cart"
-          }
-        },
-        {
-          "name": "Remove from Cart",
-          "request": {
-            "method": "POST",
-            "url": {
-              "raw": "http://localhost:4000/api/cart/remove",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "4000",
-              "path": ["api", "cart", "remove"]
-            },
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"productId\": \"{{productId}}\",\n  \"size\": \"M\"\n}"
-            },
-            "description": "Remove an item from the cart"
+            "description": "Add a product to the user's cart"
           }
         },
         {
@@ -609,19 +672,47 @@
             },
             "header": [
               {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
                 "key": "Authorization",
                 "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"productId\": \"{{productId}}\",\n  \"quantity\": 2,\n  \"size\": \"M\"\n}"
+              "raw": "{\n  \"productId\": \"{{productId}}\",\n  \"quantity\": 2,\n  \"size\": \"M\",\n  \"color\": \"blue\"\n}"
             },
             "description": "Update a cart item"
+          }
+        },
+        {
+          "name": "Remove from Cart",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "http://localhost:4000/api/cart/remove",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "cart", "remove"]
+            },
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": \"{{productId}}\",\n  \"size\": \"M\",\n  \"color\": \"blue\"\n}"
+            },
+            "description": "Remove an item from cart"
           }
         },
         {
@@ -670,6 +761,26 @@
           }
         },
         {
+          "name": "Get Review by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:4000/api/reviews/:reviewId",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "reviews", ":reviewId"],
+              "variable": [
+                {
+                  "key": "reviewId",
+                  "value": "{{reviewId}}"
+                }
+              ]
+            },
+            "description": "Get a specific review by ID"
+          }
+        },
+        {
           "name": "Add Review",
           "request": {
             "method": "POST",
@@ -682,99 +793,105 @@
             },
             "header": [
               {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
                 "key": "Content-Type",
                 "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": \"{{productId}}\",\n  \"rating\": 5,\n  \"title\": \"Great product!\",\n  \"comment\": \"I really love this product, it's amazing quality.\"\n}"
+            },
+            "description": "Add a review for a product"
+          }
+        },
+        {
+          "name": "Update Review",
+          "request": {
+            "method": "PUT",
+            "url": {
+              "raw": "http://localhost:4000/api/reviews/:reviewId",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "reviews", ":reviewId"],
+              "variable": [
+                {
+                  "key": "reviewId",
+                  "value": "{{reviewId}}"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
               },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rating\": 4,\n  \"title\": \"Updated review\",\n  \"comment\": \"I changed my mind, it's good but not perfect.\"\n}"
+            },
+            "description": "Update a review"
+          }
+        },
+        {
+          "name": "Delete Review",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "http://localhost:4000/api/reviews/:reviewId",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "reviews", ":reviewId"],
+              "variable": [
+                {
+                  "key": "reviewId",
+                  "value": "{{reviewId}}"
+                }
+              ]
+            },
+            "header": [
               {
                 "key": "Authorization",
                 "value": "Bearer {{accessToken}}"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"productId\": \"{{productId}}\",\n  \"rating\": 5,\n  \"comment\": \"Great product!\"\n}"
-            },
-            "description": "Add a review for a product"
-          }
-        }
-      ]
-    },
-    {
-      "name": "Validation Routes",
-      "item": [
-        {
-          "name": "Get Profile Validation Rules",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "http://localhost:4000/api/validation/profile",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "4000",
-              "path": ["api", "validation", "profile"]
-            },
-            "description": "Get validation rules for the profile form"
+            "description": "Delete a review"
           }
         },
         {
-          "name": "Get Password Validation Rules",
+          "name": "Mark Review as Helpful",
           "request": {
-            "method": "GET",
+            "method": "POST",
             "url": {
-              "raw": "http://localhost:4000/api/validation/password",
+              "raw": "http://localhost:4000/api/reviews/:reviewId/helpful",
               "protocol": "http",
               "host": ["localhost"],
               "port": "4000",
-              "path": ["api", "validation", "password"]
+              "path": ["api", "reviews", ":reviewId", "helpful"],
+              "variable": [
+                {
+                  "key": "reviewId",
+                  "value": "{{reviewId}}"
+                }
+              ]
             },
-            "description": "Get validation rules for password changes"
-          }
-        }
-      ]
-    },
-    {
-      "name": "Error Demo Routes",
-      "item": [
-        {
-          "name": "Test Bad Request Error",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "http://localhost:4000/api/error-demo/bad-request",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "4000",
-              "path": ["api", "error-demo", "bad-request"]
-            },
-            "description": "Test a 400 Bad Request error"
-          }
-        },
-        {
-          "name": "Test Not Found Error",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "http://localhost:4000/api/error-demo/not-found",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "4000",
-              "path": ["api", "error-demo", "not-found"]
-            },
-            "description": "Test a 404 Not Found error"
-          }
-        },
-        {
-          "name": "Test Server Error",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "http://localhost:4000/api/error-demo/server-error",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "4000",
-              "path": ["api", "error-demo", "server-error"]
-            },
-            "description": "Test a 500 Server Error"
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "description": "Mark a review as helpful"
           }
         }
       ]
@@ -782,6 +899,26 @@
     {
       "name": "Payment Routes",
       "item": [
+        {
+          "name": "Get Cart Summary",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:4000/api/payment/cart-summary",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "payment", "cart-summary"]
+            },
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "description": "Get cart summary without creating payment intent"
+          }
+        },
         {
           "name": "Create Payment Intent",
           "request": {
@@ -805,9 +942,9 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"shippingInfo\": {\n    \"address\": \"123 Main St\",\n    \"city\": \"Anytown\",\n    \"state\": \"CA\",\n    \"country\": \"US\",\n    \"postalCode\": \"12345\",\n    \"phoneNumber\": \"555-123-4567\"\n  }\n}"
+              "raw": "{\n  \"shippingAddress\": {\n    \"street\": \"123 Main St\",\n    \"city\": \"Anytown\",\n    \"state\": \"CA\",\n    \"zip\": \"12345\",\n    \"country\": \"USA\"\n  },\n  \"shippingMethod\": \"standard\"\n}"
             },
-            "description": "Create a Stripe payment intent for checkout"
+            "description": "Create a Stripe payment intent"
           }
         },
         {
@@ -833,9 +970,9 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"paymentIntentId\": \"pi_xyz123\",\n  \"shippingInfo\": {\n    \"address\": \"123 Main St\",\n    \"city\": \"Anytown\",\n    \"state\": \"CA\",\n    \"country\": \"US\",\n    \"postalCode\": \"12345\",\n    \"phoneNumber\": \"555-123-4567\"\n  }\n}"
+              "raw": "{\n  \"paymentIntentId\": \"{{paymentIntentId}}\",\n  \"paymentMethodId\": \"{{paymentMethodId}}\"\n}"
             },
-            "description": "Confirm an order after successful payment"
+            "description": "Confirm an order after payment"
           }
         },
         {
@@ -871,7 +1008,7 @@
               "variable": [
                 {
                   "key": "id",
-                  "value": "order_id_here"
+                  "value": "{{orderId}}"
                 }
               ]
             },
@@ -881,76 +1018,92 @@
                 "value": "Bearer {{accessToken}}"
               }
             ],
-            "description": "Get details of a specific order"
-          }
-        },
-        {
-          "name": "Stripe Webhook (Not for direct testing)",
-          "request": {
-            "method": "POST",
-            "url": {
-              "raw": "http://localhost:4000/api/payment/webhook",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "4000",
-              "path": ["api", "payment", "webhook"]
-            },
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "stripe-signature",
-                "value": "webhook_signature_here"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"id\": \"evt_test\",\n  \"object\": \"event\",\n  \"type\": \"payment_intent.succeeded\",\n  \"data\": {\n    \"object\": {\n      \"id\": \"pi_test\",\n      \"object\": \"payment_intent\",\n      \"status\": \"succeeded\"\n    }\n  }\n}"
-            },
-            "description": "Webhook endpoint for Stripe events (use Stripe CLI for testing)"
+            "description": "Get a specific order by ID"
           }
         }
       ]
-    }
-  ],
-  "event": [
-    {
-      "listen": "prerequest",
-      "script": {
-        "type": "text/javascript",
-        "exec": [""]
-      }
     },
     {
-      "listen": "test",
-      "script": {
-        "type": "text/javascript",
-        "exec": [""]
-      }
-    }
-  ],
-  "variable": [
-    {
-      "key": "accessToken",
-      "value": "",
-      "type": "string"
+      "name": "Upload Routes",
+      "item": [
+        {
+          "name": "Upload Image",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "http://localhost:4000/api/upload",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "upload"]
+            },
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "product",
+                  "type": "file",
+                  "src": "/path/to/your/image.jpg"
+                }
+              ]
+            },
+            "description": "Upload a product image"
+          }
+        }
+      ]
     },
     {
-      "key": "productId",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "productSlug",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "verificationToken",
-      "value": "",
-      "type": "string"
+      "name": "Error Demo Routes",
+      "item": [
+        {
+          "name": "Test Error",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:4000/api/error-demo/test-error",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "error-demo", "test-error"]
+            },
+            "description": "Simulate a server error for testing error handling"
+          }
+        },
+        {
+          "name": "Validation Error",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:4000/api/error-demo/validation-error",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "error-demo", "validation-error"]
+            },
+            "description": "Simulate a validation error for testing error handling"
+          }
+        },
+        {
+          "name": "Delayed Success",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:4000/api/error-demo/delayed-success",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "error-demo", "delayed-success"]
+            },
+            "description": "Simulate a delayed success response for testing loading states"
+          }
+        }
+      ]
     }
   ]
 }
