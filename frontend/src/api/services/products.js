@@ -13,14 +13,17 @@ import apiClient from "../client";
 export const getAllProducts = async (options = {}) => {
   try {
     const { limit, page, category, featured, search, sort } = options;
-    let url = "/api/products?";
+    let queryParams = new URLSearchParams();
 
-    if (limit) url += `limit=${limit}&`;
-    if (page) url += `page=${page}&`;
-    if (category) url += `category=${category}&`;
-    if (featured) url += `featured=${featured}&`;
-    if (search) url += `search=${encodeURIComponent(search)}&`;
-    if (sort) url += `sort=${sort}&`;
+    if (limit) queryParams.append("limit", limit);
+    if (page) queryParams.append("page", page);
+    if (category) queryParams.append("category", category);
+    if (featured) queryParams.append("featured", featured);
+    if (search) queryParams.append("search", search);
+    if (sort) queryParams.append("sort", sort);
+
+    const queryString = queryParams.toString();
+    const url = `/api/products${queryString ? `?${queryString}` : ""}`;
 
     const response = await apiClient.get(url);
     return response.data;

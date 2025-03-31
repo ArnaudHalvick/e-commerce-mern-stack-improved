@@ -17,7 +17,10 @@ const ShopContextProvider = (props) => {
 
       try {
         const data = await productsService.getAllProducts();
-        if (data.products && Array.isArray(data.products)) {
+
+        if (Array.isArray(data)) {
+          setAll_Product(data);
+        } else if (data && Array.isArray(data.products)) {
           setAll_Product(data.products);
         } else {
           console.error("Invalid product data received:", data);

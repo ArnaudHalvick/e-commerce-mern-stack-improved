@@ -91,14 +91,31 @@ apiClient.interceptors.request.use(
       config.cancelToken = cancelTokenSource.token;
     }
 
+    if (process.env.NODE_ENV === "development") {
+      console.log(
+        `API Request: ${config.method.toUpperCase()} ${config.url}`,
+        config.data || ""
+      );
+    }
+
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => {
+    if (process.env.NODE_ENV === "development") {
+      console.error(`API Error (${error.status}):`, error.message);
+    }
+    return Promise.reject(error);
+  }
 );
 
 // Add a response interceptor to handle common error scenarios
 apiClient.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    if (process.env.NODE_ENV === "development") {
+      console.log(`API Response (${response.status}):`, response.data);
+    }
+    return response;
+  },
   async (error) => {
     // If request was canceled, simply return the rejected promise
     if (axios.isCancel(error)) {
@@ -235,6 +252,12 @@ apiClient.interceptors.response.use(
           isRefreshing = false;
         }
       }
+    }
+
+    if (process.env.NODE_ENV === "development") {
+      const status = error.response ? error.response.status : "Network Error";
+      const data = error.response ? error.response.data : error.message;
+      console.error(`API Error (${status}):`, data);
     }
 
     return Promise.reject(errorResponse);

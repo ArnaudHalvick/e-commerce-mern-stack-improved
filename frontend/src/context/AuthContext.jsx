@@ -46,9 +46,26 @@ const AuthContextProvider = (props) => {
     }
   }, []);
 
+  const fetchUserProfile = useCallback(async () => {
+    try {
+      const response = await authService.getCurrentUser();
+      if (response.success) {
+        const normalizedUser = normalizeUserData(response.user);
+        setUserState(normalizedUser);
+        dispatch(setUser(normalizedUser));
+        setIsAuthenticated(true);
+        setLastVerificationCheck(Date.now());
+        return normalizedUser;
+      }
+      return null;
+    } catch (err) {
+      console.error("Fetch profile error:", err);
+      return null;
+    }
+  }, [dispatch]);
+
   // Check user profile when navigating to /cart or /checkout
   useEffect(() => {
-    // Only check if the user is authenticated
     if (isAuthenticated && user) {
       // Only refresh if it's been more than 30 seconds since the last check
       const timeSinceLastCheck = Date.now() - lastVerificationCheck;
@@ -66,7 +83,13 @@ const AuthContextProvider = (props) => {
         setLastVerificationCheck(Date.now());
       }
     }
-  }, [location.pathname, isAuthenticated, user]);
+  }, [
+    location.pathname,
+    isAuthenticated,
+    user,
+    fetchUserProfile,
+    lastVerificationCheck,
+  ]);
 
   const normalizeUserData = (userData) => {
     if (!userData) return null;
@@ -133,24 +156,6 @@ const AuthContextProvider = (props) => {
       setTokenRefreshInProgress(false);
     }
   }, [tokenRefreshInProgress, handleLogout, isUserLoggedOut]);
-
-  const fetchUserProfile = useCallback(async () => {
-    try {
-      const response = await authService.getCurrentUser();
-      if (response.success) {
-        const normalizedUser = normalizeUserData(response.user);
-        setUserState(normalizedUser);
-        dispatch(setUser(normalizedUser));
-        setIsAuthenticated(true);
-        setLastVerificationCheck(Date.now());
-        return normalizedUser;
-      }
-      return null;
-    } catch (err) {
-      console.error("Fetch profile error:", err);
-      return null;
-    }
-  }, [dispatch]);
 
   useEffect(() => {
     const checkAuthStatus = async () => {
@@ -233,40 +238,46 @@ const AuthContextProvider = (props) => {
   ]);
 
   const login = async (email, password) => {
-    setInTransition(true);
-    localStorage.removeItem("user-logged-out");
+    setLoading(true);
+    setError(null);
 
     try {
-      const response = await authService.login(email, password);
-
-      if (response.success) {
-        localStorage.setItem("auth-token", response.token);
-        setIsUserLoggedOut(false);
-
-        try {
-          const userProfile = await fetchUserProfile();
-
-          if (userProfile) {
-            // Update and Navigate logic...
-            return {
-              success: true,
-              user: userProfile,
-            };
-          }
-        } catch (profileError) {
-          console.error("Error fetching profile after login:", profileError);
-        }
+      // Make sure we're sending valid data
+      if (!email || !password) {
+        throw new Error("Email and password are required");
       }
+
+      const response = await authService.login(email.trim(), password.trim());
+
+      // Make sure we have a token in the response
+      if (!response || !response.token) {
+        throw new Error("Invalid login response from server");
+      }
+
+      // Store the auth token
+      localStorage.removeItem("user-logged-out"); // Clear logged out flag
+      localStorage.setItem("auth-token", response.token);
+
+      // Set authentication state
+      setIsAuthenticated(true);
+      setUserState(normalizeUserData(response.user));
 
       return response;
     } catch (error) {
       console.error("Login error:", error);
-      return {
-        success: false,
-        message: error.message || "Login failed. Please try again.",
+
+      // Format error for better display
+      const formattedError = {
+        message:
+          error.response?.data?.message || error.message || "Login failed",
+        status: error.response?.status || 500,
+        originalError: error,
       };
+
+      setError(formattedError);
+      throw formattedError;
     } finally {
-      setInTransition(false);
+      setLoading(false);
     }
   };
 
