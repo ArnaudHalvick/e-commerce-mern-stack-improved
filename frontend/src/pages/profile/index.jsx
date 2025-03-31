@@ -12,11 +12,14 @@ import { useError } from "../../context/ErrorContext";
 
 // Components
 import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
-import ProfileInfo from "./components/ProfileInfo";
-import PasswordManager from "./components/PasswordManager";
-import AccountManager from "./components/AccountManager";
-import EmailManager from "./components/EmailManager";
-import EmailVerification from "./components/EmailVerification";
+import {
+  BasicInfoSection,
+  ShippingAddressSection,
+  PasswordManager,
+  AccountManager,
+  EmailManager,
+  EmailVerification,
+} from "./components";
 import Spinner from "../../components/ui/Spinner";
 
 // CSS
@@ -186,29 +189,129 @@ const Profile = () => {
           [child]: value,
         };
 
-        const addressErrors = validateForm(
-          { address: updatedAddress },
-          profileAddressSchema
-        );
+        // Check if the field is valid now to clear the error
+        const fieldSchema = profileAddressSchema.address[child];
+        const fieldValue = value.trim();
+        let fieldIsValid = true;
 
-        setFieldErrors((prev) => ({
-          ...prev,
-          ...addressErrors,
-        }));
+        // Check if empty and required
+        if (fieldSchema.required && !fieldValue) {
+          fieldIsValid = false;
+        }
+        // Check minLength
+        else if (
+          fieldValue &&
+          fieldSchema.minLength &&
+          fieldValue.length < fieldSchema.minLength
+        ) {
+          fieldIsValid = false;
+        }
+        // Check maxLength
+        else if (
+          fieldValue &&
+          fieldSchema.maxLength &&
+          fieldValue.length > fieldSchema.maxLength
+        ) {
+          fieldIsValid = false;
+        }
+        // Check pattern
+        else if (
+          fieldValue &&
+          fieldSchema.pattern &&
+          !fieldSchema.pattern.test(fieldValue)
+        ) {
+          fieldIsValid = false;
+        }
+
+        // If valid, clear the error; otherwise validate the entire form section
+        if (fieldIsValid) {
+          setFieldErrors((prev) => {
+            if (!prev.address) return prev;
+
+            const newAddressErrors = { ...prev.address };
+            delete newAddressErrors[child];
+
+            // If no more address errors, remove the address key
+            if (Object.keys(newAddressErrors).length === 0) {
+              const { address, ...rest } = prev;
+              return rest;
+            }
+
+            return {
+              ...prev,
+              address: newAddressErrors,
+            };
+          });
+        } else {
+          // If not valid, run full validation
+          const addressErrors = validateForm(
+            { address: updatedAddress },
+            profileAddressSchema
+          );
+
+          setFieldErrors((prev) => ({
+            ...prev,
+            ...addressErrors,
+          }));
+        }
       }
     } else {
       setFormData({ ...formData, [name]: value });
 
-      // Validate basic info fields using schema
-      const fieldToValidate = { [name]: value };
-      const errors = validateForm(fieldToValidate, {
-        [name]: profileBasicInfoSchema[name],
-      });
+      // Check if the field is valid to clear errors
+      const fieldSchema = profileBasicInfoSchema[name];
+      if (fieldSchema) {
+        const fieldValue = value.trim();
+        let fieldIsValid = true;
 
-      setFieldErrors((prev) => ({
-        ...prev,
-        ...errors,
-      }));
+        // Check if empty and required
+        if (fieldSchema.required && !fieldValue) {
+          fieldIsValid = false;
+        }
+        // Check minLength
+        else if (
+          fieldValue &&
+          fieldSchema.minLength &&
+          fieldValue.length < fieldSchema.minLength
+        ) {
+          fieldIsValid = false;
+        }
+        // Check maxLength
+        else if (
+          fieldValue &&
+          fieldSchema.maxLength &&
+          fieldValue.length > fieldSchema.maxLength
+        ) {
+          fieldIsValid = false;
+        }
+        // Check pattern
+        else if (
+          fieldValue &&
+          fieldSchema.pattern &&
+          !fieldSchema.pattern.test(fieldValue)
+        ) {
+          fieldIsValid = false;
+        }
+
+        // If valid, clear the error; otherwise validate
+        if (fieldIsValid) {
+          setFieldErrors((prev) => {
+            const { [name]: deleted, ...rest } = prev;
+            return rest;
+          });
+        } else {
+          // Validate and add errors
+          const fieldToValidate = { [name]: value };
+          const errors = validateForm(fieldToValidate, {
+            [name]: profileBasicInfoSchema[name],
+          });
+
+          setFieldErrors((prev) => ({
+            ...prev,
+            ...errors,
+          }));
+        }
+      }
     }
   };
 
@@ -543,7 +646,7 @@ const Profile = () => {
             showSuccess={showSuccess}
             showError={showError}
           />
-          <ProfileInfo
+          <BasicInfoSection
             formData={formData}
             setFormData={setFormData}
             handleInputChange={handleInputChange}
@@ -555,6 +658,18 @@ const Profile = () => {
             displayUserData={displayUserData}
             displayName={displayName}
             validationSchema={profileBasicInfoSchema}
+          />
+          <ShippingAddressSection
+            formData={formData}
+            setFormData={setFormData}
+            handleInputChange={handleInputChange}
+            handleSubmit={handleSubmit}
+            loading={loading}
+            updatingProfile={loadingStates?.updatingProfile}
+            fieldErrors={fieldErrors}
+            setFieldErrors={setFieldErrors}
+            displayUserData={displayUserData}
+            validationSchema={profileAddressSchema}
           />
           <PasswordManager
             passwordData={passwordData}

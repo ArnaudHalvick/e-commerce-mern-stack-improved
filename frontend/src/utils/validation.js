@@ -129,6 +129,14 @@ export const validatePhone = (phone) => {
       message: phoneSchema.message,
     };
   }
+
+  if (cleanPhone.length > phoneSchema.maxLength) {
+    return {
+      isValid: false,
+      message: `Phone number cannot exceed ${phoneSchema.maxLength} digits`,
+    };
+  }
+
   return { isValid: true, message: "" };
 };
 
@@ -209,24 +217,44 @@ export const validateForm = (formData, rules = {}) => {
   const errors = {};
 
   if (rules.username && formData.username !== undefined) {
-    const result = validateName(formData.username);
-    if (!result.isValid) errors.username = result.message;
+    if (!formData.username || formData.username.trim() === "") {
+      errors.username = "Name is required";
+    } else {
+      const result = validateName(formData.username);
+      if (!result.isValid) errors.username = result.message;
+    }
   } else if (rules.name && formData.name !== undefined) {
-    const result = validateName(formData.name);
-    if (!result.isValid) errors.name = result.message;
+    if (!formData.name || formData.name.trim() === "") {
+      errors.name = "Name is required";
+    } else {
+      const result = validateName(formData.name);
+      if (!result.isValid) errors.name = result.message;
+    }
   }
 
   if (rules.email && formData.email !== undefined) {
-    const result = validateEmail(formData.email);
-    if (!result.isValid) errors.email = result.message;
+    if (!formData.email || formData.email.trim() === "") {
+      errors.email = "Email is required";
+    } else {
+      const result = validateEmail(formData.email);
+      if (!result.isValid) errors.email = result.message;
+    }
   }
 
   if (rules.password && formData.password !== undefined) {
-    const result = validatePassword(formData.password);
-    if (!result.isValid) errors.password = result.message;
+    if (!formData.password || formData.password.trim() === "") {
+      errors.password = "Password is required";
+    } else {
+      const result = validatePassword(formData.password);
+      if (!result.isValid) errors.password = result.message;
+    }
   } else if (rules.newPassword && formData.newPassword !== undefined) {
-    const result = validatePassword(formData.newPassword);
-    if (!result.isValid) errors.newPassword = result.message;
+    if (!formData.newPassword || formData.newPassword.trim() === "") {
+      errors.newPassword = "New password is required";
+    } else {
+      const result = validatePassword(formData.newPassword);
+      if (!result.isValid) errors.newPassword = result.message;
+    }
   }
 
   // Handle both confirmPassword and passwordConfirm fields
@@ -235,31 +263,43 @@ export const validateForm = (formData, rules = {}) => {
     formData.password !== undefined &&
     formData.confirmPassword !== undefined
   ) {
-    const result = validatePasswordMatch(
-      formData.password,
-      formData.confirmPassword
-    );
-    if (!result.isValid) errors.confirmPassword = result.message;
+    if (!formData.confirmPassword || formData.confirmPassword.trim() === "") {
+      errors.confirmPassword = "Please confirm your password";
+    } else {
+      const result = validatePasswordMatch(
+        formData.password,
+        formData.confirmPassword
+      );
+      if (!result.isValid) errors.confirmPassword = result.message;
+    }
   } else if (
     rules.confirmPassword &&
     formData.newPassword !== undefined &&
     formData.confirmPassword !== undefined
   ) {
-    const result = validatePasswordMatch(
-      formData.newPassword,
-      formData.confirmPassword
-    );
-    if (!result.isValid) errors.confirmPassword = result.message;
+    if (!formData.confirmPassword || formData.confirmPassword.trim() === "") {
+      errors.confirmPassword = "Please confirm your password";
+    } else {
+      const result = validatePasswordMatch(
+        formData.newPassword,
+        formData.confirmPassword
+      );
+      if (!result.isValid) errors.confirmPassword = result.message;
+    }
   } else if (
     rules.passwordConfirm &&
     formData.password !== undefined &&
     formData.passwordConfirm !== undefined
   ) {
-    const result = validatePasswordMatch(
-      formData.password,
-      formData.passwordConfirm
-    );
-    if (!result.isValid) errors.passwordConfirm = result.message;
+    if (!formData.passwordConfirm || formData.passwordConfirm.trim() === "") {
+      errors.passwordConfirm = "Please confirm your password";
+    } else {
+      const result = validatePasswordMatch(
+        formData.password,
+        formData.passwordConfirm
+      );
+      if (!result.isValid) errors.passwordConfirm = result.message;
+    }
   }
 
   if (rules.currentPassword && formData.currentPassword !== undefined) {
@@ -269,13 +309,28 @@ export const validateForm = (formData, rules = {}) => {
   }
 
   if (rules.phone && formData.phone !== undefined) {
-    const result = validatePhone(formData.phone);
-    if (!result.isValid) errors.phone = result.message;
+    // Only validate phone if it's provided or if it's required by the schema
+    if (
+      (formData.phone && formData.phone.trim() !== "") ||
+      rules.phone.required
+    ) {
+      const result = validatePhone(formData.phone);
+      if (!result.isValid) errors.phone = result.message;
+    }
   }
 
   if (rules.address && formData.address) {
     const addressErrors = validateAddress(formData.address);
-    if (Object.keys(addressErrors).length > 0) errors.address = addressErrors;
+
+    // Check if any address field is filled to determine if validation should be applied
+    const hasAnyAddressField = Object.values(formData.address).some(
+      (value) => value && value.trim() !== ""
+    );
+
+    // If there's at least one field filled, apply validation
+    if (hasAnyAddressField && Object.keys(addressErrors).length > 0) {
+      errors.address = addressErrors;
+    }
   }
 
   // Validate token if it's a required field in the rules

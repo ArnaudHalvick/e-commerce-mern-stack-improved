@@ -71,6 +71,7 @@ export const passwordSchema = {
 export const phoneSchema = {
   required: false,
   pattern: /^[0-9]{10,15}$/,
+  maxLength: 15,
   message: "Phone number should be 10-15 digits",
 };
 
