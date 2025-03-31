@@ -2,8 +2,6 @@
   width: 280px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-bottom: 30px;
   position: relative;
   transition: transform 0.6s;
 }
@@ -28,6 +26,7 @@
   margin: 6px 0;
   font-weight: 600;
   font-size: 1rem;
+  flex-grow: 1;
 }
 
 .product-item-prices {
