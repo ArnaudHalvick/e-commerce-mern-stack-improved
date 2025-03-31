@@ -37,9 +37,9 @@ const Item = (props) => {
       </Link>
       <p>{props.name}</p>
       <div className="item-prices">
-        <div className="item-price-new">${props.new_price || 0}</div>
+        <div className="item-price-discounted">${props.new_price || 0}</div>
         {props.old_price > 0 && (
-          <div className="item-price-old">${props.old_price}</div>
+          <div className="item-price-previous">${props.old_price}</div>
         )}
       </div>
     </div>
