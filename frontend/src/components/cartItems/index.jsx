@@ -6,7 +6,7 @@ import { AuthContext } from "../../context/AuthContext";
 import useCart from "./hooks/useCart";
 import EmptyState from "../errorHandling/EmptyState";
 import "../errorHandling/LoadingIndicator.css";
-import Spinner from "../ui/Spinner";
+import Spinner from "../ui/spinner";
 
 /**
  * Cart display component showing all items in cart and totals

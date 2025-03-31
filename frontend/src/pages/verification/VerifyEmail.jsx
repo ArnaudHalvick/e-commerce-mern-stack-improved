@@ -10,7 +10,7 @@ import { AuthContext } from "../../context/AuthContext";
 
 // Components
 import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
-import Spinner from "../../components/ui/Spinner";
+import Spinner from "../../components/ui/spinner";
 
 // CSS
 import "./VerifyEmail.css";

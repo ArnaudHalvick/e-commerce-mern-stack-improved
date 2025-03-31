@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { verifyPasswordChange } from "../../redux/slices/userSlice";
 import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
-import Spinner from "../../components/ui/Spinner";
+import Spinner from "../../components/ui/spinner";
 
 // Styles
 import "./VerifyEmail.css";

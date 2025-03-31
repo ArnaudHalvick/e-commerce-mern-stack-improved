@@ -4,7 +4,7 @@ import React, { memo } from "react";
 import CategoryHeader from "./components/CategoryHeader";
 import ProductsContent from "./components/ProductsContent";
 import FilterSidebar from "../../components/filterSidebar/FilterSidebar";
-import Spinner from "../../components/ui/Spinner";
+import Spinner from "../../components/ui/spinner";
 
 // Hooks
 import useCategoryProducts from "./hooks/useCategoryProducts";

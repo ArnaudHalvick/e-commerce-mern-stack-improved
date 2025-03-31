@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useError } from "../../context/ErrorContext";
 import api from "../../utils/axiosConfig";
 import "./ErrorStyles.css";
-import Spinner from "../ui/Spinner";
+import Spinner from "../ui/spinner";
 
 const ErrorDemo = () => {
   const { showError, showSuccess, showWarning, showInfo } = useError();

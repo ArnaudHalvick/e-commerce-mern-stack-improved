@@ -2,7 +2,7 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import EmptyState from "../../../components/errorHandling/EmptyState";
 import Breadcrumb from "../../../components/breadcrumbs/Breadcrumb";
-import Spinner from "../../../components/ui/Spinner";
+import Spinner from "../../../components/ui/spinner";
 import "../../../components/errorHandling/LoadingIndicator.css";
 
 /**

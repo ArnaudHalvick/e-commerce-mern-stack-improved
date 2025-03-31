@@ -15,7 +15,7 @@ import {
 } from "../../services/paymentService";
 import { clearCart } from "../../redux/slices/cartSlice";
 import FormSubmitButton from "../../components/form/FormSubmitButton";
-import Spinner from "../../components/ui/Spinner";
+import Spinner from "../../components/ui/spinner";
 import authApi from "../../services/authApi";
 import "./CheckoutPage.css";
 

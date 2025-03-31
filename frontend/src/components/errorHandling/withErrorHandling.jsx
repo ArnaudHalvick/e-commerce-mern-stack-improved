@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useError } from "../../context/ErrorContext";
-import Spinner from "../ui/Spinner"; // Assuming you have a Spinner component
+import Spinner from "../ui/spinner"; // Assuming you have a Spinner component
 import EmptyState from "./EmptyState";
 
 /**

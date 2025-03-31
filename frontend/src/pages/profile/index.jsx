@@ -20,7 +20,7 @@ import {
   EmailManager,
   EmailVerification,
 } from "./components";
-import Spinner from "../../components/ui/Spinner";
+import Spinner from "../../components/ui/spinner";
 
 // CSS
 import "./Profile.css";

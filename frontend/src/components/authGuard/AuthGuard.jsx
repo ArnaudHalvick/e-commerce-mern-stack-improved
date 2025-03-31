@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import { InlineSpinner } from "../ui/SpinnerUtils";
+import { InlineSpinner } from "../ui/spinner";
 
 /**
  * AuthGuard component that can be used to show loading state during authentication

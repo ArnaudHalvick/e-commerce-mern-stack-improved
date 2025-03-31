@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useLocation, Link } from "react-router-dom";
 import { getOrderById } from "../../services/paymentService";
-import Spinner from "../../components/ui/Spinner";
+import Spinner from "../../components/ui/spinner";
 import FormSubmitButton from "../../components/form/FormSubmitButton";
 import { getImageUrl } from "../../utils/imageUtils";
 import "./OrderConfirmationPage.css";

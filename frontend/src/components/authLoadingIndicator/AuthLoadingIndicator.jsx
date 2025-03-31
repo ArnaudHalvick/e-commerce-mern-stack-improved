@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import { InlineSpinner } from "../ui/SpinnerUtils";
+import { InlineSpinner } from "../ui/spinner";
 import "./authLoadingIndicator.css"; // Import dedicated CSS file
 
 /**
