@@ -188,8 +188,20 @@ const CheckoutPage = () => {
     setError(null);
 
     try {
+      // Format shipping address for API
+      const formattedAddress = {
+        street: shippingInfo.address,
+        city: shippingInfo.city,
+        state: shippingInfo.state,
+        zip: shippingInfo.postalCode,
+        country: shippingInfo.country,
+      };
+
       // 1. Create a payment intent on the server
-      const intentResponse = await paymentsService.createPaymentIntent();
+      const intentResponse = await paymentsService.createPaymentIntent(
+        formattedAddress,
+        "standard"
+      );
       const { clientSecret } = intentResponse;
 
       if (!clientSecret) {
@@ -220,12 +232,11 @@ const CheckoutPage = () => {
       }
 
       if (paymentIntent.status === "succeeded") {
-        // 3. Complete the order
-        const orderResponse = await paymentsService.completePayment(
+        // 3. Confirm the order
+        const paymentMethodId = paymentIntent.payment_method;
+        const orderResponse = await paymentsService.confirmOrder(
           paymentIntent.id,
-          {
-            shipping: shippingInfo,
-          }
+          paymentMethodId
         );
 
         // 4. Clear the cart and redirect to the order confirmation page

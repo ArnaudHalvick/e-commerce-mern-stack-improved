@@ -22,13 +22,17 @@ export const getCart = async () => {
  * Add item to cart
  * @param {string} productId - Product ID
  * @param {number} quantity - Quantity to add
+ * @param {string} size - Size of the product
+ * @param {string} color - Color of the product
  * @returns {Promise} Promise with updated cart data
  */
-export const addToCart = async (productId, quantity = 1) => {
+export const addToCart = async ({ itemId, quantity = 1, size, color }) => {
   try {
-    const response = await apiClient.post("/api/cart/items", {
-      productId,
+    const response = await apiClient.post("/api/cart/add", {
+      productId: itemId,
       quantity,
+      size,
+      color,
     });
     return response.data;
   } catch (error) {
@@ -38,14 +42,19 @@ export const addToCart = async (productId, quantity = 1) => {
 
 /**
  * Update cart item quantity
- * @param {string} itemId - Cart item ID
+ * @param {string} itemId - Product ID
  * @param {number} quantity - New quantity
+ * @param {string} size - Size of the product
+ * @param {string} color - Color of the product
  * @returns {Promise} Promise with updated cart data
  */
-export const updateCartItem = async (itemId, quantity) => {
+export const updateCartItem = async ({ itemId, quantity, size, color }) => {
   try {
-    const response = await apiClient.put(`/api/cart/items/${itemId}`, {
+    const response = await apiClient.post("/api/cart/update", {
+      productId: itemId,
       quantity,
+      size,
+      color,
     });
     return response.data;
   } catch (error) {
@@ -55,12 +64,18 @@ export const updateCartItem = async (itemId, quantity) => {
 
 /**
  * Remove item from cart
- * @param {string} itemId - Cart item ID
+ * @param {string} itemId - Product ID
+ * @param {string} size - Size of the product
+ * @param {string} color - Color of the product
  * @returns {Promise} Promise with updated cart data
  */
-export const removeFromCart = async (itemId) => {
+export const removeFromCart = async ({ itemId, size, color }) => {
   try {
-    const response = await apiClient.delete(`/api/cart/items/${itemId}`);
+    const response = await apiClient.post("/api/cart/remove", {
+      productId: itemId,
+      size,
+      color,
+    });
     return response.data;
   } catch (error) {
     throw error;
@@ -73,7 +88,7 @@ export const removeFromCart = async (itemId) => {
  */
 export const clearCart = async () => {
   try {
-    const response = await apiClient.delete("/api/cart");
+    const response = await apiClient.delete("/api/cart/clear");
     return response.data;
   } catch (error) {
     throw error;
@@ -115,7 +130,7 @@ export const removeCoupon = async () => {
  */
 export const getCartSummary = async () => {
   try {
-    const response = await apiClient.get("/api/cart/summary");
+    const response = await apiClient.get("/api/payment/cart-summary");
     return response.data;
   } catch (error) {
     throw error;

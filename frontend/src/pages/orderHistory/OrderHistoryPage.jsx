@@ -15,7 +15,7 @@ const OrderHistoryPage = () => {
     const fetchOrders = async () => {
       try {
         setLoading(true);
-        const data = await paymentsService.getOrderHistory();
+        const data = await paymentsService.getMyOrders();
         setOrders(data.orders);
         setError(null);
       } catch (err) {

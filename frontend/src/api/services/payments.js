@@ -6,14 +6,54 @@
 import apiClient from "../client";
 
 /**
+ * Get cart summary without creating payment intent
+ * @returns {Promise} Promise with cart summary data
+ */
+export const getCartSummary = async () => {
+  try {
+    const response = await apiClient.get("/api/payment/cart-summary");
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
  * Initialize payment intent
+ * @param {Object} shippingAddress - The shipping address
+ * @param {string} shippingMethod - The shipping method
  * @returns {Promise} Promise with client secret and payment intent ID
  */
-export const createPaymentIntent = async () => {
+export const createPaymentIntent = async (
+  shippingAddress,
+  shippingMethod = "standard"
+) => {
   try {
     const response = await apiClient.post(
-      "/api/payments/create-payment-intent"
+      "/api/payment/create-payment-intent",
+      {
+        shippingAddress,
+        shippingMethod,
+      }
     );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * Confirm order after payment
+ * @param {string} paymentIntentId - Stripe payment intent ID
+ * @param {string} paymentMethodId - Stripe payment method ID
+ * @returns {Promise} Promise with order confirmation data
+ */
+export const confirmOrder = async (paymentIntentId, paymentMethodId) => {
+  try {
+    const response = await apiClient.post("/api/payment/confirm-order", {
+      paymentIntentId,
+      paymentMethodId,
+    });
     return response.data;
   } catch (error) {
     throw error;
@@ -66,17 +106,12 @@ export const deletePaymentMethod = async (paymentMethodId) => {
 };
 
 /**
- * Complete payment after successful Stripe confirmation
- * @param {string} paymentIntentId - Stripe payment intent ID
- * @param {Object} orderDetails - Additional order details
- * @returns {Promise} Promise with order confirmation data
+ * Get all orders for the logged in user
+ * @returns {Promise} Promise with user's orders
  */
-export const completePayment = async (paymentIntentId, orderDetails = {}) => {
+export const getMyOrders = async () => {
   try {
-    const response = await apiClient.post("/api/payments/complete", {
-      paymentIntentId,
-      ...orderDetails,
-    });
+    const response = await apiClient.get("/api/payment/my-orders");
     return response.data;
   } catch (error) {
     throw error;
@@ -90,41 +125,7 @@ export const completePayment = async (paymentIntentId, orderDetails = {}) => {
  */
 export const getOrderDetails = async (orderId) => {
   try {
-    const response = await apiClient.get(`/api/orders/${orderId}`);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-/**
- * Get user's order history
- * @param {Object} options - Query options (limit, page, sort)
- * @returns {Promise} Promise with orders history
- */
-export const getOrderHistory = async (options = {}) => {
-  try {
-    const { limit = 10, page = 1, sort = "newest" } = options;
-    const response = await apiClient.get(
-      `/api/orders?limit=${limit}&page=${page}&sort=${sort}`
-    );
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-/**
- * Cancel an order
- * @param {string} orderId - Order ID
- * @param {string} reason - Cancellation reason
- * @returns {Promise} Promise with cancellation status
- */
-export const cancelOrder = async (orderId, reason) => {
-  try {
-    const response = await apiClient.post(`/api/orders/${orderId}/cancel`, {
-      reason,
-    });
+    const response = await apiClient.get(`/api/payment/order/${orderId}`);
     return response.data;
   } catch (error) {
     throw error;
@@ -133,14 +134,14 @@ export const cancelOrder = async (orderId, reason) => {
 
 // Export all functions as payments service
 const paymentsService = {
+  getCartSummary,
   createPaymentIntent,
+  confirmOrder,
   getSavedPaymentMethods,
   savePaymentMethod,
   deletePaymentMethod,
-  completePayment,
+  getMyOrders,
   getOrderDetails,
-  getOrderHistory,
-  cancelOrder,
 };
 
 export default paymentsService;
