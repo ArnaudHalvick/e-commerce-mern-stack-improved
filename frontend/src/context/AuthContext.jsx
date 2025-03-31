@@ -11,10 +11,10 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { resetCart } from "../redux/slices/cartSlice";
 import { setUser, clearUser } from "../redux/slices/userSlice";
-import { API_BASE_URL } from "../utils/apiUtils";
+import { API_BASE_URL } from "../api/config";
 import axios from "axios";
-import { cancelPendingRequests as cancelApiRequests } from "../services/apiClient";
-import { cancelPendingRequests as cancelAxiosRequests } from "../utils/axiosConfig";
+import { cancelPendingRequests } from "../api/client";
+import { authService } from "../api";
 
 export const AuthContext = createContext(null);
 
@@ -79,8 +79,7 @@ const AuthContextProvider = (props) => {
   const handleLogout = useCallback(() => {
     localStorage.removeItem("auth-token");
     localStorage.setItem("user-logged-out", "true");
-    cancelApiRequests("User initiated logout");
-    cancelAxiosRequests("User initiated logout");
+    cancelPendingRequests("User initiated logout");
     setUserState(null);
     setIsAuthenticated(false);
     setIsUserLoggedOut(true);
@@ -137,45 +136,9 @@ const AuthContextProvider = (props) => {
 
   const fetchUserProfile = useCallback(async () => {
     try {
-      const token = localStorage.getItem("auth-token");
-      if (!token) return null;
-
-      let response = await fetch(`${API_BASE_URL}/api/users/me`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "auth-token": token,
-        },
-        credentials: "include",
-      });
-
-      if (response.status === 401) {
-        const newToken = await refreshAccessToken();
-        if (newToken) {
-          response = await fetch(`${API_BASE_URL}/api/users/me`, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              "auth-token": newToken,
-            },
-            credentials: "include",
-          });
-          const retryData = await response.json();
-          if (response.ok && retryData.success) {
-            const normalizedUser = normalizeUserData(retryData.user);
-            setUserState(normalizedUser);
-            dispatch(setUser(normalizedUser));
-            setIsAuthenticated(true);
-            setLastVerificationCheck(Date.now());
-            return normalizedUser;
-          }
-        }
-        return null;
-      }
-
-      const data = await response.json();
-      if (response.ok && data.success) {
-        const normalizedUser = normalizeUserData(data.user);
+      const response = await authService.getCurrentUser();
+      if (response.success) {
+        const normalizedUser = normalizeUserData(response.user);
         setUserState(normalizedUser);
         dispatch(setUser(normalizedUser));
         setIsAuthenticated(true);
@@ -187,7 +150,7 @@ const AuthContextProvider = (props) => {
       console.error("Fetch profile error:", err);
       return null;
     }
-  }, [dispatch, refreshAccessToken]);
+  }, [dispatch]);
 
   useEffect(() => {
     const checkAuthStatus = async () => {
@@ -270,152 +233,103 @@ const AuthContextProvider = (props) => {
   ]);
 
   const login = async (email, password) => {
-    setLoading(true);
-    setError(null);
-    setAccountDisabled(false);
     setInTransition(true);
-
     localStorage.removeItem("user-logged-out");
-    setIsUserLoggedOut(false);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/users/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-        credentials: "include",
-      });
-      const data = await response.json();
+      const response = await authService.login(email, password);
 
-      if (response.ok && data.success) {
-        localStorage.setItem("auth-token", data.accessToken);
-        const normalizedUser = normalizeUserData(data.user);
-        const updateAndNavigate = () => {
-          setUserState(normalizedUser);
-          dispatch(setUser(normalizedUser));
-          setIsAuthenticated(true);
-          setLoading(false);
-          setTimeout(() => {
-            setInTransition(false);
-            navigate("/");
-          }, 300);
-        };
-        fetchUserProfile().finally(updateAndNavigate);
-        return { success: true };
-      } else {
-        if (
-          response.status === 403 &&
-          (data.message === "Your account has been disabled" ||
-            data.message ===
-              "Your account is disabled. Please contact support.")
-        ) {
-          setAccountDisabled(true);
-          setError("Your account has been disabled. Please contact support.");
-          setInTransition(false);
-          setLoading(false);
-          return {
-            success: false,
-            message: data.message,
-            accountDisabled: true,
-          };
+      if (response.success) {
+        localStorage.setItem("auth-token", response.token);
+        setIsUserLoggedOut(false);
+
+        try {
+          const userProfile = await fetchUserProfile();
+
+          if (userProfile) {
+            // Update and Navigate logic...
+            return {
+              success: true,
+              user: userProfile,
+            };
+          }
+        } catch (profileError) {
+          console.error("Error fetching profile after login:", profileError);
         }
-        setError(data.message || "Login failed");
-        setInTransition(false);
-        setLoading(false);
-        return { success: false, message: data.message || "Login failed" };
       }
-    } catch (err) {
-      console.error("Login error:", err);
-      setError("Login failed. Please try again.");
-      setInTransition(false);
-      setLoading(false);
+
+      return response;
+    } catch (error) {
+      console.error("Login error:", error);
       return {
         success: false,
-        message: err.message || "Login failed. Please try again.",
+        message: error.message || "Login failed. Please try again.",
       };
+    } finally {
+      setInTransition(false);
     }
   };
 
   const signup = async (userData) => {
-    setLoading(true);
-    setError(null);
     setInTransition(true);
-    try {
-      const signupData = {
-        ...userData,
-        passwordConfirm: userData.passwordConfirm,
-      };
-      const response = await fetch(`${API_BASE_URL}/api/users/signup`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(signupData),
-        credentials: "include",
-      });
-      const data = await response.json();
+    localStorage.removeItem("user-logged-out");
 
-      if (response.ok && data.success) {
-        if (!data.requiresVerification) {
-          localStorage.setItem("auth-token", data.accessToken);
-          const normalizedUser = normalizeUserData(data.user);
-          setTimeout(() => {
-            setUserState(normalizedUser);
-            dispatch(setUser(normalizedUser));
-            setIsAuthenticated(true);
-            setInTransition(false);
-          }, 300);
-        } else {
-          setInTransition(false);
+    try {
+      const response = await authService.register(userData);
+
+      if (response.success) {
+        localStorage.setItem("auth-token", response.token);
+        setIsUserLoggedOut(false);
+
+        try {
+          const userProfile = await fetchUserProfile();
+
+          if (userProfile) {
+            return {
+              success: true,
+              user: userProfile,
+              requiresVerification: userProfile.status === "unverified",
+            };
+          }
+        } catch (profileError) {
+          console.error("Error fetching profile after signup:", profileError);
         }
-        setLoading(false);
-        return {
-          success: true,
-          requiresVerification: data.requiresVerification,
-          email: data.email,
-          message: data.message,
-        };
-      } else {
-        setError(data.message || "Signup failed");
-        setInTransition(false);
-        setLoading(false);
-        return { success: false, message: data.message || "Signup failed" };
       }
-    } catch (err) {
-      console.error("Signup error:", err);
-      setError("Signup failed. Please try again.");
-      setInTransition(false);
-      setLoading(false);
+
+      return response;
+    } catch (error) {
+      console.error("Signup error:", error);
       return {
         success: false,
-        message: err.message || "Signup failed. Please try again.",
+        message: error.message || "Registration failed. Please try again.",
       };
+    } finally {
+      setInTransition(false);
     }
   };
 
   const logout = async () => {
     setInTransition(true);
-    setIsUserLoggedOut(true);
-    localStorage.setItem("user-logged-out", "true");
-    setIsAuthenticated(false);
-    setUserState(null);
-    dispatch(clearUser());
-    dispatch(resetCart());
-    localStorage.removeItem("auth-token");
-    cancelApiRequests("User logged out");
-    cancelAxiosRequests("User logged out");
 
     try {
-      await fetch(`${API_BASE_URL}/api/users/logout`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-      });
+      await authService.logout();
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
-      setTimeout(() => {
-        setInTransition(false);
-        navigate("/");
-      }, 300);
+      dispatch(resetCart());
+      localStorage.removeItem("auth-token");
+      localStorage.setItem("user-logged-out", "true");
+      cancelPendingRequests("User logged out");
+
+      setUserState(null);
+      setIsAuthenticated(false);
+      setIsUserLoggedOut(true);
+      setAccountDisabled(false);
+      dispatch(clearUser());
+      setInTransition(false);
+
+      // Return to home page
+      navigate("/");
     }
   };
 

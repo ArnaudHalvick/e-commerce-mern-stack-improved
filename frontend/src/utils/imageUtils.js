@@ -1,66 +1,88 @@
 /**
- * Utility functions for handling image URLs and processing
+ * Image handling utilities
+ * Functions for image processing, optimization, and URL handling
  */
 
-import { getBaseUrl, joinUrl } from "./apiUtils";
+import { getImageUrl, getRelativeImagePath } from "../api/config";
+
+export { getImageUrl, getRelativeImagePath };
 
 /**
- * Converts a relative image path to an absolute URL
- * @param {string} imagePath - The relative path of the image (e.g., "/images/product_1.png")
- * @returns {string} The absolute URL of the image
+ * Get appropriate alt text for an image
+ * @param {Object} product - Product object
+ * @returns {string} Alt text for the image
  */
-export const getImageUrl = (imagePath) => {
-  if (!imagePath) return null;
-
-  // If the image path already has a protocol and domain, return it as is
-  if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
-    return imagePath;
-  }
-
-  // Make sure the path starts with a slash
-  const normalizedPath = imagePath.startsWith("/")
-    ? imagePath
-    : `/${imagePath}`;
-
-  return joinUrl(getBaseUrl(), normalizedPath);
+export const getImageAlt = (product) => {
+  if (!product) return "Product image";
+  return `${product.name || "Product"} ${
+    product.category ? `- ${product.category}` : ""
+  }`;
 };
 
 /**
- * Extracts the relative path from an absolute image URL
- * @param {string} imageUrl - The absolute URL of the image
- * @returns {string} The relative path of the image
+ * Get a placeholder image URL for when product image is not available
+ * @param {string} size - Size of the placeholder (small, medium, large)
+ * @returns {string} Placeholder image URL
  */
-export const getRelativeImagePath = (imageUrl) => {
-  if (!imageUrl) return null;
+export const getPlaceholderImage = (size = "medium") => {
+  const sizes = {
+    small: "/images/placeholders/product-placeholder-small.png",
+    medium: "/images/placeholders/product-placeholder-medium.png",
+    large: "/images/placeholders/product-placeholder-large.png",
+  };
+  return getImageUrl(sizes[size] || sizes.medium);
+};
 
+/**
+ * Add image size suffix to an image URL
+ * @param {string} imageUrl - Original image URL
+ * @param {string} size - Size suffix to add (small, medium, large)
+ * @returns {string} Modified image URL with size suffix
+ */
+export const getImageWithSize = (imageUrl, size = "medium") => {
+  if (!imageUrl) return getPlaceholderImage(size);
+
+  // If it's already a relative path
+  if (imageUrl.startsWith("/")) {
+    const parts = imageUrl.split(".");
+    if (parts.length > 1) {
+      const extension = parts.pop();
+      return getImageUrl(`${parts.join(".")}-${size}.${extension}`);
+    }
+    return getImageUrl(imageUrl);
+  }
+
+  // If it's an absolute URL
   try {
-    // If it's already a relative path, return it
-    if (imageUrl.startsWith("/")) {
-      return imageUrl;
+    const url = new URL(imageUrl);
+    const pathname = url.pathname;
+    const parts = pathname.split(".");
+    if (parts.length > 1) {
+      const extension = parts.pop();
+      url.pathname = `${parts.join(".")}-${size}.${extension}`;
+      return url.toString();
+    }
+    return imageUrl;
+  } catch {
+    return imageUrl;
+  }
+};
+
+/**
+ * Check if an image URL is valid
+ * @param {string} url - Image URL to check
+ * @returns {Promise<boolean>} Promise resolving to true if image is valid
+ */
+export const isImageValid = (url) => {
+  return new Promise((resolve) => {
+    if (!url) {
+      resolve(false);
+      return;
     }
 
-    const url = new URL(imageUrl);
-    const pathParts = url.pathname.split("/");
-
-    // Join all parts after the domain
-    return `/${pathParts.slice(1).join("/")}`;
-  } catch (error) {
-    console.error("Error extracting relative image path:", error);
-    return imageUrl; // Return as is if parsing fails
-  }
-};
-
-/**
- * Gets a placeholder image URL when actual image is not available
- * @param {string} type - Type of placeholder ('product', 'avatar', etc.)
- * @returns {string} URL to the placeholder image
- */
-export const getPlaceholderImage = (type = "product") => {
-  const placeholders = {
-    product: "/images/pink-placeholder.png",
-    avatar: "/images/avatar-placeholder.png",
-    banner: "/images/banner-placeholder.png",
-  };
-
-  return getImageUrl(placeholders[type] || placeholders.product);
+    const img = new Image();
+    img.onload = () => resolve(true);
+    img.onerror = () => resolve(false);
+    img.src = url;
+  });
 };

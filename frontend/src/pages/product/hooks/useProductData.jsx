@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ShopContext } from "../../../context/ShopContext";
-import { API_BASE_URL } from "../../../utils/apiUtils";
+import { productsService } from "../../../api";
 
 /**
  * Custom hook for fetching product data
@@ -27,18 +27,8 @@ const useProductData = (productId, productSlug) => {
       // If we have a product slug, we can directly fetch the detailed product
       if (productSlug) {
         setLoading(true);
-        // Updated to use plural 'products' endpoint
-        fetch(
-          `${API_BASE_URL}/api/products/slug/${productSlug}?includeReviews=true`
-        )
-          .then((res) => {
-            if (!res.ok) {
-              throw new Error(
-                `Failed to fetch product: ${res.status} ${res.statusText}`
-              );
-            }
-            return res.json();
-          })
+        productsService
+          .getProductBySlug(productSlug)
           .then((data) => {
             setProduct(data.product);
             setLoading(false);
@@ -67,16 +57,8 @@ const useProductData = (productId, productSlug) => {
       // If we have a product ID, fetch by ID
       else if (productId) {
         setLoading(true);
-        // Updated to use plural 'products' endpoint
-        fetch(`${API_BASE_URL}/api/products/${productId}?includeReviews=true`)
-          .then((res) => {
-            if (!res.ok) {
-              throw new Error(
-                `Failed to fetch product: ${res.status} ${res.statusText}`
-              );
-            }
-            return res.json();
-          })
+        productsService
+          .getProductById(productId)
           .then((data) => {
             // If product has a slug, redirect to the slug URL for better SEO
             if (data.product && data.product.slug) {
