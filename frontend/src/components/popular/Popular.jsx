@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import "./Popular.css";
 import Item from "../item/Item";
-import { config } from "../../api";
+import { productsService } from "../../api";
 
 const Popular = () => {
   const [popularProducts, setPopularProducts] = useState([]);
@@ -12,11 +12,10 @@ const Popular = () => {
   useEffect(() => {
     const fetchPopularProducts = async () => {
       try {
-        const response = await fetch(
-          config.getApiUrl("products?featured=true&limit=4")
-        );
-        const data = await response.json();
-        setPopularProducts(data.products || []);
+        // Use the productsService to get featured products
+        const data = await productsService.getFeaturedProducts();
+        // Update to handle the correct response structure from the backend
+        setPopularProducts(data.data || []);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching popular products:", error);

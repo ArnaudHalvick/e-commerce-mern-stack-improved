@@ -12,20 +12,8 @@ import apiClient from "../client";
  */
 export const getAllProducts = async (options = {}) => {
   try {
-    const { limit, page, category, featured, search, sort } = options;
-    let queryParams = new URLSearchParams();
-
-    if (limit) queryParams.append("limit", limit);
-    if (page) queryParams.append("page", page);
-    if (category) queryParams.append("category", category);
-    if (featured) queryParams.append("featured", featured);
-    if (search) queryParams.append("search", search);
-    if (sort) queryParams.append("sort", sort);
-
-    const queryString = queryParams.toString();
-    const url = `/api/products${queryString ? `?${queryString}` : ""}`;
-
-    const response = await apiClient.get(url);
+    // Use the all-products endpoint as defined in the backend
+    const response = await apiClient.get("/api/products/all-products");
     return response.data;
   } catch (error) {
     throw error;
@@ -65,11 +53,39 @@ export const getProductBySlug = async (slug) => {
  * @param {number} limit - Number of products to return
  * @returns {Promise} Promise with featured products data
  */
-export const getFeaturedProducts = async (limit = 8) => {
+export const getFeaturedProducts = async (limit = 4) => {
   try {
-    const response = await apiClient.get(
-      `/api/products?featured=true&limit=${limit}`
-    );
+    // Use the featured-women endpoint as defined in the backend
+    const response = await apiClient.get("/api/products/featured-women");
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * Get new collection products
+ * @param {number} limit - Number of products to return
+ * @returns {Promise} Promise with new collection products data
+ */
+export const getNewCollectionProducts = async (limit = 8) => {
+  try {
+    // Use the newcollection endpoint as defined in the backend
+    const response = await apiClient.get("/api/products/newcollection");
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * Get products by category
+ * @param {string} category - Category name (men, women, kids)
+ * @returns {Promise} Promise with category products data
+ */
+export const getProductsByCategory = async (category) => {
+  try {
+    const response = await apiClient.get(`/api/products/category/${category}`);
     return response.data;
   } catch (error) {
     throw error;
@@ -78,14 +94,14 @@ export const getFeaturedProducts = async (limit = 8) => {
 
 /**
  * Get related products
- * @param {string} productId - Product ID to find related products for
- * @param {number} limit - Number of products to return
+ * @param {string} category - Product category
+ * @param {string} productId - Current product ID to exclude
  * @returns {Promise} Promise with related products data
  */
-export const getRelatedProducts = async (productId, limit = 4) => {
+export const getRelatedProducts = async (category, productId) => {
   try {
     const response = await apiClient.get(
-      `/api/products/${productId}/related?limit=${limit}`
+      `/api/products/related/${category}/${productId}`
     );
     return response.data;
   } catch (error) {
@@ -99,6 +115,8 @@ const productsService = {
   getProductById,
   getProductBySlug,
   getFeaturedProducts,
+  getNewCollectionProducts,
+  getProductsByCategory,
   getRelatedProducts,
 };
 

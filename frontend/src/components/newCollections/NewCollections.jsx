@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import "./NewCollections.css";
 import Item from "../item/Item";
-import { config } from "../../api";
+import { productsService } from "../../api";
 
 const NewCollection = () => {
   const [newCollection, setNewCollection] = useState([]);
@@ -12,11 +12,10 @@ const NewCollection = () => {
   useEffect(() => {
     const fetchNewArrivals = async () => {
       try {
-        const response = await fetch(
-          config.getApiUrl("products?sort=newest&limit=8")
-        );
-        const data = await response.json();
-        setNewCollection(data.products || []);
+        // Use the productsService to get new collection products
+        const data = await productsService.getNewCollectionProducts();
+        // Update to handle the correct response structure from the backend
+        setNewCollection(data.data || []);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching new arrivals:", error);

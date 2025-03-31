@@ -16,12 +16,14 @@ const ShopContextProvider = (props) => {
       setError(null);
 
       try {
+        // Use the productsService to get all products
         const data = await productsService.getAllProducts();
 
         if (Array.isArray(data)) {
           setAll_Product(data);
-        } else if (data && Array.isArray(data.products)) {
-          setAll_Product(data.products);
+        } else if (data && Array.isArray(data.data)) {
+          // Updated to match the backend response structure
+          setAll_Product(data.data);
         } else {
           console.error("Invalid product data received:", data);
           setError("Failed to load products. Please try again later.");

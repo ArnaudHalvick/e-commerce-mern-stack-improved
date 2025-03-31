@@ -249,35 +249,38 @@ const AuthContextProvider = (props) => {
 
       const response = await authService.login(email.trim(), password.trim());
 
-      // Make sure we have a token in the response
-      if (!response || !response.token) {
-        throw new Error("Invalid login response from server");
+      if (response && response.success) {
+        // Successful login, store token and update auth state
+        const { accessToken, user } = response;
+        localStorage.setItem("auth-token", accessToken);
+        localStorage.removeItem("user-logged-out");
+        setIsUserLoggedOut(false);
+
+        const normalizedUser = normalizeUserData(user);
+        setUserState(normalizedUser);
+        dispatch(setUser(normalizedUser));
+        setIsAuthenticated(true);
+        setAccountDisabled(false);
+
+        // No longer throwing an error here
+        setLoading(false);
+        return user;
+      } else {
+        // Handle unsuccessful login
+        setError(response?.message || "Login failed");
+        setLoading(false);
+        return null;
       }
-
-      // Store the auth token
-      localStorage.removeItem("user-logged-out"); // Clear logged out flag
-      localStorage.setItem("auth-token", response.token);
-
-      // Set authentication state
-      setIsAuthenticated(true);
-      setUserState(normalizeUserData(response.user));
-
-      return response;
-    } catch (error) {
-      console.error("Login error:", error);
-
-      // Format error for better display
-      const formattedError = {
-        message:
-          error.response?.data?.message || error.message || "Login failed",
-        status: error.response?.status || 500,
-        originalError: error,
-      };
-
-      setError(formattedError);
-      throw formattedError;
-    } finally {
+    } catch (err) {
+      console.error("Login error:", err);
+      setError(
+        err.fieldErrors?.email ||
+          err.fieldErrors?.password ||
+          err.message ||
+          "Login failed. Please try again."
+      );
       setLoading(false);
+      throw err;
     }
   };
 

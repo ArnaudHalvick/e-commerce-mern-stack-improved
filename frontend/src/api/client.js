@@ -40,6 +40,14 @@ const publicEndpoints = [
   "/api/users/request-verification",
   "/api/users/verify-email",
   "/api/error-demo", // Error demo routes don't require authentication
+  "/api/products", // Add products endpoints to public access
+  "/api/products/all-products",
+  "/api/products/newcollection",
+  "/api/products/featured-women",
+  "/api/products/category",
+  "/api/products/tag",
+  "/api/products/type",
+  "/api/products/related",
 ];
 
 // Function to check if user is logged out
