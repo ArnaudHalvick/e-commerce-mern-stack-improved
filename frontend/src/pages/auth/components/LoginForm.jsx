@@ -23,7 +23,13 @@ const LoginForm = ({
   handleBlur,
 }) => {
   return (
-    <form className="auth-form" onSubmit={handleSubmit} noValidate>
+    <form
+      className="auth-form"
+      onSubmit={handleSubmit}
+      noValidate
+      autoComplete="on"
+      name="login"
+    >
       <div className="auth-form__fields">
         <FormInputField
           type="email"
@@ -37,6 +43,7 @@ const LoginForm = ({
           required={true}
           className="auth-form__input"
           title="Please enter a valid email address"
+          autoComplete="username email"
         />
 
         <FormInputField

@@ -60,7 +60,13 @@ const SignupForm = ({
   };
 
   return (
-    <form className="auth-form" onSubmit={handleFormSubmit} noValidate>
+    <form
+      className="auth-form"
+      onSubmit={handleFormSubmit}
+      noValidate
+      autoComplete="on"
+      name="signup"
+    >
       <div className="auth-form__fields">
         <FormInputField
           type="text"
@@ -74,6 +80,7 @@ const SignupForm = ({
           required={true}
           className="auth-form__input"
           title="Please enter your name"
+          autoComplete="name"
         />
 
         <FormInputField
@@ -88,6 +95,7 @@ const SignupForm = ({
           required={true}
           className="auth-form__input"
           title="Please enter a valid email address"
+          autoComplete="email"
         />
 
         <FormInputField
@@ -106,7 +114,7 @@ const SignupForm = ({
           }`}
           required={true}
           aria-describedby="password-validation"
-          autocomplete="new-password"
+          autoComplete="new-password"
           title="Please create a strong password"
         />
 
@@ -128,7 +136,7 @@ const SignupForm = ({
           }`}
           required={true}
           aria-describedby="password-validation"
-          autocomplete="new-password"
+          autoComplete="new-password"
           title="Please confirm your password"
         />
 

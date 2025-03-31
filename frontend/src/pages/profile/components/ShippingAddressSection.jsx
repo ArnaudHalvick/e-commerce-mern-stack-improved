@@ -73,6 +73,8 @@ const ShippingAddressSection = ({
     // If address is empty, don't validate and submit as empty
     if (!hasAnyAddressField) {
       const emptyAddress = {
+        name:
+          formData.name || displayUserData?.name || displayUserData?.username,
         address: {
           street: "",
           city: "",
@@ -92,8 +94,11 @@ const ShippingAddressSection = ({
       return;
     }
 
-    // Only submit address data
-    handleSubmit(e, { address: formData.address });
+    // Submit address data along with the required name field
+    handleSubmit(e, {
+      name: formData.name || displayUserData?.name || displayUserData?.username,
+      address: formData.address,
+    });
     setIsEditingAddress(false);
   };
 
