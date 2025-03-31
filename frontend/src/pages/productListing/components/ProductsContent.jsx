@@ -1,7 +1,7 @@
 import { memo } from "react";
 import PropTypes from "prop-types";
-import ProductCard from "../../../components/productDisplay/ProductCard";
-import { IoChevronDown } from "react-icons/io5";
+import Item from "../../../components/item/Item";
+import dropdown_icon from "../../../components/assets/dropdown_icon.png";
 
 /**
  * ProductsContent component that displays the product grid and filter controls
@@ -149,7 +149,11 @@ const ProductsContent = ({
               aria-label="Sort products"
             >
               {getSortLabel()}
-              <IoChevronDown className="product-listing-sort-icon" />
+              <img
+                src={dropdown_icon}
+                alt=""
+                className="product-listing-sort-icon"
+              />
             </div>
 
             {showSortOptions && (
@@ -215,7 +219,7 @@ const ProductsContent = ({
         <div className="product-listing-grid">
           {displayedProducts.map((product) => (
             <div key={product._id} className="product-listing-item">
-              <ProductCard product={product} />
+              <Item {...product} />
             </div>
           ))}
         </div>
