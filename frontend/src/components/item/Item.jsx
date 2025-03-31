@@ -4,9 +4,7 @@ import { Link } from "react-router-dom";
 import { config } from "../../api";
 
 const Item = (props) => {
-  // Get image URL safely
   const imageUrl = useMemo(() => {
-    // Try to get the main image first, then fall back to first image in array, then to a provided image prop
     if (props.mainImage) {
       return config.getImageUrl(props.mainImage);
     } else if (props.images && props.images.length > 0) {
@@ -15,10 +13,9 @@ const Item = (props) => {
     } else if (props.image) {
       return config.getImageUrl(props.image);
     }
-    return ""; // Fallback to empty string if no image is available
+    return "";
   }, [props.mainImage, props.images, props.mainImageIndex, props.image]);
 
-  // Determine the product URL - prefer slug if available
   const productUrl = useMemo(() => {
     if (props.slug) {
       return `/products/${props.slug}`;
@@ -27,19 +24,33 @@ const Item = (props) => {
     } else if (props.id) {
       return `/product/${props.id}`;
     }
-    return "#"; // Fallback if no ID is available
+    return "#";
   }, [props.slug, props._id, props.id]);
 
+  const hasNewPrice = props.new_price > 0;
+
   return (
-    <div className="item">
+    <div className="product-item">
       <Link to={productUrl} data-discover="true">
-        <img src={imageUrl} alt={props.name} />
+        <img className="product-item-image" src={imageUrl} alt={props.name} />
       </Link>
-      <p>{props.name}</p>
-      <div className="item-prices">
-        <div className="item-price-discounted">${props.new_price || 0}</div>
-        {props.old_price > 0 && (
-          <div className="item-price-previous">${props.old_price}</div>
+      <p className="product-item-name">{props.name}</p>
+      <div className="product-item-prices">
+        {hasNewPrice ? (
+          <>
+            <div className="product-item-price-discounted">
+              ${props.new_price}
+            </div>
+            {props.old_price > 0 && (
+              <div className="product-item-price-previous">
+                ${props.old_price}
+              </div>
+            )}
+          </>
+        ) : (
+          props.old_price > 0 && (
+            <div className="product-item-price-current">${props.old_price}</div>
+          )
         )}
       </div>
     </div>
