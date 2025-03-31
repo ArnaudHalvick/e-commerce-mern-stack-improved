@@ -1,5 +1,5 @@
 import { useEffect, useCallback, useRef, useReducer } from "react";
-import { config } from "../../../api";
+import { config, productsService } from "../../../api";
 
 // Initial state for filters
 const initialFiltersState = {
@@ -268,16 +268,11 @@ const useCategoryProducts = (category) => {
   useEffect(() => {
     dispatch({ type: ACTIONS.SET_LOADING, payload: true });
 
-    fetch(config.getApiUrl(`products/category/${category}?basicInfo=true`))
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(
-            `Failed to fetch products: ${res.status} ${res.statusText}`
-          );
-        }
-        return res.json();
-      })
-      .then((data) => {
+    const fetchCategoryProducts = async () => {
+      try {
+        // Use the productsService to get products by category
+        const data = await productsService.getProductsByCategory(category);
+
         if (!Array.isArray(data)) {
           console.warn("API didn't return an array for products", data);
           dispatch({
@@ -304,15 +299,17 @@ const useCategoryProducts = (category) => {
             },
           });
         }
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error("Error fetching products:", err);
         dispatch({
           type: ACTIONS.SET_ERROR,
           payload: err.message,
         });
-      });
-  }, [category]);
+      }
+    };
+
+    fetchCategoryProducts();
+  }, [category, dispatch]);
 
   // Apply filters whenever filters, sorting, or pagination changes
   useEffect(() => {

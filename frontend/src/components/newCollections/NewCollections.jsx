@@ -13,9 +13,16 @@ const NewCollection = () => {
     const fetchNewArrivals = async () => {
       try {
         // Use the productsService to get new collection products
-        const data = await productsService.getNewCollectionProducts();
-        // Update to handle the correct response structure from the backend
-        setNewCollection(data.data || []);
+        const response = await productsService.getNewCollectionProducts();
+
+        // Handle API response which is a direct array, not an object with a data property
+        if (Array.isArray(response)) {
+          setNewCollection(response);
+        } else {
+          console.error("Invalid response format:", response);
+          setError("Invalid data format from server");
+        }
+
         setLoading(false);
       } catch (error) {
         console.error("Error fetching new arrivals:", error);
@@ -42,12 +49,13 @@ const NewCollection = () => {
       <div className="collections">
         {newCollection.map((item, index) => (
           <Item
-            key={index}
+            key={item._id || index}
             id={item.id}
             _id={item._id}
             slug={item.slug}
             name={item.name}
             images={item.images}
+            mainImage={item.mainImage}
             mainImageIndex={item.mainImageIndex}
             new_price={item.new_price}
             old_price={item.old_price}

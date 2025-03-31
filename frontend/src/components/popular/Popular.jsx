@@ -13,9 +13,16 @@ const Popular = () => {
     const fetchPopularProducts = async () => {
       try {
         // Use the productsService to get featured products
-        const data = await productsService.getFeaturedProducts();
-        // Update to handle the correct response structure from the backend
-        setPopularProducts(data.data || []);
+        const response = await productsService.getFeaturedProducts();
+
+        // Handle API response which is a direct array, not an object with a data property
+        if (Array.isArray(response)) {
+          setPopularProducts(response);
+        } else {
+          console.error("Invalid response format:", response);
+          setError("Invalid data format from server");
+        }
+
         setLoading(false);
       } catch (error) {
         console.error("Error fetching popular products:", error);
@@ -46,9 +53,10 @@ const Popular = () => {
             id={item.id}
             _id={item._id}
             slug={item.slug}
-            images={item.images}
-            mainImageIndex={item.mainImageIndex}
             name={item.name}
+            images={item.images}
+            mainImage={item.mainImage}
+            mainImageIndex={item.mainImageIndex}
             new_price={item.new_price}
             old_price={item.old_price}
           />

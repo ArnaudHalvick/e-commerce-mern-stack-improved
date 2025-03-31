@@ -17,15 +17,13 @@ const ShopContextProvider = (props) => {
 
       try {
         // Use the productsService to get all products
-        const data = await productsService.getAllProducts();
+        const response = await productsService.getAllProducts();
 
-        if (Array.isArray(data)) {
-          setAll_Product(data);
-        } else if (data && Array.isArray(data.data)) {
-          // Updated to match the backend response structure
-          setAll_Product(data.data);
+        // Handle API response which is a direct array, not an object with a data property
+        if (Array.isArray(response)) {
+          setAll_Product(response);
         } else {
-          console.error("Invalid product data received:", data);
+          console.error("Invalid product data received:", response);
           setError("Failed to load products. Please try again later.");
         }
       } catch (err) {
