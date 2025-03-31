@@ -136,7 +136,7 @@ const useAuthForm = (formType = "login") => {
           if (result.success) {
             // Use the login function from AuthContext which handles clearing the
             // 'user-logged-out' flag, storing the token, and updating the auth state.
-            login(result.accessToken);
+            login(formData.email, formData.password);
             return { success: true };
           } else {
             setFieldErrors({

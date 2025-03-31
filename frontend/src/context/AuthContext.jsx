@@ -242,12 +242,15 @@ const AuthContextProvider = (props) => {
     setError(null);
 
     try {
-      // Make sure we're sending valid data
+      let response;
+
+      // Make sure we're sending valid data if we're using credentials
       if (!email || !password) {
         throw new Error("Email and password are required");
       }
 
-      const response = await authService.login(email.trim(), password.trim());
+      // Get the authentication result from the API
+      response = await authService.login(email.trim(), password.trim());
 
       if (response && response.success) {
         // Successful login, store token and update auth state
@@ -262,7 +265,6 @@ const AuthContextProvider = (props) => {
         setIsAuthenticated(true);
         setAccountDisabled(false);
 
-        // No longer throwing an error here
         setLoading(false);
         return user;
       } else {

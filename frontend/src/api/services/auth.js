@@ -117,12 +117,10 @@ export const forgotPassword = async (email) => {
  */
 export const resetPassword = async (token, password) => {
   try {
-    const response = await apiClient.post(
-      `/api/users/reset-password/${token}`,
-      {
-        password,
-      }
-    );
+    const response = await apiClient.post(`/api/users/reset-password`, {
+      token,
+      password,
+    });
     return response.data;
   } catch (error) {
     throw error;
