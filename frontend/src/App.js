@@ -19,13 +19,12 @@ import OrderHistoryPage from "./pages/orderHistory/OrderHistoryPage";
 
 // Page Components
 import Shop from "./pages/shop/Shop.jsx";
-import ShopCategory from "./pages/shopCategory";
+import ProductListingPage from "./pages/productListing";
 import Product from "./pages/product";
 import Cart from "./pages/cart/Cart";
 import Auth from "./pages/auth";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import ResetPassword from "./pages/auth/ResetPassword";
-import Offers from "./pages/offers";
 import NotFound from "./pages/notFound";
 import ErrorDemoPage from "./pages/errorDemo/errorDemo";
 import {
@@ -104,19 +103,40 @@ function App() {
             <Route path="/" element={<Shop />} />
             <Route
               path="/men"
-              element={<ShopCategory category="men" banner={men_banner} />}
+              element={
+                <ProductListingPage
+                  pageType="category"
+                  category="men"
+                  banner={men_banner}
+                />
+              }
             />
             <Route
               path="/women"
-              element={<ShopCategory category="women" banner={women_banner} />}
+              element={
+                <ProductListingPage
+                  pageType="category"
+                  category="women"
+                  banner={women_banner}
+                />
+              }
             />
             <Route
               path="/kids"
-              element={<ShopCategory category="kids" banner={kids_banner} />}
+              element={
+                <ProductListingPage
+                  pageType="category"
+                  category="kids"
+                  banner={kids_banner}
+                />
+              }
             />
 
             {/* Special Offer Routes - Public */}
-            <Route path="/offers" element={<Offers />} />
+            <Route
+              path="/offers"
+              element={<ProductListingPage pageType="offers" />}
+            />
 
             {/* Product Detail Routes - Public */}
             <Route path="/product" element={<Product />}>

@@ -1,10 +1,16 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { productsService } from "../../../api";
 
 /**
- * Custom hook for fetching, filtering, and sorting products on the offers page
+ * Custom hook for fetching, filtering, and sorting products on product listing pages
+ * Works for both Offers and Category pages
+ *
+ * @param {Object} options Options object
+ * @param {string} options.pageType Type of page ('offers' or 'category')
+ * @param {string} options.category Category name (for category pages)
+ * @returns {Object} Product listing data and functions
  */
-const useOffersData = () => {
+const useProductListingData = ({ pageType, category }) => {
   // State for all products
   const [allProducts, setAllProducts] = useState([]);
   const [displayedProducts, setDisplayedProducts] = useState([]);
@@ -34,13 +40,24 @@ const useOffersData = () => {
   const [availableTags, setAvailableTags] = useState([]);
   const [availableTypes, setAvailableTypes] = useState([]);
 
+  // Track mounted state to prevent updates after unmount
+  const isMounted = useRef(true);
+  useEffect(() => {
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
+
   // Wrap the filtering and sorting logic in useCallback so that its identity is stable
   const filterAndSortProducts = useCallback(
     (products) => {
+      if (!isMounted.current) return;
+      if (!products || products.length === 0) return;
+
       let filteredProducts = [...products];
 
-      // Filter by category
-      if (filters.category.length > 0) {
+      // Filter by category (only for offers page)
+      if (pageType === "offers" && filters.category.length > 0) {
         filteredProducts = filteredProducts.filter((item) =>
           filters.category.some(
             (cat) => cat.toLowerCase() === (item.category || "").toLowerCase()
@@ -127,58 +144,75 @@ const useOffersData = () => {
       }
 
       // Calculate total pages
-      setTotalPages(Math.ceil(filteredProducts.length / itemsPerPage));
+      if (isMounted.current) {
+        setTotalPages(Math.ceil(filteredProducts.length / itemsPerPage));
 
-      // Apply pagination
-      const startIndex = (currentPage - 1) * itemsPerPage;
-      const endIndex = startIndex + itemsPerPage;
-      const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
+        // Apply pagination
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
 
-      setDisplayedProducts(paginatedProducts);
+        setDisplayedProducts(paginatedProducts);
+      }
     },
-    [filters, sortBy, currentPage, itemsPerPage]
+    [filters, sortBy, currentPage, itemsPerPage, pageType]
   );
 
-  // Fetch all products (runs only once)
+  // Fetch products based on page type
   useEffect(() => {
     setLoading(true);
     setError(null);
 
-    const fetchDiscountedProducts = async () => {
+    const fetchProducts = async () => {
       try {
-        // Use productsService to get all products
-        const data = await productsService.getAllProducts();
+        let data = [];
 
-        if (!Array.isArray(data)) {
-          console.warn("API didn't return an array for products", data);
-          setAllProducts([]);
-          setDisplayedProducts([]);
+        if (pageType === "category" && category) {
+          // For category pages, fetch products by category
+          data = await productsService.getProductsByCategory(category);
         } else {
+          // For offers page, fetch all products
+          data = await productsService.getAllProducts();
+
           // For offers page, pre-filter to only show products with discounts
-          const discountedProducts = data.filter(
+          data = data.filter(
             (product) =>
               product.new_price > 0 && product.new_price < product.old_price
           );
+        }
 
-          setAllProducts(discountedProducts);
-          setAvailableTags([
-            ...new Set(discountedProducts.flatMap((item) => item.tags || [])),
-          ]);
-          setAvailableTypes([
-            ...new Set(discountedProducts.flatMap((item) => item.types || [])),
-          ]);
-          filterAndSortProducts(discountedProducts);
+        if (!Array.isArray(data)) {
+          console.warn("API didn't return an array for products", data);
+          if (isMounted.current) {
+            setAllProducts([]);
+            setDisplayedProducts([]);
+          }
+        } else {
+          if (isMounted.current) {
+            setAllProducts(data);
+            setAvailableTags([
+              ...new Set(data.flatMap((item) => item.tags || [])),
+            ]);
+            setAvailableTypes([
+              ...new Set(data.flatMap((item) => item.types || [])),
+            ]);
+            filterAndSortProducts(data);
+          }
         }
       } catch (err) {
         console.error("Error fetching products:", err);
-        setError(err.message);
+        if (isMounted.current) {
+          setError(err.message || "Error fetching products. Please try again.");
+        }
       } finally {
-        setLoading(false);
+        if (isMounted.current) {
+          setLoading(false);
+        }
       }
     };
 
-    fetchDiscountedProducts();
-  }, [filterAndSortProducts]);
+    fetchProducts();
+  }, [category, filterAndSortProducts, pageType]);
 
   // Reapply filters and sorting whenever allProducts or filtering options change
   useEffect(() => {
@@ -188,7 +222,7 @@ const useOffersData = () => {
   }, [allProducts, filterAndSortProducts]);
 
   // Handle filter changes
-  const handleFilterChange = (filterType, value) => {
+  const handleFilterChange = useCallback((filterType, value) => {
     setFilters((prev) => {
       const newFilters = { ...prev };
 
@@ -209,7 +243,7 @@ const useOffersData = () => {
           newFilters.discount = value;
           break;
         case "rating":
-          newFilters.rating = value;
+          newFilters.rating = value === newFilters.rating ? 0 : value;
           break;
         case "tag":
           if (newFilters.tags.includes(value)) {
@@ -231,38 +265,42 @@ const useOffersData = () => {
           break;
       }
 
-      // Reset to first page when filters change
-      setCurrentPage(1);
-
       return newFilters;
     });
-  };
+
+    // Reset to page 1 when filters change
+    setCurrentPage(1);
+  }, []);
 
   // Handle sort change
-  const handleSortChange = (sortOption) => {
+  const handleSortChange = useCallback((sortOption) => {
     setSortBy(sortOption);
     setShowSortOptions(false);
-  };
+  }, []);
 
   // Handle page change
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-    // Find the target element on the page
-    const targetElement = document.querySelector(".offers-main-content");
-    if (targetElement) {
-      // Smoothly scroll the target element into view
-      targetElement.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  };
+  const handlePageChange = useCallback(
+    (page) => {
+      if (page < 1 || page > totalPages) return;
+      setCurrentPage(page);
+
+      // Scroll to top when changing pages
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    },
+    [totalPages]
+  );
 
   // Handle items per page change
-  const handleItemsPerPageChange = (items) => {
-    setItemsPerPage(items);
-    setCurrentPage(1); // Reset to first page
-  };
+  const handleItemsPerPageChange = useCallback((items) => {
+    setItemsPerPage(Number(items));
+    setCurrentPage(1); // Reset to page 1 when changing items per page
+  }, []);
 
   // Clear all filters
-  const clearAllFilters = () => {
+  const clearAllFilters = useCallback(() => {
     setFilters({
       category: [],
       price: { min: 0, max: 1000 },
@@ -273,15 +311,16 @@ const useOffersData = () => {
     });
     setSortBy("newest");
     setCurrentPage(1);
-  };
+  }, []);
 
-  // Calculate display range for products
-  const displayRange = `${Math.min(
-    (currentPage - 1) * itemsPerPage + 1,
-    allProducts.length
-  )}-${Math.min(currentPage * itemsPerPage, allProducts.length)}`;
+  // Calculate display range
+  const totalProducts = allProducts.length;
+  const startItem = (currentPage - 1) * itemsPerPage + 1;
+  const endItem = Math.min(startItem + itemsPerPage - 1, totalProducts);
+  const displayRange = totalProducts > 0 ? `${startItem}-${endItem}` : "0-0";
 
   return {
+    // Data
     displayedProducts,
     loading,
     error,
@@ -293,8 +332,12 @@ const useOffersData = () => {
     filters,
     availableTags,
     availableTypes,
+
+    // Display info
     displayRange,
-    totalProducts: allProducts.length,
+    totalProducts,
+
+    // Actions
     setShowSortOptions,
     handleFilterChange,
     handleSortChange,
@@ -304,4 +347,4 @@ const useOffersData = () => {
   };
 };
 
-export default useOffersData;
+export default useProductListingData;
