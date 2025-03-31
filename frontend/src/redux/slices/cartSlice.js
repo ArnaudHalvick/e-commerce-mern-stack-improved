@@ -1,7 +1,7 @@
 // frontend/src/redux/slices/cartSlice.js
 
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { cartApi } from "../../services/api";
+import { cartService } from "../../api";
 
 // Helper function to calculate cart totals
 const calculateCartTotals = (items) => {
@@ -22,7 +22,7 @@ export const fetchCart = createAsyncThunk(
       if (!token) return { items: [], totalItems: 0, totalPrice: 0 };
 
       // Use API service
-      const data = await cartApi.getCart();
+      const data = await cartService.getCart();
 
       return data.cart || { items: [], totalItems: 0, totalPrice: 0 };
     } catch (error) {
@@ -43,7 +43,7 @@ export const addToCart = createAsyncThunk(
       }
 
       // Use API service
-      const data = await cartApi.addToCart({ itemId, quantity, size });
+      const data = await cartService.addToCart({ itemId, quantity, size });
 
       return data.cart;
     } catch (error) {
@@ -67,7 +67,7 @@ export const removeFromCart = createAsyncThunk(
       }
 
       // Use API service
-      const data = await cartApi.removeFromCart({
+      const data = await cartService.removeFromCart({
         itemId,
         quantity,
         removeAll,
@@ -93,7 +93,7 @@ export const updateCartItem = createAsyncThunk(
       }
 
       // Use API service
-      const data = await cartApi.updateCartItem({ itemId, quantity, size });
+      const data = await cartService.updateCartItem({ itemId, quantity, size });
 
       return data.cart || { items: [], totalItems: 0, totalPrice: 0 };
     } catch (error) {
@@ -114,7 +114,7 @@ export const clearCart = createAsyncThunk(
       }
 
       // Use API service
-      const data = await cartApi.clearCart();
+      const data = await cartService.clearCart();
 
       return data.cart || { items: [], totalItems: 0, totalPrice: 0 };
     } catch (error) {

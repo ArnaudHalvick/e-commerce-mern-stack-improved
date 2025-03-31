@@ -8,16 +8,12 @@ import {
 } from "@stripe/react-stripe-js";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import {
-  createPaymentIntent,
-  confirmOrder,
-  fetchCartSummary,
-} from "../../services/paymentService";
 import { clearCart } from "../../redux/slices/cartSlice";
 import FormSubmitButton from "../../components/form/FormSubmitButton";
 import Spinner from "../../components/ui/spinner";
-import authApi from "../../services/authApi";
 import "./CheckoutPage.css";
+
+import { paymentsService, authService } from "../../api";
 
 // List of countries with ISO codes
 const COUNTRIES = [
@@ -89,11 +85,12 @@ const CheckoutPage = () => {
   useEffect(() => {
     const loadUserProfile = async () => {
       try {
-        const userData = await authApi.getProfile();
+        const response = await authService.getCurrentUser();
+        const userData = response.user || {};
 
         // Only update shipping info fields that exist in user profile
-        const userAddress = userData.user.address || {};
-        const userPhone = userData.user.phone || "";
+        const userAddress = userData.address || {};
+        const userPhone = userData.phone || "";
 
         // Convert country name to country code if needed
         let countryCode = userAddress.country || "US";
@@ -147,7 +144,7 @@ const CheckoutPage = () => {
     const fetchSummary = async () => {
       try {
         setFetchingCartSummary(true);
-        const data = await fetchCartSummary();
+        const data = await paymentsService.getCartSummary();
         setCartSummary({
           amount: data.amount,
           subtotal: data.subtotal,
@@ -183,7 +180,7 @@ const CheckoutPage = () => {
     }
 
     if (!isShippingInfoValid()) {
-      setError("Please fill in all shipping information fields.");
+      setError("Please fill out all shipping information fields.");
       return;
     }
 
@@ -191,50 +188,55 @@ const CheckoutPage = () => {
     setError(null);
 
     try {
-      // Create payment intent only when submitting the form
-      const paymentData = await createPaymentIntent(shippingInfo);
+      // 1. Create a payment intent on the server
+      const intentResponse = await paymentsService.createPaymentIntent();
+      const { clientSecret } = intentResponse;
 
-      // Confirm card payment with separated card elements
-      const result = await stripe.confirmCardPayment(paymentData.clientSecret, {
-        payment_method: {
-          card: elements.getElement(CardNumberElement),
-          billing_details: {
-            name: "Customer Name", // Consider collecting this
-            address: {
-              line1: shippingInfo.address,
-              city: shippingInfo.city,
-              state: shippingInfo.state,
-              postal_code: shippingInfo.postalCode,
-              country: shippingInfo.country,
+      if (!clientSecret) {
+        throw new Error("Failed to create payment intent.");
+      }
+
+      // 2. Confirm the card payment
+      const cardElement = elements.getElement(CardNumberElement);
+      const { error: stripeError, paymentIntent } =
+        await stripe.confirmCardPayment(clientSecret, {
+          payment_method: {
+            card: cardElement,
+            billing_details: {
+              name: shippingInfo.name || "Customer",
+              address: {
+                line1: shippingInfo.address,
+                city: shippingInfo.city,
+                state: shippingInfo.state,
+                postal_code: shippingInfo.postalCode,
+                country: shippingInfo.country,
+              },
             },
           },
-        },
-      });
+        });
 
-      if (result.error) {
-        setError(result.error.message);
-      } else {
-        if (result.paymentIntent.status === "succeeded") {
-          try {
-            const orderData = await confirmOrder(
-              result.paymentIntent.id,
-              shippingInfo
-            );
+      if (stripeError) {
+        throw new Error(stripeError.message);
+      }
 
-            // Clear the cart after a successful order
-            dispatch(clearCart());
-
-            // Navigate to success page with order info
-            navigate(`/order-confirmation/${orderData.order._id}`, {
-              state: { orderDetails: orderData.order },
-            });
-          } catch (err) {
-            setError(err.response?.data?.message || "Failed to confirm order");
+      if (paymentIntent.status === "succeeded") {
+        // 3. Complete the order
+        const orderResponse = await paymentsService.completePayment(
+          paymentIntent.id,
+          {
+            shipping: shippingInfo,
           }
-        }
+        );
+
+        // 4. Clear the cart and redirect to the order confirmation page
+        dispatch(clearCart());
+        navigate(`/order-confirmation/${orderResponse.order._id}`);
+      } else {
+        throw new Error(`Payment failed with status: ${paymentIntent.status}`);
       }
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to process payment");
+      console.error("Payment error:", err);
+      setError(err.message || "Payment failed. Please try again.");
     } finally {
       setIsLoading(false);
     }

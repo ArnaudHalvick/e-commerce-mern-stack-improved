@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { getApiUrl } from "../../../utils/apiUtils";
+import { config } from "../../../api";
 
 /**
  * Custom hook for fetching, filtering, and sorting products on the offers page
@@ -144,7 +144,7 @@ const useOffersData = () => {
     setLoading(true);
     setError(null);
 
-    fetch(getApiUrl("products/all-products?basicInfo=true"))
+    fetch(config.getApiUrl("products?basicInfo=true"))
       .then((res) => {
         if (!res.ok) {
           throw new Error(

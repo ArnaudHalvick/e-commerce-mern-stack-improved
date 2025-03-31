@@ -2,7 +2,7 @@
 
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { getApiUrl } from "../../utils/apiUtils";
+import { config } from "../../api";
 
 // Async thunk for updating user profile
 export const updateUserProfile = createAsyncThunk(
@@ -10,12 +10,16 @@ export const updateUserProfile = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem("auth-token");
-      const response = await axios.put(getApiUrl("users/profile"), userData, {
-        headers: {
-          "Content-Type": "application/json",
-          "auth-token": token,
-        },
-      });
+      const response = await axios.put(
+        config.getApiUrl("users/profile"),
+        userData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "auth-token": token,
+          },
+        }
+      );
 
       if (!response.data.success) {
         return rejectWithValue(
@@ -53,7 +57,7 @@ export const changePassword = createAsyncThunk(
     try {
       const token = localStorage.getItem("auth-token");
       const response = await axios.put(
-        getApiUrl("users/change-password"),
+        config.getApiUrl("users/change-password"),
         {
           currentPassword,
           newPassword,
@@ -117,7 +121,7 @@ export const disableAccount = createAsyncThunk(
     try {
       const token = localStorage.getItem("auth-token");
       const response = await axios.put(
-        getApiUrl("users/disable-account"),
+        config.getApiUrl("users/disable-account"),
         { password },
         {
           headers: {
@@ -141,7 +145,7 @@ export const requestEmailVerification = createAsyncThunk(
   async (email, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        getApiUrl("users/request-verification"),
+        config.getApiUrl("users/request-verification"),
         { email }
       );
       return response.data;
@@ -159,7 +163,7 @@ export const verifyEmail = createAsyncThunk(
   async (token, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        getApiUrl(`users/verify-email?token=${token}`)
+        config.getApiUrl(`users/verify-email?token=${token}`)
       );
       return response.data;
     } catch (error) {
@@ -175,7 +179,9 @@ export const verifyPasswordChange = createAsyncThunk(
   "user/verifyPasswordChange",
   async (token, { rejectWithValue }) => {
     try {
-      const url = getApiUrl(`users/verify-password-change?token=${token}`);
+      const url = config.getApiUrl(
+        `users/verify-password-change?token=${token}`
+      );
       const response = await axios.get(url);
       return response.data;
     } catch (error) {
@@ -207,7 +213,7 @@ export const requestEmailChange = createAsyncThunk(
     try {
       const token = localStorage.getItem("auth-token");
       const response = await axios.post(
-        getApiUrl("users/change-email"),
+        config.getApiUrl("users/change-email"),
         { email },
         {
           headers: {

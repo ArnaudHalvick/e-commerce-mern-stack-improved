@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import authApi from "../../../services/authApi";
+import { authService } from "../../../api";
 import { useError } from "../../../context/ErrorContext";
 import useFormErrors from "../../../hooks/useFormErrors";
 import {
@@ -157,7 +157,7 @@ const usePasswordRecovery = (
       try {
         if (mode === "forgot") {
           try {
-            const result = await authApi.forgotPassword(formData.email);
+            const result = await authService.forgotPassword(formData.email);
 
             if (result.success) {
               setSuccess(true);
@@ -177,7 +177,7 @@ const usePasswordRecovery = (
           }
         } else {
           try {
-            const result = await authApi.resetPassword(
+            const result = await authService.resetPassword(
               formData.token,
               formData.password,
               formData.confirmPassword

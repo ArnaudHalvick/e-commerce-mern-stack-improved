@@ -1,6 +1,6 @@
 // Path: frontend/src/context/ShopContext.jsx
-import { createContext, useState, useEffect } from "react";
-import { API_BASE_URL } from "../utils/apiUtils";
+import React, { createContext, useState, useEffect } from "react";
+import { productsService } from "../api";
 
 export const ShopContext = createContext(null);
 
@@ -9,38 +9,29 @@ const ShopContextProvider = (props) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Load products
+  // Fetch all products from the API
   useEffect(() => {
-    // Reset states when starting a fetch
-    setLoading(true);
-    setError(null);
+    const fetchProducts = async () => {
+      setLoading(true);
+      setError(null);
 
-    // Fetch all products with basicInfo=true to get only essential fields
-    // We don't need reviews here as they're loaded separately on product detail pages
-    fetch(`${API_BASE_URL}/api/products/all-products?basicInfo=true`)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(
-            `Failed to fetch products: ${res.status} ${res.statusText}`
-          );
-        }
-        return res.json();
-      })
-      .then((data) => {
-        // Validate data
-        if (!Array.isArray(data)) {
-          console.warn("API didn't return an array for products", data);
-          setAll_Product([]);
+      try {
+        const data = await productsService.getAllProducts();
+        if (data.products && Array.isArray(data.products)) {
+          setAll_Product(data.products);
         } else {
-          setAll_Product(data);
+          console.error("Invalid product data received:", data);
+          setError("Failed to load products. Please try again later.");
         }
-        setLoading(false);
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error("Error fetching products:", err);
-        setError(err.message);
+        setError("Failed to load products. Please try again later.");
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+
+    fetchProducts();
   }, []);
 
   const ctxValue = {

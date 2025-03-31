@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import "./RelatedProducts.css";
 import Item from "../item/Item";
 import { useParams } from "react-router-dom";
-import { API_BASE_URL } from "../../utils/apiUtils";
+import { config } from "../../api";
 
 const RelatedProducts = ({ product }) => {
   const [relatedProducts, setRelatedProducts] = useState([]);
@@ -27,7 +27,7 @@ const RelatedProducts = ({ product }) => {
     const { category } = product;
 
     // Build the API URL with the available parameters
-    let apiUrl = `${API_BASE_URL}/api/products/related/${category}`;
+    let apiUrl = `${config.API_BASE_URL}/api/products/related/${category}`;
 
     // Add productId if available
     if (id) {

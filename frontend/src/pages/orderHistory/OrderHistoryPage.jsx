@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { getMyOrders } from "../../services/paymentService";
+import { paymentsService } from "../../api";
 import Spinner from "../../components/ui/spinner";
 import FormSubmitButton from "../../components/form/FormSubmitButton";
 import { getImageUrl } from "../../utils/imageUtils";
@@ -15,7 +15,7 @@ const OrderHistoryPage = () => {
     const fetchOrders = async () => {
       try {
         setLoading(true);
-        const data = await getMyOrders();
+        const data = await paymentsService.getOrderHistory();
         setOrders(data.orders);
         setError(null);
       } catch (err) {

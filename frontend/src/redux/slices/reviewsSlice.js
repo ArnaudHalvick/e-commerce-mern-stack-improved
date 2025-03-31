@@ -2,7 +2,7 @@
 
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { API_BASE_URL } from "../../utils/apiUtils";
+import { config } from "../../api";
 
 // Async thunk for fetching initial reviews
 export const fetchInitialReviews = createAsyncThunk(
@@ -39,7 +39,7 @@ export const fetchInitialReviews = createAsyncThunk(
       const url = `/api/reviews/products/${productId}?${params.toString()}`;
 
       // Use direct axios call to avoid caching issues
-      const response = await axios.get(`${API_BASE_URL}${url}`, {
+      const response = await axios.get(`${config.API_BASE_URL}${url}`, {
         withCredentials: true,
         headers: {
           "Content-Type": "application/json",
@@ -82,7 +82,7 @@ export const fetchMoreReviews = createAsyncThunk(
       const url = `/api/reviews/products/${productId}?${params.toString()}`;
 
       // Use direct axios call to avoid any caching issues
-      const response = await axios.get(`${API_BASE_URL}${url}`, {
+      const response = await axios.get(`${config.API_BASE_URL}${url}`, {
         withCredentials: true,
         headers: {
           "Content-Type": "application/json",
@@ -114,7 +114,7 @@ export const fetchReviewCounts = createAsyncThunk(
       const url = `/api/reviews/products/${productId}?${params.toString()}`;
 
       // Use direct axios call to get the review data which includes distribution
-      const response = await axios.get(`${API_BASE_URL}${url}`, {
+      const response = await axios.get(`${config.API_BASE_URL}${url}`, {
         withCredentials: true,
         headers: {
           "Content-Type": "application/json",

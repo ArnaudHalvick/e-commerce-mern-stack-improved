@@ -5,7 +5,7 @@ import { useContext, useState, useMemo, useCallback, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../../redux/slices/cartSlice";
 import { AuthContext } from "../../../context/AuthContext";
-import { API_BASE_URL } from "../../../utils/apiUtils";
+import { config } from "../../../api";
 import { useError } from "../../../context/ErrorContext";
 
 /**
@@ -36,7 +36,7 @@ const ProductDisplay = ({ product }) => {
 
   // Utility to get the base URL from any product image.
   const getBaseUrl = useCallback(() => {
-    return API_BASE_URL;
+    return config.API_BASE_URL;
   }, []);
 
   // Determine the main image based on the selected image index.

@@ -1,117 +1,74 @@
-import React, { memo, useState } from "react";
-import remove_icon from "../assets/cart_cross_icon.png";
-import { getImageUrl } from "../../utils/apiUtils";
+import React from "react";
 import "./CartItems.css";
+import { config } from "../../api";
 
 const CartItem = ({
   item,
-  onRemoveItem,
-  onAddItem,
-  onRemoveAll,
-  onQuantityChange,
-  onQuantityBlur,
+  removeFromCart,
+  updateQuantity,
+  showRemoveButton = true,
 }) => {
-  const [localQuantity, setLocalQuantity] = useState(item.quantity);
-
-  // Handle local quantity change
-  const handleLocalQuantityChange = (value) => {
-    // Ensure value is a valid number and not less than 1
-    const newValue = Math.max(1, parseInt(value) || 1);
-    setLocalQuantity(newValue);
-    onQuantityChange(item.productId, newValue, item.size);
+  const handleRemove = () => {
+    removeFromCart(item.id);
   };
 
-  // Handle quantity blur
-  const handleBlur = () => {
-    onQuantityBlur(item.productId, item.size);
-    // Reset local state to match item quantity
-    setLocalQuantity(item.quantity);
-  };
-
-  // Optimistic UI updates
-  const handleAddItemClick = () => {
-    // Update local state immediately for better UX
-    setLocalQuantity((prev) => prev + 1);
-    onAddItem(item.productId, item.size);
-  };
-
-  const handleRemoveItemClick = () => {
-    // Update local state immediately for better UX
-    if (localQuantity > 1) {
-      setLocalQuantity((prev) => prev - 1);
+  const handleQuantityDecrease = () => {
+    if (item.quantity > 1) {
+      updateQuantity(item.id, item.quantity - 1);
+    } else {
+      // If quantity becomes 0, remove the item
+      removeFromCart(item.id);
     }
-    onRemoveItem(item.productId, item.size);
+  };
+
+  const handleQuantityIncrease = () => {
+    updateQuantity(item.id, item.quantity + 1);
   };
 
   return (
-    <tr>
-      <td>
-        <img
-          className="cart-product-image"
-          src={getImageUrl(item.image)}
-          alt={item.name}
-        />
-      </td>
-      <td>{item.name}</td>
-      <td>
-        <span className={item.isDiscounted ? "cart-price-discounted" : ""}>
-          ${item.price}
-        </span>
-      </td>
-      <td>
-        <span className="cart-item-size">{item.size}</span>
-      </td>
-      <td>
-        <div className="cart-quantity-controls">
+    <div className="cartitem">
+      <div className="cartitem-image">
+        <img src={config.getImageUrl(item.image)} alt={item.name} />
+      </div>
+      <div className="cartitem-details">
+        <p className="cartitem-name">{item.name}</p>
+        {item.selectedSize && (
+          <p className="cartitem-size">Size: {item.selectedSize}</p>
+        )}
+        <div className="cartitem-quantity">
           <button
-            className="cart-quantity-adjust-btn"
-            onClick={handleRemoveItemClick}
+            className="quantity-btn"
+            onClick={handleQuantityDecrease}
+            aria-label="Decrease quantity"
           >
             -
           </button>
-          <input
-            type="number"
-            className="cart-quantity-input"
-            value={localQuantity}
-            onChange={(event) => handleLocalQuantityChange(event.target.value)}
-            onBlur={handleBlur}
-            min="1"
-          />
+          <span className="quantity-value">{item.quantity}</span>
           <button
-            className="cart-quantity-adjust-btn"
-            onClick={handleAddItemClick}
+            className="quantity-btn"
+            onClick={handleQuantityIncrease}
+            aria-label="Increase quantity"
           >
             +
           </button>
         </div>
-      </td>
-      <td>
-        <span className={item.isDiscounted ? "cart-price-discounted" : ""}>
-          ${(item.price * localQuantity).toFixed(2)}
-        </span>
-      </td>
-      <td>
-        <div className="cart-remove-icon-container">
-          <img
-            className="cart-remove-icon"
-            onClick={() => onRemoveAll(item.productId, item.size)}
-            src={remove_icon}
-            alt=""
-            title="Remove all"
-          />
-        </div>
-      </td>
-    </tr>
+      </div>
+      <div className="cartitem-price-actions">
+        <p className="cartitem-price">
+          ${(item.price * item.quantity).toFixed(2)}
+        </p>
+        {showRemoveButton && (
+          <button
+            className="cartitem-remove-btn"
+            onClick={handleRemove}
+            aria-label="Remove item"
+          >
+            Remove
+          </button>
+        )}
+      </div>
+    </div>
   );
 };
 
-// Memoize the component to prevent unnecessary re-renders
-export default memo(CartItem, (prevProps, nextProps) => {
-  // Only re-render if the item data has actually changed
-  return (
-    prevProps.item.productId === nextProps.item.productId &&
-    prevProps.item.quantity === nextProps.item.quantity &&
-    prevProps.item.price === nextProps.item.price &&
-    prevProps.item.size === nextProps.item.size
-  );
-});
+export default CartItem;

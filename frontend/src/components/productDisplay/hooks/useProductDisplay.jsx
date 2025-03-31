@@ -1,8 +1,7 @@
-import { useState, useMemo, useCallback, useContext } from "react";
+import { useState, useCallback, useContext } from "react";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../../redux/slices/cartSlice";
 import { AuthContext } from "../../../context/AuthContext";
-import { getImageUrl } from "../../../utils/imageUtils";
 import { useError } from "../../../context/ErrorContext";
 
 /**

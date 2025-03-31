@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useLocation, Link } from "react-router-dom";
-import { getOrderById } from "../../services/paymentService";
+import { paymentsService } from "../../api";
 import Spinner from "../../components/ui/spinner";
 import FormSubmitButton from "../../components/form/FormSubmitButton";
 import { getImageUrl } from "../../utils/imageUtils";
@@ -25,7 +25,7 @@ const OrderConfirmationPage = () => {
     const fetchOrder = async () => {
       try {
         setLoading(true);
-        const data = await getOrderById(orderId);
+        const data = await paymentsService.getOrderDetails(orderId);
         setOrder(data.order);
         setError(null);
       } catch (err) {

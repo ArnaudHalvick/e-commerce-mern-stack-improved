@@ -1,8 +1,8 @@
 // Path: frontend/src/components/newCollections/NewCollections.jsx
+import React, { useState, useEffect } from "react";
 import "./NewCollections.css";
 import Item from "../item/Item";
-import { useState, useEffect } from "react";
-import { getApiUrl } from "../../utils/apiUtils";
+import { config } from "../../api";
 
 const NewCollection = () => {
   const [newCollection, setNewCollection] = useState([]);
@@ -10,33 +10,22 @@ const NewCollection = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    setLoading(true);
-    setError(null);
+    const fetchNewArrivals = async () => {
+      try {
+        const response = await fetch(
+          config.getApiUrl("products?sort=newest&limit=8")
+        );
+        const data = await response.json();
+        setNewCollection(data.products || []);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching new arrivals:", error);
+        setError("Failed to load new arrivals");
+        setLoading(false);
+      }
+    };
 
-    fetch(getApiUrl("products/newcollection"))
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(
-            `Failed to fetch new collection: ${res.status} ${res.statusText}`
-          );
-        }
-        return res.json();
-      })
-      .then((data) => {
-        // Validate and log data for debugging
-        if (!Array.isArray(data)) {
-          console.warn("API didn't return an array for new collection", data);
-          setNewCollection([]);
-        } else {
-          setNewCollection(data);
-        }
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Error fetching new collection:", err);
-        setError(err.message);
-        setLoading(false);
-      });
+    fetchNewArrivals();
   }, []);
 
   if (loading) {

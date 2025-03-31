@@ -1,5 +1,5 @@
 import { useEffect, useCallback, useRef, useReducer } from "react";
-import { getApiUrl } from "../../../utils/apiUtils";
+import { config } from "../../../api";
 
 // Initial state for filters
 const initialFiltersState = {
@@ -268,7 +268,7 @@ const useCategoryProducts = (category) => {
   useEffect(() => {
     dispatch({ type: ACTIONS.SET_LOADING, payload: true });
 
-    fetch(getApiUrl(`products/category/${category}?basicInfo=true`))
+    fetch(config.getApiUrl(`products/category/${category}?basicInfo=true`))
       .then((res) => {
         if (!res.ok) {
           throw new Error(

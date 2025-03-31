@@ -1,8 +1,8 @@
 // Path: frontend/src/components/popular/Popular.jsx
+import React, { useState, useEffect } from "react";
 import "./Popular.css";
 import Item from "../item/Item";
-import { useState, useEffect } from "react";
-import { getApiUrl } from "../../utils/apiUtils";
+import { config } from "../../api";
 
 const Popular = () => {
   const [popularProducts, setPopularProducts] = useState([]);
@@ -10,33 +10,22 @@ const Popular = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    setLoading(true);
-    setError(null);
+    const fetchPopularProducts = async () => {
+      try {
+        const response = await fetch(
+          config.getApiUrl("products?featured=true&limit=4")
+        );
+        const data = await response.json();
+        setPopularProducts(data.products || []);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching popular products:", error);
+        setError("Failed to load popular products");
+        setLoading(false);
+      }
+    };
 
-    fetch(getApiUrl("products/featured-women?basicInfo=true"))
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(
-            `Failed to fetch popular products: ${res.status} ${res.statusText}`
-          );
-        }
-        return res.json();
-      })
-      .then((data) => {
-        // Validate and log data for debugging
-        if (!Array.isArray(data)) {
-          console.warn("API didn't return an array for popular products", data);
-          setPopularProducts([]);
-        } else {
-          setPopularProducts(data);
-        }
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Error fetching popular products:", err);
-        setError(err.message);
-        setLoading(false);
-      });
+    fetchPopularProducts();
   }, []);
 
   if (loading) {

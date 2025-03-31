@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useError } from "../../context/ErrorContext";
-import api from "../../utils/axiosConfig";
+import { apiClient } from "../../api";
 import "./ErrorStyles.css";
 import Spinner from "../ui/spinner";
 
@@ -32,7 +32,7 @@ const ErrorDemo = () => {
 
   const handleApiError = async () => {
     try {
-      await api.get(`${apiPath}?statusCode=${statusCode}`);
+      await apiClient.get(`${apiPath}?statusCode=${statusCode}`);
     } catch (error) {
       // Show error with status code if available
       const errorMessage = error.status
@@ -156,14 +156,14 @@ const ErrorDemo = () => {
         <h3>Usage Example:</h3>
         <pre>
           {`import { useError } from '../context/ErrorContext';
-import api from '../utils/axiosConfig';
+import { apiClient } from '../api';
 
 const YourComponent = () => {
   const { showError, showSuccess } = useError();
   
   const handleSubmit = async (formData) => {
     try {
-      await api.post('/api/data', formData);
+      await apiClient.post('/api/data', formData);
       showSuccess('Data submitted successfully!');
     } catch (error) {
       showError(error.message);
