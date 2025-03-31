@@ -123,11 +123,13 @@ const BasicInfoSection = ({
               isLoading={updatingProfile}
               disabled={!isBasicInfoValid}
               variant="primary"
+              size="small"
             />
             <FormSubmitButton
               type="button"
               text="Cancel"
               variant="secondary"
+              size="small"
               onClick={() => {
                 setIsEditingBasicInfo(false);
                 // Reset basic info form to original values

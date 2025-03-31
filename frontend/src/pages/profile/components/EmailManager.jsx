@@ -183,12 +183,14 @@ const EmailManager = ({ user, showSuccess, showError }) => {
               isLoading={isLoading}
               disabled={!isFormValid}
               variant="primary"
+              size="small"
             />
 
             <FormSubmitButton
               type="button"
               text="Cancel"
               variant="secondary"
+              size="small"
               onClick={handleCancel}
               disabled={isLoading}
             />

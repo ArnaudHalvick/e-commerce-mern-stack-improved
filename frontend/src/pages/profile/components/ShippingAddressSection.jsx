@@ -222,11 +222,13 @@ const ShippingAddressSection = ({
               isLoading={updatingProfile}
               disabled={!isAddressValid}
               variant="primary"
+              size="small"
             />
             <FormSubmitButton
               type="button"
               text="Cancel"
               variant="secondary"
+              size="small"
               onClick={() => {
                 setIsEditingAddress(false);
                 // Reset address form to original values

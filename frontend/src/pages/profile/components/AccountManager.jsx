@@ -46,6 +46,7 @@ const AccountManager = ({ handleDisableAccount, disablingAccount }) => {
           isLoading={disablingAccount}
           disabled={disablingAccount}
           variant="danger"
+          size="small"
           onClick={handleOpenModal}
         />
       </div>
