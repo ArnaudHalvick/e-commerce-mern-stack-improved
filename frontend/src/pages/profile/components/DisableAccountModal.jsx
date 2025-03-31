@@ -84,22 +84,18 @@ const DisableAccountModal = ({
                 type="button"
                 text="Cancel"
                 variant="secondary"
+                size="small"
                 onClick={onClose}
                 disabled={isProcessing}
               />
-              <button
+              <FormSubmitButton
                 type="submit"
-                className={
-                  isProcessing
-                    ? "modal-submit-btn-disabled"
-                    : "modal-submit-btn-danger"
-                }
+                text={isProcessing ? "Processing..." : "Disable Account"}
+                variant="danger"
+                size="small"
+                isLoading={isProcessing}
                 disabled={isProcessing}
-                tabIndex="0"
-                aria-label="Confirm account disabling"
-              >
-                {isProcessing ? "Processing..." : "Disable Account"}
-              </button>
+              />
             </div>
           </form>
         </div>
