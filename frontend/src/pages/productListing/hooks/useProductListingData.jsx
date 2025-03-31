@@ -48,11 +48,14 @@ const useProductListingData = ({ pageType, category }) => {
     };
   }, []);
 
-  // Wrap the filtering and sorting logic in useCallback so that its identity is stable
+  // Function to filter and sort products
   const filterAndSortProducts = useCallback(
     (products) => {
       if (!isMounted.current) return;
-      if (!products || products.length === 0) return;
+      if (!products || products.length === 0) {
+        setDisplayedProducts([]);
+        return;
+      }
 
       let filteredProducts = [...products];
 
@@ -158,68 +161,94 @@ const useProductListingData = ({ pageType, category }) => {
     [filters, sortBy, currentPage, itemsPerPage, pageType]
   );
 
+  // Store the previous category value to detect changes
+  const prevCategoryRef = useRef();
+  const prevPageTypeRef = useRef();
+
   // Fetch products based on page type
   useEffect(() => {
-    setLoading(true);
-    setError(null);
+    // Only fetch if category or pageType has changed
+    const categoryChanged = prevCategoryRef.current !== category;
+    const pageTypeChanged = prevPageTypeRef.current !== pageType;
 
-    const fetchProducts = async () => {
-      try {
-        let data = [];
+    // Update refs for next comparison
+    prevCategoryRef.current = category;
+    prevPageTypeRef.current = pageType;
 
-        if (pageType === "category" && category) {
-          // For category pages, fetch products by category
-          data = await productsService.getProductsByCategory(category);
-        } else {
-          // For offers page, fetch all products
-          data = await productsService.getAllProducts();
+    if (categoryChanged || pageTypeChanged) {
+      setLoading(true);
+      setError(null);
 
-          // For offers page, pre-filter to only show products with discounts
-          data = data.filter(
-            (product) =>
-              product.new_price > 0 && product.new_price < product.old_price
+      const fetchProducts = async () => {
+        try {
+          console.log(
+            `Fetching products: pageType=${pageType}, category=${category}`
           );
-        }
+          let data = [];
 
-        if (!Array.isArray(data)) {
-          console.warn("API didn't return an array for products", data);
-          if (isMounted.current) {
-            setAllProducts([]);
-            setDisplayedProducts([]);
+          if (pageType === "category" && category) {
+            // For category pages, fetch products by category
+            data = await productsService.getProductsByCategory(category);
+          } else {
+            // For offers page, fetch all products
+            data = await productsService.getAllProducts();
+
+            // For offers page, pre-filter to only show products with discounts
+            data = data.filter(
+              (product) =>
+                product.new_price > 0 && product.new_price < product.old_price
+            );
           }
-        } else {
+
+          if (!Array.isArray(data)) {
+            console.warn("API didn't return an array for products", data);
+            if (isMounted.current) {
+              setAllProducts([]);
+              setDisplayedProducts([]);
+              setLoading(false);
+            }
+          } else {
+            console.log(`Received ${data.length} products from API`);
+            if (isMounted.current) {
+              setAllProducts(data);
+              setAvailableTags([
+                ...new Set(data.flatMap((item) => item.tags || [])),
+              ]);
+              setAvailableTypes([
+                ...new Set(data.flatMap((item) => item.types || [])),
+              ]);
+              filterAndSortProducts(data);
+              setLoading(false);
+            }
+          }
+        } catch (err) {
+          console.error("Error fetching products:", err);
           if (isMounted.current) {
-            setAllProducts(data);
-            setAvailableTags([
-              ...new Set(data.flatMap((item) => item.tags || [])),
-            ]);
-            setAvailableTypes([
-              ...new Set(data.flatMap((item) => item.types || [])),
-            ]);
-            filterAndSortProducts(data);
+            setError(
+              err.message || "Error fetching products. Please try again."
+            );
+            setLoading(false);
           }
         }
-      } catch (err) {
-        console.error("Error fetching products:", err);
-        if (isMounted.current) {
-          setError(err.message || "Error fetching products. Please try again.");
-        }
-      } finally {
-        if (isMounted.current) {
-          setLoading(false);
-        }
-      }
-    };
+      };
 
-    fetchProducts();
-  }, [category, filterAndSortProducts, pageType]);
+      fetchProducts();
+    }
+  }, [category, pageType, filterAndSortProducts]);
 
-  // Reapply filters and sorting whenever allProducts or filtering options change
+  // Apply filters and sorting when filter states change
   useEffect(() => {
     if (allProducts.length > 0) {
       filterAndSortProducts(allProducts);
     }
-  }, [allProducts, filterAndSortProducts]);
+  }, [
+    filters,
+    sortBy,
+    currentPage,
+    itemsPerPage,
+    allProducts,
+    filterAndSortProducts,
+  ]);
 
   // Handle filter changes
   const handleFilterChange = useCallback((filterType, value) => {
@@ -315,7 +344,8 @@ const useProductListingData = ({ pageType, category }) => {
 
   // Calculate display range
   const totalProducts = allProducts.length;
-  const startItem = (currentPage - 1) * itemsPerPage + 1;
+  const startItem =
+    totalProducts > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0;
   const endItem = Math.min(startItem + itemsPerPage - 1, totalProducts);
   const displayRange = totalProducts > 0 ? `${startItem}-${endItem}` : "0-0";
 
