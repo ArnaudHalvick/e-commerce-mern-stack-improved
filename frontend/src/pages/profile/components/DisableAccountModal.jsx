@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import FormSubmitButton from "../../../components/form/FormSubmitButton";
 
 /**
  * Modal component for confirming account disabling with password verification
@@ -79,16 +80,13 @@ const DisableAccountModal = ({
             </div>
 
             <div className="modal-actions">
-              <button
+              <FormSubmitButton
                 type="button"
-                className="modal-cancel-btn"
+                text="Cancel"
+                variant="secondary"
                 onClick={onClose}
                 disabled={isProcessing}
-                tabIndex="0"
-                aria-label="Cancel disabling account"
-              >
-                Cancel
-              </button>
+              />
               <button
                 type="submit"
                 className={

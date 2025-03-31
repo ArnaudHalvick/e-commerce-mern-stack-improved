@@ -1,4 +1,5 @@
 import React from "react";
+import FormSubmitButton from "../../../components/form/FormSubmitButton";
 
 /**
  * EmailVerification component for handling email verification status
@@ -25,17 +26,18 @@ const EmailVerification = ({
           Verification email sent! Please check your inbox.
         </p>
       ) : (
-        <button
-          className={
-            sendingVerification ? "profile-btn-disabled" : "profile-btn-primary"
+        <FormSubmitButton
+          type="button"
+          text={
+            sendingVerification
+              ? "Sending Verification Email..."
+              : "Resend Verification Email"
           }
-          onClick={handleResendVerification}
+          isLoading={sendingVerification}
           disabled={loading || sendingVerification}
-        >
-          {sendingVerification
-            ? "Sending Verification Email..."
-            : "Resend Verification Email"}
-        </button>
+          variant="primary"
+          onClick={handleResendVerification}
+        />
       )}
     </div>
   );

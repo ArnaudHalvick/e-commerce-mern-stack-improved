@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useError } from "../../../context/ErrorContext";
 import FormInputField from "../../../components/form/FormInputField";
+import FormSubmitButton from "../../../components/form/FormSubmitButton";
 
 /**
  * ShippingAddressSection component for displaying and editing user's shipping address
@@ -101,17 +102,13 @@ const ShippingAddressSection = ({
       <div className="profile-section-header">
         <h2 className="profile-section-title">Shipping Address</h2>
         {!isEditingAddress && (
-          <button
+          <FormSubmitButton
             type="button"
-            className="profile-btn-edit"
+            variant="secondary"
+            size="small"
+            text="Edit"
             onClick={() => setIsEditingAddress(true)}
-            aria-label="Edit shipping address"
-          >
-            <span className="profile-edit-icon" aria-hidden="true">
-              ✏️
-            </span>
-            Edit
-          </button>
+          />
         )}
       </div>
 
@@ -219,18 +216,17 @@ const ShippingAddressSection = ({
           </div>
 
           <div className="profile-form-actions">
-            <button
+            <FormSubmitButton
               type="submit"
-              className={
-                isAddressValid ? "profile-btn-primary" : "profile-btn-disabled"
-              }
-              disabled={loading || updatingProfile || !isAddressValid}
-            >
-              {updatingProfile ? "Saving..." : "Save Changes"}
-            </button>
-            <button
+              text={updatingProfile ? "Saving..." : "Save Changes"}
+              isLoading={updatingProfile}
+              disabled={!isAddressValid}
+              variant="primary"
+            />
+            <FormSubmitButton
               type="button"
-              className="profile-btn-secondary"
+              text="Cancel"
+              variant="secondary"
               onClick={() => {
                 setIsEditingAddress(false);
                 // Reset address form to original values
@@ -248,9 +244,7 @@ const ShippingAddressSection = ({
                 setFieldErrors({});
               }}
               disabled={loading || updatingProfile}
-            >
-              Cancel
-            </button>
+            />
           </div>
         </form>
       ) : (

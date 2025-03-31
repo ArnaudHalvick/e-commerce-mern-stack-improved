@@ -2,7 +2,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
   min-width: 7.5rem;
   border-radius: 0.25rem;
   font-weight: 600;
@@ -68,6 +67,19 @@
 
 .form-submit-button--secondary:hover:not(:disabled) {
   background-color: #5a6268;
+}
+
+/* Danger variant - for destructive actions like "Disable Account" */
+.form-submit-button--danger {
+  background-color: #dc3545;
+}
+
+.form-submit-button--danger:hover:not(:disabled) {
+  background-color: #c82333;
+}
+
+.form-submit-button--danger:active:not(:disabled) {
+  transform: scale(0.98);
 }
 
 .form-submit-button--outline {

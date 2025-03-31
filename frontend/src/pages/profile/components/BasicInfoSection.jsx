@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useError } from "../../../context/ErrorContext";
 import FormInputField from "../../../components/form/FormInputField";
+import FormSubmitButton from "../../../components/form/FormSubmitButton";
 
 /**
  * BasicInfoSection component for displaying and editing user's basic information
@@ -66,17 +67,13 @@ const BasicInfoSection = ({
       <div className="profile-section-header">
         <h2 className="profile-section-title">Basic Information</h2>
         {!isEditingBasicInfo && (
-          <button
+          <FormSubmitButton
             type="button"
-            className="profile-btn-edit"
+            variant="secondary"
+            size="small"
+            text="Edit"
             onClick={() => setIsEditingBasicInfo(true)}
-            aria-label="Edit basic information"
-          >
-            <span className="profile-edit-icon" aria-hidden="true">
-              ✏️
-            </span>
-            Edit
-          </button>
+          />
         )}
       </div>
 
@@ -120,20 +117,17 @@ const BasicInfoSection = ({
           />
 
           <div className="profile-form-actions">
-            <button
+            <FormSubmitButton
               type="submit"
-              className={
-                isBasicInfoValid
-                  ? "profile-btn-primary"
-                  : "profile-btn-disabled"
-              }
-              disabled={loading || updatingProfile || !isBasicInfoValid}
-            >
-              {updatingProfile ? "Saving..." : "Save Changes"}
-            </button>
-            <button
+              text={updatingProfile ? "Saving..." : "Save Changes"}
+              isLoading={updatingProfile}
+              disabled={!isBasicInfoValid}
+              variant="primary"
+            />
+            <FormSubmitButton
               type="button"
-              className="profile-btn-secondary"
+              text="Cancel"
+              variant="secondary"
               onClick={() => {
                 setIsEditingBasicInfo(false);
                 // Reset basic info form to original values
@@ -146,9 +140,7 @@ const BasicInfoSection = ({
                 setFieldErrors({});
               }}
               disabled={loading || updatingProfile}
-            >
-              Cancel
-            </button>
+            />
           </div>
         </form>
       ) : (

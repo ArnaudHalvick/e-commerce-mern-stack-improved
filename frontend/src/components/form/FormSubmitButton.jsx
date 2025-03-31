@@ -14,7 +14,7 @@ import "./FormSubmitButton.css";
  * @param {string} props.type - Button type (defaults to "submit")
  * @param {string} props.className - Additional CSS class names
  * @param {string} props.size - Button size (small, medium, large)
- * @param {string} props.variant - Button color variant (primary, secondary, outline)
+ * @param {string} props.variant - Button color variant (primary, secondary, outline, danger)
  * @param {Object} props.style - Additional inline styles
  */
 const FormSubmitButton = ({
@@ -89,7 +89,7 @@ FormSubmitButton.propTypes = {
   type: PropTypes.string,
   className: PropTypes.string,
   size: PropTypes.oneOf(["small", "medium", "large"]),
-  variant: PropTypes.oneOf(["primary", "secondary", "outline"]),
+  variant: PropTypes.oneOf(["primary", "secondary", "outline", "danger"]),
   style: PropTypes.object,
 };
 

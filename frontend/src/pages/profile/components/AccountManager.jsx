@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import DisableAccountModal from "./DisableAccountModal";
+import FormSubmitButton from "../../../components/form/FormSubmitButton";
 
 /**
  * AccountManager component for account-related actions
@@ -39,17 +40,14 @@ const AccountManager = ({ handleDisableAccount, disablingAccount }) => {
     <section className="profile-section">
       <h2 className="profile-section-title">Account Management</h2>
       <div className="profile-account-actions">
-        <button
-          className={
-            disablingAccount ? "profile-btn-disabled" : "profile-btn-danger"
-          }
-          onClick={handleOpenModal}
+        <FormSubmitButton
+          type="button"
+          text={disablingAccount ? "Disabling Account..." : "Disable Account"}
+          isLoading={disablingAccount}
           disabled={disablingAccount}
-          tabIndex="0"
-          aria-label="Disable account"
-        >
-          {disablingAccount ? "Disabling Account..." : "Disable Account"}
-        </button>
+          variant="danger"
+          onClick={handleOpenModal}
+        />
       </div>
       <div className="profile-account-warning">
         <p>

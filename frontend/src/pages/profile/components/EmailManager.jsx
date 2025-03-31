@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { requestEmailChange } from "../../../redux/slices/userSlice";
 import { useError } from "../../../context/ErrorContext";
 import { validateEmail } from "../../../utils/validation";
+import FormSubmitButton from "../../../components/form/FormSubmitButton";
 
 const EmailManager = ({ user, showSuccess, showError }) => {
   const dispatch = useDispatch();
@@ -103,15 +104,14 @@ const EmailManager = ({ user, showSuccess, showError }) => {
       <div className="profile-section-header">
         <h2 className="profile-section-title">Email Management</h2>
         {!isEditing && (
-          <button
-            className="profile-btn-secondary"
+          <FormSubmitButton
+            type="button"
+            variant="secondary"
+            size="small"
+            text="Edit"
             onClick={() => setIsEditing(true)}
-            tabIndex="0"
-            aria-label="Edit email address"
             disabled={isLoading}
-          >
-            Edit
-          </button>
+          />
         )}
       </div>
 
@@ -175,26 +175,23 @@ const EmailManager = ({ user, showSuccess, showError }) => {
           </div>
 
           <div className="profile-form-actions">
-            <button
+            <FormSubmitButton
               type="submit"
-              className={
-                isLoading || !isFormValid
-                  ? "profile-btn-disabled"
-                  : "profile-btn-primary"
+              text={
+                isLoading ? "Sending Verification..." : "Request Email Change"
               }
-              disabled={isLoading || !isFormValid}
-            >
-              {isLoading ? "Sending Verification..." : "Request Email Change"}
-            </button>
+              isLoading={isLoading}
+              disabled={!isFormValid}
+              variant="primary"
+            />
 
-            <button
+            <FormSubmitButton
               type="button"
-              className="profile-btn-secondary"
+              text="Cancel"
+              variant="secondary"
               onClick={handleCancel}
               disabled={isLoading}
-            >
-              Cancel
-            </button>
+            />
           </div>
         </form>
       )}

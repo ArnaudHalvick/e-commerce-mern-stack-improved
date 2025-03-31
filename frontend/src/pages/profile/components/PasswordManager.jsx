@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useError } from "../../../context/ErrorContext";
 import { debounce } from "lodash";
 import { validatePassword } from "../../../utils/validation";
+import FormSubmitButton from "../../../components/form/FormSubmitButton";
 
 /**
  * PasswordManager component for handling password changes
@@ -176,15 +177,14 @@ const PasswordManager = ({
       <div className="profile-section-header">
         <h2 className="profile-section-title">Password Management</h2>
         {!isChangingPassword && (
-          <button
-            className="profile-btn-secondary"
+          <FormSubmitButton
+            type="button"
+            variant="secondary"
+            text="Change Password"
+            size="small"
             onClick={() => setIsChangingPassword(true)}
-            tabIndex="0"
-            aria-label="Change password"
             disabled={loading || changingPassword}
-          >
-            Change Password
-          </button>
+          />
         )}
       </div>
 
@@ -329,20 +329,23 @@ const PasswordManager = ({
           </div>
 
           <div className="profile-form-actions">
-            <button
+            <FormSubmitButton
               type="submit"
-              className={
-                isFormValid ? "profile-btn-primary" : "profile-btn-disabled"
+              text={
+                loading || changingPassword
+                  ? "Changing Password..."
+                  : "Change Password"
               }
-              disabled={loading || changingPassword || !isFormValid}
-            >
-              {loading || changingPassword
-                ? "Changing Password..."
-                : "Change Password"}
-            </button>
-            <button
+              isLoading={loading || changingPassword}
+              disabled={!isFormValid}
+              variant="primary"
+              size="small"
+            />
+            <FormSubmitButton
               type="button"
-              className="profile-btn-secondary"
+              text="Cancel"
+              variant="secondary"
+              size="small"
               onClick={() => {
                 // Reset password fields before closing
                 handlePasswordInputChange({
@@ -357,9 +360,7 @@ const PasswordManager = ({
                 setIsChangingPassword(false);
               }}
               disabled={loading || changingPassword}
-            >
-              Cancel
-            </button>
+            />
           </div>
         </form>
       )}
