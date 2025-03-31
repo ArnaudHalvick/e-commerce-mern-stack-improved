@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { config } from "../../../api";
+import { productsService } from "../../../api";
 
 /**
  * Custom hook for fetching, filtering, and sorting products on the offers page
@@ -144,39 +144,41 @@ const useOffersData = () => {
     setLoading(true);
     setError(null);
 
-    fetch(config.getApiUrl("products?basicInfo=true"))
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(
-            `Failed to fetch products: ${res.status} ${res.statusText}`
-          );
-        }
-        return res.json();
-      })
-      .then((data) => {
+    const fetchDiscountedProducts = async () => {
+      try {
+        // Use productsService to get all products
+        const data = await productsService.getAllProducts();
+
         if (!Array.isArray(data)) {
           console.warn("API didn't return an array for products", data);
           setAllProducts([]);
           setDisplayedProducts([]);
         } else {
-          setAllProducts(data);
+          // For offers page, pre-filter to only show products with discounts
+          const discountedProducts = data.filter(
+            (product) =>
+              product.new_price > 0 && product.new_price < product.old_price
+          );
+
+          setAllProducts(discountedProducts);
           setAvailableTags([
-            ...new Set(data.flatMap((item) => item.tags || [])),
+            ...new Set(discountedProducts.flatMap((item) => item.tags || [])),
           ]);
           setAvailableTypes([
-            ...new Set(data.flatMap((item) => item.types || [])),
+            ...new Set(discountedProducts.flatMap((item) => item.types || [])),
           ]);
-          filterAndSortProducts(data);
+          filterAndSortProducts(discountedProducts);
         }
-        setLoading(false);
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error("Error fetching products:", err);
         setError(err.message);
+      } finally {
         setLoading(false);
-      });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+      }
+    };
+
+    fetchDiscountedProducts();
+  }, [filterAndSortProducts]);
 
   // Reapply filters and sorting whenever allProducts or filtering options change
   useEffect(() => {
@@ -256,7 +258,7 @@ const useOffersData = () => {
   // Handle items per page change
   const handleItemsPerPageChange = (items) => {
     setItemsPerPage(items);
-    setCurrentPage(1); // Reset to first page when changing items per page
+    setCurrentPage(1); // Reset to first page
   };
 
   // Clear all filters
@@ -273,9 +275,13 @@ const useOffersData = () => {
     setCurrentPage(1);
   };
 
+  // Calculate display range for products
+  const displayRange = `${Math.min(
+    (currentPage - 1) * itemsPerPage + 1,
+    allProducts.length
+  )}-${Math.min(currentPage * itemsPerPage, allProducts.length)}`;
+
   return {
-    // Data
-    allProducts,
     displayedProducts,
     loading,
     error,
@@ -287,15 +293,8 @@ const useOffersData = () => {
     filters,
     availableTags,
     availableTypes,
-
-    // Display info
-    displayRange: `${Math.min(
-      (currentPage - 1) * itemsPerPage + 1,
-      allProducts.length
-    )}-${Math.min(currentPage * itemsPerPage, allProducts.length)}`,
+    displayRange,
     totalProducts: allProducts.length,
-
-    // Actions
     setShowSortOptions,
     handleFilterChange,
     handleSortChange,

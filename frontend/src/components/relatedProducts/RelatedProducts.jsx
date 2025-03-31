@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import "./RelatedProducts.css";
 import Item from "../item/Item";
 import { useParams } from "react-router-dom";
-import { config } from "../../api";
+import { productsService } from "../../api";
 
 const RelatedProducts = ({ product }) => {
   const [relatedProducts, setRelatedProducts] = useState([]);
@@ -21,53 +21,31 @@ const RelatedProducts = ({ product }) => {
     setLoading(true);
     setError(null);
 
-    // Determine which parameters to use for the API call
-    const id = product._id || productId;
-    const slug = product.slug || productSlug;
-    const { category } = product;
+    const fetchRelatedProducts = async () => {
+      try {
+        // Determine which parameters to use for the API call
+        const id = product._id || productId;
+        const { category } = product;
 
-    // Build the API URL with the available parameters
-    let apiUrl = `${config.API_BASE_URL}/api/products/related/${category}`;
+        // Use productsService to get related products
+        const data = await productsService.getRelatedProducts(category, id);
 
-    // Add productId if available
-    if (id) {
-      apiUrl += `/${id}`;
-    } else {
-      apiUrl += "/null"; // Use 'null' as a placeholder
-    }
-
-    // Add productSlug if available
-    if (slug) {
-      apiUrl += `/${slug}`;
-    }
-
-    // Add query parameters
-    apiUrl += "?basicInfo=true";
-
-    fetch(apiUrl)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(
-            `Failed to fetch related products: ${res.status} ${res.statusText}`
-          );
-        }
-        return res.json();
-      })
-      .then((data) => {
-        // Validate and log data for debugging
+        // Validate data
         if (!Array.isArray(data)) {
           console.warn("API didn't return an array for related products", data);
           setRelatedProducts([]);
         } else {
           setRelatedProducts(data);
         }
-        setLoading(false);
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error("Error fetching related products:", err);
         setError(err.message);
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+
+    fetchRelatedProducts();
   }, [product, productId, productSlug]);
 
   if (loading) {

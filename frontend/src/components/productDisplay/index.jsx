@@ -1,5 +1,5 @@
 import "./ProductDisplay.css";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import {
   ImageGallery,
   ProductInfo,
@@ -15,6 +15,8 @@ import useProductDisplay from "./hooks/useProductDisplay";
  * @param {Object} props.product - The product data
  */
 const ProductDisplay = ({ product }) => {
+  const displayRef = useRef(null);
+
   const {
     selectedSize,
     quantity,
@@ -27,8 +29,15 @@ const ProductDisplay = ({ product }) => {
     handleAddToCart,
   } = useProductDisplay(product);
 
+  // Make the ref accessible via an ID for easier scrolling from outside
+  useEffect(() => {
+    if (displayRef.current) {
+      displayRef.current.id = "product-display";
+    }
+  }, []);
+
   return (
-    <div className="product-display">
+    <div className="product-display" ref={displayRef}>
       <ImageGallery
         images={product.images}
         selectedImageIndex={selectedImageIndex}

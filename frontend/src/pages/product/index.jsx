@@ -1,5 +1,5 @@
-import React from "react";
-import { useParams } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useParams, useLocation } from "react-router-dom";
 
 // Components
 import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
@@ -9,15 +9,25 @@ import RelatedProducts from "../../components/relatedProducts/RelatedProducts";
 import ProductPageStatus from "./components/ProductPageStatus";
 import EmptyState from "../../components/errorHandling/EmptyState";
 
-// Hooks
+// Hooks and Utilities
 import useProductData from "./hooks/useProductData";
+import { scrollToProductDisplay } from "../../utils/scrollHelpers";
 
 /**
  * Product page component that displays product details
  */
 const Product = () => {
   const { productId, productSlug } = useParams();
+  const location = useLocation();
   const { product, loading, error } = useProductData(productId, productSlug);
+
+  // Scroll product-display into view when product page is loaded or route changes
+  useEffect(() => {
+    if (product && !loading) {
+      // Use the utility function to scroll the product display into view
+      scrollToProductDisplay();
+    }
+  }, [product, loading, location.pathname]);
 
   // Show status component if loading or error
   if (loading || error) {
