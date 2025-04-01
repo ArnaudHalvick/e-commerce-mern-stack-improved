@@ -35,20 +35,47 @@ export const fetchCart = createAsyncThunk(
 
 export const addToCart = createAsyncThunk(
   "cart/addItem",
-  async ({ itemId, quantity = 1, size }, { rejectWithValue }) => {
+  async ({ itemId, quantity = 1, size }, { rejectWithValue, dispatch }) => {
     try {
       const token = localStorage.getItem("auth-token");
       if (!token) {
         return rejectWithValue("Authentication required");
       }
 
-      // Use API service
-      const data = await cartService.addToCart({ itemId, quantity, size });
+      // Use API service - ensuring we pass the correct parameter structure
+      const data = await cartService.addToCart({
+        itemId,
+        quantity,
+        size,
+        color: null, // Add default color parameter (null if not used)
+      });
 
-      return data.cart;
+      // If successful, return the cart data
+      if (data && data.cart) {
+        return data.cart;
+      }
+
+      // Handle missing/invalid response
+      if (!data || !data.success) {
+        const errorMsg = data?.message || "Failed to add item to cart";
+        console.error("Cart update error:", errorMsg);
+        return rejectWithValue(errorMsg);
+      }
+
+      return { items: [], totalItems: 0, totalPrice: 0 };
     } catch (error) {
+      console.error("Add to cart error:", error?.response?.data || error);
+
+      // If we get a 401 Unauthorized error, the token might be invalid
+      if (error?.response?.status === 401) {
+        // Refresh the cart to sync with the server state
+        setTimeout(() => dispatch(fetchCart()), 100);
+      }
+
       return rejectWithValue(
-        typeof error === "string" ? error : "Failed to add item to cart"
+        error?.response?.data?.message ||
+          error?.message ||
+          "Failed to add item to cart"
       );
     }
   }
@@ -57,8 +84,8 @@ export const addToCart = createAsyncThunk(
 export const removeFromCart = createAsyncThunk(
   "cart/removeItem",
   async (
-    { itemId, quantity = 1, removeAll = false, size },
-    { rejectWithValue }
+    { itemId, quantity = 1, removeAll = false, size, color = null },
+    { rejectWithValue, dispatch }
   ) => {
     try {
       const token = localStorage.getItem("auth-token");
@@ -66,18 +93,41 @@ export const removeFromCart = createAsyncThunk(
         return rejectWithValue("Authentication required");
       }
 
-      // Use API service
+      // Use API service with consistent parameter structure
       const data = await cartService.removeFromCart({
         itemId,
         quantity,
         removeAll,
-        size,
+        size: size || null,
+        color: color || null,
       });
 
-      return data.cart || { items: [], totalItems: 0, totalPrice: 0 };
+      // If successful, return the cart data
+      if (data && data.cart) {
+        return data.cart;
+      }
+
+      // Handle missing/invalid response
+      if (!data || !data.success) {
+        const errorMsg = data?.message || "Failed to remove item from cart";
+        console.error("Cart update error:", errorMsg);
+        return rejectWithValue(errorMsg);
+      }
+
+      return { items: [], totalItems: 0, totalPrice: 0 };
     } catch (error) {
+      console.error("Remove from cart error:", error?.response?.data || error);
+
+      // If we get a 401 Unauthorized error, the token might be invalid
+      if (error?.response?.status === 401) {
+        // Refresh the cart to sync with the server state
+        setTimeout(() => dispatch(fetchCart()), 100);
+      }
+
       return rejectWithValue(
-        typeof error === "string" ? error : "Failed to remove item from cart"
+        error?.response?.data?.message ||
+          error?.message ||
+          "Failed to remove item from cart"
       );
     }
   }

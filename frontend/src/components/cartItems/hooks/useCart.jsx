@@ -58,15 +58,45 @@ const useCart = () => {
 
   const handleQuantityBlur = useCallback(
     (id, size) => {
+      if (!isAuthenticated) {
+        showError("Please login to modify your cart");
+        return;
+      }
+
       const key = `${id}-${size}`;
       const newValue = editableQuantities[key];
+
+      // Ensure size is a valid string
+      const validSize = size || "one-size"; // Use a default size if none provided
+
       if (newValue !== undefined) {
         dispatch(
-          updateCartItem({ itemId: id, quantity: newValue, size })
-        ).catch((err) => {
-          console.error("Error updating quantity:", err);
-          showError("Failed to update quantity. Please try again.");
-        });
+          updateCartItem({
+            itemId: id,
+            quantity: newValue,
+            size: validSize,
+            color: null,
+          })
+        )
+          .unwrap()
+          .then(() => {
+            console.log("Quantity updated successfully");
+          })
+          .catch((err) => {
+            console.error("Error updating quantity:", err);
+
+            // Check if it's an authentication error
+            if (
+              err.includes &&
+              (err.includes("Authentication required") || err.includes("401"))
+            ) {
+              showError("Your session has expired. Please login again.");
+            } else if (err.includes && err.includes("Size is required")) {
+              showError("Please select a size for this item");
+            } else {
+              showError("Failed to update quantity. Please try again.");
+            }
+          });
 
         // Clear the editable state
         setEditableQuantities((prev) => {
@@ -76,27 +106,63 @@ const useCart = () => {
         });
       }
     },
-    [dispatch, editableQuantities, showError]
+    [dispatch, editableQuantities, isAuthenticated, showError]
   );
 
   const handleRemoveAll = useCallback(
     (id, size) => {
+      if (!isAuthenticated) {
+        showError("Please login to modify your cart");
+        return;
+      }
+
       // Find the item to calculate price impact
       const item = items.find(
         (item) => item.productId === id && item.size === size
       );
+
+      // Ensure size is a valid string
+      const validSize = size || "one-size"; // Use a default size if none provided
+
       if (item) {
         // Update local total price immediately for better UX
         setLocalTotalPrice((prev) => prev - item.price * item.quantity);
       }
-      dispatch(removeFromCart({ itemId: id, removeAll: true, size })).catch(
-        (err) => {
+
+      dispatch(
+        removeFromCart({
+          itemId: id,
+          removeAll: true,
+          size: validSize,
+          color: null,
+        })
+      )
+        .unwrap()
+        .then(() => {
+          console.log("Items removed successfully");
+        })
+        .catch((err) => {
           console.error("Error removing items:", err);
-          showError("Failed to remove items. Please try again.");
-        }
-      );
+
+          // If the operation fails, revert the optimistic UI update
+          if (item) {
+            setLocalTotalPrice((prev) => prev + item.price * item.quantity);
+          }
+
+          // Check if it's an authentication error
+          if (
+            err.includes &&
+            (err.includes("Authentication required") || err.includes("401"))
+          ) {
+            showError("Your session has expired. Please login again.");
+          } else if (err.includes && err.includes("Size is required")) {
+            showError("Please select a size for this item");
+          } else {
+            showError("Failed to remove items. Please try again.");
+          }
+        });
     },
-    [dispatch, items, showError]
+    [dispatch, items, isAuthenticated, showError]
   );
 
   const handleAddItem = useCallback(
@@ -110,44 +176,109 @@ const useCart = () => {
       const item = items.find(
         (item) => item.productId === id && item.size === size
       );
+
+      // Ensure size is a valid string
+      const validSize = size || "one-size"; // Use a default size if none provided
+
       if (item) {
         // Update local total price immediately for better UX
         setLocalTotalPrice((prev) => prev + item.price);
       }
-      dispatch(addToCart({ itemId: id, quantity: 1, size })).catch((err) => {
-        console.error("Error adding item:", err);
-        // If the add operation fails, revert the optimistic UI update
-        if (item) {
-          setLocalTotalPrice((prev) => prev - item.price);
-        }
-        showError("Failed to update cart. Please try again.");
-      });
+
+      dispatch(
+        addToCart({
+          itemId: id,
+          quantity: 1,
+          size: validSize, // Use validated size
+          color: null,
+        })
+      )
+        .unwrap()
+        .then((result) => {
+          // Success handling if needed
+          console.log("Item added successfully");
+        })
+        .catch((err) => {
+          console.error("Error adding item:", err);
+
+          // If the add operation fails, revert the optimistic UI update
+          if (item) {
+            setLocalTotalPrice((prev) => prev - item.price);
+          }
+
+          // Check if it's an authentication error
+          if (
+            err.includes &&
+            (err.includes("Authentication required") || err.includes("401"))
+          ) {
+            showError("Your session has expired. Please login again.");
+            // Could redirect to login here if needed
+          } else if (err.includes && err.includes("Size is required")) {
+            showError("Please select a size for this item");
+          } else {
+            showError("Failed to update cart. Please try again.");
+          }
+        });
     },
     [dispatch, items, isAuthenticated, showError]
   );
 
   const handleRemoveItem = useCallback(
     (id, size) => {
+      if (!isAuthenticated) {
+        showError("Please login to modify your cart");
+        return;
+      }
+
       // Find the item to calculate price impact
       const item = items.find(
         (item) => item.productId === id && item.size === size
       );
+
+      // Ensure size is a valid string
+      const validSize = size || "one-size"; // Use a default size if none provided
+
       if (item) {
         // Update local total price immediately for better UX
         setLocalTotalPrice((prev) => prev - item.price);
       }
-      dispatch(removeFromCart({ itemId: id, quantity: 1, size })).catch(
-        (err) => {
+
+      dispatch(
+        removeFromCart({
+          itemId: id,
+          quantity: 1,
+          size: validSize, // Use validated size
+          color: null,
+        })
+      )
+        .unwrap()
+        .then((result) => {
+          // Success handling if needed
+          console.log("Item removed successfully");
+        })
+        .catch((err) => {
           console.error("Error removing item:", err);
+
           // If the remove operation fails, revert the optimistic UI update
           if (item) {
             setLocalTotalPrice((prev) => prev + item.price);
           }
-          showError("Failed to update cart. Please try again.");
-        }
-      );
+
+          // Check if it's an authentication error
+          if (
+            err.includes &&
+            (err.includes("Authentication required") || err.includes("401"))
+          ) {
+            showError("Your session has expired. Please login again.");
+            // Could redirect to login here if needed
+          } else if (err.includes && err.includes("Size is required")) {
+            showError("Please select a size for this item");
+          } else {
+            showError("Failed to update cart. Please try again.");
+          }
+        });
     },
-    [dispatch, items, showError]
+    [dispatch, items, isAuthenticated, showError]
   );
 
   return {
