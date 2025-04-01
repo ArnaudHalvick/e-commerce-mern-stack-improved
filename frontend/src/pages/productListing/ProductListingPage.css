@@ -383,6 +383,17 @@
     width: 100%;
     justify-content: space-between;
   }
+
+  .product-listing-item {
+    flex: 0 0 calc((100% - 1rem) / 2); /* 2 items per row with less gap */
+    max-width: calc((100% - 1rem) / 2);
+    margin-bottom: 1rem;
+  }
+
+  .product-listing-grid {
+    gap: 1rem;
+    justify-content: space-between;
+  }
 }
 
 @media screen and (max-width: 576px) {
