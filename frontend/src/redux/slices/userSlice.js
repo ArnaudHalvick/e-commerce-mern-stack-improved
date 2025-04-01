@@ -3,6 +3,72 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { config } from "../../api";
+import { authService } from "../../api";
+
+// Async thunk for login
+export const loginUser = createAsyncThunk(
+  "user/login",
+  async ({ email, password }, { rejectWithValue }) => {
+    try {
+      const response = await authService.login(email, password);
+
+      if (response.success) {
+        localStorage.setItem("auth-token", response.token);
+        localStorage.removeItem("user-logged-out");
+        return response.user;
+      } else {
+        return rejectWithValue(response.message || "Login failed");
+      }
+    } catch (err) {
+      return rejectWithValue(err.message || "Login failed. Please try again.");
+    }
+  }
+);
+
+// Async thunk for registration
+export const registerUser = createAsyncThunk(
+  "user/register",
+  async (userData, { rejectWithValue }) => {
+    try {
+      const response = await authService.register(userData);
+
+      if (response.success) {
+        localStorage.setItem("auth-token", response.token);
+        localStorage.removeItem("user-logged-out");
+        return {
+          user: response.user,
+          needsVerification: true,
+        };
+      } else {
+        return rejectWithValue(response.message || "Registration failed");
+      }
+    } catch (err) {
+      return rejectWithValue(
+        err.message || "Registration failed. Please try again."
+      );
+    }
+  }
+);
+
+// Async thunk for verifying authentication token
+export const verifyToken = createAsyncThunk(
+  "user/verifyToken",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await authService.verifyToken();
+
+      if (response.success) {
+        return response.user;
+      } else {
+        return rejectWithValue(response.message || "Token verification failed");
+      }
+    } catch (err) {
+      return rejectWithValue(
+        err.message || "Token verification failed. Please try again."
+      );
+    }
+  }
+);
 
 // Async thunk for updating user profile
 export const updateUserProfile = createAsyncThunk(
@@ -235,10 +301,14 @@ export const requestEmailChange = createAsyncThunk(
 // Define the initial state as a separate constant for easier maintenance
 const initialState = {
   profile: null,
+  user: null,
+  isAuthenticated: false,
   isEmailVerified: false,
   verificationRequested: false,
   emailChangeRequested: false,
   loading: false,
+  isInitialized: false,
+  accountDisabled: false,
   loadingStates: {
     verifyingEmail: false,
     sendingVerification: false,
@@ -246,11 +316,13 @@ const initialState = {
     changingPassword: false,
     updatingProfile: false,
     changingEmail: false,
+    login: false,
+    register: false,
+    verifyingToken: false,
   },
   error: null,
   passwordChanged: false,
   passwordChangePending: false,
-  accountDisabled: false,
 };
 
 const userSlice = createSlice({
@@ -258,10 +330,23 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action) => {
+      state.user = action.payload;
       state.profile = action.payload;
+      state.isAuthenticated = true;
       state.isEmailVerified = action.payload?.isEmailVerified || false;
     },
-    clearUser: () => ({ ...initialState }),
+    clearUser: (state) => {
+      state.user = null;
+      state.profile = null;
+      state.isAuthenticated = false;
+      state.isEmailVerified = false;
+      state.verificationRequested = false;
+      state.emailChangeRequested = false;
+      state.passwordChanged = false;
+      state.passwordChangePending = false;
+      state.accountDisabled = false;
+      state.error = null;
+    },
     clearError: (state) => {
       state.error = null;
     },
@@ -269,9 +354,77 @@ const userSlice = createSlice({
       state.passwordChanged = false;
       state.passwordChangePending = false;
     },
+    setInitialized: (state, action) => {
+      state.isInitialized = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
+      // Login user
+      .addCase(loginUser.pending, (state) => {
+        state.loading = true;
+        state.loadingStates.login = true;
+        state.error = null;
+      })
+      .addCase(loginUser.fulfilled, (state, action) => {
+        state.user = action.payload;
+        state.profile = action.payload;
+        state.isAuthenticated = true;
+        state.isEmailVerified = action.payload?.isEmailVerified || false;
+        state.loading = false;
+        state.loadingStates.login = false;
+        state.error = null;
+      })
+      .addCase(loginUser.rejected, (state, action) => {
+        state.loading = false;
+        state.loadingStates.login = false;
+        state.error = action.payload;
+      })
+
+      // Register user
+      .addCase(registerUser.pending, (state) => {
+        state.loading = true;
+        state.loadingStates.register = true;
+        state.error = null;
+      })
+      .addCase(registerUser.fulfilled, (state, action) => {
+        state.user = action.payload.user;
+        state.profile = action.payload.user;
+        state.isAuthenticated = true;
+        state.isEmailVerified = false;
+        state.verificationRequested = action.payload.needsVerification;
+        state.loading = false;
+        state.loadingStates.register = false;
+        state.error = null;
+      })
+      .addCase(registerUser.rejected, (state, action) => {
+        state.loading = false;
+        state.loadingStates.register = false;
+        state.error = action.payload;
+      })
+
+      // Verify token
+      .addCase(verifyToken.pending, (state) => {
+        state.loading = true;
+        state.loadingStates.verifyingToken = true;
+        state.error = null;
+      })
+      .addCase(verifyToken.fulfilled, (state, action) => {
+        state.user = action.payload;
+        state.profile = action.payload;
+        state.isAuthenticated = true;
+        state.isEmailVerified = action.payload?.isEmailVerified || false;
+        state.loading = false;
+        state.loadingStates.verifyingToken = false;
+        state.isInitialized = true;
+      })
+      .addCase(verifyToken.rejected, (state, action) => {
+        state.loading = false;
+        state.loadingStates.verifyingToken = false;
+        state.error = action.payload;
+        state.isInitialized = true;
+      })
+
       // updateUserProfile
       .addCase(updateUserProfile.pending, (state) => {
         state.loading = true;
@@ -280,6 +433,7 @@ const userSlice = createSlice({
       })
       .addCase(updateUserProfile.fulfilled, (state, action) => {
         state.profile = action.payload;
+        state.user = action.payload;
         state.loading = false;
         state.loadingStates.updatingProfile = false;
       })
@@ -288,6 +442,7 @@ const userSlice = createSlice({
         state.loadingStates.updatingProfile = false;
         state.error = action.payload;
       })
+
       // changePassword
       .addCase(changePassword.pending, (state) => {
         state.loading = true;
@@ -308,6 +463,7 @@ const userSlice = createSlice({
         state.error = action.payload;
         state.passwordChangePending = false;
       })
+
       // disableAccount
       .addCase(disableAccount.pending, (state) => {
         state.loading = true;
@@ -325,6 +481,7 @@ const userSlice = createSlice({
         state.loadingStates.disablingAccount = false;
         state.error = action.payload;
       })
+
       // requestEmailVerification
       .addCase(requestEmailVerification.pending, (state) => {
         state.loading = true;
@@ -341,6 +498,7 @@ const userSlice = createSlice({
         state.loadingStates.sendingVerification = false;
         state.error = action.payload;
       })
+
       // verifyEmail
       .addCase(verifyEmail.pending, (state) => {
         state.loading = true;
@@ -357,6 +515,7 @@ const userSlice = createSlice({
         state.loadingStates.verifyingEmail = false;
         state.error = action.payload;
       })
+
       // verifyPasswordChange
       .addCase(verifyPasswordChange.pending, (state) => {
         state.loading = true;
@@ -374,6 +533,7 @@ const userSlice = createSlice({
         state.loadingStates.changingPassword = false;
         state.error = action.payload;
       })
+
       // requestEmailChange
       .addCase(requestEmailChange.pending, (state) => {
         state.loading = true;
@@ -394,6 +554,11 @@ const userSlice = createSlice({
   },
 });
 
-export const { setUser, clearUser, clearError, resetPasswordChanged } =
-  userSlice.actions;
+export const {
+  setUser,
+  clearUser,
+  clearError,
+  resetPasswordChanged,
+  setInitialized,
+} = userSlice.actions;
 export default userSlice.reducer;

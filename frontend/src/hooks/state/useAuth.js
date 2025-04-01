@@ -9,6 +9,10 @@ import {
   disableAccount,
   requestEmailVerification,
   verifyEmail,
+  loginUser,
+  registerUser,
+  verifyToken,
+  setInitialized,
 } from "../../redux/slices/userSlice";
 import { resetCart } from "../../redux/slices/cartSlice";
 import { authService } from "../../api";
@@ -26,11 +30,7 @@ const useAuth = () => {
   const location = useLocation();
 
   // Local state for auth-specific UI states
-  const [loading, setLoading] = useState(false);
-  const [isAuthInitialized, setIsAuthInitialized] = useState(false);
-  const [accountDisabled, setAccountDisabled] = useState(false);
   const [tokenRefreshInProgress, setTokenRefreshInProgress] = useState(false);
-  const [error, setError] = useState(null);
   const [lastVerificationCheck, setLastVerificationCheck] = useState(
     Date.now()
   );
@@ -50,7 +50,6 @@ const useAuth = () => {
     dispatch(clearUser());
     dispatch(resetCart());
     setIsUserLoggedOut(true);
-    setAccountDisabled(false);
   }, [dispatch]);
 
   /**
@@ -180,13 +179,11 @@ const useAuth = () => {
    * @returns {Promise<void>}
    */
   const checkAuthStatus = useCallback(async () => {
-    setLoading(true);
     const token = localStorage.getItem("auth-token");
 
     if (!token || isUserLoggedOut) {
       dispatch(clearUser());
-      setLoading(false);
-      setIsAuthInitialized(true);
+      dispatch(setInitialized(true));
       return;
     }
 
@@ -196,18 +193,19 @@ const useAuth = () => {
     }
 
     try {
-      const response = await authService.verifyToken();
+      const resultAction = await dispatch(verifyToken());
 
-      if (response && response.success) {
-        const normalizedUser = normalizeUserData(response.user);
-        dispatch(setUser(normalizedUser));
+      if (verifyToken.fulfilled.match(resultAction)) {
+        // Token is valid, user is authenticated
         await fetchUserProfile();
-        setAccountDisabled(false);
       } else {
-        if (response && response.message === "Your account has been disabled") {
-          setAccountDisabled(true);
-          setError("Your account has been disabled. Please contact support.");
-        } else if (response && response.status === 401) {
+        // Token is invalid, handle error
+        const errorPayload = resultAction.payload;
+
+        if (errorPayload === "Your account has been disabled") {
+          // Handle disabled account
+        } else if (resultAction.error.message.includes("401")) {
+          // Token expired, try to refresh
           if (!isUserLoggedOut) {
             const newToken = await refreshAccessToken();
             if (newToken) {
@@ -221,15 +219,6 @@ const useAuth = () => {
     } catch (err) {
       console.error("Auth verification error:", err);
       handleLogout();
-      if (
-        err.message !== "Failed to fetch" &&
-        !err.message.includes("Network")
-      ) {
-        setError("Authentication verification failed");
-      }
-    } finally {
-      setLoading(false);
-      setIsAuthInitialized(true);
     }
   }, [
     dispatch,
@@ -246,32 +235,25 @@ const useAuth = () => {
    * @returns {Promise<Object>} Login result
    */
   const login = async (email, password) => {
-    setLoading(true);
-    setError(null);
-
     try {
-      const response = await authService.login(email, password);
+      const resultAction = await dispatch(loginUser({ email, password }));
 
-      if (response.success) {
-        localStorage.setItem("auth-token", response.token);
-        localStorage.removeItem("user-logged-out");
-        setIsUserLoggedOut(false);
-
-        const normalizedUser = normalizeUserData(response.user);
-        dispatch(setUser(normalizedUser));
-
+      if (loginUser.fulfilled.match(resultAction)) {
+        // Login successful
         await fetchUserProfile();
-        return { success: true, user: normalizedUser };
+        return { success: true, user: resultAction.payload };
       } else {
-        setError(response.message || "Login failed");
-        return { success: false, message: response.message };
+        // Login failed
+        return {
+          success: false,
+          message: resultAction.payload || "Login failed. Please try again.",
+        };
       }
     } catch (err) {
-      const errorMessage = err.message || "Login failed. Please try again.";
-      setError(errorMessage);
-      return { success: false, message: errorMessage };
-    } finally {
-      setLoading(false);
+      return {
+        success: false,
+        message: err.message || "Login failed. Please try again.",
+      };
     }
   };
 
@@ -281,32 +263,29 @@ const useAuth = () => {
    * @returns {Promise<Object>} Registration result
    */
   const register = async (userData) => {
-    setLoading(true);
-    setError(null);
-
     try {
-      const response = await authService.register(userData);
+      const resultAction = await dispatch(registerUser(userData));
 
-      if (response.success) {
-        localStorage.setItem("auth-token", response.token);
-        localStorage.removeItem("user-logged-out");
-        setIsUserLoggedOut(false);
-
-        const normalizedUser = normalizeUserData(response.user);
-        dispatch(setUser(normalizedUser));
-
-        return { success: true, user: normalizedUser, needsVerification: true };
+      if (registerUser.fulfilled.match(resultAction)) {
+        // Registration successful
+        return {
+          success: true,
+          user: resultAction.payload.user,
+          needsVerification: resultAction.payload.needsVerification,
+        };
       } else {
-        setError(response.message || "Registration failed");
-        return { success: false, message: response.message };
+        // Registration failed
+        return {
+          success: false,
+          message:
+            resultAction.payload || "Registration failed. Please try again.",
+        };
       }
     } catch (err) {
-      const errorMessage =
-        err.message || "Registration failed. Please try again.";
-      setError(errorMessage);
-      return { success: false, message: errorMessage };
-    } finally {
-      setLoading(false);
+      return {
+        success: false,
+        message: err.message || "Registration failed. Please try again.",
+      };
     }
   };
 
@@ -330,10 +309,10 @@ const useAuth = () => {
     // State
     user: userState.user,
     isAuthenticated: userState.isAuthenticated,
-    loading: loading || userState.loading,
-    error: error || userState.error,
-    accountDisabled,
-    isAuthInitialized,
+    loading: userState.loading,
+    error: userState.error,
+    accountDisabled: userState.accountDisabled,
+    isAuthInitialized: userState.isInitialized,
 
     // Authentication methods
     login,
