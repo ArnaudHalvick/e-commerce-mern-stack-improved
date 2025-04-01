@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import "./NewCollections.css";
 import Item from "../item/Item";
 import { productsService } from "../../api";
+import axios from "axios";
 
 const NewCollection = () => {
   const [newCollection, setNewCollection] = useState([]);
@@ -25,13 +26,24 @@ const NewCollection = () => {
 
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching new arrivals:", error);
-        setError("Failed to load new arrivals");
-        setLoading(false);
+        // Don't show errors for canceled requests
+        if (axios.isCancel(error)) {
+          console.log("Request canceled:", error.message);
+        } else {
+          console.error("Error fetching new arrivals:", error);
+          setError("Failed to load new arrivals");
+          setLoading(false);
+        }
       }
     };
 
     fetchNewArrivals();
+
+    // Clean up function
+    return () => {
+      // Component unmount - no need to do anything special
+      // Requests will be canceled if needed by the API client
+    };
   }, []);
 
   if (loading) {

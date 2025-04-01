@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import "./Popular.css";
 import Item from "../item/Item";
 import { productsService } from "../../api";
+import axios from "axios";
 
 const Popular = () => {
   const [popularProducts, setPopularProducts] = useState([]);
@@ -25,13 +26,24 @@ const Popular = () => {
 
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching popular products:", error);
-        setError("Failed to load popular products");
-        setLoading(false);
+        // Don't show errors for canceled requests
+        if (axios.isCancel(error)) {
+          console.log("Request canceled:", error.message);
+        } else {
+          console.error("Error fetching popular products:", error);
+          setError("Failed to load popular products");
+          setLoading(false);
+        }
       }
     };
 
     fetchPopularProducts();
+
+    // Clean up function
+    return () => {
+      // Component unmount - no need to do anything special
+      // Requests will be canceled if needed by the API client
+    };
   }, []);
 
   if (loading) {

@@ -56,14 +56,27 @@ export const verifyToken = createAsyncThunk(
   "user/verifyToken",
   async (_, { rejectWithValue }) => {
     try {
+      const token = localStorage.getItem("auth-token");
+      if (!token) {
+        return rejectWithValue("No authentication token found");
+      }
+
       const response = await authService.verifyToken();
 
       if (response.success) {
+        // Make sure we clear the logged-out flag
+        localStorage.removeItem("user-logged-out");
         return response.user;
       } else {
+        // If verification fails, clear the token
+        localStorage.removeItem("auth-token");
+        localStorage.setItem("user-logged-out", "true");
         return rejectWithValue(response.message || "Token verification failed");
       }
     } catch (err) {
+      // Clear token on error
+      localStorage.removeItem("auth-token");
+      localStorage.setItem("user-logged-out", "true");
       return rejectWithValue(
         err.message || "Token verification failed. Please try again."
       );
@@ -299,25 +312,18 @@ export const requestEmailChange = createAsyncThunk(
   }
 );
 
-// Add this action to handle logout more gracefully
+// Add a new async thunk for clean logout
 export const logoutUser = createAsyncThunk(
   "user/logout",
   async (_, { dispatch }) => {
-    // First clear user data
-    dispatch(clearUser());
+    // Cancel any pending requests to prevent errors
+    cancelPendingRequests("User logged out");
 
-    // Set localStorage flags
+    // Remove auth data from localStorage
     localStorage.removeItem("auth-token");
     localStorage.setItem("user-logged-out", "true");
 
-    // Timeout to ensure state updates before canceling requests
-    await new Promise((resolve) => setTimeout(resolve, 50));
-
-    // Now it's safe to cancel pending requests
-    if (typeof cancelPendingRequests === "function") {
-      cancelPendingRequests("User logged out");
-    }
-
+    // Return success
     return { success: true };
   }
 );
@@ -354,29 +360,15 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action) => {
-      state.user = action.payload;
-      state.profile = action.payload;
       state.isAuthenticated = true;
-      state.isEmailVerified = action.payload?.isEmailVerified || false;
+      state.user = action.payload;
+      state.error = null;
     },
     clearUser: (state) => {
-      state.user = null;
-      state.profile = null;
       state.isAuthenticated = false;
-      state.isEmailVerified = false;
-      state.verificationRequested = false;
-      state.emailChangeRequested = false;
-      state.passwordChanged = false;
-      state.passwordChangePending = false;
-      state.accountDisabled = false;
+      state.user = null;
       state.error = null;
-    },
-    clearError: (state) => {
-      state.error = null;
-    },
-    resetPasswordChanged: (state) => {
-      state.passwordChanged = false;
-      state.passwordChangePending = false;
+      state.needsVerification = false;
     },
     setInitialized: (state, action) => {
       state.isInitialized = action.payload;
@@ -384,69 +376,70 @@ const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Login user
+      // Login cases
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
-        state.loadingStates.login = true;
         state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
-        state.user = action.payload;
-        state.profile = action.payload;
         state.isAuthenticated = true;
-        state.isEmailVerified = action.payload?.isEmailVerified || false;
+        state.user = action.payload;
         state.loading = false;
-        state.loadingStates.login = false;
         state.error = null;
+        state.isInitialized = true;
       })
       .addCase(loginUser.rejected, (state, action) => {
+        state.isAuthenticated = false;
         state.loading = false;
-        state.loadingStates.login = false;
         state.error = action.payload;
       })
 
-      // Register user
+      // Registration cases
       .addCase(registerUser.pending, (state) => {
         state.loading = true;
-        state.loadingStates.register = true;
         state.error = null;
       })
       .addCase(registerUser.fulfilled, (state, action) => {
-        state.user = action.payload.user;
-        state.profile = action.payload.user;
         state.isAuthenticated = true;
-        state.isEmailVerified = false;
-        state.verificationRequested = action.payload.needsVerification;
+        state.user = action.payload.user;
+        state.needsVerification = action.payload.needsVerification;
         state.loading = false;
-        state.loadingStates.register = false;
         state.error = null;
+        state.isInitialized = true;
       })
       .addCase(registerUser.rejected, (state, action) => {
+        state.isAuthenticated = false;
         state.loading = false;
-        state.loadingStates.register = false;
         state.error = action.payload;
       })
 
-      // Verify token
+      // Token verification cases
       .addCase(verifyToken.pending, (state) => {
         state.loading = true;
-        state.loadingStates.verifyingToken = true;
         state.error = null;
       })
       .addCase(verifyToken.fulfilled, (state, action) => {
-        state.user = action.payload;
-        state.profile = action.payload;
         state.isAuthenticated = true;
-        state.isEmailVerified = action.payload?.isEmailVerified || false;
+        state.user = action.payload;
         state.loading = false;
-        state.loadingStates.verifyingToken = false;
+        state.error = null;
         state.isInitialized = true;
       })
       .addCase(verifyToken.rejected, (state, action) => {
+        state.isAuthenticated = false;
+        state.user = null;
         state.loading = false;
-        state.loadingStates.verifyingToken = false;
         state.error = action.payload;
         state.isInitialized = true;
+      })
+
+      // Logout user case
+      .addCase(logoutUser.fulfilled, (state) => {
+        state.isAuthenticated = false;
+        state.user = null;
+        state.error = null;
+        state.needsVerification = false;
+        state.loading = false;
       })
 
       // updateUserProfile
@@ -578,11 +571,5 @@ const userSlice = createSlice({
   },
 });
 
-export const {
-  setUser,
-  clearUser,
-  clearError,
-  resetPasswordChanged,
-  setInitialized,
-} = userSlice.actions;
+export const { setUser, clearUser, setInitialized } = userSlice.actions;
 export default userSlice.reducer;

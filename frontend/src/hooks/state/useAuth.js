@@ -19,6 +19,7 @@ import {
 } from "../../redux/slices/userSlice";
 import { resetCart } from "../../redux/slices/cartSlice";
 import { authService } from "../../api";
+import { cancelPendingRequests } from "../../api/client";
 
 /**
  * Custom hook for authentication and user management
@@ -50,10 +51,17 @@ const useAuth = () => {
    * Handle user logout
    */
   const handleLogout = useCallback(() => {
-    // Use the new logoutUser action which handles state updates and request cancellation properly
+    setInTransition(true);
+
+    // Cancel all pending requests before logging out
+    cancelPendingRequests("User logged out");
+
+    // Use the redux action to properly update the state and persist logout
     dispatch(logoutUser());
     dispatch(resetCart());
     setIsUserLoggedOut(true);
+
+    setInTransition(false);
   }, [dispatch]);
 
   /**
@@ -99,14 +107,22 @@ const useAuth = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Check localStorage logged out state
+  // Check localStorage logged out state and sync with Redux
   useEffect(() => {
     const isLoggedOut = localStorage.getItem("user-logged-out") === "true";
+
+    // If the user is marked as logged out but still authenticated in state, clear the auth state
+    if (isLoggedOut && userState.isAuthenticated) {
+      dispatch(clearUser());
+    }
+
     setIsUserLoggedOut(isLoggedOut);
+
+    // Ensure token is removed if logged out
     if (isLoggedOut && localStorage.getItem("auth-token")) {
       localStorage.removeItem("auth-token");
     }
-  }, []);
+  }, [userState.isAuthenticated, dispatch]);
 
   // Check user verification on cart/checkout navigation
   useEffect(() => {
@@ -240,6 +256,7 @@ const useAuth = () => {
     }
 
     try {
+      setInTransition(true);
       const resultAction = await dispatch(verifyToken());
 
       if (verifyToken.fulfilled.match(resultAction)) {
@@ -247,39 +264,17 @@ const useAuth = () => {
         await fetchUserProfile();
       } else {
         // Token is invalid, handle error
-        const errorPayload = resultAction.payload;
-
-        if (errorPayload === "Your account has been disabled") {
-          // Handle disabled account
-        } else if (
-          resultAction.error &&
-          resultAction.error.message &&
-          resultAction.error.message.includes("401")
-        ) {
-          // Token expired, try to refresh
-          if (!isUserLoggedOut) {
-            const newToken = await refreshAccessToken();
-            if (newToken) {
-              await checkAuthStatus();
-              return;
-            }
-          }
-        }
+        console.error("Token verification failed:", resultAction.payload);
         handleLogout();
       }
-    } catch (err) {
-      console.error("Auth verification error:", err);
+    } catch (error) {
+      console.error("Error checking auth status:", error);
       handleLogout();
     } finally {
+      setInTransition(false);
       setInitialLoadComplete(true);
     }
-  }, [
-    dispatch,
-    fetchUserProfile,
-    refreshAccessToken,
-    isUserLoggedOut,
-    handleLogout,
-  ]);
+  }, [dispatch, isUserLoggedOut, fetchUserProfile, handleLogout]);
 
   /**
    * Login user with email and password

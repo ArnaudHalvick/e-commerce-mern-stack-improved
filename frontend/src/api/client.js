@@ -20,15 +20,18 @@ let isRefreshing = false;
 // Queue of failed requests to retry after token refresh
 let failedQueue = [];
 
-// Create a cancel token source for requests that should be canceled on logout
-const cancelTokenSource = axios.CancelToken.source();
+// Use a ref to store the cancel token source so we can replace it after cancellation
+let cancelTokenSource = axios.CancelToken.source();
 
 /**
  * Cancel all pending requests
  * @param {string} message - Reason for cancellation
  */
 export const cancelPendingRequests = (message = "Operation canceled") => {
+  // Cancel pending requests
   cancelTokenSource.cancel(message);
+  // Create a new cancel token source for future requests
+  cancelTokenSource = axios.CancelToken.source();
 };
 
 // Public API endpoints that don't require authentication
