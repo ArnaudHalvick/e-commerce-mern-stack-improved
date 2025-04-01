@@ -211,7 +211,6 @@
 
 .product-listing-item {
   flex: 0 0 calc(25% - 1.5rem); /* 4 items per row with gap consideration */
-  margin-bottom: 3rem;
 }
 
 /* No products message */
