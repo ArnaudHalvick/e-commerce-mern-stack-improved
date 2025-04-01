@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useContext } from "react";
 import { productsService } from "../../../api";
+import { ShopContext } from "../../../context/ShopContext";
 
 /**
  * Custom hook for fetching, filtering, and sorting products on product listing pages
@@ -11,6 +12,14 @@ import { productsService } from "../../../api";
  * @returns {Object} Product listing data and functions
  */
 const useProductListingData = ({ pageType, category }) => {
+  // Get access to the ShopContext for category pages
+  const {
+    all_product,
+    loading: contextLoading,
+    isInitialized,
+    fetchProducts: fetchGlobalProducts,
+  } = useContext(ShopContext);
+
   // State for all products
   const [allProducts, setAllProducts] = useState([]);
   const [displayedProducts, setDisplayedProducts] = useState([]);
@@ -42,7 +51,15 @@ const useProductListingData = ({ pageType, category }) => {
 
   // Track mounted state to prevent updates after unmount
   const isMounted = useRef(true);
+  // Track if the request is in progress to prevent duplicate fetches (StrictMode issue)
+  const isRequestInProgress = useRef(false);
+  // Track component initialization to prevent duplicate fetch on remount
+  const isInitialFetchDone = useRef(false);
+
   useEffect(() => {
+    // Reset isMounted on component mount
+    isMounted.current = true;
+
     return () => {
       isMounted.current = false;
     };
@@ -146,7 +163,7 @@ const useProductListingData = ({ pageType, category }) => {
           break;
       }
 
-      // Calculate total pages
+      // Set the total pages based on filtered products and items per page
       if (isMounted.current) {
         setTotalPages(Math.ceil(filteredProducts.length / itemsPerPage));
 
@@ -155,6 +172,7 @@ const useProductListingData = ({ pageType, category }) => {
         const endIndex = startIndex + itemsPerPage;
         const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
 
+        // Update displayed products
         setDisplayedProducts(paginatedProducts);
       }
     },
@@ -164,81 +182,209 @@ const useProductListingData = ({ pageType, category }) => {
   // Store the previous category value to detect changes
   const prevCategoryRef = useRef();
   const prevPageTypeRef = useRef();
+  const offersLoadedRef = useRef(false);
 
-  // Fetch products based on page type
+  // Debug function to log important state (helpful for troubleshooting)
+  const logDebugInfo = useCallback(
+    (message) => {
+      console.log(`[ProductListing Debug] ${message}`, {
+        pageType,
+        category,
+        allProductsCount: allProducts.length,
+        displayedProductsCount: displayedProducts.length,
+        loading,
+        contextLoading,
+        isInitialized,
+        all_product_length: all_product ? all_product.length : 0,
+        isRequestInProgress: isRequestInProgress.current,
+        isInitialFetchDone: isInitialFetchDone.current,
+      });
+    },
+    [
+      pageType,
+      category,
+      allProducts.length,
+      displayedProducts.length,
+      loading,
+      contextLoading,
+      isInitialized,
+      all_product,
+    ]
+  );
+
+  // Fetch products based on page type - only run on first mount or when params change
   useEffect(() => {
-    // Only fetch if category or pageType has changed
+    // Only fetch if:
+    // 1. Category or pageType has changed, OR
+    // 2. This is the initial mount of the component AND we haven't fetched yet
     const categoryChanged = prevCategoryRef.current !== category;
     const pageTypeChanged = prevPageTypeRef.current !== pageType;
+    const initialRender = !isInitialFetchDone.current;
 
     // Update refs for next comparison
     prevCategoryRef.current = category;
     prevPageTypeRef.current = pageType;
 
-    if (categoryChanged || pageTypeChanged) {
-      setLoading(true);
-      setError(null);
+    // Exit if already fetching or if no need to fetch
+    if (isRequestInProgress.current) {
+      logDebugInfo("Skipping fetch because a request is already in progress");
+      return;
+    }
 
-      const fetchProducts = async () => {
-        try {
-          console.log(
-            `Fetching products: pageType=${pageType}, category=${category}`
+    if (!categoryChanged && !pageTypeChanged && !initialRender) {
+      logDebugInfo(
+        "Skipping fetch because nothing changed and it's not initial render"
+      );
+      return;
+    }
+
+    // Set initialization flag
+    isInitialFetchDone.current = true;
+
+    // Start fetch process
+    setLoading(true);
+    setError(null);
+    isRequestInProgress.current = true;
+    logDebugInfo("Starting to fetch products");
+
+    const fetchPageProducts = async () => {
+      try {
+        console.log(
+          `Fetching products: pageType=${pageType}, category=${category}`
+        );
+        let data = [];
+
+        if (pageType === "category" && category) {
+          // For category pages, fetch products by category
+          const response = await productsService.getProductsByCategory(
+            category
           );
-          let data = [];
 
-          if (pageType === "category" && category) {
-            // For category pages, fetch products by category
-            data = await productsService.getProductsByCategory(category);
+          // Debug response
+          console.log("Category API response:", response);
+
+          if (Array.isArray(response)) {
+            data = response;
           } else {
-            // For offers page, fetch all products
-            data = await productsService.getAllProducts();
+            console.warn("Category API response is not an array:", response);
+            data = [];
+          }
+        } else if (pageType === "offers") {
+          // For offers page, check if we need to load global products first
+          if (!isInitialized && !offersLoadedRef.current) {
+            offersLoadedRef.current = true; // Prevent infinite recursion
+            logDebugInfo("Triggering global products load for offers");
+            fetchGlobalProducts(); // Trigger global product loading
+            isRequestInProgress.current = false;
+            return; // We'll wait for context to update
+          }
 
-            // For offers page, pre-filter to only show products with discounts
-            data = data.filter(
+          // Once global products are loaded, filter them for offers
+          if (all_product && all_product.length > 0) {
+            logDebugInfo("Filtering global products for offers");
+            data = all_product.filter(
               (product) =>
                 product.new_price > 0 && product.new_price < product.old_price
             );
           }
+        }
 
-          if (!Array.isArray(data)) {
-            console.warn("API didn't return an array for products", data);
-            if (isMounted.current) {
-              setAllProducts([]);
-              setDisplayedProducts([]);
-              setLoading(false);
-            }
-          } else {
-            console.log(`Received ${data.length} products from API`);
-            if (isMounted.current) {
-              setAllProducts(data);
-              setAvailableTags([
-                ...new Set(data.flatMap((item) => item.tags || [])),
-              ]);
-              setAvailableTypes([
-                ...new Set(data.flatMap((item) => item.types || [])),
-              ]);
-              filterAndSortProducts(data);
-              setLoading(false);
-            }
-          }
-        } catch (err) {
-          console.error("Error fetching products:", err);
+        if (!Array.isArray(data)) {
+          console.warn("Data is not an array:", data);
           if (isMounted.current) {
-            setError(
-              err.message || "Error fetching products. Please try again."
-            );
+            setAllProducts([]);
+            setDisplayedProducts([]);
+            isRequestInProgress.current = false;
+            setLoading(false);
+          }
+        } else {
+          console.log(`Received ${data.length} products from API`);
+          if (isMounted.current) {
+            logDebugInfo(`Setting ${data.length} products`);
+            setAllProducts(data);
+            setAvailableTags([
+              ...new Set(data.flatMap((item) => item.tags || [])),
+            ]);
+            setAvailableTypes([
+              ...new Set(data.flatMap((item) => item.types || [])),
+            ]);
+            filterAndSortProducts(data);
+            isRequestInProgress.current = false;
             setLoading(false);
           }
         }
-      };
+      } catch (err) {
+        console.error("Error fetching products:", err);
+        if (isMounted.current) {
+          setError("Failed to load products. Please try again later.");
+          isRequestInProgress.current = false;
+          setLoading(false);
+        }
+      }
+    };
 
-      fetchProducts();
+    fetchPageProducts();
+  }, [
+    pageType,
+    category,
+    isInitialized,
+    all_product,
+    fetchGlobalProducts,
+    filterAndSortProducts,
+    logDebugInfo,
+  ]);
+
+  // Check if we need to update from context when it changes
+  useEffect(() => {
+    // Only for offers page and only when context has products
+    if (
+      pageType === "offers" &&
+      isInitialized &&
+      all_product &&
+      all_product.length > 0 &&
+      !isRequestInProgress.current
+    ) {
+      logDebugInfo("Context products updated, updating offers");
+
+      // Prevent duplicate updates
+      if (loading === false && allProducts.length > 0) {
+        logDebugInfo("Skipping duplicate context update");
+        return;
+      }
+
+      const offersData = all_product.filter(
+        (product) =>
+          product.new_price > 0 && product.new_price < product.old_price
+      );
+
+      console.log(`Found ${offersData.length} products with discounts`);
+
+      if (isMounted.current) {
+        setAllProducts(offersData);
+        setAvailableTags([
+          ...new Set(offersData.flatMap((item) => item.tags || [])),
+        ]);
+        setAvailableTypes([
+          ...new Set(offersData.flatMap((item) => item.types || [])),
+        ]);
+        filterAndSortProducts(offersData);
+        setLoading(false);
+      }
     }
-  }, [category, pageType, filterAndSortProducts]);
+  }, [
+    pageType,
+    isInitialized,
+    all_product,
+    filterAndSortProducts,
+    logDebugInfo,
+    loading,
+    allProducts.length,
+  ]);
 
   // Apply filters and sorting when filter states change
   useEffect(() => {
     if (allProducts.length > 0) {
+      logDebugInfo("Reapplying filters and sorting");
       filterAndSortProducts(allProducts);
     }
   }, [
@@ -248,6 +394,7 @@ const useProductListingData = ({ pageType, category }) => {
     itemsPerPage,
     allProducts,
     filterAndSortProducts,
+    logDebugInfo,
   ]);
 
   // Handle filter changes
@@ -340,7 +487,33 @@ const useProductListingData = ({ pageType, category }) => {
     });
     setSortBy("newest");
     setCurrentPage(1);
-  }, []);
+
+    // If we're on the offers page and have no products showing,
+    // try to trigger a reload of the data
+    if (pageType === "offers" && displayedProducts.length === 0) {
+      logDebugInfo("Clearing filters and reloading offers data");
+      if (all_product && all_product.length > 0) {
+        const offersData = all_product.filter(
+          (product) =>
+            product.new_price > 0 && product.new_price < product.old_price
+        );
+        setAllProducts(offersData);
+        filterAndSortProducts(offersData);
+      } else if (!contextLoading && isInitialized) {
+        // If context is loaded but we have no products, try fetching again
+        fetchGlobalProducts();
+      }
+    }
+  }, [
+    pageType,
+    displayedProducts.length,
+    all_product,
+    contextLoading,
+    isInitialized,
+    fetchGlobalProducts,
+    filterAndSortProducts,
+    logDebugInfo,
+  ]);
 
   // Calculate display range
   const totalProducts = allProducts.length;
@@ -352,7 +525,7 @@ const useProductListingData = ({ pageType, category }) => {
   return {
     // Data
     displayedProducts,
-    loading,
+    loading: loading || (pageType === "offers" && contextLoading),
     error,
     totalPages,
     currentPage,

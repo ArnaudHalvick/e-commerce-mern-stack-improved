@@ -165,12 +165,6 @@
   border-color: #ccc;
 }
 
-.product-listing-sort-icon {
-  width: 16px;
-  height: 16px;
-  transition: transform 0.2s;
-}
-
 .product-listing-sort-dropdown:hover .product-listing-sort-icon {
   transform: translateY(2px);
 }

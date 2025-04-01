@@ -12,10 +12,35 @@ import apiClient from "../client";
  */
 export const getAllProducts = async (options = {}) => {
   try {
+    console.log("Fetching all products");
     // Use the all-products endpoint as defined in the backend
     const response = await apiClient.get("/api/products/all-products");
-    return response.data;
+
+    // Debug response
+    console.log("All products response status:", response.status);
+
+    // Handle different response formats
+    if (Array.isArray(response.data)) {
+      console.log(`Received ${response.data.length} products from API`);
+      return response.data;
+    } else if (
+      response.data &&
+      response.data.products &&
+      Array.isArray(response.data.products)
+    ) {
+      console.log(
+        `Received ${response.data.products.length} products from API (nested format)`
+      );
+      return response.data.products;
+    } else {
+      console.warn(
+        "Unexpected response format from getAllProducts:",
+        response.data
+      );
+      return [];
+    }
   } catch (error) {
+    console.error("Error in getAllProducts:", error);
     throw error;
   }
 };
@@ -85,10 +110,40 @@ export const getNewCollectionProducts = async (limit = 8) => {
  */
 export const getProductsByCategory = async (category) => {
   try {
+    console.log(`Fetching products for category: ${category}`);
     const response = await apiClient.get(`/api/products/category/${category}`);
-    return response.data;
+
+    // Debug response
+    console.log(`Category ${category} response status:`, response.status);
+
+    // Ensure we return the data in a consistent format
+    // The API might return either an array directly or an object with a products property
+    if (Array.isArray(response.data)) {
+      console.log(
+        `Received ${response.data.length} products for category ${category}`
+      );
+      return response.data;
+    } else if (
+      response.data &&
+      response.data.products &&
+      Array.isArray(response.data.products)
+    ) {
+      console.log(
+        `Received ${response.data.products.length} products for category ${category} (nested format)`
+      );
+      return response.data.products;
+    } else {
+      console.warn(
+        "Unexpected response format from getProductsByCategory:",
+        response.data
+      );
+      // If we get here, make sure we return a valid array, even if empty
+      return [];
+    }
   } catch (error) {
-    throw error;
+    console.error(`Error fetching products for category ${category}:`, error);
+    // Return empty array on error instead of throwing
+    return [];
   }
 };
 

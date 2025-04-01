@@ -15,14 +15,26 @@ const useProductData = (productId, productSlug) => {
     all_product,
     loading: contextLoading,
     error: contextError,
+    isInitialized,
+    fetchProducts,
   } = useContext(ShopContext);
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
+  // First, ensure products are loaded if we might need them
   useEffect(() => {
-    // Only try to find product when context is loaded
+    // We'll fetch products in these cases:
+    // 1. If we have a product ID or slug and might use context as fallback
+    // 2. If we're relying on context exclusively (no ID or slug)
+    if (!isInitialized && (productId || productSlug)) {
+      fetchProducts();
+    }
+  }, [isInitialized, fetchProducts, productId, productSlug]);
+
+  useEffect(() => {
+    // Only try to find product when we're not waiting for context to load
     if (!contextLoading) {
       // If we have a product slug, we can directly fetch the detailed product
       if (productSlug) {

@@ -215,10 +215,13 @@ const ProductsContent = ({
       </div>
 
       {/* Product grid - using flexbox with wrap */}
-      {displayedProducts.length > 0 ? (
+      {displayedProducts && displayedProducts.length > 0 ? (
         <div className="product-listing-grid">
           {displayedProducts.map((product) => (
-            <div key={product._id} className="product-listing-item">
+            <div
+              key={product._id || product.id || Math.random()}
+              className="product-listing-item"
+            >
               <Item {...product} />
             </div>
           ))}
@@ -226,14 +229,18 @@ const ProductsContent = ({
       ) : (
         <div className="product-listing-no-products">
           <p className="product-listing-no-products-text">
-            No products match your current filters.
+            {totalProducts > 0
+              ? "No products match your current filters."
+              : "No products available in this category."}
           </p>
-          <button
-            className="product-listing-no-products-button"
-            onClick={clearAllFilters}
-          >
-            Clear All Filters
-          </button>
+          {totalProducts > 0 && (
+            <button
+              className="product-listing-no-products-button"
+              onClick={clearAllFilters}
+            >
+              Clear All Filters
+            </button>
+          )}
         </div>
       )}
 

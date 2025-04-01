@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
 
@@ -28,6 +28,9 @@ const ProductListingPage = ({
   const { category: paramCategory } = useParams();
   const category = propCategory || paramCategory;
   const location = useLocation();
+
+  // Add a local loading timeout state to prevent flickering
+  const [showLoading, setShowLoading] = useState(false);
 
   // Determine if this is a category page or offers page
   const isCategoryPage = pageType === "category";
@@ -64,6 +67,23 @@ const ProductListingPage = ({
     clearAllFilters,
   } = useProductListingData({ pageType, category });
 
+  // Use effect to delay showing loading indicator to prevent flickering
+  useEffect(() => {
+    let timeoutId;
+
+    if (loading) {
+      timeoutId = setTimeout(() => {
+        setShowLoading(true);
+      }, 300); // Show loading after 300ms to prevent flashes
+    } else {
+      setShowLoading(false);
+    }
+
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+    };
+  }, [loading]);
+
   // Manage page title and metadata
   useEffect(() => {
     if (isCategoryPage && category) {
@@ -88,7 +108,8 @@ const ProductListingPage = ({
   }, [location.search, filters.discount, handleFilterChange, isCategoryPage]);
 
   // Show loading state
-  if (loading) {
+  if (showLoading) {
+    console.log("Rendering loading state for", pageType, category);
     return (
       <div className="product-listing-container">
         {isCategoryPage && (
@@ -102,6 +123,7 @@ const ProductListingPage = ({
 
   // Show error state
   if (error) {
+    console.log("Rendering error state:", error);
     return (
       <div className="product-listing-container">
         {isCategoryPage && (
@@ -124,6 +146,11 @@ const ProductListingPage = ({
     );
   }
 
+  // Debug info
+  console.log(
+    `Rendering ${pageType} page with ${displayedProducts.length} products`
+  );
+
   return (
     <div className="product-listing-container">
       {/* Header - different based on page type */}
@@ -145,7 +172,7 @@ const ProductListingPage = ({
 
         {/* Products area */}
         <ProductsContent
-          displayedProducts={displayedProducts}
+          displayedProducts={displayedProducts || []}
           totalProducts={totalProducts}
           displayRange={displayRange}
           showSortOptions={showSortOptions}
