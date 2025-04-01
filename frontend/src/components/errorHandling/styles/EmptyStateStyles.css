@@ -1,0 +1,71 @@
+/* Empty State Component Styles */
+.empty-state-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  text-align: center;
+  min-height: 40vh;
+}
+
+.empty-state-icon {
+  font-size: 4rem;
+  color: #ccc;
+  margin-bottom: 1.5rem;
+}
+
+.empty-state-content {
+  text-align: center;
+}
+
+.empty-state-content-title {
+  font-size: 1.8rem;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.empty-state-content-text {
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 1.5rem;
+  max-width: 500px;
+}
+
+.empty-state-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.empty-state-button {
+  padding: 0.7rem 1.5rem;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-state-button.primary {
+  background-color: #4361ee;
+  color: white;
+  border: none;
+}
+
+.empty-state-button.primary:hover {
+  background-color: #273aa9;
+}
+
+.empty-state-button.secondary {
+  background-color: transparent;
+  color: #4361ee;
+  border: 2px solid #4361ee;
+}
+
+.empty-state-button.secondary:hover {
+  background-color: #f0f3ff;
+}

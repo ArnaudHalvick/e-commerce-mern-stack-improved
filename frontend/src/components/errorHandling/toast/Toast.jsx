@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./ErrorStyles.css";
+import "../styles/ToastStyles.css";
 
 /**
  * Toast Component - Displays a notification message

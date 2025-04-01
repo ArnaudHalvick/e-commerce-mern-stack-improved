@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { useError } from "../../context/ErrorContext";
-import { apiClient } from "../../api";
-import "./ErrorStyles.css";
-import Spinner from "../ui/spinner";
+import { useError } from "../../../context/ErrorContext";
+import { apiClient } from "../../../api";
+import "../styles/DemoStyles.css";
+import Spinner from "../../ui/spinner";
 
 const ErrorDemo = () => {
   const { showError, showSuccess, showWarning, showInfo } = useError();

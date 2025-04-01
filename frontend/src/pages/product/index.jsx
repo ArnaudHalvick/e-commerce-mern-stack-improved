@@ -7,7 +7,7 @@ import ProductDisplay from "../../components/productDisplay";
 import DescriptionBox from "../../components/descriptionBox/DescriptionBox";
 import RelatedProducts from "../../components/relatedProducts/RelatedProducts";
 import ProductPageStatus from "./components/ProductPageStatus";
-import EmptyState from "../../components/errorHandling/EmptyState";
+import EmptyState from "../../components/errorHandling/emptyState/EmptyState";
 
 // Hooks and Utilities
 import useProductData from "./hooks/useProductData";

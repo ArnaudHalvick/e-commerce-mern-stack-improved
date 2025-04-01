@@ -3,9 +3,9 @@
  * Re-export file for easy imports
  */
 
-export { default as ErrorBoundary } from "./ErrorBoundary";
-export { default as EmptyState } from "./EmptyState";
-export { default as Toast } from "./Toast";
-export { default as ToastContainer } from "./ToastContainer";
-export { default as ErrorDemo } from "./ErrorDemo";
-export { default as withErrorHandling } from "./withErrorHandling";
+export { default as ErrorBoundary } from "./boundary/ErrorBoundary";
+export { default as EmptyState } from "./emptyState/EmptyState";
+export { default as Toast } from "./toast/Toast";
+export { default as ToastContainer } from "./toast/ToastContainer";
+export { default as ErrorDemo } from "./demo/ErrorDemo";
+export { default as withErrorHandling } from "./hoc/withErrorHandling";

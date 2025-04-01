@@ -4,8 +4,8 @@ import { CartItem, CartTotals, PromoCodeSection } from "./components";
 import EmailVerificationBanner from "./components/EmailVerificationBanner";
 import { AuthContext } from "../../context/AuthContext";
 import useCart from "./hooks/useCart";
-import EmptyState from "../errorHandling/EmptyState";
-import "../errorHandling/LoadingIndicator.css";
+import EmptyState from "../errorHandling/emptyState/EmptyState";
+import "../errorHandling/styles/LoadingIndicator.css";
 import Spinner from "../ui/spinner";
 
 /**

@@ -1,7 +1,7 @@
 import React from "react";
 import Toast from "./Toast";
-import { useError } from "../../context/ErrorContext";
-import "./ErrorStyles.css";
+import { useError } from "../../../context/ErrorContext";
+import "../styles/ToastStyles.css";
 
 /**
  * ToastContainer Component - Container for managing multiple toast notifications

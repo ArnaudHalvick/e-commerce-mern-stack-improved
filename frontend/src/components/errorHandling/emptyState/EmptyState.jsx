@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import "./ErrorStyles.css";
+import "../styles/EmptyStateStyles.css";
 
 /**
  * EmptyState component - Used to display a user-friendly message when a section has no content

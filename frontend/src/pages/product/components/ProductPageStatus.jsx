@@ -1,9 +1,9 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import EmptyState from "../../../components/errorHandling/EmptyState";
+import EmptyState from "../../../components/errorHandling/emptyState/EmptyState";
 import Breadcrumb from "../../../components/breadcrumbs/Breadcrumb";
 import Spinner from "../../../components/ui/spinner";
-import "../../../components/errorHandling/LoadingIndicator.css";
+import "../../../components/errorHandling/styles/LoadingIndicator.css";
 
 /**
  * Component for displaying loading and error states on product page

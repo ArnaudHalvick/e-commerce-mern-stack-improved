@@ -1,0 +1,130 @@
+/* Toast Notification Styles */
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 350px;
+  width: calc(100% - 40px);
+}
+
+.toast {
+  display: flex;
+  align-items: flex-start;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+  background-color: white;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  position: relative;
+  border-left: 5px solid;
+}
+
+.toast-enter {
+  animation: slideIn 0.3s forwards;
+}
+
+.toast-exit {
+  animation: slideOut 0.3s forwards;
+}
+
+.toast.error {
+  border-left-color: #e63946;
+}
+
+.toast.warning {
+  border-left-color: #ffb703;
+}
+
+.toast.success {
+  border-left-color: #52b788;
+}
+
+.toast.info {
+  border-left-color: #4361ee;
+}
+
+.toast-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  margin-right: 15px;
+  flex-shrink: 0;
+}
+
+.toast.error .toast-icon {
+  background-color: #fadadd;
+  color: #e63946;
+}
+
+.toast.warning .toast-icon {
+  background-color: #fff3cd;
+  color: #ffb703;
+}
+
+.toast.success .toast-icon {
+  background-color: #d8f3dc;
+  color: #52b788;
+}
+
+.toast.info .toast-icon {
+  background-color: #e0e7ff;
+  color: #4361ee;
+}
+
+.toast-message {
+  flex-grow: 1;
+  font-size: 0.95rem;
+  color: #333;
+  margin-right: 30px;
+  line-height: 1.4;
+}
+
+.toast-close {
+  position: absolute;
+  top: 13px;
+  right: 10px;
+  font-size: 16px;
+  color: #999;
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+}
+
+.toast-close:hover {
+  color: #333;
+}
+
+@keyframes slideIn {
+  0% {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOut {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+}

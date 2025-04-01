@@ -5,7 +5,7 @@ import { useContext } from "react";
 import Container from "./components/container/Container";
 import Navbar from "./components/navbar/Navbar";
 import Footer from "./components/footer/Footer";
-import ErrorBoundary from "./components/errorHandling/ErrorBoundary";
+import ErrorBoundary from "./components/errorHandling/boundary/ErrorBoundary";
 import { ToastContainer } from "./components/errorHandling";
 import { ErrorProvider } from "./context/ErrorContext";
 import AuthLoadingIndicator from "./components/authLoadingIndicator/AuthLoadingIndicator.jsx";

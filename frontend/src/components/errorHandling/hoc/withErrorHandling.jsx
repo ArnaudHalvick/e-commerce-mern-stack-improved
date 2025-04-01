@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { useError } from "../../context/ErrorContext";
-import Spinner from "../ui/spinner"; // Assuming you have a Spinner component
-import EmptyState from "./EmptyState";
+import { useError } from "../../../context/ErrorContext";
+import Spinner from "../../ui/spinner"; // Assuming you have a Spinner component
+import EmptyState from "../emptyState/EmptyState";
 
 /**
  * Higher-order component that adds loading, error handling, and empty state handling

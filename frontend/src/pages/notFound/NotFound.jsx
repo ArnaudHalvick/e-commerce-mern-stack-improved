@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
-import "../../components/errorHandling/ErrorStyles.css";
+import "../../components/errorHandling/styles/BoundaryStyles.css";
 
 /**
  * NotFound (404) page component - Displayed when users navigate to non-existent routes
