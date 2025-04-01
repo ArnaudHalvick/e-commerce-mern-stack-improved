@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useContext } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchCart,
@@ -6,7 +6,7 @@ import {
   addToCart,
   updateCartItem,
 } from "../../../redux/slices/cartSlice";
-import { AuthContext } from "../../../context/AuthContext";
+import { useAuth } from "../../../hooks/state";
 
 /**
  * Custom hook for cart operations and state management
@@ -15,7 +15,7 @@ import { AuthContext } from "../../../context/AuthContext";
  */
 const useCart = () => {
   const dispatch = useDispatch();
-  const { isAuthenticated } = useContext(AuthContext);
+  const { isAuthenticated } = useAuth();
 
   // Get cart state from Redux with fallback values
   const {

@@ -2,8 +2,8 @@ import { useState, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { authService } from "../../../api";
 import { useError } from "../../../context/ErrorContext";
-// Import the AuthContext hook to access the login function
-import { useAuth } from "../../../context/AuthContext";
+// Import the useAuth hook from the state directory
+import { useAuth } from "../../../hooks/state";
 import useFormErrors from "../../../hooks/useFormErrors";
 import {
   validateEmail,

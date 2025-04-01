@@ -1,10 +1,9 @@
 import "../ProductDisplay.css";
 import star_icon from "../../assets/star_icon.png";
 import star_dull_icon from "../../assets/star_dull_icon.png";
-import { useContext, useState, useMemo, useCallback, useRef } from "react";
+import { useState, useMemo, useCallback, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../../redux/slices/cartSlice";
-import { AuthContext } from "../../../context/AuthContext";
 import { config } from "../../../api";
 import { useError } from "../../../context/ErrorContext";
 import { useAuth } from "../../../hooks/state";
