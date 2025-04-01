@@ -1,0 +1,13 @@
+# Delete test components
+rm -f /home/arnaud-halvick/Desktop/e-commerce-mern-stack-improved/frontend/src/components/HookTestComponent.jsx
+rm -f /home/arnaud-halvick/Desktop/e-commerce-mern-stack-improved/frontend/src/components/ProductHookTest.jsx
+
+# Delete test hooks
+rm -f /home/arnaud-halvick/Desktop/e-commerce-mern-stack-improved/frontend/src/hooks/test/CartHookTest.jsx
+rm -f /home/arnaud-halvick/Desktop/e-commerce-mern-stack-improved/frontend/src/hooks/test/AuthHookTest.jsx
+
+# Delete test page
+rm -f /home/arnaud-halvick/Desktop/e-commerce-mern-stack-improved/frontend/src/pages/test/TestPage.jsx
+
+# Check for any readme files in test directories
+rm -f /home/arnaud-halvick/Desktop/e-commerce-mern-stack-improved/frontend/src/hooks/test/*.md 
