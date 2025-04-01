@@ -1,5 +1,6 @@
 .product-item {
-  width: 280px;
+  width: 100%;
+  max-width: 100%;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -56,11 +57,19 @@
 
 /* --------- Responsive Styles --------- */
 
-@media (max-width: 768px) {
-  .product-item {
-    width: 45vw;
+@media (max-width: 1536px) {
+  .product-item-image {
+    height: 320px;
   }
+}
 
+@media (max-width: 992px) {
+  .product-item-image {
+    height: 300px;
+  }
+}
+
+@media (max-width: 768px) {
   .product-item-image {
     height: 250px;
   }
@@ -79,11 +88,7 @@
   }
 }
 
-@media (max-width: 480px) {
-  .product-item {
-    width: 100%;
-  }
-
+@media (max-width: 576px) {
   .product-item-image {
     height: 200px;
   }
