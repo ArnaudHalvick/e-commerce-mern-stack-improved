@@ -364,8 +364,8 @@
   }
 
   .product-listing-item {
-    flex: 0 0 calc((100% - 1.5rem) / 2); /* 2 items per row with 1.5rem gap (1 gap total = 1.5rem) */
-    max-width: calc((100% - 1.5rem) / 2);
+    flex: 0 0 calc((100% - 3rem) / 3); /* 3 items per row with 1.5rem gap (2 gaps total = 3rem) */
+    max-width: calc((100% - 3rem) / 3);
   }
 }
 
