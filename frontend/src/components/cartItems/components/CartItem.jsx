@@ -49,7 +49,7 @@ const CartItem = ({
   const handleAddItemClick = () => {
     // Update local state immediately for better UX
     setLocalQuantity((prev) => prev + 1);
-    onAddItem(item.productId, item.size);
+    onAddItem(item.productId, 1, item.size);
   };
 
   const handleRemoveItemClick = () => {
@@ -57,7 +57,7 @@ const CartItem = ({
     if (localQuantity > 1) {
       setLocalQuantity((prev) => prev - 1);
     }
-    onRemoveItem(item.productId, item.size);
+    onRemoveItem(item.productId, 1, item.size);
   };
 
   const handleKeyDown = (event, action) => {

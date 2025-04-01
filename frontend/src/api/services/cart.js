@@ -100,16 +100,15 @@ export const removeFromCart = async ({
       size,
     };
 
-    // Only add these parameters if they're actually needed
-    if (!removeAll) {
+    // Only add quantity if we're not removing all and quantity is specified
+    if (!removeAll && quantity > 0) {
       payload.quantity = quantity;
     }
+
+    // Only add removeAll flag if it's true
     if (removeAll) {
       payload.removeAll = true;
     }
-
-    // Log the request
-    console.log("Removing from cart:", payload);
 
     // Make the request with the exact parameter names expected by the backend
     const response = await apiClient.post("/api/cart/remove", payload);
