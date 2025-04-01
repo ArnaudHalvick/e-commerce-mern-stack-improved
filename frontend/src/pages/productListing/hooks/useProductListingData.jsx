@@ -184,34 +184,6 @@ const useProductListingData = ({ pageType, category }) => {
   const prevPageTypeRef = useRef();
   const offersLoadedRef = useRef(false);
 
-  // Debug function to log important state (helpful for troubleshooting)
-  const logDebugInfo = useCallback(
-    (message) => {
-      console.log(`[ProductListing Debug] ${message}`, {
-        pageType,
-        category,
-        allProductsCount: allProducts.length,
-        displayedProductsCount: displayedProducts.length,
-        loading,
-        contextLoading,
-        isInitialized,
-        all_product_length: all_product ? all_product.length : 0,
-        isRequestInProgress: isRequestInProgress.current,
-        isInitialFetchDone: isInitialFetchDone.current,
-      });
-    },
-    [
-      pageType,
-      category,
-      allProducts.length,
-      displayedProducts.length,
-      loading,
-      contextLoading,
-      isInitialized,
-      all_product,
-    ]
-  );
-
   // Fetch products based on page type - only run on first mount or when params change
   useEffect(() => {
     // Only fetch if:
@@ -227,14 +199,10 @@ const useProductListingData = ({ pageType, category }) => {
 
     // Exit if already fetching or if no need to fetch
     if (isRequestInProgress.current) {
-      logDebugInfo("Skipping fetch because a request is already in progress");
       return;
     }
 
     if (!categoryChanged && !pageTypeChanged && !initialRender) {
-      logDebugInfo(
-        "Skipping fetch because nothing changed and it's not initial render"
-      );
       return;
     }
 
@@ -317,7 +285,6 @@ const useProductListingData = ({ pageType, category }) => {
     all_product,
     fetchGlobalProducts,
     filterAndSortProducts,
-    logDebugInfo,
   ]);
 
   // Check if we need to update from context when it changes
@@ -357,7 +324,6 @@ const useProductListingData = ({ pageType, category }) => {
     isInitialized,
     all_product,
     filterAndSortProducts,
-    logDebugInfo,
     loading,
     allProducts.length,
   ]);
@@ -374,7 +340,6 @@ const useProductListingData = ({ pageType, category }) => {
     itemsPerPage,
     allProducts,
     filterAndSortProducts,
-    logDebugInfo,
   ]);
 
   // Handle filter changes
@@ -491,7 +456,6 @@ const useProductListingData = ({ pageType, category }) => {
     isInitialized,
     fetchGlobalProducts,
     filterAndSortProducts,
-    logDebugInfo,
   ]);
 
   // Calculate display range
