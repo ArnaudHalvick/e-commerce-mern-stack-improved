@@ -42,36 +42,25 @@ export const addToCart = createAsyncThunk(
         return rejectWithValue("Authentication required");
       }
 
-      // Use API service - ensuring we pass the correct parameter structure
+      // Ensure size is valid
+      if (!size) {
+        return rejectWithValue("Size is required");
+      }
+
+      // Use API service with simplified parameters
       const data = await cartService.addToCart({
         itemId,
         quantity,
         size,
-        color: null, // Add default color parameter (null if not used)
       });
 
-      // If successful, return the cart data
       if (data && data.cart) {
         return data.cart;
       }
 
-      // Handle missing/invalid response
-      if (!data || !data.success) {
-        const errorMsg = data?.message || "Failed to add item to cart";
-        console.error("Cart update error:", errorMsg);
-        return rejectWithValue(errorMsg);
-      }
-
       return { items: [], totalItems: 0, totalPrice: 0 };
     } catch (error) {
-      console.error("Add to cart error:", error?.response?.data || error);
-
-      // If we get a 401 Unauthorized error, the token might be invalid
-      if (error?.response?.status === 401) {
-        // Refresh the cart to sync with the server state
-        setTimeout(() => dispatch(fetchCart()), 100);
-      }
-
+      console.error("Add to cart error:", error);
       return rejectWithValue(
         error?.response?.data?.message ||
           error?.message ||
@@ -84,7 +73,7 @@ export const addToCart = createAsyncThunk(
 export const removeFromCart = createAsyncThunk(
   "cart/removeItem",
   async (
-    { itemId, quantity = 1, removeAll = false, size, color = null },
+    { itemId, quantity = 1, removeAll = false, size },
     { rejectWithValue, dispatch }
   ) => {
     try {
@@ -93,37 +82,26 @@ export const removeFromCart = createAsyncThunk(
         return rejectWithValue("Authentication required");
       }
 
-      // Use API service with consistent parameter structure
+      // Ensure size is valid
+      if (!size) {
+        return rejectWithValue("Size is required");
+      }
+
+      // Use API service with simplified parameters
       const data = await cartService.removeFromCart({
         itemId,
         quantity,
         removeAll,
-        size: size || null,
-        color: color || null,
+        size,
       });
 
-      // If successful, return the cart data
       if (data && data.cart) {
         return data.cart;
       }
 
-      // Handle missing/invalid response
-      if (!data || !data.success) {
-        const errorMsg = data?.message || "Failed to remove item from cart";
-        console.error("Cart update error:", errorMsg);
-        return rejectWithValue(errorMsg);
-      }
-
       return { items: [], totalItems: 0, totalPrice: 0 };
     } catch (error) {
-      console.error("Remove from cart error:", error?.response?.data || error);
-
-      // If we get a 401 Unauthorized error, the token might be invalid
-      if (error?.response?.status === 401) {
-        // Refresh the cart to sync with the server state
-        setTimeout(() => dispatch(fetchCart()), 100);
-      }
-
+      console.error("Remove from cart error:", error);
       return rejectWithValue(
         error?.response?.data?.message ||
           error?.message ||
@@ -142,13 +120,29 @@ export const updateCartItem = createAsyncThunk(
         return rejectWithValue("Authentication required");
       }
 
-      // Use API service
-      const data = await cartService.updateCartItem({ itemId, quantity, size });
+      // Ensure size is valid
+      if (!size) {
+        return rejectWithValue("Size is required");
+      }
 
-      return data.cart || { items: [], totalItems: 0, totalPrice: 0 };
+      // Use API service with simplified parameters
+      const data = await cartService.updateCartItem({
+        itemId,
+        quantity,
+        size,
+      });
+
+      if (data && data.cart) {
+        return data.cart;
+      }
+
+      return { items: [], totalItems: 0, totalPrice: 0 };
     } catch (error) {
+      console.error("Update cart item error:", error);
       return rejectWithValue(
-        typeof error === "string" ? error : "Failed to update cart item"
+        error?.response?.data?.message ||
+          error?.message ||
+          "Failed to update cart item"
       );
     }
   }

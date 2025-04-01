@@ -66,16 +66,12 @@ const useCart = () => {
       const key = `${id}-${size}`;
       const newValue = editableQuantities[key];
 
-      // Ensure size is a valid string
-      const validSize = size || "one-size"; // Use a default size if none provided
-
       if (newValue !== undefined) {
         dispatch(
           updateCartItem({
             itemId: id,
             quantity: newValue,
-            size: validSize,
-            color: null,
+            size: size,
           })
         )
           .unwrap()
@@ -85,14 +81,20 @@ const useCart = () => {
           .catch((err) => {
             console.error("Error updating quantity:", err);
 
-            // Check if it's an authentication error
-            if (
-              err.includes &&
-              (err.includes("Authentication required") || err.includes("401"))
-            ) {
-              showError("Your session has expired. Please login again.");
-            } else if (err.includes && err.includes("Size is required")) {
-              showError("Please select a size for this item");
+            // Show appropriate error message
+            if (typeof err === "string") {
+              if (
+                err.includes("Authentication required") ||
+                err.includes("401")
+              ) {
+                showError("Your session has expired. Please login again.");
+              } else if (err.includes("Size is required")) {
+                showError("Please select a size for this item");
+              } else {
+                showError(
+                  err || "Failed to update quantity. Please try again."
+                );
+              }
             } else {
               showError("Failed to update quantity. Please try again.");
             }
@@ -121,9 +123,6 @@ const useCart = () => {
         (item) => item.productId === id && item.size === size
       );
 
-      // Ensure size is a valid string
-      const validSize = size || "one-size"; // Use a default size if none provided
-
       if (item) {
         // Update local total price immediately for better UX
         setLocalTotalPrice((prev) => prev - item.price * item.quantity);
@@ -133,8 +132,7 @@ const useCart = () => {
         removeFromCart({
           itemId: id,
           removeAll: true,
-          size: validSize,
-          color: null,
+          size: size,
         })
       )
         .unwrap()
@@ -149,14 +147,18 @@ const useCart = () => {
             setLocalTotalPrice((prev) => prev + item.price * item.quantity);
           }
 
-          // Check if it's an authentication error
-          if (
-            err.includes &&
-            (err.includes("Authentication required") || err.includes("401"))
-          ) {
-            showError("Your session has expired. Please login again.");
-          } else if (err.includes && err.includes("Size is required")) {
-            showError("Please select a size for this item");
+          // Show appropriate error message
+          if (typeof err === "string") {
+            if (
+              err.includes("Authentication required") ||
+              err.includes("401")
+            ) {
+              showError("Your session has expired. Please login again.");
+            } else if (err.includes("Size is required")) {
+              showError("Please select a size for this item");
+            } else {
+              showError(err || "Failed to remove items. Please try again.");
+            }
           } else {
             showError("Failed to remove items. Please try again.");
           }
@@ -177,9 +179,6 @@ const useCart = () => {
         (item) => item.productId === id && item.size === size
       );
 
-      // Ensure size is a valid string
-      const validSize = size || "one-size"; // Use a default size if none provided
-
       if (item) {
         // Update local total price immediately for better UX
         setLocalTotalPrice((prev) => prev + item.price);
@@ -189,13 +188,11 @@ const useCart = () => {
         addToCart({
           itemId: id,
           quantity: 1,
-          size: validSize, // Use validated size
-          color: null,
+          size: size,
         })
       )
         .unwrap()
         .then((result) => {
-          // Success handling if needed
           console.log("Item added successfully");
         })
         .catch((err) => {
@@ -206,15 +203,18 @@ const useCart = () => {
             setLocalTotalPrice((prev) => prev - item.price);
           }
 
-          // Check if it's an authentication error
-          if (
-            err.includes &&
-            (err.includes("Authentication required") || err.includes("401"))
-          ) {
-            showError("Your session has expired. Please login again.");
-            // Could redirect to login here if needed
-          } else if (err.includes && err.includes("Size is required")) {
-            showError("Please select a size for this item");
+          // Show appropriate error message
+          if (typeof err === "string") {
+            if (
+              err.includes("Authentication required") ||
+              err.includes("401")
+            ) {
+              showError("Your session has expired. Please login again.");
+            } else if (err.includes("Size is required")) {
+              showError("Please select a size for this item");
+            } else {
+              showError(err || "Failed to update cart. Please try again.");
+            }
           } else {
             showError("Failed to update cart. Please try again.");
           }
@@ -235,9 +235,6 @@ const useCart = () => {
         (item) => item.productId === id && item.size === size
       );
 
-      // Ensure size is a valid string
-      const validSize = size || "one-size"; // Use a default size if none provided
-
       if (item) {
         // Update local total price immediately for better UX
         setLocalTotalPrice((prev) => prev - item.price);
@@ -247,13 +244,11 @@ const useCart = () => {
         removeFromCart({
           itemId: id,
           quantity: 1,
-          size: validSize, // Use validated size
-          color: null,
+          size: size,
         })
       )
         .unwrap()
         .then((result) => {
-          // Success handling if needed
           console.log("Item removed successfully");
         })
         .catch((err) => {
@@ -264,15 +259,18 @@ const useCart = () => {
             setLocalTotalPrice((prev) => prev + item.price);
           }
 
-          // Check if it's an authentication error
-          if (
-            err.includes &&
-            (err.includes("Authentication required") || err.includes("401"))
-          ) {
-            showError("Your session has expired. Please login again.");
-            // Could redirect to login here if needed
-          } else if (err.includes && err.includes("Size is required")) {
-            showError("Please select a size for this item");
+          // Show appropriate error message
+          if (typeof err === "string") {
+            if (
+              err.includes("Authentication required") ||
+              err.includes("401")
+            ) {
+              showError("Your session has expired. Please login again.");
+            } else if (err.includes("Size is required")) {
+              showError("Please select a size for this item");
+            } else {
+              showError(err || "Failed to update cart. Please try again.");
+            }
           } else {
             showError("Failed to update cart. Please try again.");
           }

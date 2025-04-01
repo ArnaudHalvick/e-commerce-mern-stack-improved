@@ -1,4 +1,4 @@
-import React, { memo, useState } from "react";
+import React, { memo, useState, useEffect } from "react";
 import remove_icon from "../../../components/assets/cart_cross_icon.png";
 import { config } from "../../../api";
 import "../CartItems.css";
@@ -24,6 +24,11 @@ const CartItem = ({
   onQuantityBlur,
 }) => {
   const [localQuantity, setLocalQuantity] = useState(item.quantity);
+
+  // Update local quantity when item quantity changes
+  useEffect(() => {
+    setLocalQuantity(item.quantity);
+  }, [item.quantity]);
 
   // Handle local quantity change
   const handleLocalQuantityChange = (value) => {

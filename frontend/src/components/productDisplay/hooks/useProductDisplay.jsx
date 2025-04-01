@@ -45,6 +45,7 @@ const useProductDisplay = (product) => {
     // Validate size selection
     if (!selectedSize) {
       setSizeError(true);
+      showError("Please select a size before adding to cart");
       return;
     }
 
@@ -56,8 +57,35 @@ const useProductDisplay = (product) => {
           quantity: quantity,
           size: selectedSize,
         })
-      );
-      setTimeout(() => setIsAdding(false), 1000);
+      )
+        .unwrap()
+        .then(() => {
+          // Show success message or update UI
+          console.log("Product added to cart successfully");
+        })
+        .catch((err) => {
+          console.error("Error adding product to cart:", err);
+
+          // Show appropriate error message
+          if (typeof err === "string") {
+            if (
+              err.includes("Authentication required") ||
+              err.includes("401")
+            ) {
+              showError("Please login again to add items to cart");
+            } else if (err.includes("Size is required")) {
+              setSizeError(true);
+              showError("Please select a size for this product");
+            } else {
+              showError(err || "Failed to add item to cart. Please try again.");
+            }
+          } else {
+            showError("Failed to add item to cart. Please try again.");
+          }
+        })
+        .finally(() => {
+          setTimeout(() => setIsAdding(false), 500);
+        });
     } else {
       showError("Please login to add items to cart");
       setIsAdding(false);
@@ -70,6 +98,7 @@ const useProductDisplay = (product) => {
     quantity,
     selectedSize,
     showError,
+    setSizeError,
   ]);
 
   return {
