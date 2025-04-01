@@ -4,6 +4,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { config } from "../../api";
 import { authService } from "../../api";
+import { cancelPendingRequests } from "../../api/client";
 
 // Async thunk for login
 export const loginUser = createAsyncThunk(
@@ -295,6 +296,29 @@ export const requestEmailChange = createAsyncThunk(
       }
       return rejectWithValue("Failed to send email change verification");
     }
+  }
+);
+
+// Add this action to handle logout more gracefully
+export const logoutUser = createAsyncThunk(
+  "user/logout",
+  async (_, { dispatch }) => {
+    // First clear user data
+    dispatch(clearUser());
+
+    // Set localStorage flags
+    localStorage.removeItem("auth-token");
+    localStorage.setItem("user-logged-out", "true");
+
+    // Timeout to ensure state updates before canceling requests
+    await new Promise((resolve) => setTimeout(resolve, 50));
+
+    // Now it's safe to cancel pending requests
+    if (typeof cancelPendingRequests === "function") {
+      cancelPendingRequests("User logged out");
+    }
+
+    return { success: true };
   }
 );
 

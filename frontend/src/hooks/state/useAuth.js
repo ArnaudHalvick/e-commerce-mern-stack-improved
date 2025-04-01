@@ -15,6 +15,7 @@ import {
   setInitialized,
   verifyPasswordChange,
   requestEmailChange,
+  logoutUser,
 } from "../../redux/slices/userSlice";
 import { resetCart } from "../../redux/slices/cartSlice";
 import { authService } from "../../api";
@@ -50,10 +51,8 @@ const useAuth = () => {
    * Handle user logout
    */
   const handleLogout = useCallback(() => {
-    localStorage.removeItem("auth-token");
-    localStorage.setItem("user-logged-out", "true");
-    cancelPendingRequests("User initiated logout");
-    dispatch(clearUser());
+    // Use the new logoutUser action which handles state updates and request cancellation properly
+    dispatch(logoutUser());
     dispatch(resetCart());
     setIsUserLoggedOut(true);
   }, [dispatch]);
