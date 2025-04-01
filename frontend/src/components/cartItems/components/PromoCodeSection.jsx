@@ -6,11 +6,18 @@ import React, { useState } from "react";
 const PromoCodeSection = () => {
   const [promoCode, setPromoCode] = useState("");
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    if (e) e.preventDefault();
     // Future implementation: Handle promo code submission
     console.log("Promo code submitted:", promoCode);
     // Reset after submission
     setPromoCode("");
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSubmit(e);
+    }
   };
 
   return (
@@ -18,18 +25,27 @@ const PromoCodeSection = () => {
       <p className="cart-items-promo-code-text">
         If you have a promo code, Enter it here
       </p>
-      <div className="cart-items-promo-code-input-container">
+      <form
+        onSubmit={handleSubmit}
+        className="cart-items-promo-code-input-container"
+      >
         <input
           type="text"
           className="cart-items-promo-code-input"
           placeholder="promo code"
           value={promoCode}
           onChange={(e) => setPromoCode(e.target.value)}
+          aria-label="Enter promo code"
+          onKeyDown={handleKeyDown}
         />
-        <button className="cart-items-promo-code-submit" onClick={handleSubmit}>
+        <button
+          type="submit"
+          className="cart-items-promo-code-submit"
+          aria-label="Apply promo code"
+        >
           Submit
         </button>
-      </div>
+      </form>
     </div>
   );
 };

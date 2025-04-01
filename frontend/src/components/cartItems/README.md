@@ -5,7 +5,6 @@ This directory contains the components related to the shopping cart functionalit
 ## Component Structure
 
 - `index.jsx`: The main CartItems component that provides the cart table interface and orchestrates all child components
-- `CartItem.jsx`: Individual cart item display used outside the table view
 - `components/`: Modular subcomponents for the cart
   - `CartItem.jsx`: Individual cart item row for the table view
   - `CartTotals.jsx`: Shows cart pricing details with subtotal, shipping, and total

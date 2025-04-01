@@ -55,6 +55,13 @@ const CartItem = ({
     onRemoveItem(item.productId, item.size);
   };
 
+  const handleKeyDown = (event, action) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      action();
+    }
+  };
+
   return (
     <tr>
       <td>
@@ -87,6 +94,9 @@ const CartItem = ({
           <button
             className="cart-items-quantity-adjust-btn"
             onClick={handleRemoveItemClick}
+            onKeyDown={(e) => handleKeyDown(e, handleRemoveItemClick)}
+            aria-label="Decrease quantity"
+            tabIndex="0"
           >
             -
           </button>
@@ -97,10 +107,14 @@ const CartItem = ({
             onChange={(event) => handleLocalQuantityChange(event.target.value)}
             onBlur={handleBlur}
             min="1"
+            aria-label={`Quantity for ${item.name}, size ${item.size}`}
           />
           <button
             className="cart-items-quantity-adjust-btn"
             onClick={handleAddItemClick}
+            onKeyDown={(e) => handleKeyDown(e, handleAddItemClick)}
+            aria-label="Increase quantity"
+            tabIndex="0"
           >
             +
           </button>
@@ -118,9 +132,14 @@ const CartItem = ({
           <img
             className="cart-items-remove-icon"
             onClick={() => onRemoveAll(item.productId, item.size)}
+            onKeyDown={(e) =>
+              handleKeyDown(e, () => onRemoveAll(item.productId, item.size))
+            }
             src={remove_icon}
-            alt=""
+            alt={`Remove ${item.name} from cart`}
             title="Remove all"
+            tabIndex="0"
+            role="button"
           />
         </div>
       </td>

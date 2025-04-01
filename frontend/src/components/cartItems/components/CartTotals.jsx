@@ -17,6 +17,34 @@ const CartTotals = ({ totalPrice }) => {
   // If user is authenticated but email is not verified, show disabled button
   const showDisabledCheckout = isAuthenticated && !isEmailVerified;
 
+  // Render checkout button based on email verification status
+  const renderCheckoutButton = () => {
+    if (showDisabledCheckout) {
+      return (
+        <>
+          <button
+            className="cart-items-checkout-button disabled"
+            disabled={true}
+            aria-label="Email verification required for checkout"
+          >
+            VERIFY EMAIL TO CHECKOUT
+          </button>
+          <p className="cart-items-verification-note">
+            Please verify your email above to proceed
+          </p>
+        </>
+      );
+    }
+
+    return (
+      <Link to="/checkout" style={{ textDecoration: "none" }}>
+        <button className="cart-items-checkout-button">
+          PROCEED TO CHECKOUT
+        </button>
+      </Link>
+    );
+  };
+
   return (
     <div className="cart-items-totals">
       <h2 className="cart-items-totals-title">Cart Totals</h2>
@@ -38,27 +66,7 @@ const CartTotals = ({ totalPrice }) => {
         </p>
       </div>
 
-      {showDisabledCheckout ? (
-        <button
-          className="cart-items-checkout-button disabled"
-          disabled={true}
-          aria-label="Email verification required for checkout"
-        >
-          VERIFY EMAIL TO CHECKOUT
-        </button>
-      ) : (
-        <Link to="/checkout" style={{ textDecoration: "none" }}>
-          <button className="cart-items-checkout-button">
-            PROCEED TO CHECKOUT
-          </button>
-        </Link>
-      )}
-
-      {showDisabledCheckout && (
-        <p className="cart-items-verification-note">
-          Please verify your email above to proceed
-        </p>
-      )}
+      {renderCheckoutButton()}
     </div>
   );
 };

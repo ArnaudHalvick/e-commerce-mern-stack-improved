@@ -1,12 +1,17 @@
-import "./CartItems.css";
+// External Libraries
 import { useContext } from "react";
+
+// Internal Components
+import { AuthContext } from "../../context/AuthContext";
 import { CartItem, CartTotals, PromoCodeSection } from "./components";
 import EmailVerificationBanner from "./components/EmailVerificationBanner";
-import { AuthContext } from "../../context/AuthContext";
-import useCart from "./hooks/useCart";
 import EmptyState from "../errorHandling/emptyState/EmptyState";
-import "../errorHandling/styles/LoadingIndicator.css";
 import Spinner from "../ui/spinner";
+import useCart from "./hooks/useCart";
+
+// Styles
+import "./CartItems.css";
+import "../errorHandling/styles/LoadingIndicator.css";
 
 /**
  * Cart display component showing all items in cart and totals
