@@ -16,6 +16,10 @@ import StripeProvider from "./stripe/StripeProvider";
 import CheckoutPage from "./pages/checkout/CheckoutPage";
 import OrderConfirmationPage from "./pages/orderConfirmation/OrderConfirmationPage";
 import OrderHistoryPage from "./pages/orderHistory/OrderHistoryPage";
+// Import test components
+import HookTestComponent from "./components/HookTestComponent";
+import ProductHookTest from "./components/ProductHookTest";
+import TestPage from "./pages/test/TestPage";
 
 // Page Components
 import Shop from "./pages/shop/Shop.jsx";
@@ -238,6 +242,13 @@ function App() {
                 </ProtectedRoute>
               }
             />
+
+            {/* Test Routes for Hook Refactoring */}
+            <Route path="/hook-test" element={<HookTestComponent />} />
+            <Route path="/product-test" element={<ProductHookTest />} />
+
+            {/* Test Page */}
+            <Route path="/test" element={<TestPage />} />
 
             {/* 404 Route - Public */}
             <Route path="*" element={<NotFound />} />
