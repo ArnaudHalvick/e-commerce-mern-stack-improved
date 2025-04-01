@@ -109,7 +109,6 @@ const ProductListingPage = ({
 
   // Show loading state
   if (showLoading) {
-    console.log("Rendering loading state for", pageType, category);
     return (
       <div className="product-listing-container">
         {isCategoryPage && (
@@ -123,7 +122,6 @@ const ProductListingPage = ({
 
   // Show error state
   if (error) {
-    console.log("Rendering error state:", error);
     return (
       <div className="product-listing-container">
         {isCategoryPage && (
@@ -145,11 +143,6 @@ const ProductListingPage = ({
       </div>
     );
   }
-
-  // Debug info
-  console.log(
-    `Rendering ${pageType} page with ${displayedProducts.length} products`
-  );
 
   return (
     <div className="product-listing-container">

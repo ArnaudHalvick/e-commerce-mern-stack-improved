@@ -245,13 +245,9 @@ const useProductListingData = ({ pageType, category }) => {
     setLoading(true);
     setError(null);
     isRequestInProgress.current = true;
-    logDebugInfo("Starting to fetch products");
 
     const fetchPageProducts = async () => {
       try {
-        console.log(
-          `Fetching products: pageType=${pageType}, category=${category}`
-        );
         let data = [];
 
         if (pageType === "category" && category) {
@@ -260,20 +256,15 @@ const useProductListingData = ({ pageType, category }) => {
             category
           );
 
-          // Debug response
-          console.log("Category API response:", response);
-
           if (Array.isArray(response)) {
             data = response;
           } else {
-            console.warn("Category API response is not an array:", response);
             data = [];
           }
         } else if (pageType === "offers") {
           // For offers page, check if we need to load global products first
           if (!isInitialized && !offersLoadedRef.current) {
             offersLoadedRef.current = true; // Prevent infinite recursion
-            logDebugInfo("Triggering global products load for offers");
             fetchGlobalProducts(); // Trigger global product loading
             isRequestInProgress.current = false;
             return; // We'll wait for context to update
@@ -281,7 +272,6 @@ const useProductListingData = ({ pageType, category }) => {
 
           // Once global products are loaded, filter them for offers
           if (all_product && all_product.length > 0) {
-            logDebugInfo("Filtering global products for offers");
             data = all_product.filter(
               (product) =>
                 product.new_price > 0 && product.new_price < product.old_price
@@ -290,7 +280,6 @@ const useProductListingData = ({ pageType, category }) => {
         }
 
         if (!Array.isArray(data)) {
-          console.warn("Data is not an array:", data);
           if (isMounted.current) {
             setAllProducts([]);
             setDisplayedProducts([]);
@@ -298,9 +287,7 @@ const useProductListingData = ({ pageType, category }) => {
             setLoading(false);
           }
         } else {
-          console.log(`Received ${data.length} products from API`);
           if (isMounted.current) {
-            logDebugInfo(`Setting ${data.length} products`);
             setAllProducts(data);
             setAvailableTags([
               ...new Set(data.flatMap((item) => item.tags || [])),
@@ -314,7 +301,6 @@ const useProductListingData = ({ pageType, category }) => {
           }
         }
       } catch (err) {
-        console.error("Error fetching products:", err);
         if (isMounted.current) {
           setError("Failed to load products. Please try again later.");
           isRequestInProgress.current = false;
@@ -344,11 +330,8 @@ const useProductListingData = ({ pageType, category }) => {
       all_product.length > 0 &&
       !isRequestInProgress.current
     ) {
-      logDebugInfo("Context products updated, updating offers");
-
       // Prevent duplicate updates
       if (loading === false && allProducts.length > 0) {
-        logDebugInfo("Skipping duplicate context update");
         return;
       }
 
@@ -356,8 +339,6 @@ const useProductListingData = ({ pageType, category }) => {
         (product) =>
           product.new_price > 0 && product.new_price < product.old_price
       );
-
-      console.log(`Found ${offersData.length} products with discounts`);
 
       if (isMounted.current) {
         setAllProducts(offersData);
@@ -384,7 +365,6 @@ const useProductListingData = ({ pageType, category }) => {
   // Apply filters and sorting when filter states change
   useEffect(() => {
     if (allProducts.length > 0) {
-      logDebugInfo("Reapplying filters and sorting");
       filterAndSortProducts(allProducts);
     }
   }, [
@@ -491,7 +471,6 @@ const useProductListingData = ({ pageType, category }) => {
     // If we're on the offers page and have no products showing,
     // try to trigger a reload of the data
     if (pageType === "offers" && displayedProducts.length === 0) {
-      logDebugInfo("Clearing filters and reloading offers data");
       if (all_product && all_product.length > 0) {
         const offersData = all_product.filter(
           (product) =>

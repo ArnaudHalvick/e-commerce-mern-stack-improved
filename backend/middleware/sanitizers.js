@@ -18,7 +18,6 @@ const sanitizeRequest = [
     // Save the original address object before any sanitization
     if (req.body && req.body.address) {
       req.originalAddress = JSON.parse(JSON.stringify(req.body.address));
-      console.log("Original address before sanitization:", req.originalAddress);
     }
     next();
   },
@@ -40,7 +39,6 @@ const sanitizeRequest = [
   (req, res, next) => {
     if (req.body && req.originalAddress) {
       req.body.address = req.originalAddress;
-      console.log("Restored address after sanitization:", req.body.address);
     }
     next();
   },
