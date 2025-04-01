@@ -293,6 +293,7 @@
 .cart-items-quantity-input,
 .cart-items-quantity-adjust-btn {
   -webkit-appearance: none;
+  appearance: none;
 }
 
 @media (max-width: 768px) {
