@@ -1,5 +1,5 @@
 // Path: frontend/src/context/ShopContext.jsx
-import React, { createContext, useState, useEffect, useCallback } from "react";
+import React, { createContext, useState, useCallback } from "react";
 import { productsService } from "../api";
 
 export const ShopContext = createContext(null);
