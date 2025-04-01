@@ -202,11 +202,9 @@
 
 /* Product Grid - using flexbox with wrap instead of grid */
 .product-listing-grid {
-  margin-top: 1.5rem;
-  margin-bottom: 2.5rem;
   display: flex;
   flex-wrap: wrap;
-  gap: 2rem;
+  gap: 1.5rem;
 }
 
 .product-listing-item {
