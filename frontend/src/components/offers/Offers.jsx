@@ -9,15 +9,19 @@ const Offers = () => {
   return (
     <div className="offers">
       <div className="offers-left">
-        <h1>Exclusive Deals</h1>
-        <h1>Just for You</h1>
-        <p>ONLY TOP SELLING PRODUCTS</p>
+        <h1 className="offers-title">Exclusive Deals</h1>
+        <h1 className="offers-title">Just for You</h1>
+        <p className="offers-subtitle">ONLY TOP SELLING PRODUCTS</p>
         <Link to="/offers?discount=true">
-          <button>Discover Now</button>
+          <button className="offers-cta-button">Discover Now</button>
         </Link>
       </div>
       <div className="offers-right">
-        <img src={exclusive_image} alt="" />
+        <img
+          src={exclusive_image}
+          alt="Exclusive offer"
+          className="offers-image"
+        />
       </div>
     </div>
   );
