@@ -2,6 +2,7 @@ import React, { memo, useState } from "react";
 import remove_icon from "../../../components/assets/cart_cross_icon.png";
 import { config } from "../../../api";
 import "../CartItems.css";
+import { Link } from "react-router-dom";
 
 /**
  * Individual cart item component
@@ -63,7 +64,14 @@ const CartItem = ({
           alt={item.name}
         />
       </td>
-      <td>{item.name}</td>
+      <td>
+        <Link
+          to={`/product/${item.productId}`}
+          className="cart-items-product-link"
+        >
+          {item.name}
+        </Link>
+      </td>
       <td>
         <span
           className={item.isDiscounted ? "cart-items-price-discounted" : ""}

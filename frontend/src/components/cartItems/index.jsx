@@ -97,8 +97,8 @@ const CartItems = () => {
       <table className="cart-items-table">
         <thead>
           <tr>
+            <th>Image</th>
             <th>Product</th>
-            <th>Title</th>
             <th>Price</th>
             <th>Size</th>
             <th>Quantity</th>

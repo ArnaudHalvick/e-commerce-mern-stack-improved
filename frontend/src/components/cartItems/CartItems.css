@@ -59,6 +59,19 @@
   border-radius: 4px;
 }
 
+/* Product Link */
+.cart-items-product-link {
+  color: #333;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.cart-items-product-link:hover {
+  color: #ff4141;
+  text-decoration: underline;
+}
+
 /* Quantity Controls */
 .cart-items-quantity-controls {
   display: flex;

@@ -1,6 +1,7 @@
 import React from "react";
 import "./CartItems.css";
 import { config } from "../../api";
+import { Link } from "react-router-dom";
 
 const CartItem = ({
   item,
@@ -31,7 +32,9 @@ const CartItem = ({
         <img src={config.getImageUrl(item.image)} alt={item.name} />
       </div>
       <div className="cart-items-details">
-        <p className="cart-items-name">{item.name}</p>
+        <Link to={`/product/${item.id}`} className="cart-items-product-link">
+          <p className="cart-items-name">{item.name}</p>
+        </Link>
         {item.selectedSize && (
           <p className="cart-items-size">Size: {item.selectedSize}</p>
         )}
