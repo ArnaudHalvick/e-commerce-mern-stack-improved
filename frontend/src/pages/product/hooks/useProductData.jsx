@@ -1,6 +1,6 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ShopContext } from "../../../context/ShopContext";
+import { useProducts } from "../../../hooks/state";
 import { productsService } from "../../../api";
 
 /**
@@ -12,12 +12,12 @@ import { productsService } from "../../../api";
  */
 const useProductData = (productId, productSlug) => {
   const {
-    all_product,
+    products: all_product,
     loading: contextLoading,
     error: contextError,
     isInitialized,
     fetchProducts,
-  } = useContext(ShopContext);
+  } = useProducts();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

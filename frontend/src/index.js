@@ -8,7 +8,6 @@ import reportWebVitals from "./reportWebVitals";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import store from "./redux/store";
-import ShopContextProvider from "./context/ShopContext";
 import AuthContextProvider from "./context/AuthContext";
 import CartContextProvider from "./context/CartContext";
 
@@ -19,9 +18,7 @@ root.render(
       <BrowserRouter>
         <AuthContextProvider>
           <CartContextProvider>
-            <ShopContextProvider>
-              <App />
-            </ShopContextProvider>
+            <App />
           </CartContextProvider>
         </AuthContextProvider>
       </BrowserRouter>

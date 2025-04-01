@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback, useRef, useContext } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { productsService } from "../../../api";
-import { ShopContext } from "../../../context/ShopContext";
+import { useProducts } from "../../../hooks/state";
 import { scrollToElement } from "../../../utils/scrollHelpers";
 
 /**
@@ -13,13 +13,13 @@ import { scrollToElement } from "../../../utils/scrollHelpers";
  * @returns {Object} Product listing data and functions
  */
 const useProductListingData = ({ pageType, category }) => {
-  // Get access to the ShopContext for category pages
+  // Get access to products data using our custom hook
   const {
-    all_product,
+    products: all_product,
     loading: contextLoading,
     isInitialized,
     fetchProducts: fetchGlobalProducts,
-  } = useContext(ShopContext);
+  } = useProducts();
 
   // State for all products
   const [allProducts, setAllProducts] = useState([]);
