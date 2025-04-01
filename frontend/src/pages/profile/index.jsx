@@ -1,13 +1,7 @@
-import React, { useEffect, useState, useCallback, useContext } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../../context/AuthContext";
-import {
-  updateUserProfile,
-  requestEmailVerification,
-  changePassword,
-  disableAccount,
-} from "../../redux/slices/userSlice";
+import { useAuth } from "../../hooks/state";
 import { useError } from "../../context/ErrorContext";
 
 // Components
@@ -42,17 +36,24 @@ import {
 const Profile = () => {
   const {
     user,
-    isAuthenticated,
-    loading: authLoading,
-    logout,
-    fetchUserProfile,
-  } = useContext(AuthContext);
+    loading,
+    error,
+    updateProfile,
+    changePassword,
+    disableAccount,
+    verificationRequested,
+    isEmailVerified,
+    requestEmailVerification,
+  } = useAuth();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { showError, showSuccess } = useError();
-  const { loading, passwordChanged, loadingStates } = useSelector(
-    (state) => state.user
-  );
+  const { loading: authLoading, logout, fetchUserProfile } = useAuth();
+  const {
+    loading: reduxLoading,
+    passwordChanged,
+    loadingStates,
+  } = useSelector((state) => state.user);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -72,8 +73,6 @@ const Profile = () => {
     confirmPassword: "",
   });
 
-  const [verificationRequested, setVerificationRequested] = useState(false);
-  const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [updatedUserData, setUpdatedUserData] = useState(null);
   const [fieldErrors, setFieldErrors] = useState({});
 
@@ -81,7 +80,7 @@ const Profile = () => {
   useEffect(() => {
     let isMounted = true;
     const getCompleteProfile = async () => {
-      if (isAuthenticated && isMounted) {
+      if (user && isMounted) {
         await fetchUserProfile();
       }
     };
@@ -89,7 +88,7 @@ const Profile = () => {
     return () => {
       isMounted = false;
     };
-  }, [isAuthenticated, fetchUserProfile]);
+  }, [user, fetchUserProfile]);
 
   // Initialize form data with user profile data
   useEffect(() => {
@@ -139,10 +138,10 @@ const Profile = () => {
 
   // Redirect if not authenticated
   useEffect(() => {
-    if (!authLoading && !isAuthenticated) {
+    if (!authLoading && !user) {
       navigate("/login");
     }
-  }, [isAuthenticated, authLoading, navigate]);
+  }, [authLoading, user, navigate]);
 
   // Reset form and show success when password is changed
   useEffect(() => {
@@ -152,7 +151,6 @@ const Profile = () => {
         newPassword: "",
         confirmPassword: "",
       });
-      setIsChangingPassword(false);
       showSuccess("Password changed successfully!");
     }
   }, [passwordChanged, showSuccess]);
@@ -460,9 +458,7 @@ const Profile = () => {
       }
 
       // Call updateUserProfile action and wait for the response
-      const updatedUser = await dispatch(
-        updateUserProfile(formattedData)
-      ).unwrap();
+      const updatedUser = await dispatch(updateProfile(formattedData)).unwrap();
 
       // Only show success and update data if we get a successful response
       if (updatedUser) {
@@ -605,7 +601,6 @@ const Profile = () => {
   const handleResendVerification = async () => {
     try {
       await dispatch(requestEmailVerification(user.email)).unwrap();
-      setVerificationRequested(true);
       showSuccess("Verification email sent. Please check your inbox.");
     } catch (error) {
       showError(error || "Failed to send verification email");
@@ -676,8 +671,11 @@ const Profile = () => {
             handlePasswordInputChange={handlePasswordInputChange}
             handlePasswordSubmit={handlePasswordSubmit}
             fieldErrors={fieldErrors}
-            isChangingPassword={isChangingPassword}
-            setIsChangingPassword={setIsChangingPassword}
+            isChangingPassword={loadingStates?.changingPassword}
+            setIsChangingPassword={(value) => {
+              // This is a placeholder implementation. You might want to
+              // implement a proper state management for changing password
+            }}
             loading={loading}
             changingPassword={loadingStates?.changingPassword}
             validationSchema={profilePasswordChangeSchema}

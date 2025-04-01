@@ -1,44 +1,41 @@
-import React, { useContext } from "react";
 import { Navigate, useLocation } from "react-router-dom";
-import { AuthContext } from "../../context/AuthContext";
+import { useAuth } from "../../hooks/state";
+import LoadingScreen from "../loadingScreen/LoadingScreen";
 
 /**
- * Email Verification Guard component that protects routes from users with unverified emails
- * Will redirect unverified users to a verification pending page without errors
- *
- * @param {Object} props
- * @param {React.ReactNode} props.children - The components to render if email is verified
+ * Prevents access to protected routes if user's email is not verified
  */
 const EmailVerificationGuard = ({ children }) => {
-  const { user, isAuthenticated, loading } = useContext(AuthContext);
+  const { user, isAuthenticated, loading } = useAuth();
   const location = useLocation();
 
-  // If still loading auth state, show nothing temporarily
+  // Show loading indicator while auth state is loading
   if (loading) {
-    return null;
+    return <LoadingScreen message="Checking verification status..." />;
   }
 
-  // If not authenticated, this will be handled by the regular ProtectedRoute
-  if (!isAuthenticated) {
-    return children;
-  }
+  // Check if user is authenticated but email is not verified
+  if (isAuthenticated && user && !user.isEmailVerified) {
+    // Dispatch an event to notify the user
+    const event = new CustomEvent("auth:emailVerificationRequired", {
+      detail: {
+        message: "Email verification is required to access this feature.",
+        from: location.pathname,
+      },
+    });
+    window.dispatchEvent(event);
 
-  // If authenticated but email not verified, redirect to verification pending page
-  if (user && !user.isEmailVerified) {
-    // Simply redirect without trying to update any state during render
+    // Redirect to verification page
     return (
       <Navigate
         to="/verify-pending"
-        state={{
-          from: location.pathname,
-          requiresVerification: true,
-        }}
+        state={{ from: location.pathname }}
         replace
       />
     );
   }
 
-  // If authenticated and email verified, show the protected content
+  // User is authenticated and email is verified, render children
   return children;
 };
 

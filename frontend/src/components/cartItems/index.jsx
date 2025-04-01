@@ -1,8 +1,7 @@
 // External Libraries
-import { useContext } from "react";
+import { useAuth } from "../../hooks/state";
 
 // Internal Components
-import { AuthContext } from "../../context/AuthContext";
 import { CartItem, CartTotals, PromoCodeSection } from "./components";
 import EmailVerificationBanner from "./components/EmailVerificationBanner";
 import EmptyState from "../errorHandling/emptyState/EmptyState";
@@ -17,7 +16,7 @@ import "../errorHandling/styles/LoadingIndicator.css";
  * Cart display component showing all items in cart and totals
  */
 const CartItems = () => {
-  const { user, isAuthenticated } = useContext(AuthContext);
+  const { user, isAuthenticated } = useAuth();
   const {
     items,
     totalPrice: localTotalPrice,

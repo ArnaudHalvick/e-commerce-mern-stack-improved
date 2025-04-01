@@ -1,15 +1,16 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
-import { AuthContext } from "../../../context/AuthContext";
+import { useAuth } from "../../../hooks/state";
+import "./CartTotals.css";
 
 /**
- * Component that displays cart total amounts
+ * Displays cart total and checkout button
  *
- * @param {Object} props
- * @param {Number} props.totalPrice - The total price of items in cart
+ * @param {Object} props - Component props
+ * @param {number} props.totalPrice - Total cart price
  */
 const CartTotals = ({ totalPrice }) => {
-  const { user, isAuthenticated } = useContext(AuthContext);
+  const { user, isAuthenticated } = useAuth();
 
   // Check if user is authenticated and email is verified
   const isEmailVerified = isAuthenticated && user?.isEmailVerified;

@@ -1,34 +1,30 @@
-import React, { useContext } from "react";
-import { AuthContext } from "../../context/AuthContext";
+import { useAuth } from "../../hooks/state";
 import { InlineSpinner } from "../ui/spinner";
-import "./authLoadingIndicator.css"; // Import dedicated CSS file
+import styles from "./AuthLoadingIndicator.module.css";
 
 /**
- * A non-blocking authentication loading indicator
- * Shows a small spinner during authentication processes
- * without preventing the user from seeing or interacting with the app
- *
- * During login/logout transitions, it can optionally block the UI
- * to prevent flickering and provide a smooth experience
+ * Global authentication loading indicator
+ * Displays at the top of the page when auth-related operations are in progress
  */
 const AuthLoadingIndicator = () => {
-  const { loading, initialLoadComplete, inTransition } =
-    useContext(AuthContext);
+  const { loading, inTransition } = useAuth();
 
   // During login/logout transitions, block the entire UI with a more prominent indicator
   if (inTransition) {
     return (
       <div className="auth-transition-overlay">
-        <InlineSpinner size="medium" message="Processing..." />
+        <div className="auth-transition-content">
+          <InlineSpinner size="large" message="Please wait..." />
+        </div>
       </div>
     );
   }
 
-  // Only show the indicator when auth is loading
-  if (!initialLoadComplete || loading) {
+  // Show a subtle loading bar for regular auth operations
+  if (loading) {
     return (
-      <div className="auth-indicator-container">
-        <InlineSpinner size="small" message="Authenticating..." />
+      <div className={styles.loadingBar}>
+        <div className={styles.barAnimation}></div>
       </div>
     );
   }

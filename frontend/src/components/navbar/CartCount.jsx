@@ -1,12 +1,11 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchCart } from "../../redux/slices/cartSlice";
-import { useContext } from "react";
-import { AuthContext } from "../../context/AuthContext";
+import { useAuth } from "../../hooks/state";
 
 const CartCount = () => {
   const dispatch = useDispatch();
-  const { isAuthenticated } = useContext(AuthContext);
+  const { isAuthenticated } = useAuth();
   const { totalItems = 0 } = useSelector(
     (state) => state.cart || { totalItems: 0 }
   );

@@ -1,7 +1,6 @@
 // Path: frontend/src/App.js
 
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
-import { useContext } from "react";
 import Container from "./components/container/Container";
 import Navbar from "./components/navbar/Navbar";
 import Footer from "./components/footer/Footer";
@@ -11,7 +10,6 @@ import { ErrorProvider } from "./context/ErrorContext";
 import AuthLoadingIndicator from "./components/authLoadingIndicator/AuthLoadingIndicator.jsx";
 import AuthGuard from "./components/authGuard/AuthGuard.jsx";
 import EmailVerificationGuard from "./components/authGuard/EmailVerificationGuard.jsx";
-import { AuthContext } from "./context/AuthContext";
 import StripeProvider from "./stripe/StripeProvider";
 import CheckoutPage from "./pages/checkout/CheckoutPage";
 import OrderConfirmationPage from "./pages/orderConfirmation/OrderConfirmationPage";
@@ -20,6 +18,7 @@ import OrderHistoryPage from "./pages/orderHistory/OrderHistoryPage";
 import HookTestComponent from "./components/HookTestComponent";
 import ProductHookTest from "./components/ProductHookTest";
 import CartHookTest from "./hooks/test/CartHookTest";
+import AuthHookTest from "./hooks/test/AuthHookTest";
 import TestPage from "./pages/test/TestPage";
 
 // Page Components
@@ -44,11 +43,14 @@ import men_banner from "./components/assets/banner_mens.png";
 import women_banner from "./components/assets/banner_women.png";
 import kids_banner from "./components/assets/banner_kids.png";
 
+// Hooks
+import { useAuth } from "./hooks/state";
+
 /**
  * Protected route component that requires authentication
  */
 const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated, loading } = useContext(AuthContext);
+  const { isAuthenticated, loading } = useAuth();
   const location = useLocation();
 
   // If still loading auth state, show the children with AuthGuard handling the loading state
@@ -69,8 +71,7 @@ const ProtectedRoute = ({ children }) => {
  * Route that's only accessible when NOT authenticated
  */
 const UnauthenticatedRoute = ({ children }) => {
-  const { isAuthenticated, loading, initialLoadComplete } =
-    useContext(AuthContext);
+  const { isAuthenticated, loading, initialLoadComplete } = useAuth();
 
   // Wait for initial authentication check to complete
   if (loading || !initialLoadComplete) {
@@ -248,6 +249,7 @@ function App() {
             <Route path="/hook-test" element={<HookTestComponent />} />
             <Route path="/product-test" element={<ProductHookTest />} />
             <Route path="/cart-test" element={<CartHookTest />} />
+            <Route path="/auth-test" element={<AuthHookTest />} />
 
             {/* Test Page */}
             <Route path="/test" element={<TestPage />} />

@@ -13,6 +13,8 @@ import {
   registerUser,
   verifyToken,
   setInitialized,
+  verifyPasswordChange,
+  requestEmailChange,
 } from "../../redux/slices/userSlice";
 import { resetCart } from "../../redux/slices/cartSlice";
 import { authService } from "../../api";
@@ -33,6 +35,10 @@ const useAuth = () => {
   const [tokenRefreshInProgress, setTokenRefreshInProgress] = useState(false);
   const [lastVerificationCheck, setLastVerificationCheck] = useState(
     Date.now()
+  );
+  const [inTransition, setInTransition] = useState(false);
+  const [initialLoadComplete, setInitialLoadComplete] = useState(
+    userState.isInitialized
   );
 
   // Derive isUserLoggedOut from localStorage for consistency with existing code
@@ -87,7 +93,11 @@ const useAuth = () => {
 
   // Initialize auth state on mount
   useEffect(() => {
-    checkAuthStatus();
+    if (!userState.isInitialized) {
+      checkAuthStatus();
+    } else {
+      setInitialLoadComplete(true);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -151,6 +161,44 @@ const useAuth = () => {
     };
   }, [navigate, handleLogout]);
 
+  // Listen for email verification required events
+  useEffect(() => {
+    const handleEmailVerificationRequired = (event) => {
+      const { message } = event.detail;
+
+      // If already on verification page, don't navigate
+      if (window.location.pathname.includes("/verify")) {
+        return;
+      }
+
+      // Show a notification or handle as needed
+      if (
+        window.confirm(
+          `${message} Would you like to go to the verification page?`
+        )
+      ) {
+        navigate("/verify-pending", {
+          state: {
+            from: window.location.pathname,
+            requiresVerification: true,
+          },
+        });
+      }
+    };
+
+    window.addEventListener(
+      "auth:emailVerificationRequired",
+      handleEmailVerificationRequired
+    );
+
+    return () => {
+      window.removeEventListener(
+        "auth:emailVerificationRequired",
+        handleEmailVerificationRequired
+      );
+    };
+  }, [navigate]);
+
   /**
    * Refresh the access token
    * @returns {Promise<string|null>} New token or null
@@ -184,6 +232,7 @@ const useAuth = () => {
     if (!token || isUserLoggedOut) {
       dispatch(clearUser());
       dispatch(setInitialized(true));
+      setInitialLoadComplete(true);
       return;
     }
 
@@ -204,7 +253,11 @@ const useAuth = () => {
 
         if (errorPayload === "Your account has been disabled") {
           // Handle disabled account
-        } else if (resultAction.error.message.includes("401")) {
+        } else if (
+          resultAction.error &&
+          resultAction.error.message &&
+          resultAction.error.message.includes("401")
+        ) {
           // Token expired, try to refresh
           if (!isUserLoggedOut) {
             const newToken = await refreshAccessToken();
@@ -219,6 +272,8 @@ const useAuth = () => {
     } catch (err) {
       console.error("Auth verification error:", err);
       handleLogout();
+    } finally {
+      setInitialLoadComplete(true);
     }
   }, [
     dispatch,
@@ -236,10 +291,14 @@ const useAuth = () => {
    */
   const login = async (email, password) => {
     try {
+      setInTransition(true);
       const resultAction = await dispatch(loginUser({ email, password }));
 
       if (loginUser.fulfilled.match(resultAction)) {
         // Login successful
+        localStorage.removeItem("user-logged-out");
+        setIsUserLoggedOut(false);
+
         await fetchUserProfile();
         return { success: true, user: resultAction.payload };
       } else {
@@ -254,6 +313,8 @@ const useAuth = () => {
         success: false,
         message: err.message || "Login failed. Please try again.",
       };
+    } finally {
+      setInTransition(false);
     }
   };
 
@@ -264,14 +325,33 @@ const useAuth = () => {
    */
   const register = async (userData) => {
     try {
+      setInTransition(true);
+      localStorage.removeItem("user-logged-out");
+
       const resultAction = await dispatch(registerUser(userData));
 
       if (registerUser.fulfilled.match(resultAction)) {
+        setIsUserLoggedOut(false);
+
+        try {
+          const userProfile = await fetchUserProfile();
+
+          if (userProfile) {
+            return {
+              success: true,
+              user: userProfile,
+              requiresVerification: userProfile.status === "unverified",
+            };
+          }
+        } catch (profileError) {
+          console.error("Error fetching profile after signup:", profileError);
+        }
+
         // Registration successful
         return {
           success: true,
           user: resultAction.payload.user,
-          needsVerification: resultAction.payload.needsVerification,
+          requiresVerification: resultAction.payload.needsVerification,
         };
       } else {
         // Registration failed
@@ -286,16 +366,26 @@ const useAuth = () => {
         success: false,
         message: err.message || "Registration failed. Please try again.",
       };
+    } finally {
+      setInTransition(false);
     }
   };
 
   /**
    * Log out the current user
    */
-  const logout = () => {
-    authService.logout().catch(console.error);
-    handleLogout();
-  };
+  const logout = useCallback(() => {
+    setInTransition(true);
+
+    authService
+      .logout()
+      .catch(console.error)
+      .finally(() => {
+        handleLogout();
+        setInTransition(false);
+        navigate("/");
+      });
+  }, [handleLogout, navigate]);
 
   /**
    * Update user profile
@@ -306,18 +396,27 @@ const useAuth = () => {
   };
 
   return {
-    // State
+    // User state
     user: userState.user,
     isAuthenticated: userState.isAuthenticated,
-    loading: userState.loading,
+    loading: userState.loading || inTransition,
     error: userState.error,
     accountDisabled: userState.accountDisabled,
-    isAuthInitialized: userState.isInitialized,
+    isEmailVerified: userState.isEmailVerified,
+    initialLoadComplete,
+    inTransition,
+    isUserLoggedOut,
+
+    // Auth status indicators
+    verificationRequested: userState.verificationRequested,
+    emailChangeRequested: userState.emailChangeRequested,
+    passwordChanged: userState.passwordChanged,
+    passwordChangePending: userState.passwordChangePending,
 
     // Authentication methods
     login,
+    signup: register,
     logout,
-    register,
     refreshAccessToken,
 
     // User profile methods
@@ -330,6 +429,8 @@ const useAuth = () => {
     requestEmailVerification: (email) =>
       dispatch(requestEmailVerification(email)),
     verifyEmail: (token) => dispatch(verifyEmail(token)),
+    verifyPasswordChange: (token) => dispatch(verifyPasswordChange(token)),
+    requestEmailChange: (email) => dispatch(requestEmailChange(email)),
   };
 };
 

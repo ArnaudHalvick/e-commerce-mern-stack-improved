@@ -1,0 +1,29 @@
+.loadingBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 9999;
+  background-color: #f0f0f0;
+  overflow: hidden;
+}
+
+.barAnimation {
+  height: 100%;
+  width: 50%;
+  background-color: #3498db;
+  animation: loading 1.5s infinite ease-in-out;
+}
+
+@keyframes loading {
+  0% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(300%);
+  }
+}

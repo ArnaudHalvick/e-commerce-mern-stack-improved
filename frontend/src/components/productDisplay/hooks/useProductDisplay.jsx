@@ -1,7 +1,7 @@
-import { useState, useCallback, useContext } from "react";
+import { useState, useCallback } from "react";
 import { useDispatch } from "react-redux";
+import { useAuth } from "../../../hooks/state";
 import { addToCart } from "../../../redux/slices/cartSlice";
-import { AuthContext } from "../../../context/AuthContext";
 import { useError } from "../../../context/ErrorContext";
 
 /**
@@ -12,7 +12,7 @@ import { useError } from "../../../context/ErrorContext";
  */
 const useProductDisplay = (product) => {
   const dispatch = useDispatch();
-  const { isAuthenticated } = useContext(AuthContext);
+  const { isAuthenticated } = useAuth();
   const { showError } = useError();
   const [isAdding, setIsAdding] = useState(false);
 

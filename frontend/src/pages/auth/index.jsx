@@ -1,16 +1,15 @@
-import React, { useEffect, useContext } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/state";
 
 // Components
-import LoginForm from "./components/LoginForm";
-import SignupForm from "./components/SignupForm";
+import { LoginForm, SignupForm } from "./components";
 import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
 
 // Hooks
 import { useAuthForm } from "./hooks";
 
 // Context
-import { AuthContext } from "../../context/AuthContext";
 import { useError } from "../../context/ErrorContext";
 
 // Styles
@@ -23,11 +22,7 @@ const Auth = ({ initialState }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { showSuccess } = useError();
-  const {
-    isAuthenticated,
-    loading: authLoading,
-    inTransition,
-  } = useContext(AuthContext);
+  const { isAuthenticated, loading: authLoading, inTransition } = useAuth();
 
   // Determine form type based on the initialState prop
   const formType = initialState === "Signup" ? "register" : "login";

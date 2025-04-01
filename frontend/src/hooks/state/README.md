@@ -4,6 +4,15 @@
 
 This directory contains custom React hooks that provide a unified interface for state management in our e-commerce application. The hooks are designed to abstract away the complexities of Redux while providing a clean, intuitive API for components to interact with application state.
 
+## Migration Progress
+
+Our application is undergoing a migration from Context-based state management to Redux-backed custom hooks. Here's the current status:
+
+- ✅ **CartContext** → **useCart**: Complete
+- ✅ **ShopContext** → **useProducts**: Complete
+- ✅ **AuthContext** → **useAuth**: Complete
+- ⬜ **ErrorContext** → **useError**: Pending
+
 ## Available Hooks
 
 ### useAuth
@@ -14,6 +23,8 @@ Manages user authentication state including:
 - User profile management
 - Authentication status
 - Token management
+- Email verification
+- Password management
 
 ### useProducts
 
@@ -83,17 +94,19 @@ This hooks-based approach replaces our previous Context-based state management. 
 - **Simpler Testing**: Hooks are easier to mock than context providers
 - **Better Performance**: Finer-grained control over renders
 - **Improved Developer Experience**: More intuitive API
+- **Centralized State Management**: All state is now managed by Redux, providing a single source of truth
 
-## Example: Cart Management
+## Example: Auth Management
 
 ### Before (with Context):
 
 ```jsx
 import { useContext } from "react";
-import { CartContext } from "../../context/CartContext";
+import { AuthContext } from "../../context/AuthContext";
 
-const CartComponent = () => {
-  const { cartItems, addToCart, removeFromCart } = useContext(CartContext);
+const ProfileComponent = () => {
+  const { user, isAuthenticated, loading, fetchUserProfile } =
+    useContext(AuthContext);
 
   // Component logic
 };
@@ -102,10 +115,10 @@ const CartComponent = () => {
 ### After (with Hooks):
 
 ```jsx
-import { useCart } from "../../hooks/state";
+import { useAuth } from "../../hooks/state";
 
-const CartComponent = () => {
-  const { items, addItem, removeItem } = useCart();
+const ProfileComponent = () => {
+  const { user, isAuthenticated, loading, fetchUserProfile } = useAuth();
 
   // Component logic
 };
@@ -115,8 +128,9 @@ const CartComponent = () => {
 
 For testing components that use these hooks, you can use the test components in the `/hooks/test` directory:
 
-- `HookTestComponent.jsx`: Tests authentication hooks
+- `HookTestComponent.jsx`: Tests general hook functionality
 - `ProductHookTest.jsx`: Tests product hooks
 - `CartHookTest.jsx`: Tests cart hooks
+- `AuthHookTest.jsx`: Tests authentication hooks
 
 These components provide UI for manually testing all hook functionality.

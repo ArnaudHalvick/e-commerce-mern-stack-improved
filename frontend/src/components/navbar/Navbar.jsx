@@ -6,15 +6,14 @@ import logo from "../assets/logo.png";
 import cart_icon from "../assets/cart_icon.png";
 import user_icon from "../assets/user_icon.png";
 
-import { useContext, useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
 
-import { AuthContext } from "../../context/AuthContext";
+import { useAuth } from "../../hooks/state";
 import CartCount from "./CartCount";
 
 const Navbar = () => {
-  const { isAuthenticated, user, logout, inTransition } =
-    useContext(AuthContext);
+  const { isAuthenticated, user, logout, inTransition } = useAuth();
   const [activeMenu, setActiveMenu] = useState("shop");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [displayName, setDisplayName] = useState("User");

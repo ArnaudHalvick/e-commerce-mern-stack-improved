@@ -1,0 +1,104 @@
+/* EmailVerificationBanner.css */
+.cart-items-email-verification-banner {
+  background-color: #fff3cd;
+  border: 1px solid #ffeeba;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  color: #856404;
+}
+
+.cart-items-email-verification-content {
+  display: flex;
+  align-items: flex-start;
+}
+
+.cart-items-email-verification-icon {
+  margin-right: 1rem;
+  font-size: 1.25rem;
+}
+
+.cart-items-email-verification-message {
+  flex: 1;
+}
+
+.cart-items-email-verification-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+}
+
+.cart-items-email-verification-text {
+  font-size: 0.9375rem;
+  margin: 0 0 1rem 0;
+}
+
+.cart-items-email-verification-success-message {
+  color: #155724;
+  background-color: #d4edda;
+  border-radius: 4px;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.9375rem;
+}
+
+.cart-items-email-verification-error-message {
+  color: #721c24;
+  background-color: #f8d7da;
+  border-radius: 4px;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.9375rem;
+}
+
+.cart-items-email-verification-warning-message {
+  color: #856404;
+  background-color: #fff3cd;
+  border-radius: 4px;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.9375rem;
+  border: 1px solid #ffeeba;
+}
+
+.cart-items-email-verification-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.cart-items-email-verification-resend-btn,
+.cart-items-email-verification-refresh-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.cart-items-email-verification-resend-btn {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+.cart-items-email-verification-resend-btn:hover {
+  background-color: #e0a800;
+}
+
+.cart-items-email-verification-refresh-btn {
+  background-color: #6c757d;
+  color: white;
+}
+
+.cart-items-email-verification-refresh-btn:hover {
+  background-color: #5a6268;
+}
+
+.cart-items-email-verification-resend-btn:disabled,
+.cart-items-email-verification-refresh-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

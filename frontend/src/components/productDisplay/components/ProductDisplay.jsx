@@ -7,6 +7,7 @@ import { addToCart } from "../../../redux/slices/cartSlice";
 import { AuthContext } from "../../../context/AuthContext";
 import { config } from "../../../api";
 import { useError } from "../../../context/ErrorContext";
+import { useAuth } from "../../../hooks/state";
 
 /**
  * Original ProductDisplay component (now located in components directory)
@@ -16,7 +17,7 @@ import { useError } from "../../../context/ErrorContext";
  */
 const ProductDisplay = ({ product }) => {
   const dispatch = useDispatch();
-  const { isAuthenticated } = useContext(AuthContext);
+  const { isAuthenticated } = useAuth();
   const { showError } = useError();
   const [isAdding, setIsAdding] = useState(false);
   const thumbnailsContainerRef = useRef(null);

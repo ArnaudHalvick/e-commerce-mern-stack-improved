@@ -1,15 +1,15 @@
-import React, { useState, useContext } from "react";
-import { AuthContext } from "../../../context/AuthContext";
-import { useDispatch } from "react-redux";
-import { requestEmailVerification } from "../../../redux/slices/userSlice";
+import React, { useState } from "react";
+import { useAuth } from "../../../hooks/state";
+import { useNavigate } from "react-router-dom";
+import "./EmailVerificationBanner.css";
 
 /**
  * Banner component that displays a warning when the user's email is not verified.
  * Provides options to request a new verification email and check verification status.
  */
 const EmailVerificationBanner = () => {
-  const { user, fetchUserProfile } = useContext(AuthContext);
-  const dispatch = useDispatch();
+  const { user, fetchUserProfile, requestEmailVerification } = useAuth();
+  const navigate = useNavigate();
 
   const [requestState, setRequestState] = useState({
     loading: false,
@@ -30,17 +30,18 @@ const EmailVerificationBanner = () => {
     return null;
   }
 
-  const handleResendVerification = async () => {
+  // Handle email verification request
+  const handleVerificationRequest = async () => {
     setRequestState({ loading: true, success: false, error: null });
     try {
-      await dispatch(requestEmailVerification(user.email)).unwrap();
+      await requestEmailVerification(user.email);
       setRequestState({ loading: false, success: true, error: null });
     } catch (err) {
-      const errorMessage =
-        typeof err === "string"
-          ? err
-          : err?.message || "Failed to send verification email";
-      setRequestState({ loading: false, success: false, error: errorMessage });
+      setRequestState({
+        loading: false,
+        success: false,
+        error: err.message || "Failed to send verification email",
+      });
     }
   };
 
@@ -131,7 +132,7 @@ const EmailVerificationBanner = () => {
             {!requestState.success && (
               <button
                 className="cart-items-email-verification-resend-btn"
-                onClick={handleResendVerification}
+                onClick={handleVerificationRequest}
                 disabled={requestState.loading}
               >
                 {requestState.loading

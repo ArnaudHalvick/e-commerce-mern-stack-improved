@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { useSearchParams, Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
 import {
-  verifyEmail,
+  useSearchParams,
+  Link,
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  verifyEmail as verifyEmailAction,
   requestEmailVerification,
 } from "../../redux/slices/userSlice";
-import { useContext } from "react";
-import { AuthContext } from "../../context/AuthContext";
+import { useError } from "../../context/ErrorContext";
+import { useAuth } from "../../hooks/state";
+import LoadingScreen from "../../components/loadingScreen/LoadingScreen";
 
 // Components
 import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
@@ -22,7 +28,8 @@ const VerifyEmail = () => {
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
   const dispatch = useDispatch();
-  const { isAuthenticated } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
 
   // Use a separate state for token verification loading
   const [verifyingToken, setVerifyingToken] = useState(!!token);
@@ -46,7 +53,7 @@ const VerifyEmail = () => {
       const verify = async () => {
         setVerifyingToken(true);
         try {
-          const result = await dispatch(verifyEmail(token)).unwrap();
+          const result = await dispatch(verifyEmailAction(token)).unwrap();
 
           // Check for already verified response
           if (result && result.alreadyVerified) {
