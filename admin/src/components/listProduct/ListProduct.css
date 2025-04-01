@@ -11,12 +11,6 @@
   font-size: 1.8rem;
 }
 
-.products-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 2rem;
-}
-
 .product-card {
   background: white;
   border-radius: 8px;
@@ -150,11 +144,6 @@
 @media screen and (max-width: 768px) {
   .list-product-container {
     padding: 1rem;
-  }
-
-  .products-grid {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1rem;
   }
 
   .product-image {
