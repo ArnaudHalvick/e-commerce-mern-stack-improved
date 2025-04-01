@@ -89,12 +89,32 @@
 }
 
 @media (max-width: 576px) {
+  .product-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
   .product-item-image {
-    height: 200px;
+    height: 300px;
+    object-fit: contain;
+    background-color: #f9f9f9;
+    padding: 10px;
+    margin-bottom: 10px;
   }
 
   .product-item-name {
     font-size: 0.9rem;
+    text-align: center;
+    width: 100%;
+  }
+
+  .product-item-prices {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    font-size: 0.95rem;
   }
 
   .product-item-price-current,

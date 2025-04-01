@@ -389,6 +389,10 @@
   .product-listing-item {
     flex: 0 0 100%; /* 1 item per row */
     max-width: 100%;
+    padding: 0 10px;
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: center;
   }
 
   .product-listing-title {
@@ -405,5 +409,10 @@
 
   .product-listing-page-numbers {
     display: none;
+  }
+
+  .product-listing-grid {
+    gap: 0.5rem;
+    align-items: center;
   }
 }
