@@ -34,7 +34,7 @@ const useAuthForm = (formType = "login") => {
     handleApiError: setFormError,
   } = useFormErrors();
   const { showSuccess } = useError();
-  // Retrieve the login function from AuthContext
+
   const { login } = useAuth();
 
   const [formData, setFormData] = useState({

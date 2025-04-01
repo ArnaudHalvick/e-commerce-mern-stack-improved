@@ -19,7 +19,6 @@ import {
 } from "../../redux/slices/userSlice";
 import { resetCart } from "../../redux/slices/cartSlice";
 import { authService } from "../../api";
-import { cancelPendingRequests } from "../../api/client";
 
 /**
  * Custom hook for authentication and user management
