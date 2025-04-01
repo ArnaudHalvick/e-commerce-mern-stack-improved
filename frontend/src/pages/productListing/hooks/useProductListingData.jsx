@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef, useContext } from "react";
 import { productsService } from "../../../api";
 import { ShopContext } from "../../../context/ShopContext";
+import { scrollToElement } from "../../../utils/scrollHelpers";
 
 /**
  * Custom hook for fetching, filtering, and sorting products on product listing pages
@@ -405,10 +406,10 @@ const useProductListingData = ({ pageType, category }) => {
       if (page < 1 || page > totalPages) return;
       setCurrentPage(page);
 
-      // Scroll to top when changing pages
-      window.scrollTo({
-        top: 0,
+      // Scroll to product listing content instead of top
+      scrollToElement(".product-listing-products-content", {
         behavior: "smooth",
+        block: "start",
       });
     },
     [totalPages]
