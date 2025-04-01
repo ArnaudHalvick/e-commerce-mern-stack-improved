@@ -210,6 +210,7 @@ function App() {
                 <ProtectedRoute>
                   <EmailVerificationGuard>
                     <StripeProvider>
+                      W
                       <CheckoutPage />
                     </StripeProvider>
                   </EmailVerificationGuard>
