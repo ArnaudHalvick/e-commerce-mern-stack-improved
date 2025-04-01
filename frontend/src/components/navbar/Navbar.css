@@ -191,14 +191,14 @@
 
 /* Signup button styling */
 .signup-btn {
-  border-color: #ff6e6e;
-  background-color: #ff6e6e;
+  border-color: #ff4141;
+  background-color: #ff4141;
   color: white;
 }
 
 .signup-btn:hover {
-  background-color: #ff5757;
-  border-color: #ff5757;
+  background-color: #ff7a7a;
+  border-color: #ff7a7a;
 }
 
 /* Responsive styles */

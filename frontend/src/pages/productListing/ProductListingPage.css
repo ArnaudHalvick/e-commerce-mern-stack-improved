@@ -295,9 +295,9 @@
 }
 
 .product-listing-page-number.product-listing-active {
-  background: #4a00e0;
+  background: #ff4141;
   color: white;
-  border-color: #4a00e0;
+  border-color: #ff4141;
 }
 
 .product-listing-ellipsis {
