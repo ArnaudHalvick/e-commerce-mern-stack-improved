@@ -1,6 +1,6 @@
 import { useAuth } from "../../hooks/state";
 import { InlineSpinner } from "../ui/spinner";
-import styles from "./AuthLoadingIndicator.module.css";
+import "./authLoadingIndicator.css";
 
 /**
  * Global authentication loading indicator
@@ -23,8 +23,8 @@ const AuthLoadingIndicator = () => {
   // Show a subtle loading bar for regular auth operations
   if (loading) {
     return (
-      <div className={styles.loadingBar}>
-        <div className={styles.barAnimation}></div>
+      <div className="auth-loading-bar">
+        <div className="auth-bar-animation"></div>
       </div>
     );
   }
