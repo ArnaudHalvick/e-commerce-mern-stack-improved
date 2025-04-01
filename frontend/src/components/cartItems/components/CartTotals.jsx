@@ -18,29 +18,29 @@ const CartTotals = ({ totalPrice }) => {
   const showDisabledCheckout = isAuthenticated && !isEmailVerified;
 
   return (
-    <div className="cart-totals">
-      <h2 className="cart-totals-title">Cart Totals</h2>
-      <div className="cart-totals-item">
-        <p className="cart-totals-label">Subtotal</p>
-        <p className="cart-totals-value cart-price-discounted">
+    <div className="cart-items-totals">
+      <h2 className="cart-items-totals-title">Cart Totals</h2>
+      <div className="cart-items-totals-item">
+        <p className="cart-items-totals-label">Subtotal</p>
+        <p className="cart-items-totals-value cart-items-price-discounted">
           ${totalPrice.toFixed(2)}
         </p>
       </div>
-      <div className="cart-totals-item">
-        <p className="cart-totals-label">Shipping Fee</p>
-        <p className="cart-totals-value">Free</p>
+      <div className="cart-items-totals-item">
+        <p className="cart-items-totals-label">Shipping Fee</p>
+        <p className="cart-items-totals-value">Free</p>
       </div>
-      <hr className="cart-divider" />
-      <div className="cart-totals-item">
-        <p className="cart-totals-label">Total</p>
-        <p className="cart-totals-value cart-total-amount cart-price-discounted">
+      <hr className="cart-items-divider" />
+      <div className="cart-items-totals-item">
+        <p className="cart-items-totals-label">Total</p>
+        <p className="cart-items-totals-value cart-items-total-amount cart-items-price-discounted">
           ${totalPrice.toFixed(2)}
         </p>
       </div>
 
       {showDisabledCheckout ? (
         <button
-          className="cart-checkout-button disabled"
+          className="cart-items-checkout-button disabled"
           disabled={true}
           aria-label="Email verification required for checkout"
         >
@@ -48,12 +48,14 @@ const CartTotals = ({ totalPrice }) => {
         </button>
       ) : (
         <Link to="/checkout" style={{ textDecoration: "none" }}>
-          <button className="cart-checkout-button">PROCEED TO CHECKOUT</button>
+          <button className="cart-items-checkout-button">
+            PROCEED TO CHECKOUT
+          </button>
         </Link>
       )}
 
       {showDisabledCheckout && (
-        <p className="cart-verification-note">
+        <p className="cart-items-verification-note">
           Please verify your email above to proceed
         </p>
       )}

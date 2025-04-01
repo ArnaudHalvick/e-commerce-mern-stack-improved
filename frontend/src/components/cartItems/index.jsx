@@ -36,7 +36,7 @@ const CartItems = () => {
         <Spinner
           message="Loading your cart..."
           size="medium"
-          className="cart-page-spinner"
+          className="cart-items-page-spinner"
         />
       </div>
     );
@@ -89,12 +89,12 @@ const CartItems = () => {
   }
 
   return (
-    <div className="cart-container">
+    <div className="cart-items-container">
       {/* Email Verification Banner */}
       {showVerificationBanner && <EmailVerificationBanner />}
 
       {/* Cart Table */}
-      <table className="cart-table">
+      <table className="cart-items-table">
         <thead>
           <tr>
             <th>Product</th>

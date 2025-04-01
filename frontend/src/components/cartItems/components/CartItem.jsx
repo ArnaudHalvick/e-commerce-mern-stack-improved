@@ -58,38 +58,40 @@ const CartItem = ({
     <tr>
       <td>
         <img
-          className="cart-product-image"
+          className="cart-items-product-image"
           src={config.getImageUrl(item.image)}
           alt={item.name}
         />
       </td>
       <td>{item.name}</td>
       <td>
-        <span className={item.isDiscounted ? "cart-price-discounted" : ""}>
+        <span
+          className={item.isDiscounted ? "cart-items-price-discounted" : ""}
+        >
           ${item.price}
         </span>
       </td>
       <td>
-        <span className="cart-item-size">{item.size}</span>
+        <span className="cart-items-item-size">{item.size}</span>
       </td>
       <td>
-        <div className="cart-quantity-controls">
+        <div className="cart-items-quantity-controls">
           <button
-            className="cart-quantity-adjust-btn"
+            className="cart-items-quantity-adjust-btn"
             onClick={handleRemoveItemClick}
           >
             -
           </button>
           <input
             type="number"
-            className="cart-quantity-input"
+            className="cart-items-quantity-input"
             value={localQuantity}
             onChange={(event) => handleLocalQuantityChange(event.target.value)}
             onBlur={handleBlur}
             min="1"
           />
           <button
-            className="cart-quantity-adjust-btn"
+            className="cart-items-quantity-adjust-btn"
             onClick={handleAddItemClick}
           >
             +
@@ -97,14 +99,16 @@ const CartItem = ({
         </div>
       </td>
       <td>
-        <span className={item.isDiscounted ? "cart-price-discounted" : ""}>
+        <span
+          className={item.isDiscounted ? "cart-items-price-discounted" : ""}
+        >
           ${(item.price * localQuantity).toFixed(2)}
         </span>
       </td>
       <td>
-        <div className="cart-remove-icon-container">
+        <div className="cart-items-remove-icon-container">
           <img
-            className="cart-remove-icon"
+            className="cart-items-remove-icon"
             onClick={() => onRemoveAll(item.productId, item.size)}
             src={remove_icon}
             alt=""

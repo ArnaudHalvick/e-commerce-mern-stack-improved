@@ -85,28 +85,28 @@ const EmailVerificationBanner = () => {
   };
 
   return (
-    <div className="cart-email-verification-banner">
-      <div className="cart-email-verification-content">
+    <div className="cart-items-email-verification-banner">
+      <div className="cart-items-email-verification-content">
         <i
-          className="fa fa-exclamation-triangle cart-email-verification-icon"
+          className="fa fa-exclamation-triangle cart-items-email-verification-icon"
           aria-hidden="true"
         ></i>
-        <div className="cart-email-verification-message">
-          <h4 className="cart-email-verification-title">
+        <div className="cart-items-email-verification-message">
+          <h4 className="cart-items-email-verification-title">
             Email Verification Required
           </h4>
-          <p className="cart-email-verification-text">
+          <p className="cart-items-email-verification-text">
             Please verify your email address ({user.email}) to proceed with
             checkout.
           </p>
 
           {/* Show email sending feedback */}
           {requestState.success ? (
-            <p className="cart-email-verification-success-message">
+            <p className="cart-items-email-verification-success-message">
               Verification email sent! Please check your inbox and spam folder.
             </p>
           ) : requestState.error ? (
-            <p className="cart-email-verification-error-message">
+            <p className="cart-items-email-verification-error-message">
               {requestState.error}
             </p>
           ) : null}
@@ -115,22 +115,22 @@ const EmailVerificationBanner = () => {
           {refreshState.checked &&
             !refreshState.verified &&
             !refreshState.error && (
-              <p className="cart-email-verification-warning-message">
+              <p className="cart-items-email-verification-warning-message">
                 Your email is still not verified. Please check your inbox and
                 click the verification link.
               </p>
             )}
 
           {refreshState.error && (
-            <p className="cart-email-verification-error-message">
+            <p className="cart-items-email-verification-error-message">
               {refreshState.error}
             </p>
           )}
 
-          <div className="cart-email-verification-actions">
+          <div className="cart-items-email-verification-actions">
             {!requestState.success && (
               <button
-                className="cart-email-verification-resend-btn"
+                className="cart-items-email-verification-resend-btn"
                 onClick={handleResendVerification}
                 disabled={requestState.loading}
               >
@@ -141,7 +141,7 @@ const EmailVerificationBanner = () => {
             )}
 
             <button
-              className="cart-email-verification-refresh-btn"
+              className="cart-items-email-verification-refresh-btn"
               onClick={handleForceRefresh}
               disabled={refreshState.loading}
             >

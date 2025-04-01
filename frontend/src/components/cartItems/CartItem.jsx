@@ -26,26 +26,26 @@ const CartItem = ({
   };
 
   return (
-    <div className="cartitem">
-      <div className="cartitem-image">
+    <div className="cart-items-item">
+      <div className="cart-items-image">
         <img src={config.getImageUrl(item.image)} alt={item.name} />
       </div>
-      <div className="cartitem-details">
-        <p className="cartitem-name">{item.name}</p>
+      <div className="cart-items-details">
+        <p className="cart-items-name">{item.name}</p>
         {item.selectedSize && (
-          <p className="cartitem-size">Size: {item.selectedSize}</p>
+          <p className="cart-items-size">Size: {item.selectedSize}</p>
         )}
-        <div className="cartitem-quantity">
+        <div className="cart-items-quantity-controls">
           <button
-            className="quantity-btn"
+            className="cart-items-quantity-adjust-btn"
             onClick={handleQuantityDecrease}
             aria-label="Decrease quantity"
           >
             -
           </button>
-          <span className="quantity-value">{item.quantity}</span>
+          <span className="cart-items-quantity-input">{item.quantity}</span>
           <button
-            className="quantity-btn"
+            className="cart-items-quantity-adjust-btn"
             onClick={handleQuantityIncrease}
             aria-label="Increase quantity"
           >
@@ -53,13 +53,13 @@ const CartItem = ({
           </button>
         </div>
       </div>
-      <div className="cartitem-price-actions">
-        <p className="cartitem-price">
+      <div className="cart-items-price-actions">
+        <p className="cart-items-price">
           ${(item.price * item.quantity).toFixed(2)}
         </p>
         {showRemoveButton && (
           <button
-            className="cartitem-remove-btn"
+            className="cart-items-remove-btn"
             onClick={handleRemove}
             aria-label="Remove item"
           >
