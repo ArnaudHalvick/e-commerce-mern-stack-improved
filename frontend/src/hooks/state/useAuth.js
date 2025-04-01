@@ -218,12 +218,18 @@ const useAuth = () => {
    * @returns {Promise<string|null>} New token or null
    */
   const refreshAccessToken = useCallback(async () => {
-    if (tokenRefreshInProgress || isUserLoggedOut) return null;
+    // Don't try to refresh if it's already in progress or user is logged out
+    if (tokenRefreshInProgress) return null;
+
     try {
       setTokenRefreshInProgress(true);
       const response = await authService.refreshToken();
+
       if (response && response.success) {
+        // Save new token and remove logged-out flag
         localStorage.setItem("auth-token", response.accessToken);
+        localStorage.removeItem("user-logged-out");
+        setIsUserLoggedOut(false);
         return response.accessToken;
       }
       return null;
@@ -234,7 +240,7 @@ const useAuth = () => {
     } finally {
       setTokenRefreshInProgress(false);
     }
-  }, [tokenRefreshInProgress, isUserLoggedOut, handleLogout]);
+  }, [tokenRefreshInProgress, handleLogout]);
 
   /**
    * Check authentication status
@@ -243,38 +249,54 @@ const useAuth = () => {
   const checkAuthStatus = useCallback(async () => {
     const token = localStorage.getItem("auth-token");
 
-    if (!token || isUserLoggedOut) {
+    if (!token) {
       dispatch(clearUser());
       dispatch(setInitialized(true));
       setInitialLoadComplete(true);
       return;
     }
 
-    if (token) {
-      localStorage.removeItem("user-logged-out");
-      setIsUserLoggedOut(false);
-    }
+    // Reset logged-out flag if token exists
+    localStorage.removeItem("user-logged-out");
+    setIsUserLoggedOut(false);
 
     try {
       setInTransition(true);
+
+      // Dispatch the verifyToken action
       const resultAction = await dispatch(verifyToken());
 
       if (verifyToken.fulfilled.match(resultAction)) {
         // Token is valid, user is authenticated
+        // The user data is already loaded via the verifyToken action
+        // but we'll fetch the full profile just to be safe
         await fetchUserProfile();
       } else {
-        // Token is invalid, handle error
-        console.error("Token verification failed:", resultAction.payload);
-        handleLogout();
+        // Token verification failed, attempt to refresh
+        try {
+          const newToken = await refreshAccessToken();
+          if (newToken) {
+            // If we got a new token, try to get the user data again
+            await fetchUserProfile();
+          } else {
+            // If refresh failed too, log the user out
+            console.error("Token refresh failed after verification failure");
+            handleLogout();
+          }
+        } catch (refreshError) {
+          console.error("Error refreshing token:", refreshError);
+          handleLogout();
+        }
       }
     } catch (error) {
       console.error("Error checking auth status:", error);
       handleLogout();
     } finally {
       setInTransition(false);
+      dispatch(setInitialized(true));
       setInitialLoadComplete(true);
     }
-  }, [dispatch, isUserLoggedOut, fetchUserProfile, handleLogout]);
+  }, [dispatch, fetchUserProfile, handleLogout, refreshAccessToken]);
 
   /**
    * Login user with email and password

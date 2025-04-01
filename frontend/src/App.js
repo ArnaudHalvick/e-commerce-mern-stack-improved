@@ -1,6 +1,7 @@
 // Path: frontend/src/App.js
 
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 import Container from "./components/container/Container";
 import Navbar from "./components/navbar/Navbar";
 import Footer from "./components/footer/Footer";
@@ -84,6 +85,22 @@ const UnauthenticatedRoute = ({ children }) => {
  * Main App component that defines the application structure and routes
  */
 function App() {
+  const { fetchUserProfile } = useAuth();
+
+  // Check authentication status on app mount
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        // Verify token and load user profile
+        await fetchUserProfile();
+      } catch (error) {
+        console.error("Error initializing auth state:", error);
+      }
+    };
+
+    checkAuth();
+  }, [fetchUserProfile]);
+
   return (
     <ErrorProvider>
       <ErrorBoundary>

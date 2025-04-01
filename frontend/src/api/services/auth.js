@@ -183,6 +183,19 @@ export const logout = async () => {
   }
 };
 
+/**
+ * Verify the current authentication token
+ * @returns {Promise} Promise with verification response
+ */
+export const verifyToken = async () => {
+  try {
+    const response = await apiClient.get("/api/users/verify-token");
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 // Export all functions as auth service
 const authService = {
   getAuthHeaders,
@@ -197,6 +210,7 @@ const authService = {
   verifyEmail,
   refreshToken,
   logout,
+  verifyToken,
 };
 
 export default authService;

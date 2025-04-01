@@ -42,8 +42,10 @@ const publicEndpoints = [
   "/api/users/reset-password",
   "/api/users/request-verification",
   "/api/users/verify-email",
-  "/api/error-demo", // Error demo routes don't require authentication
-  "/api/products", // Add products endpoints to public access
+  "/api/users/refresh-token",
+  "/api/users/verify-token",
+  "/api/error-demo",
+  "/api/products",
   "/api/products/all-products",
   "/api/products/newcollection",
   "/api/products/featured-women",
@@ -55,7 +57,10 @@ const publicEndpoints = [
 
 // Function to check if user is logged out
 const isUserLoggedOut = () => {
-  return localStorage.getItem("user-logged-out") === "true";
+  return (
+    localStorage.getItem("user-logged-out") === "true" &&
+    !localStorage.getItem("auth-token")
+  );
 };
 
 // Function to process the queue of failed requests
@@ -89,6 +94,10 @@ apiClient.interceptors.request.use(
     const token = localStorage.getItem("auth-token");
     if (token) {
       config.headers["auth-token"] = token;
+      // If we have a token, make sure we're not marked as logged out
+      if (localStorage.getItem("user-logged-out") === "true") {
+        localStorage.removeItem("user-logged-out");
+      }
     }
 
     // Add cancel token to non-auth requests

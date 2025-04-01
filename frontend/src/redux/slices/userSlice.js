@@ -61,6 +61,12 @@ export const verifyToken = createAsyncThunk(
         return rejectWithValue("No authentication token found");
       }
 
+      // Check if user is marked as logged out
+      if (localStorage.getItem("user-logged-out") === "true") {
+        localStorage.removeItem("auth-token");
+        return rejectWithValue("User is logged out");
+      }
+
       const response = await authService.verifyToken();
 
       if (response.success) {
@@ -68,13 +74,47 @@ export const verifyToken = createAsyncThunk(
         localStorage.removeItem("user-logged-out");
         return response.user;
       } else {
-        // If verification fails, clear the token
+        // If verification fails, attempt to refresh the token
+        try {
+          const refreshResponse = await authService.refreshToken();
+          if (refreshResponse && refreshResponse.success) {
+            localStorage.setItem("auth-token", refreshResponse.accessToken);
+            localStorage.removeItem("user-logged-out");
+
+            // Get user data with new token
+            const userResponse = await authService.getCurrentUser();
+            if (userResponse.success) {
+              return userResponse.user;
+            }
+          }
+        } catch (refreshError) {
+          console.error("Token refresh failed:", refreshError);
+        }
+
+        // If refresh failed or user data couldn't be retrieved, clear token
         localStorage.removeItem("auth-token");
         localStorage.setItem("user-logged-out", "true");
         return rejectWithValue(response.message || "Token verification failed");
       }
     } catch (err) {
-      // Clear token on error
+      // Try to refresh the token if verification fails
+      try {
+        const refreshResponse = await authService.refreshToken();
+        if (refreshResponse && refreshResponse.success) {
+          localStorage.setItem("auth-token", refreshResponse.accessToken);
+          localStorage.removeItem("user-logged-out");
+
+          // Get user data with new token
+          const userResponse = await authService.getCurrentUser();
+          if (userResponse.success) {
+            return userResponse.user;
+          }
+        }
+      } catch (refreshError) {
+        console.error("Token refresh failed:", refreshError);
+      }
+
+      // Clear token on error if refresh failed
       localStorage.removeItem("auth-token");
       localStorage.setItem("user-logged-out", "true");
       return rejectWithValue(
