@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useError } from "../../../context/ErrorContext";
-import FormInputField from "../../../components/form/FormInputField";
-import FormSubmitButton from "../../../components/form/FormSubmitButton";
+import { FormInputField, FormSubmitButton } from "../../../components/form";
 
 /**
  * BasicInfoSection component for displaying and editing user's basic information

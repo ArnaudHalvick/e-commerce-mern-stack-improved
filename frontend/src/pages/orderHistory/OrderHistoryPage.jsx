@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { paymentsService } from "../../api";
 import Spinner from "../../components/ui/spinner";
-import FormSubmitButton from "../../components/form/FormSubmitButton";
+import { FormSubmitButton } from "../../components/form";
 import { getImageUrl } from "../../utils/imageUtils";
 import "./OrderHistoryPage.css";
 

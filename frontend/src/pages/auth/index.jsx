@@ -15,8 +15,6 @@ import { useError } from "../../context/ErrorContext";
 
 // Styles
 import "./Auth.css";
-import "../../components/form/FormInputField.css";
-import "../../components/form/FormSubmitButton.css";
 
 /**
  * Auth component for handling user login and signup

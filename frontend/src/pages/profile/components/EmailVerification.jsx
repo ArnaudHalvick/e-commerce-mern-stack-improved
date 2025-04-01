@@ -1,5 +1,5 @@
 import React from "react";
-import FormSubmitButton from "../../../components/form/FormSubmitButton";
+import { FormSubmitButton } from "../../../components/form";
 
 /**
  * EmailVerification component for handling email verification status

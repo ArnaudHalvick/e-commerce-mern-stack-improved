@@ -1,3 +1,4 @@
-import { FormInputField, FormSubmitButton } from "../components/form";
+import FormInputField from "./FormInputField/FormInputField";
+import FormSubmitButton from "./FormSubmitButton/FormSubmitButton";
 
 export { FormInputField, FormSubmitButton };

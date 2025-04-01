@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useError } from "../../../context/ErrorContext";
 import { debounce } from "lodash";
 import { validatePassword } from "../../../utils/validation";
-import FormSubmitButton from "../../../components/form/FormSubmitButton";
+import { FormSubmitButton } from "../../../components/form";
 
 /**
  * PasswordManager component for handling password changes

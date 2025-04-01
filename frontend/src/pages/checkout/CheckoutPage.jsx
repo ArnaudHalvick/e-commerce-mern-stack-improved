@@ -9,7 +9,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { clearCart } from "../../redux/slices/cartSlice";
-import FormSubmitButton from "../../components/form/FormSubmitButton";
+import { FormSubmitButton } from "../../components/form";
 import Spinner from "../../components/ui/spinner";
 import "./CheckoutPage.css";
 

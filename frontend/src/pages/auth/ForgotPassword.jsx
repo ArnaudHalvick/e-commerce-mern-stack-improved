@@ -5,8 +5,6 @@ import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
 
 // Styles
 import "./Auth.css";
-import "../../components/form/FormInputField.css";
-import "../../components/form/FormSubmitButton.css";
 
 /**
  * Forgot Password page component

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { requestEmailChange } from "../../../redux/slices/userSlice";
 import { useError } from "../../../context/ErrorContext";
 import { validateEmail } from "../../../utils/validation";
-import FormSubmitButton from "../../../components/form/FormSubmitButton";
+import { FormSubmitButton } from "../../../components/form";
 
 const EmailManager = ({ user, showSuccess, showError }) => {
   const dispatch = useDispatch();
