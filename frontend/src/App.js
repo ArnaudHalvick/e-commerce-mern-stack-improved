@@ -19,6 +19,7 @@ import OrderHistoryPage from "./pages/orderHistory/OrderHistoryPage";
 // Import test components
 import HookTestComponent from "./components/HookTestComponent";
 import ProductHookTest from "./components/ProductHookTest";
+import CartHookTest from "./hooks/test/CartHookTest";
 import TestPage from "./pages/test/TestPage";
 
 // Page Components
@@ -246,6 +247,7 @@ function App() {
             {/* Test Routes for Hook Refactoring */}
             <Route path="/hook-test" element={<HookTestComponent />} />
             <Route path="/product-test" element={<ProductHookTest />} />
+            <Route path="/cart-test" element={<CartHookTest />} />
 
             {/* Test Page */}
             <Route path="/test" element={<TestPage />} />
