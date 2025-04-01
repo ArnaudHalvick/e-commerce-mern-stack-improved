@@ -35,7 +35,7 @@ export const fetchCart = createAsyncThunk(
 
 export const addToCart = createAsyncThunk(
   "cart/addItem",
-  async ({ itemId, quantity = 1, size }, { rejectWithValue, dispatch }) => {
+  async ({ itemId, quantity = 1, size }, { rejectWithValue, getState }) => {
     try {
       const token = localStorage.getItem("auth-token");
       if (!token) {
@@ -61,11 +61,10 @@ export const addToCart = createAsyncThunk(
       return { items: [], totalItems: 0, totalPrice: 0 };
     } catch (error) {
       console.error("Add to cart error:", error);
-      return rejectWithValue(
-        error?.response?.data?.message ||
-          error?.message ||
-          "Failed to add item to cart"
-      );
+
+      // Return current state to avoid UI flicker
+      const { cart } = getState();
+      return cart;
     }
   }
 );
@@ -74,7 +73,7 @@ export const removeFromCart = createAsyncThunk(
   "cart/removeItem",
   async (
     { itemId, quantity = 1, removeAll = false, size },
-    { rejectWithValue, dispatch }
+    { rejectWithValue, getState }
   ) => {
     try {
       const token = localStorage.getItem("auth-token");
@@ -102,18 +101,17 @@ export const removeFromCart = createAsyncThunk(
       return { items: [], totalItems: 0, totalPrice: 0 };
     } catch (error) {
       console.error("Remove from cart error:", error);
-      return rejectWithValue(
-        error?.response?.data?.message ||
-          error?.message ||
-          "Failed to remove item from cart"
-      );
+
+      // Return current state to avoid UI flicker
+      const { cart } = getState();
+      return cart;
     }
   }
 );
 
 export const updateCartItem = createAsyncThunk(
   "cart/updateItem",
-  async ({ itemId, quantity, size }, { rejectWithValue }) => {
+  async ({ itemId, quantity, size }, { rejectWithValue, getState }) => {
     try {
       const token = localStorage.getItem("auth-token");
       if (!token) {
@@ -139,11 +137,10 @@ export const updateCartItem = createAsyncThunk(
       return { items: [], totalItems: 0, totalPrice: 0 };
     } catch (error) {
       console.error("Update cart item error:", error);
-      return rejectWithValue(
-        error?.response?.data?.message ||
-          error?.message ||
-          "Failed to update cart item"
-      );
+
+      // Return current state to avoid UI flicker
+      const { cart } = getState();
+      return cart;
     }
   }
 );
@@ -177,6 +174,7 @@ const initialState = {
   loading: false,
   error: null,
   lastUpdated: null,
+  pendingOperations: {}, // Track pending operations by item ID and size
 };
 
 // Create slice
@@ -185,6 +183,18 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
     resetCart: () => initialState,
+    // Add a reducer to mark an operation as pending
+    markOperationPending: (state, action) => {
+      const { itemId, size, operation } = action.payload;
+      const key = `${itemId}-${size}-${operation}`;
+      state.pendingOperations[key] = true;
+    },
+    // Add a reducer to mark an operation as completed
+    markOperationCompleted: (state, action) => {
+      const { itemId, size, operation } = action.payload;
+      const key = `${itemId}-${size}-${operation}`;
+      delete state.pendingOperations[key];
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -234,21 +244,24 @@ const cartSlice = createSlice({
       })
       .addCase(addToCart.fulfilled, (state, action) => {
         state.loading = false;
-        const payload = action.payload || {
-          items: [],
-          totalItems: 0,
-          totalPrice: 0,
-        };
-        state.items = payload.items || [];
-        state.totalItems = payload.totalItems || 0;
-        state.totalPrice = payload.totalPrice || 0;
-        state.lastUpdated = new Date().toISOString();
+
+        // Only update the state if we got new data from the server
+        // This helps prevent flickering
+        if (action.payload && (!action.payload.error || action.payload.items)) {
+          const payload = action.payload || {
+            items: [],
+            totalItems: 0,
+            totalPrice: 0,
+          };
+          state.items = payload.items || [];
+          state.totalItems = payload.totalItems || 0;
+          state.totalPrice = payload.totalPrice || 0;
+          state.lastUpdated = new Date().toISOString();
+        }
       })
       .addCase(addToCart.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to add item to cart";
-        // Revert optimistic update by fetching the cart again
-        // This is a simple approach - a more complex one would save the previous state
       })
 
       // removeFromCart
@@ -293,20 +306,23 @@ const cartSlice = createSlice({
       })
       .addCase(removeFromCart.fulfilled, (state, action) => {
         state.loading = false;
-        const payload = action.payload || {
-          items: [],
-          totalItems: 0,
-          totalPrice: 0,
-        };
-        state.items = payload.items || [];
-        state.totalItems = payload.totalItems || 0;
-        state.totalPrice = payload.totalPrice || 0;
-        state.lastUpdated = new Date().toISOString();
+
+        // Only update if we got valid data back
+        if (action.payload && (!action.payload.error || action.payload.items)) {
+          const payload = action.payload || {
+            items: [],
+            totalItems: 0,
+            totalPrice: 0,
+          };
+          state.items = payload.items || [];
+          state.totalItems = payload.totalItems || 0;
+          state.totalPrice = payload.totalPrice || 0;
+          state.lastUpdated = new Date().toISOString();
+        }
       })
       .addCase(removeFromCart.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to remove item from cart";
-        // Revert optimistic update by fetching the cart again
       })
 
       // updateCartItem
@@ -333,20 +349,23 @@ const cartSlice = createSlice({
       })
       .addCase(updateCartItem.fulfilled, (state, action) => {
         state.loading = false;
-        const payload = action.payload || {
-          items: [],
-          totalItems: 0,
-          totalPrice: 0,
-        };
-        state.items = payload.items || [];
-        state.totalItems = payload.totalItems || 0;
-        state.totalPrice = payload.totalPrice || 0;
-        state.lastUpdated = new Date().toISOString();
+
+        // Only update if we got valid data back
+        if (action.payload && (!action.payload.error || action.payload.items)) {
+          const payload = action.payload || {
+            items: [],
+            totalItems: 0,
+            totalPrice: 0,
+          };
+          state.items = payload.items || [];
+          state.totalItems = payload.totalItems || 0;
+          state.totalPrice = payload.totalPrice || 0;
+          state.lastUpdated = new Date().toISOString();
+        }
       })
       .addCase(updateCartItem.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to update cart item";
-        // Revert optimistic update by fetching the cart again
       })
 
       // clearCart
@@ -359,6 +378,7 @@ const cartSlice = createSlice({
         state.items = [];
         state.totalItems = 0;
         state.totalPrice = 0;
+        state.pendingOperations = {};
         state.lastUpdated = new Date().toISOString();
       })
       .addCase(clearCart.rejected, (state, action) => {
@@ -368,5 +388,6 @@ const cartSlice = createSlice({
   },
 });
 
-export const { resetCart } = cartSlice.actions;
+export const { resetCart, markOperationPending, markOperationCompleted } =
+  cartSlice.actions;
 export default cartSlice.reducer;

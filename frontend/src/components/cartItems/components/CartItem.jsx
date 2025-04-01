@@ -1,4 +1,4 @@
-import React, { memo, useState, useEffect } from "react";
+import React, { memo, useState, useEffect, useRef } from "react";
 import remove_icon from "../../../components/assets/cart_cross_icon.png";
 import { config } from "../../../api";
 import "../CartItems.css";
@@ -24,10 +24,23 @@ const CartItem = ({
   onQuantityBlur,
 }) => {
   const [localQuantity, setLocalQuantity] = useState(item.quantity);
+  const [isPending, setIsPending] = useState(false);
+  const pendingOperations = useRef(0);
+  const lastKnownServerQuantity = useRef(item.quantity);
 
-  // Update local quantity when item quantity changes
+  // Update local quantity when server item quantity changes
   useEffect(() => {
-    setLocalQuantity(item.quantity);
+    // Only update if this item's quantity changed from server
+    // and no pending operations are in progress
+    if (lastKnownServerQuantity.current !== item.quantity) {
+      lastKnownServerQuantity.current = item.quantity;
+
+      // Only update local quantity if we don't have pending operations
+      // This prevents flickering on rapid clicks
+      if (pendingOperations.current === 0) {
+        setLocalQuantity(item.quantity);
+      }
+    }
   }, [item.quantity]);
 
   // Handle local quantity change
@@ -35,29 +48,57 @@ const CartItem = ({
     // Ensure value is a valid number and not less than 1
     const newValue = Math.max(1, parseInt(value) || 1);
     setLocalQuantity(newValue);
-    onQuantityChange(item.productId, newValue, item.size);
+    // Don't call onQuantityChange on every input change
+    // This will be handled on blur instead
   };
 
   // Handle quantity blur
   const handleBlur = () => {
-    onQuantityBlur(item.productId, item.size);
-    // Reset local state to match item quantity
-    setLocalQuantity(item.quantity);
+    // Only update if the quantity actually changed
+    if (localQuantity !== item.quantity) {
+      setIsPending(true);
+      pendingOperations.current += 1;
+
+      // Pass the current local quantity value
+      onQuantityBlur(item.productId, localQuantity, item.size).finally(() => {
+        pendingOperations.current -= 1;
+        if (pendingOperations.current === 0) {
+          setIsPending(false);
+        }
+      });
+    }
   };
 
   // Optimistic UI updates
   const handleAddItemClick = () => {
     // Update local state immediately for better UX
     setLocalQuantity((prev) => prev + 1);
-    onAddItem(item.productId, 1, item.size);
+    setIsPending(true);
+    pendingOperations.current += 1;
+
+    onAddItem(item.productId, 1, item.size).finally(() => {
+      pendingOperations.current -= 1;
+      if (pendingOperations.current === 0) {
+        setIsPending(false);
+      }
+    });
   };
 
   const handleRemoveItemClick = () => {
-    // Update local state immediately for better UX
+    // Only proceed if quantity is greater than 1
     if (localQuantity > 1) {
+      // Update local state immediately for better UX
       setLocalQuantity((prev) => prev - 1);
+      setIsPending(true);
+      pendingOperations.current += 1;
+
+      onRemoveItem(item.productId, 1, item.size).finally(() => {
+        pendingOperations.current -= 1;
+        if (pendingOperations.current === 0) {
+          setIsPending(false);
+        }
+      });
     }
-    onRemoveItem(item.productId, 1, item.size);
   };
 
   const handleKeyDown = (event, action) => {
@@ -67,8 +108,11 @@ const CartItem = ({
     }
   };
 
+  // Compute total price based on local quantity for immediate UI feedback
+  const itemTotal = (item.price * localQuantity).toFixed(2);
+
   return (
-    <tr>
+    <tr className={isPending ? "cart-item-pending" : ""}>
       <td>
         <img
           className="cart-items-product-image"
@@ -102,6 +146,7 @@ const CartItem = ({
             onKeyDown={(e) => handleKeyDown(e, handleRemoveItemClick)}
             aria-label="Decrease quantity"
             tabIndex="0"
+            disabled={localQuantity <= 1 || isPending}
           >
             -
           </button>
@@ -113,6 +158,7 @@ const CartItem = ({
             onBlur={handleBlur}
             min="1"
             aria-label={`Quantity for ${item.name}, size ${item.size}`}
+            disabled={isPending}
           />
           <button
             className="cart-items-quantity-adjust-btn"
@@ -120,6 +166,7 @@ const CartItem = ({
             onKeyDown={(e) => handleKeyDown(e, handleAddItemClick)}
             aria-label="Increase quantity"
             tabIndex="0"
+            disabled={isPending}
           >
             +
           </button>
@@ -129,7 +176,7 @@ const CartItem = ({
         <span
           className={item.isDiscounted ? "cart-items-price-discounted" : ""}
         >
-          ${(item.price * localQuantity).toFixed(2)}
+          ${itemTotal}
         </span>
       </td>
       <td>
@@ -145,6 +192,7 @@ const CartItem = ({
             title="Remove all"
             tabIndex="0"
             role="button"
+            style={{ opacity: isPending ? 0.6 : 1 }}
           />
         </div>
       </td>

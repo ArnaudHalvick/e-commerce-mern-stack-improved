@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchCart,
@@ -31,9 +31,15 @@ const useCart = () => {
   // Local state for optimistic UI updates
   const [localTotalPrice, setLocalTotalPrice] = useState(totalPrice);
 
-  // Update local total price when Redux state changes
+  // Keep track of pending operations to avoid UI flicker
+  const pendingOperations = useRef({});
+  const pendingCount = useRef(0);
+
+  // Update local total price when Redux state changes and no pending operations
   useEffect(() => {
-    setLocalTotalPrice(totalPrice);
+    if (pendingCount.current === 0) {
+      setLocalTotalPrice(totalPrice);
+    }
   }, [totalPrice]);
 
   // Fetch cart data when component mounts or auth status changes
@@ -42,6 +48,18 @@ const useCart = () => {
       dispatch(fetchCart());
     }
   }, [dispatch, isAuthenticated]);
+
+  // Helper to track pending operations
+  const trackOperation = (itemId, size, operationType) => {
+    const key = `${itemId}-${size}-${operationType}`;
+    pendingOperations.current[key] = true;
+    pendingCount.current += 1;
+
+    return () => {
+      delete pendingOperations.current[key];
+      pendingCount.current = Math.max(0, pendingCount.current - 1);
+    };
+  };
 
   /**
    * Add item to cart
@@ -58,9 +76,25 @@ const useCart = () => {
           message: "Authentication required",
         });
 
-      return dispatch(addToCart({ itemId, quantity, size }));
+      // Find item for optimistic update
+      const item = items.find(
+        (item) => item.productId === itemId && item.size === size
+      );
+
+      // Apply optimistic update to local price
+      if (item) {
+        setLocalTotalPrice((prev) => prev + item.price * quantity);
+      }
+
+      // Track this operation
+      const cleanupOperation = trackOperation(itemId, size, "add");
+
+      // Dispatch action and clean up tracking when done
+      return dispatch(addToCart({ itemId, quantity, size })).finally(() => {
+        cleanupOperation();
+      });
     },
-    [dispatch, isAuthenticated]
+    [dispatch, items, isAuthenticated]
   );
 
   /**
@@ -89,7 +123,14 @@ const useCart = () => {
         );
       }
 
-      return dispatch(removeFromCart({ itemId, quantity, size }));
+      // Track this operation
+      const cleanupOperation = trackOperation(itemId, size, "remove");
+
+      return dispatch(removeFromCart({ itemId, quantity, size })).finally(
+        () => {
+          cleanupOperation();
+        }
+      );
     },
     [dispatch, items, isAuthenticated]
   );
@@ -117,7 +158,14 @@ const useCart = () => {
         setLocalTotalPrice((prev) => prev - item.price * item.quantity);
       }
 
-      return dispatch(removeFromCart({ itemId, removeAll: true, size }));
+      // Track this operation
+      const cleanupOperation = trackOperation(itemId, size, "removeAll");
+
+      return dispatch(
+        removeFromCart({ itemId, removeAll: true, size })
+      ).finally(() => {
+        cleanupOperation();
+      });
     },
     [dispatch, items, isAuthenticated]
   );
@@ -140,9 +188,27 @@ const useCart = () => {
         });
       }
 
-      return dispatch(updateCartItem({ itemId, quantity, size }));
+      // Find the current item for optimistic UI update
+      const item = items.find(
+        (item) => item.productId === itemId && item.size === size
+      );
+
+      if (item) {
+        // Calculate price difference and update local total
+        const priceDifference = item.price * (quantity - item.quantity);
+        setLocalTotalPrice((prev) => prev + priceDifference);
+      }
+
+      // Track this operation
+      const cleanupOperation = trackOperation(itemId, size, "update");
+
+      return dispatch(updateCartItem({ itemId, quantity, size })).finally(
+        () => {
+          cleanupOperation();
+        }
+      );
     },
-    [dispatch, isAuthenticated]
+    [dispatch, items, isAuthenticated]
   );
 
   /**
@@ -155,6 +221,10 @@ const useCart = () => {
         success: false,
         message: "Authentication required",
       });
+
+    // Reset pending operations
+    pendingOperations.current = {};
+    pendingCount.current = 0;
 
     return dispatch(clearCartAction());
   }, [dispatch, isAuthenticated]);
