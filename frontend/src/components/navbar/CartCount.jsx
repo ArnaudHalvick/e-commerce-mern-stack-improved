@@ -20,7 +20,7 @@ const CartCount = () => {
   // Only show cart count if user is authenticated
   return (
     <div
-      className="nav-cart-count"
+      className="navbar-cart-count"
       aria-label={`${totalItems} items in cart`}
       role="status"
     >

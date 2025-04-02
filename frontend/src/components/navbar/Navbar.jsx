@@ -25,47 +25,47 @@ const NAV_ITEMS = [
 const NavLogo = ({ inTransition }) => (
   <Link
     to="/"
-    className="shop-nav-logo"
+    className="navbar-logo"
     onClick={(e) => inTransition && e.preventDefault()}
     aria-label="Shopper home page"
   >
     <img src={logo} alt="Shopper logo" />
-    <p className="shop-nav-logo-text">SHOPPER</p>
+    <p className="navbar-logo-text">SHOPPER</p>
   </Link>
 );
 
 // Mobile Menu Hamburger Component
 const HamburgerMenu = ({ onClick, inTransition }) => (
   <div
-    className="hamburger"
+    className="navbar-hamburger"
     onClick={() => !inTransition && onClick()}
     tabIndex="0"
     aria-label="Toggle mobile menu"
     role="button"
     onKeyDown={(e) => e.key === "Enter" && !inTransition && onClick()}
   >
-    <span className="hamburger-line"></span>
-    <span className="hamburger-line"></span>
-    <span className="hamburger-line"></span>
+    <span className="navbar-hamburger-line"></span>
+    <span className="navbar-hamburger-line"></span>
+    <span className="navbar-hamburger-line"></span>
   </div>
 );
 
 // Navigation Menu Items Component
 const NavMenu = ({ activeMenu, handleMenuClick, isMobileMenuOpen }) => (
   <ul
-    className={`shop-nav-menu ${isMobileMenuOpen ? "active" : ""}`}
+    className={`navbar-menu ${isMobileMenuOpen ? "active" : ""}`}
     role="menubar"
   >
     {NAV_ITEMS.map((item) => (
       <li
         key={item.id}
-        className="shop-nav-menu-item"
+        className="navbar-menu-item"
         onClick={() => handleMenuClick(item.id)}
         role="menuitem"
       >
         <Link to={item.path}>
           {item.label}{" "}
-          {activeMenu === item.id && <hr className="shop-nav-menu-indicator" />}
+          {activeMenu === item.id && <hr className="navbar-menu-indicator" />}
         </Link>
       </li>
     ))}
@@ -77,22 +77,22 @@ const UserDropdown = ({ isOpen, onClose, handleLogout, inTransition }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="user-dropdown">
-      <Link to="/profile" className="user-dropdown-link" onClick={onClose}>
+    <div className="navbar-user-dropdown">
+      <Link to="/profile" className="navbar-dropdown-link" onClick={onClose}>
         My Profile
       </Link>
       <Link
         to="/account/orders"
-        className="user-dropdown-link"
+        className="navbar-dropdown-link"
         onClick={onClose}
       >
         My Orders
       </Link>
-      <Link to="/cart" className="user-dropdown-link" onClick={onClose}>
+      <Link to="/cart" className="navbar-dropdown-link" onClick={onClose}>
         My Cart
       </Link>
       <button
-        className="user-dropdown-button"
+        className="navbar-dropdown-button"
         onClick={handleLogout}
         disabled={inTransition}
         aria-label="Logout from account"
@@ -112,9 +112,9 @@ const AuthenticatedUser = ({
   handleLogout,
   inTransition,
 }) => (
-  <div className="user-account" ref={userMenuRef}>
+  <div className="navbar-user-account" ref={userMenuRef}>
     <div
-      className="user-account-trigger"
+      className="navbar-user-trigger"
       onClick={toggleUserMenu}
       tabIndex="0"
       aria-label="Open user menu"
@@ -122,8 +122,8 @@ const AuthenticatedUser = ({
       role="button"
       onKeyDown={(e) => e.key === "Enter" && toggleUserMenu()}
     >
-      <span className="welcome-user">{displayName}</span>
-      <img src={user_icon} alt="User" className="user-icon" />
+      <span className="navbar-welcome-user">{displayName}</span>
+      <img src={user_icon} alt="User" className="navbar-user-icon" />
     </div>
     <UserDropdown
       isOpen={isUserMenuOpen}
@@ -136,10 +136,10 @@ const AuthenticatedUser = ({
 
 // Auth Buttons Component
 const AuthButtons = ({ inTransition }) => (
-  <div className="auth-buttons">
+  <div className="navbar-auth-buttons">
     <Link to="/login" onClick={(e) => inTransition && e.preventDefault()}>
       <button
-        className="shop-nav-button login-btn"
+        className="navbar-button navbar-login-btn"
         disabled={inTransition}
         aria-label="Login to your account"
       >
@@ -148,7 +148,7 @@ const AuthButtons = ({ inTransition }) => (
     </Link>
     <Link to="/signup" onClick={(e) => inTransition && e.preventDefault()}>
       <button
-        className="shop-nav-button signup-btn"
+        className="navbar-button navbar-signup-btn"
         disabled={inTransition}
         aria-label="Create a new account"
       >
@@ -166,7 +166,7 @@ const Cart = ({ inTransition }) => (
       onClick={(e) => inTransition && e.preventDefault()}
       aria-label="View shopping cart"
     >
-      <img className="cart-icon" src={cart_icon} alt="Shopping cart" />
+      <img className="navbar-cart-icon" src={cart_icon} alt="Shopping cart" />
     </Link>
     <CartCount />
   </>
@@ -241,7 +241,7 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className="shop-navbar" role="navigation" aria-label="Main navigation">
+    <nav className="navbar" role="navigation" aria-label="Main navigation">
       <NavLogo inTransition={inTransition} />
 
       <HamburgerMenu onClick={toggleMobileMenu} inTransition={inTransition} />
@@ -252,7 +252,7 @@ const Navbar = () => {
         isMobileMenuOpen={isMobileMenuOpen}
       />
 
-      <div className="shop-nav-login-cart">
+      <div className="navbar-login-cart">
         {isAuthenticated ? (
           <AuthenticatedUser
             displayName={displayName}
