@@ -59,19 +59,19 @@ const DescriptionBox = ({ product }) => {
   }, [activeTab, product?._id, dispatch, bestReviews]);
 
   return (
-    <div className="custom-description-box">
-      <div className="custom-navigator">
+    <div className="description-box-container">
+      <div className="description-box-navigator">
         <div
-          className={`custom-nav-item ${
-            activeTab === "description" ? "" : "custom-fade"
+          className={`description-box-nav-item ${
+            activeTab === "description" ? "" : "description-box-fade"
           }`}
           onClick={() => setActiveTab("description")}
         >
           Description
         </div>
         <div
-          className={`custom-nav-item ${
-            activeTab === "reviews" ? "" : "custom-fade"
+          className={`description-box-nav-item ${
+            activeTab === "reviews" ? "" : "description-box-fade"
           }`}
           onClick={() => setActiveTab("reviews")}
         >

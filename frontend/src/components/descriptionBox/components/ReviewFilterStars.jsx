@@ -1,6 +1,7 @@
 import React from "react";
 import star_icon from "../../assets/star_icon.png";
 import star_dull_icon from "../../assets/star_dull_icon.png";
+import "./ReviewFilterStars.css";
 
 /**
  * Component for filtering reviews by star rating
@@ -30,13 +31,15 @@ const ReviewFilterStars = ({ ratingFilter, ratingCounts, onRatingFilter }) => {
   const counts = ensureValidCounts();
 
   return (
-    <div className="rating-filters-row">
+    <div className="description-box-filter-ratings-row">
       {[5, 4, 3, 2, 1].map((rating) => {
         const isActive = ratingFilter === rating;
         return (
           <div
             key={rating}
-            className={`rating-filter-compact ${isActive ? "active" : ""}`}
+            className={`description-box-filter-rating-item ${
+              isActive ? "active" : ""
+            }`}
             onClick={() => onRatingFilter(rating)}
             aria-label={`Filter by ${rating} star reviews`}
             tabIndex="0"
@@ -47,7 +50,7 @@ const ReviewFilterStars = ({ ratingFilter, ratingCounts, onRatingFilter }) => {
               }
             }}
           >
-            <div className="filter-star-row">
+            <div className="description-box-filter-star-row">
               {Array(rating)
                 .fill()
                 .map((_, index) => (
@@ -55,7 +58,7 @@ const ReviewFilterStars = ({ ratingFilter, ratingCounts, onRatingFilter }) => {
                     key={index}
                     src={star_icon}
                     alt="star"
-                    className="filter-star"
+                    className="description-box-filter-star"
                   />
                 ))}
               {Array(5 - rating)
@@ -65,11 +68,14 @@ const ReviewFilterStars = ({ ratingFilter, ratingCounts, onRatingFilter }) => {
                     key={index + rating}
                     src={star_dull_icon}
                     alt="star"
-                    className="filter-star"
+                    className="description-box-filter-star"
                   />
                 ))}
             </div>
-            <span className="rating-count" data-rating={rating}>
+            <span
+              className="description-box-filter-rating-count"
+              data-rating={rating}
+            >
               ({counts[rating]})
             </span>
           </div>
@@ -77,7 +83,7 @@ const ReviewFilterStars = ({ ratingFilter, ratingCounts, onRatingFilter }) => {
       })}
       {ratingFilter > 0 && (
         <button
-          className="description-clear-filter-btn"
+          className="description-box-filter-clear-btn"
           onClick={() => onRatingFilter(0)}
           aria-label="Clear rating filter"
         >

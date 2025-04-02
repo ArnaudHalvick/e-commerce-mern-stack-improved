@@ -9,7 +9,7 @@ import "./DescriptionContent.css";
  */
 const DescriptionContent = ({ product }) => {
   return (
-    <div className="custom-description-content">
+    <div className="description-box-content">
       {product && product.longDescription
         ? product.longDescription
         : "No description available"}

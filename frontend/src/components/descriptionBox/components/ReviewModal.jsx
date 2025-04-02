@@ -18,15 +18,15 @@ import "./ReviewModal.css";
  * @returns {JSX.Element} - Skeleton review component
  */
 const ReviewSkeleton = () => (
-  <div className="review-skeleton">
-    <div className="review-skeleton-header">
-      <div className="review-skeleton-user"></div>
-      <div className="review-skeleton-stars"></div>
+  <div className="description-box-modal-review-skeleton">
+    <div className="description-box-modal-review-skeleton-header">
+      <div className="description-box-modal-review-skeleton-user"></div>
+      <div className="description-box-modal-review-skeleton-stars"></div>
     </div>
-    <div className="review-skeleton-content">
-      <div className="review-skeleton-line"></div>
-      <div className="review-skeleton-line"></div>
-      <div className="review-skeleton-line short"></div>
+    <div className="description-box-modal-review-skeleton-content">
+      <div className="description-box-modal-review-skeleton-line"></div>
+      <div className="description-box-modal-review-skeleton-line"></div>
+      <div className="description-box-modal-review-skeleton-line short"></div>
     </div>
   </div>
 );
@@ -176,9 +176,11 @@ const ReviewModal = ({ product }) => {
 
   const modalContent = (
     <>
-      <div className="modal-filters">
-        <div className="filters-container">
-          <h3 className="filters-title">Filter by Rating:</h3>
+      <div className="description-box-modal-filters">
+        <div className="description-box-modal-filters-container">
+          <h3 className="description-box-modal-filters-title">
+            Filter by Rating:
+          </h3>
           <ReviewFilterStars
             ratingFilter={ratingFilter}
             ratingCounts={ratingCounts}
@@ -187,16 +189,16 @@ const ReviewModal = ({ product }) => {
         </div>
       </div>
 
-      <div className="sort-options-box">
+      <div className="description-box-modal-sort-options">
         <label
           htmlFor="modal-sort-select"
-          className="description-sort-options-label"
+          className="description-box-modal-sort-label"
         >
           Sort by:{" "}
         </label>
         <select
           id="modal-sort-select"
-          className="description-sort-options-select"
+          className="description-box-modal-sort-select"
           value={sortOption}
           onChange={handleSortChange}
           aria-label="Sort reviews"
@@ -206,29 +208,39 @@ const ReviewModal = ({ product }) => {
         </select>
       </div>
 
-      <div id="reviewsContainer" className="modal-reviews-container">
+      <div
+        id="reviewsContainer"
+        className="description-box-modal-reviews-container"
+      >
         {/* Show skeletons during initial loading */}
         {loading && reviews.length === 0 && renderSkeletons()}
 
         {/* Show "no reviews" message only when we're sure there are none */}
         {reviews.length === 0 && initialLoad && !loading && !error && (
-          <p className="no-reviews">No reviews match your filter criteria.</p>
+          <p className="description-box-modal-no-reviews">
+            No reviews match your filter criteria.
+          </p>
         )}
 
-        {error && <p className="reviews-error">Error: {error}</p>}
+        {error && <p className="description-box-modal-error">Error: {error}</p>}
 
         <InfiniteScroll
           dataLength={reviews.length}
           next={fetchMoreData}
           hasMore={hasMore}
           loader={
-            <div className="reviews-loader" aria-live="polite">
+            <div
+              className="description-box-modal-reviews-loader"
+              aria-live="polite"
+            >
               Loading more reviews...
             </div>
           }
           endMessage={
             reviews.length > 0 && (
-              <p className="reviews-end-message">You've seen all reviews</p>
+              <p className="description-box-modal-reviews-end">
+                You've seen all reviews
+              </p>
             )
           }
           scrollableTarget="reviewsContainer"
@@ -246,7 +258,7 @@ const ReviewModal = ({ product }) => {
       isOpen={modalOpen}
       onClose={handleCloseModal}
       title={modalTitle}
-      className="review-modal"
+      className="description-box-modal"
       size="xlarge"
       closeOnEscape={true}
       closeOnOverlayClick={true}

@@ -22,25 +22,27 @@ const ReviewsContent = ({ reviews, loading, error, reviewCount }) => {
   };
 
   return (
-    <div className="custom-reviews-content">
-      <div className="reviews-header">
-        <h2 className="reviews-header-title">Latest Reviews</h2>
+    <div className="description-box-reviews-content">
+      <div className="description-box-reviews-header">
+        <h2 className="description-box-reviews-header-title">Latest Reviews</h2>
       </div>
 
       {/* Loading and Error States */}
-      {loading && <p className="reviews-loading">Loading reviews...</p>}
-      {error && <p className="reviews-error">Error: {error}</p>}
+      {loading && (
+        <p className="description-box-reviews-loading">Loading reviews...</p>
+      )}
+      {error && <p className="description-box-reviews-error">Error: {error}</p>}
 
       {/* Empty State */}
       {!loading && !error && reviews.length === 0 && (
-        <p className="no-reviews">
+        <p className="description-box-reviews-none">
           No reviews yet. Be the first to review this product!
         </p>
       )}
 
       {/* Latest Reviews List */}
       {!loading && !error && reviews.length > 0 && (
-        <div className="reviews-list">
+        <div className="description-box-reviews-list">
           {reviews.map((review) => (
             <ReviewItem key={review._id} review={review} />
           ))}
@@ -49,8 +51,11 @@ const ReviewsContent = ({ reviews, loading, error, reviewCount }) => {
 
       {/* See All Reviews Button */}
       {!loading && !error && reviewCount > 5 && (
-        <div className="see-all-reviews">
-          <button className="see-all-button" onClick={handleOpenModal}>
+        <div className="description-box-reviews-see-all">
+          <button
+            className="description-box-reviews-see-all-button"
+            onClick={handleOpenModal}
+          >
             See All Reviews ({reviewCount})
           </button>
         </div>

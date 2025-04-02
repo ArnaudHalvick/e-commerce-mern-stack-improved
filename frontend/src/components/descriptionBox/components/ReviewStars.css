@@ -1,9 +1,9 @@
-.review-rating {
+.description-box-review-rating {
   display: flex;
   gap: 0.25rem;
 }
 
-.review-star {
+.description-box-review-star {
   width: 1rem;
   height: 1rem;
 }

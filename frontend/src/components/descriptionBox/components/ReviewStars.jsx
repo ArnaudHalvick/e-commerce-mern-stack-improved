@@ -10,7 +10,7 @@ import "./ReviewStars.css";
  * @param {string} props.className - Optional class name for star images
  * @returns {JSX.Element} - Star rating component
  */
-const ReviewStars = ({ rating, className = "review-star" }) => {
+const ReviewStars = ({ rating, className = "description-box-review-star" }) => {
   const stars = [];
   for (let i = 1; i <= 5; i++) {
     if (i <= rating) {
@@ -23,7 +23,7 @@ const ReviewStars = ({ rating, className = "review-star" }) => {
       );
     }
   }
-  return <div className="review-rating">{stars}</div>;
+  return <div className="description-box-review-rating">{stars}</div>;
 };
 
 export default ReviewStars;

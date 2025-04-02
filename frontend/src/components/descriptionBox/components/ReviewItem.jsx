@@ -11,31 +11,34 @@ import "./ReviewItem.css";
  */
 const ReviewItem = ({ review }) => {
   return (
-    <div className="review-item">
-      <div className="review-header">
-        <div className="review-user-info">
-          <div className="review-avatar">
-            <div className="default-avatar">
+    <div className="description-box-review-item">
+      <div className="description-box-review-header">
+        <div className="description-box-review-user-info">
+          <div className="description-box-review-avatar">
+            <div className="description-box-review-default-avatar">
               {review.user?.name?.charAt(0) || "?"}
             </div>
           </div>
-          <div className="review-user-details">
-            <p className="review-user-name">
+          <div className="description-box-review-user-details">
+            <p className="description-box-review-user-name">
               {review.user?.name || "Anonymous"}
             </p>
-            <p className="review-date">{formatDate(review.date)}</p>
+            <p className="description-box-review-date">
+              {formatDate(review.date)}
+            </p>
           </div>
         </div>
         <ReviewStars rating={review.rating} />
       </div>
 
-      <div className="review-content">
-        <p className="review-content-text">{review.content}</p>
+      <div className="description-box-review-content">
+        <p className="description-box-review-content-text">{review.content}</p>
       </div>
 
       {review.verifiedPurchase && (
-        <div className="verified-badge">
-          <span className="verified-badge-check">✓</span> Verified Purchase
+        <div className="description-box-review-verified-badge">
+          <span className="description-box-review-verified-badge-check">✓</span>{" "}
+          Verified Purchase
         </div>
       )}
     </div>

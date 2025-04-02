@@ -1,4 +1,4 @@
-.custom-description-content {
+.description-box-content {
   border: 1px solid var(--color-border);
   padding: 3rem;
   padding-bottom: 4.375rem;
@@ -10,7 +10,7 @@
 }
 
 @media screen and (max-width: 768px) {
-  .custom-description-content {
+  .description-box-content {
     padding: 1.5rem;
   }
 }

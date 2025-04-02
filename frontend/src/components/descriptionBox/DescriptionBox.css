@@ -1,14 +1,14 @@
 /* Path: frontend/src/components/descriptionBox/DescriptionBox.css */
-.custom-description-box {
+.description-box-container {
   width: 80%;
   margin: 0 auto 3rem;
 }
 
-.custom-navigator {
+.description-box-navigator {
   display: flex;
 }
 
-.custom-nav-item {
+.description-box-nav-item {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -21,22 +21,22 @@
   transition: background-color 0.3s ease;
 }
 
-.custom-nav-item:hover:not(.custom-fade) {
+.description-box-nav-item:hover:not(.description-box-fade) {
   background-color: var(--color-background-light);
 }
 
-.custom-nav-item.custom-fade {
+.description-box-nav-item.description-box-fade {
   background-color: var(--color-border);
   color: var(--color-text-tertiary);
 }
 
 /* See All Reviews Button */
-.see-all-reviews {
+.description-box-see-all-reviews {
   text-align: center;
   margin-top: 2rem;
 }
 
-.see-all-button {
+.description-box-see-all-button {
   background: none;
   border: 1px solid var(--color-border);
   padding: 0.75rem 1.5rem;
@@ -47,12 +47,12 @@
   transition: all 0.2s ease;
 }
 
-.see-all-button:hover {
+.description-box-see-all-button:hover {
   background-color: var(--color-background-light);
 }
 
 @media screen and (max-width: 768px) {
-  .custom-description-box {
+  .description-box-container {
     width: 100%;
   }
 }
