@@ -1,12 +1,12 @@
 // External Libraries
 import { useAuth } from "../../hooks/state";
+import { useCart } from "../../hooks/state";
 
 // Internal Components
 import { CartItem, CartTotals, PromoCodeSection } from "./components";
 import EmailVerificationBanner from "./components/EmailVerificationBanner";
 import EmptyState from "../errorHandling/emptyState/EmptyState";
 import Spinner from "../ui/spinner";
-import { useCart } from "../../hooks/state";
 
 // Styles
 import "./CartItems.css";
@@ -27,13 +27,6 @@ const CartItems = () => {
     addItem: handleAddItem,
     removeItem: handleRemoveItem,
   } = useCart();
-
-  // Handle quantity change in input field
-  const handleQuantityChange = (id, value, size) => {
-    // This is handled locally in the CartItem component now
-    // We're just providing this function to maintain the interface
-    // but the actual state is managed in the CartItem component itself
-  };
 
   // Check if we should show the email verification banner
   const showVerificationBanner =
@@ -124,7 +117,6 @@ const CartItems = () => {
               onRemoveItem={handleRemoveItem}
               onAddItem={handleAddItem}
               onRemoveAll={handleRemoveAll}
-              onQuantityChange={handleQuantityChange}
               onQuantityBlur={handleQuantityBlur}
             />
           ))}

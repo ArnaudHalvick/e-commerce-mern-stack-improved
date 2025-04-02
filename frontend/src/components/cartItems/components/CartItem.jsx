@@ -1,8 +1,12 @@
 import React, { memo, useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
+
+// Local assets
 import remove_icon from "../../../components/assets/cart_cross_icon.png";
 import { config } from "../../../api";
+
+// Styles
 import "./CartItem.css";
-import { Link } from "react-router-dom";
 
 /**
  * Individual cart item component
@@ -12,7 +16,6 @@ import { Link } from "react-router-dom";
  * @param {Function} props.onRemoveItem - Handler for removing one item
  * @param {Function} props.onAddItem - Handler for adding one item
  * @param {Function} props.onRemoveAll - Handler for removing all items of this type
- * @param {Function} props.onQuantityChange - Handler for quantity input change
  * @param {Function} props.onQuantityBlur - Handler for input blur event
  */
 const CartItem = ({
@@ -20,7 +23,6 @@ const CartItem = ({
   onRemoveItem,
   onAddItem,
   onRemoveAll,
-  onQuantityChange,
   onQuantityBlur,
 }) => {
   const [localQuantity, setLocalQuantity] = useState(item.quantity);
@@ -48,7 +50,6 @@ const CartItem = ({
     // Ensure value is a valid number and not less than 1
     const newValue = Math.max(1, parseInt(value) || 1);
     setLocalQuantity(newValue);
-    // Don't call onQuantityChange on every input change
     // This will be handled on blur instead
   };
 
