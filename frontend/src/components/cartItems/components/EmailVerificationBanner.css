@@ -6,6 +6,7 @@
   padding: 1rem;
   margin-bottom: 1.5rem;
   color: #856404;
+  width: 100%;
 }
 
 .cart-items-email-verification-content {
@@ -16,6 +17,7 @@
 .cart-items-email-verification-icon {
   margin-right: 1rem;
   font-size: 1.25rem;
+  color: #ffc107;
 }
 
 .cart-items-email-verification-message {
@@ -40,6 +42,7 @@
   padding: 0.5rem;
   margin-bottom: 1rem;
   font-size: 0.9375rem;
+  border: 1px solid #c3e6cb;
 }
 
 .cart-items-email-verification-error-message {
@@ -49,6 +52,7 @@
   padding: 0.5rem;
   margin-bottom: 1rem;
   font-size: 0.9375rem;
+  border: 1px solid #f5c6cb;
 }
 
 .cart-items-email-verification-warning-message {
@@ -101,4 +105,15 @@
 .cart-items-email-verification-refresh-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+/* Adding styles for email verification link that were in CartItems.css */
+.cart-items-email-verification-link {
+  color: #007bff;
+  text-decoration: none;
+  margin-left: 5px;
+}
+
+.cart-items-email-verification-link:hover {
+  text-decoration: underline;
 }
