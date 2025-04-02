@@ -13,6 +13,8 @@ const Modal = ({
   className = "",
   closeOnEscape = true,
   closeOnOverlayClick = true,
+  size = "default",
+  customWidth,
 }) => {
   useEffect(() => {
     // Handle ESC key to close modal
@@ -47,13 +49,20 @@ const Modal = ({
   // Exit early if modal is not open
   if (!isOpen) return null;
 
+  // Generate modal container class names
+  const containerClassName =
+    `modal__container modal__container--${size} ${className}`.trim();
+
   return (
     <div
       className="modal__overlay"
       onClick={handleOverlayClick}
       data-testid="modal-overlay"
     >
-      <div className={`modal__container ${className}`}>
+      <div
+        className={containerClassName}
+        style={customWidth ? { maxWidth: customWidth } : undefined}
+      >
         <div className="modal__header">
           {title && <h2 className="modal__title">{title}</h2>}
           <button
@@ -80,6 +89,8 @@ Modal.propTypes = {
   className: PropTypes.string,
   closeOnEscape: PropTypes.bool,
   closeOnOverlayClick: PropTypes.bool,
+  size: PropTypes.oneOf(["small", "default", "large", "xlarge"]),
+  customWidth: PropTypes.string,
 };
 
 export default Modal;

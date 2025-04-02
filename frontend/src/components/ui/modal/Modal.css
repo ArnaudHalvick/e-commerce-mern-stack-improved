@@ -19,10 +19,26 @@
   border-radius: 8px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   width: 90%;
-  max-width: 500px;
   max-height: 90vh;
   overflow-y: auto;
   animation: modal-slideUp 0.3s ease-out;
+}
+
+/* Modal size variants */
+.modal__container--small {
+  max-width: 400px;
+}
+
+.modal__container--default {
+  max-width: 500px;
+}
+
+.modal__container--large {
+  max-width: 800px;
+}
+
+.modal__container--xlarge {
+  max-width: 1200px;
 }
 
 /* Modal header */
