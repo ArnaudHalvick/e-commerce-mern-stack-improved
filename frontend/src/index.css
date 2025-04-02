@@ -179,14 +179,25 @@
   --transition-timing-ease-out: cubic-bezier(0, 0, 0.58, 1);
   --transition-timing-ease-in-out: cubic-bezier(0.42, 0, 0.58, 1);
 
-  /* Common Breakpoints - defined as variables for JS reference, do not use them in media queries for CSS */
+  /* Common Breakpoints 
+  ⚠️ IMPORTANT: DO NOT USE THESE VARIABLES IN MEDIA QUERIES! 
+  These variables are for JavaScript reference only.
+  
+  In media queries, use the pixel values directly:
+  @media screen and (max-width: 576px) {} // sm
+  @media screen and (max-width: 768px) {} // md
+  @media screen and (max-width: 992px) {} // lg
+  @media screen and (max-width: 1200px) {} // xl
+  @media screen and (max-width: 1400px) {} // xxl
+  @media screen and (max-width: 1536px) {} // xxxl
+  */
   --breakpoint-xs: 0;
-  --breakpoint-sm: 576px;
-  --breakpoint-md: 768px;
-  --breakpoint-lg: 992px;
-  --breakpoint-xl: 1200px;
-  --breakpoint-xxl: 1400px;
-  --breakpoint-xxxl: 1536px;
+  --breakpoint-sm: 576px; /* Small devices (phones) */
+  --breakpoint-md: 768px; /* Medium devices (tablets) */
+  --breakpoint-lg: 992px; /* Large devices (laptops) */
+  --breakpoint-xl: 1200px; /* Extra large devices (large laptops) */
+  --breakpoint-xxl: 1400px; /* Extra extra large devices (large desktops) */
+  --breakpoint-xxxl: 1536px; /* Ultra wide devices */
 
   /* Container max-widths - matching your Container.css */
   --container-sm: 540px;
