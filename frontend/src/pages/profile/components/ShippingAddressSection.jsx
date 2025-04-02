@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { FormInputField, FormSubmitButton } from "../../../components/form";
 import { debounce } from "lodash";
+import { validateAddress } from "../../../utils/validation";
 
 /**
  * ShippingAddressSection component for displaying and editing user's shipping address
@@ -15,14 +16,20 @@ const ShippingAddressSection = ({
   const [isEditingAddress, setIsEditingAddress] = useState(false);
   const [isAddressValid, setIsAddressValid] = useState(false);
   const [localFormData, setLocalFormData] = useState({
-    address: { ...formData.address },
+    address: {
+      street: "",
+      city: "",
+      state: "",
+      zipCode: "",
+      country: "",
+    },
   });
   const [localFieldErrors, setLocalFieldErrors] = useState({});
   const [initialFormData, setInitialFormData] = useState({
-    address: { ...formData.address },
+    address: {},
   });
 
-  // Update local form data when props change and not in edit mode
+  // Set initial form data and errors when editing is toggled
   useEffect(() => {
     if (!isEditingAddress) {
       setLocalFormData({
@@ -41,9 +48,6 @@ const ShippingAddressSection = ({
       return;
     }
 
-    // Check if at least the critical address fields have values (street, city, zipCode, country)
-    const criticalAddressFields = ["street", "city", "zipCode", "country"];
-
     // Check if there are any values in the address fields - at least one field must be filled
     const hasAnyAddressField = Object.keys(localFormData.address).some(
       (field) =>
@@ -58,13 +62,12 @@ const ShippingAddressSection = ({
     }
 
     // If address is being provided, critical fields are required
-    const hasAllCriticalFields = hasAnyAddressField
-      ? criticalAddressFields.every(
-          (field) =>
-            localFormData.address[field] &&
-            localFormData.address[field].trim() !== ""
-        )
-      : true;
+    const criticalAddressFields = ["street", "city", "zipCode", "country"];
+    const hasAllCriticalFields = criticalAddressFields.every(
+      (field) =>
+        localFormData.address[field] &&
+        localFormData.address[field].trim() !== ""
+    );
 
     // Check if there are any address field errors
     const hasAddressErrors =
@@ -81,7 +84,7 @@ const ShippingAddressSection = ({
     }
   }, [localFormData, fieldErrors, localFieldErrors, isEditingAddress]);
 
-  // Function to validate a single field
+  // Function to validate a single address field
   const validateField = useCallback(
     (name, value) => {
       const field = name.split(".")[1];
@@ -97,28 +100,17 @@ const ShippingAddressSection = ({
         return null;
       }
 
-      // Basic validation rules
-      if (["street", "city", "state", "country"].includes(field)) {
-        if (value.trim() === "") {
-          return `${
-            field.charAt(0).toUpperCase() + field.slice(1)
-          } is required when providing an address`;
-        } else if (value.trim().length < 2) {
-          return `${
-            field.charAt(0).toUpperCase() + field.slice(1)
-          } must be at least 2 characters`;
-        }
-      }
+      // Create a temporary address object with just this field for validation
+      const tempAddress = {
+        ...localFormData.address,
+        [field]: value,
+      };
 
-      if (field === "zipCode") {
-        if (value.trim() === "") {
-          return "Zip/Postal code is required when providing an address";
-        } else if (!/^[0-9a-zA-Z\-\s]{4,12}$/.test(value)) {
-          return "Please enter a valid zip/postal code (4-12 characters)";
-        }
-      }
+      // Use the validation utility to validate this field
+      const addressErrors = validateAddress(tempAddress);
 
-      return null;
+      // Return the error for the specific field if it exists
+      return addressErrors[field] || null;
     },
     [localFormData]
   );
@@ -140,19 +132,8 @@ const ShippingAddressSection = ({
       return;
     }
 
-    // Validate each field
-    const addressErrors = {};
-    const criticalFields = ["street", "city", "zipCode", "country"];
-
-    criticalFields.forEach((field) => {
-      const error = validateField(
-        `address.${field}`,
-        localFormData.address[field] || ""
-      );
-      if (error) {
-        addressErrors[field] = error;
-      }
-    });
+    // Use the validation utility to validate the entire address
+    const addressErrors = validateAddress(localFormData.address);
 
     // Only update if there are errors
     if (Object.keys(addressErrors).length > 0) {
@@ -160,8 +141,13 @@ const ShippingAddressSection = ({
         ...prev,
         address: addressErrors,
       }));
+    } else {
+      setLocalFieldErrors((prev) => ({
+        ...prev,
+        address: undefined,
+      }));
     }
-  }, [localFormData, validateField]);
+  }, [localFormData]);
 
   // Immediately validate fields when editing starts
   useEffect(() => {
@@ -175,13 +161,14 @@ const ShippingAddressSection = ({
     () =>
       debounce((name, value) => {
         const error = validateField(name, value);
+        const fieldName = name.split(".")[1];
 
         if (error) {
           setLocalFieldErrors((prev) => ({
             ...prev,
             address: {
               ...(prev.address || {}),
-              [name.split(".")[1]]: error,
+              [fieldName]: error,
             },
           }));
         } else {
@@ -190,7 +177,7 @@ const ShippingAddressSection = ({
             if (!prev.address) return prev;
 
             const newAddressErrors = { ...prev.address };
-            delete newAddressErrors[name.split(".")[1]];
+            delete newAddressErrors[fieldName];
 
             return {
               ...prev,
@@ -202,7 +189,7 @@ const ShippingAddressSection = ({
           });
         }
 
-        // Run complete validation to check critical fields
+        // Run complete validation to check all fields
         validateAddressFields();
       }, 300),
     [validateField, validateAddressFields]

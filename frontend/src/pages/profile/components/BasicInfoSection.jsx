@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { FormInputField, FormSubmitButton } from "../../../components/form";
 import { debounce } from "lodash";
+import { validateName, validatePhone } from "../../../utils/validation";
 
 /**
  * BasicInfoSection component for displaying and editing user's basic information
@@ -26,36 +27,20 @@ const BasicInfoSection = ({
     }
   }, [formData, isEditingBasicInfo]);
 
-  // Function to validate a single field
+  // Function to validate a single field using utility validation functions
   const validateField = useCallback((name, value) => {
     switch (name) {
       case "name":
-        if (!value || value.trim() === "") {
-          return "Name is required";
-        } else if (value.trim().length < 2) {
-          return "Name must be at least 2 characters";
-        }
-        return null;
+        const nameValidation = validateName(value);
+        return nameValidation.isValid ? null : nameValidation.message;
 
       case "phone":
         if (!value || value.trim() === "") {
+          // If phone is required in your UI but optional in the schema
           return "Phone number is required";
         }
-
-        // Basic phone validation - should be at least 10 digits
-        const digitsOnly = value.replace(/\D/g, "");
-        if (digitsOnly.length < 10) {
-          return "Phone number must have at least 10 digits";
-        }
-
-        // Check if it's a valid format with regex
-        // This allows formats like: +1 (123) 456-7890, 123-456-7890, (123) 456-7890, etc.
-        const phoneRegex =
-          /^(\+\d{1,3}( )?)?((\(\d{1,3}\))|\d{1,3})[- .]?\d{3,4}[- .]?\d{4}$/;
-        if (!phoneRegex.test(value)) {
-          return "Please enter a valid phone number";
-        }
-        return null;
+        const phoneValidation = validatePhone(value);
+        return phoneValidation.isValid ? null : phoneValidation.message;
 
       default:
         return null;
@@ -70,14 +55,15 @@ const BasicInfoSection = ({
     }
 
     // Name is required and must be valid
-    const hasValidName =
-      localFormData.name && localFormData.name.trim().length >= 2;
+    const nameValidation = validateName(localFormData.name);
+    const hasValidName = nameValidation.isValid;
 
-    // Phone is required and must be valid
+    // Phone is required and must be valid in UI
+    const phoneValidation = validatePhone(localFormData.phone || "");
     const hasValidPhone =
       localFormData.phone &&
       localFormData.phone.trim() !== "" &&
-      !validateField("phone", localFormData.phone);
+      phoneValidation.isValid;
 
     // Check if there are any field errors (excluding address errors)
     const hasFieldErrors =
@@ -92,13 +78,7 @@ const BasicInfoSection = ({
     if (fieldErrors && !isEditingBasicInfo) {
       setLocalFieldErrors(fieldErrors);
     }
-  }, [
-    localFormData,
-    fieldErrors,
-    localFieldErrors,
-    isEditingBasicInfo,
-    validateField,
-  ]);
+  }, [localFormData, fieldErrors, localFieldErrors, isEditingBasicInfo]);
 
   // Immediately validate fields when editing starts
   useEffect(() => {
