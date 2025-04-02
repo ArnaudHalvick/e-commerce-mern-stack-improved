@@ -62,8 +62,14 @@
   margin: 0;
 }
 
-/* Media queries */
-@media screen and (max-width: 768px) {
+/* Responsive styles using standard breakpoints */
+
+/* Medium devices (tablets, less than 992px) */
+@media screen and (max-width: 992px) {
+  .product-display-right-quantity {
+    margin-top: var(--spacing-4);
+  }
+
   .product-display-right-quantity-container {
     height: 40px;
   }
@@ -75,10 +81,23 @@
 
   .product-display-quantity-input {
     width: 60px;
+    height: 40px;
   }
 }
 
-@media screen and (max-width: 480px) {
+/* Small devices (landscape phones, less than 768px) */
+@media screen and (max-width: 768px) {
+  .product-display-quantity-title {
+    font-size: var(--font-size-base);
+  }
+}
+
+/* Extra small devices (portrait phones, less than 576px) */
+@media screen and (max-width: 576px) {
+  .product-display-right-quantity {
+    margin-top: var(--spacing-3);
+  }
+
   .product-display-right-quantity-container {
     height: 44px;
   }
@@ -91,6 +110,7 @@
 
   .product-display-quantity-input {
     width: 60px;
+    height: 44px;
     font-size: var(--font-size-md);
   }
 }

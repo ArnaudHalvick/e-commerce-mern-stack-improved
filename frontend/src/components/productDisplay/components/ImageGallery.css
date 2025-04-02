@@ -3,6 +3,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-4);
+  width: 60%;
 }
 
 /* Horizontal thumbnail gallery styles */
@@ -72,16 +73,61 @@
   align-items: center;
 }
 
-/* Media queries */
-@media screen and (max-width: 1100px) {
+/* Responsive styles using standard breakpoints */
+
+/* Large devices (desktops, less than 1200px) */
+@media screen and (max-width: 1200px) {
   .product-display-left {
-    width: 50%;
+    width: 55%;
+  }
+
+  .product-display-main-img {
+    max-height: 35rem;
   }
 }
 
+/* Medium devices (tablets, less than 992px) */
+@media screen and (max-width: 992px) {
+  .product-display-left {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .product-display-thumbnail-img {
+    height: 5.5rem;
+    width: 5.5rem;
+  }
+}
+
+/* Small devices (landscape phones, less than 768px) */
 @media screen and (max-width: 768px) {
+  .product-display-main-img {
+    max-height: 28rem;
+  }
+
   .product-display-thumbnail-img {
     height: 5rem;
     width: 5rem;
+  }
+
+  .product-display-thumbnails {
+    gap: var(--spacing-2);
+  }
+}
+
+/* Extra small devices (portrait phones, less than 576px) */
+@media screen and (max-width: 576px) {
+  .product-display-main-img {
+    max-height: 20rem;
+  }
+
+  .product-display-thumbnail-img {
+    height: 4rem;
+    width: 4rem;
+  }
+
+  .product-display-thumbnails-container {
+    margin-top: var(--spacing-2);
   }
 }

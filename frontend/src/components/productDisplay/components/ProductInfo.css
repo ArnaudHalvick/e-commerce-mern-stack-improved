@@ -56,9 +56,54 @@
   font-weight: var(--font-weight-bold);
 }
 
-/* Media queries */
-@media screen and (max-width: 768px) {
+/* Responsive styles using standard breakpoints */
+
+/* Large devices (desktops, less than 1200px) */
+@media screen and (max-width: 1200px) {
   .product-display-right-title {
     font-size: var(--font-size-3xl);
+  }
+
+  .product-display-right-prices {
+    gap: var(--spacing-6);
+  }
+}
+
+/* Medium devices (tablets, less than 992px) */
+@media screen and (max-width: 992px) {
+  .product-display-right-prices {
+    gap: var(--spacing-4);
+    font-size: var(--font-size-lg);
+  }
+
+  .product-display-right-price-single {
+    font-size: var(--font-size-xl);
+  }
+}
+
+/* Small devices (landscape phones, less than 768px) */
+@media screen and (max-width: 768px) {
+  .product-display-right-title {
+    font-size: var(--font-size-2xl);
+  }
+
+  .product-display-right-stars {
+    margin-top: calc(-1 * var(--spacing-2));
+  }
+
+  .product-display-right-description {
+    font-size: var(--font-size-sm);
+  }
+}
+
+/* Extra small devices (portrait phones, less than 576px) */
+@media screen and (max-width: 576px) {
+  .product-display-right-prices {
+    flex-direction: column;
+    gap: var(--spacing-1);
+  }
+
+  .product-display-right-category {
+    font-size: var(--font-size-sm);
   }
 }
