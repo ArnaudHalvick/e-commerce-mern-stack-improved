@@ -1,15 +1,15 @@
 /* EmailVerificationBanner.css */
 .cart-items-email-verification-banner {
   background-color: var(--color-warning-light);
-  border: 1px solid var(--color-warning);
-  border-radius: 8px;
-  padding: 1rem;
-  margin-bottom: 1.5rem;
+  border: var(--border-width-thin) solid var(--color-warning);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-4);
+  margin-bottom: var(--spacing-6);
   color: var(--color-text-primary);
   width: 100%;
   /* Ensure it's visible above everything */
   position: relative;
-  z-index: 2;
+  z-index: var(--z-index-10);
 }
 
 .cart-items-email-verification-content {
@@ -18,8 +18,8 @@
 }
 
 .cart-items-email-verification-icon {
-  margin-right: 1rem;
-  font-size: 1.25rem;
+  margin-right: var(--spacing-4);
+  font-size: var(--font-size-lg);
   color: var(--color-warning);
   display: flex;
   align-items: center;
@@ -31,62 +31,62 @@
 }
 
 .cart-items-email-verification-title {
-  font-size: 1.125rem;
-  font-weight: 600;
-  margin: 0 0 0.5rem 0;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  margin: 0 0 var(--spacing-2) 0;
 }
 
 .cart-items-email-verification-text {
-  font-size: 0.9375rem;
-  margin: 0 0 1rem 0;
+  font-size: var(--font-size-sm);
+  margin: 0 0 var(--spacing-4) 0;
 }
 
 .cart-items-email-verification-success-message {
   color: var(--color-text-primary);
   background-color: var(--color-success-light);
-  border-radius: 4px;
-  padding: 0.5rem;
-  margin-bottom: 1rem;
-  font-size: 0.9375rem;
+  border-radius: var(--border-radius-sm);
+  padding: var(--spacing-2);
+  margin-bottom: var(--spacing-4);
+  font-size: var(--font-size-sm);
 }
 
 .cart-items-email-verification-error-message {
   color: var(--color-danger-dark);
   background-color: var(--color-danger-light);
-  border-radius: 4px;
-  padding: 0.5rem;
-  margin-bottom: 1rem;
-  font-size: 0.9375rem;
-  border: 1px solid var(--color-danger);
+  border-radius: var(--border-radius-sm);
+  padding: var(--spacing-2);
+  margin-bottom: var(--spacing-4);
+  font-size: var(--font-size-sm);
+  border: var(--border-width-thin) solid var(--color-danger);
 }
 
 .cart-items-email-verification-warning-message {
   color: var(--color-text-primary);
   background-color: var(--color-warning);
-  border-radius: 4px;
-  padding: 0.5rem;
-  margin-bottom: 1rem;
-  font-size: 0.9375rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  font-weight: 500;
-  line-height: 1.4;
+  border-radius: var(--border-radius-sm);
+  padding: var(--spacing-2);
+  margin-bottom: var(--spacing-4);
+  font-size: var(--font-size-sm);
+  box-shadow: var(--shadow-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-normal);
 }
 
 .cart-items-email-verification-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-top: 0.5rem;
+  gap: var(--spacing-3);
+  margin-top: var(--spacing-2);
 }
 
 .cart-items-email-verification-resend-btn,
 .cart-items-email-verification-refresh-btn {
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  font-size: 0.875rem;
-  font-weight: 500;
+  padding: var(--spacing-2) var(--spacing-4);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all var(--transition-duration-fast);
   border: none;
 }
 
@@ -116,9 +116,9 @@
 
 /* Adding styles for email verification link that were in CartItems.css */
 .cart-items-email-verification-link {
-  color: #007bff;
+  color: var(--color-secondary);
   text-decoration: none;
-  margin-left: 5px;
+  margin-left: var(--spacing-1);
 }
 
 .cart-items-email-verification-link:hover {
@@ -127,9 +127,9 @@
 
 /* Verification note (moved from CartItems.css) */
 .cart-items-verification-note {
-  font-size: 13px;
-  color: #dc3545;
-  margin-top: 5px;
+  font-size: var(--font-size-xs);
+  color: var(--color-danger);
+  margin-top: var(--spacing-1);
   text-align: center;
 }
 
@@ -139,31 +139,31 @@
 /* Medium devices (< 768px) */
 @media (max-width: 767.98px) {
   .cart-items-email-verification-banner {
-    padding: 0.875rem;
-    margin-bottom: 1.25rem;
+    padding: var(--spacing-3);
+    margin-bottom: var(--spacing-5);
   }
 
   .cart-items-email-verification-title {
-    font-size: 1rem;
+    font-size: var(--font-size-base);
   }
 
   .cart-items-email-verification-text {
-    font-size: 0.875rem;
+    font-size: var(--font-size-sm);
   }
 
   .cart-items-email-verification-success-message,
   .cart-items-email-verification-error-message,
   .cart-items-email-verification-warning-message {
-    font-size: 0.875rem;
-    padding: 0.4rem;
+    font-size: var(--font-size-sm);
+    padding: var(--spacing-1);
   }
 }
 
 /* Small devices (≤576px) */
 @media (max-width: 576px) {
   .cart-items-email-verification-banner {
-    padding: 0.75rem;
-    margin-bottom: 1rem;
+    padding: var(--spacing-3);
+    margin-bottom: var(--spacing-4);
   }
 
   .cart-items-email-verification-content {
@@ -172,78 +172,78 @@
 
   .cart-items-email-verification-icon {
     margin-right: 0;
-    margin-bottom: 0.5rem;
+    margin-bottom: var(--spacing-2);
     text-align: center;
     width: 100%;
   }
 
   .cart-items-email-verification-title {
-    font-size: 0.9375rem;
+    font-size: var(--font-size-sm);
     text-align: center;
   }
 
   .cart-items-email-verification-text {
-    font-size: 0.8125rem;
-    margin-bottom: 0.75rem;
+    font-size: var(--font-size-xs);
+    margin-bottom: var(--spacing-3);
     text-align: center;
   }
 
   .cart-items-email-verification-success-message,
   .cart-items-email-verification-error-message,
   .cart-items-email-verification-warning-message {
-    font-size: 0.8125rem;
-    padding: 0.375rem;
+    font-size: var(--font-size-xs);
+    padding: var(--spacing-1);
     text-align: center;
   }
 
   .cart-items-email-verification-actions {
     flex-direction: column;
-    gap: 0.5rem;
+    gap: var(--spacing-2);
     width: 100%;
   }
 
   .cart-items-email-verification-resend-btn,
   .cart-items-email-verification-refresh-btn {
     width: 100%;
-    padding: 0.4375rem 0.75rem;
-    font-size: 0.8125rem;
+    padding: var(--spacing-1) var(--spacing-3);
+    font-size: var(--font-size-xs);
   }
 
   .cart-items-verification-note {
-    font-size: 0.75rem;
+    font-size: var(--font-size-xs);
   }
 }
 
 /* Very small screens (≤450px) */
 @media (max-width: 450px) {
   .cart-items-email-verification-banner {
-    padding: 0.625rem;
-    margin-bottom: 0.875rem;
+    padding: var(--spacing-2);
+    margin-bottom: var(--spacing-3);
   }
 
   .cart-items-email-verification-title {
-    font-size: 0.875rem;
+    font-size: var(--font-size-sm);
   }
 
   .cart-items-email-verification-text {
-    font-size: 0.75rem;
-    margin-bottom: 0.625rem;
+    font-size: var(--font-size-xs);
+    margin-bottom: var(--spacing-2);
   }
 
   .cart-items-email-verification-success-message,
   .cart-items-email-verification-error-message,
   .cart-items-email-verification-warning-message {
-    font-size: 0.75rem;
-    padding: 0.3125rem;
+    font-size: var(--font-size-xs);
+    padding: var(--spacing-1);
   }
 
   .cart-items-email-verification-resend-btn,
   .cart-items-email-verification-refresh-btn {
-    padding: 0.375rem 0.625rem;
-    font-size: 0.75rem;
+    padding: var(--spacing-1) var(--spacing-2);
+    font-size: var(--font-size-xs);
   }
 
   .cart-items-verification-note {
-    font-size: 0.6875rem;
+    font-size: var(--font-size-xs);
   }
 }

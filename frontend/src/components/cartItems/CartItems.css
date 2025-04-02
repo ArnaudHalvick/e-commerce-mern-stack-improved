@@ -3,15 +3,15 @@
 .cart-items-page {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
+  padding: var(--spacing-5);
   display: flex;
   flex-direction: column;
   width: 100%;
 }
 
 .cart-items-page-title {
-  font-size: 2rem;
-  margin-bottom: 20px;
+  font-size: var(--font-size-3xl);
+  margin-bottom: var(--spacing-5);
   color: var(--color-text-primary);
   text-align: center;
 }
@@ -20,7 +20,7 @@
 .cart-items-container {
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: var(--spacing-8);
   width: 100%;
   overflow-x: hidden; /* Prevent horizontal overflow */
 }
@@ -42,36 +42,36 @@
 .cart-items-table {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 20px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: var(--spacing-5);
+  box-shadow: var(--shadow-md);
   background-color: var(--color-background);
-  border-radius: 8px;
+  border-radius: var(--border-radius-lg);
   overflow: hidden;
 }
 
 .cart-items-table th,
 .cart-items-table td {
-  padding: 15px;
+  padding: var(--spacing-4);
   text-align: left;
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: var(--border-width-thin) solid var(--color-border);
 }
 
 .cart-items-table th {
   background-color: var(--color-background-light);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   color: var(--color-text-primary);
 }
 
 /* For loading spinner */
 .cart-items-page-spinner {
-  margin: 50px auto;
+  margin: var(--spacing-12) auto;
 }
 
 /* These verification note styles should be in EmailVerificationBanner.css */
 .cart-items-verification-note {
-  font-size: 13px;
-  color: #dc3545;
-  margin-top: 5px;
+  font-size: var(--font-size-xs);
+  color: var(--color-danger);
+  margin-top: var(--spacing-1);
   text-align: center;
 }
 
@@ -101,12 +101,12 @@
 /* Tablets and medium devices (< 768px) */
 @media (max-width: 767.98px) {
   .cart-items-table {
-    font-size: 0.8rem;
+    font-size: var(--font-size-sm);
   }
 
   .cart-items-table thead th,
   .cart-items-table tbody td {
-    padding: 0.5rem;
+    padding: var(--spacing-2);
   }
 
   .cart-items-table th:nth-child(2),
@@ -126,45 +126,45 @@
 /* Small devices (≤576px) */
 @media (max-width: 576px) {
   .cart-summary-section {
-    margin-top: -10px;
+    margin-top: calc(-1 * var(--spacing-2));
   }
 
   .cart-items-table {
-    font-size: 0.7rem;
+    font-size: var(--font-size-xs);
     width: 100%;
   }
 
   .cart-items-table thead th,
   .cart-items-table tbody td {
-    padding: 8px 4px;
+    padding: var(--spacing-2) var(--spacing-1);
     white-space: nowrap;
   }
 
   .cart-items-table th:first-child,
   .cart-items-table td:first-child {
-    padding-left: 8px;
+    padding-left: var(--spacing-2);
   }
 
   .cart-items-table th:last-child,
   .cart-items-table td:last-child {
-    padding-right: 8px;
+    padding-right: var(--spacing-2);
   }
 
   .cart-items-table th,
   .cart-items-table td {
-    padding: 8px 5px;
+    padding: var(--spacing-2) var(--spacing-1);
   }
 }
 
 /* Very small screens (≤450px) */
 @media (max-width: 450px) {
   .cart-items-table {
-    font-size: 0.65rem;
+    font-size: var(--font-size-xs);
   }
 
   .cart-items-table thead th,
   .cart-items-table tbody td {
-    padding: 6px 3px;
+    padding: var(--spacing-1);
   }
 
   .cart-items-table th:nth-child(3),
