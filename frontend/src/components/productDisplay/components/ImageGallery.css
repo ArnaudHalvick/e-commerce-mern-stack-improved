@@ -20,28 +20,9 @@
   gap: var(--spacing-3);
   overflow-x: auto;
   padding: var(--spacing-2) 0;
-  scrollbar-width: thin;
-  scrollbar-color: var(--color-primary) var(--color-border-light);
-  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
-  scroll-behavior: smooth;
   justify-content: center;
   width: auto; /* Make the container fit its content */
   max-width: 100%; /* Prevent overflow */
-}
-
-/* Customize scrollbar for webkit browsers */
-.product-display-thumbnails::-webkit-scrollbar {
-  height: 6px;
-}
-
-.product-display-thumbnails::-webkit-scrollbar-track {
-  background: var(--color-border-light);
-  border-radius: var(--border-radius-lg);
-}
-
-.product-display-thumbnails::-webkit-scrollbar-thumb {
-  background: var(--color-primary);
-  border-radius: var(--border-radius-lg);
 }
 
 .product-display-thumbnail-img {
