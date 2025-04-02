@@ -49,11 +49,19 @@ const RelatedProducts = ({ product }) => {
   }, [product, productId, productSlug]);
 
   if (loading) {
-    return <div className="loading">Loading related products...</div>;
+    return (
+      <div className="related-products-loading">
+        Loading related products...
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="error">Error loading related products: {error}</div>;
+    return (
+      <div className="related-products-error">
+        Error loading related products: {error}
+      </div>
+    );
   }
 
   // Don't render if no related products found
@@ -63,8 +71,8 @@ const RelatedProducts = ({ product }) => {
 
   return (
     <div className="related-products">
-      <h1>Related Products</h1>
-      <hr />
+      <h1 className="related-products-title">Related Products</h1>
+      <hr className="related-products-divider" />
       <div className="related-products-items">
         {relatedProducts.map((item, index) => (
           <Item
