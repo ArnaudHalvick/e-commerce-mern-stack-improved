@@ -22,6 +22,7 @@
   scrollbar-color: var(--color-primary) var(--color-border-light);
   -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
   scroll-behavior: smooth;
+  justify-content: center;
 }
 
 /* Customize scrollbar for webkit browsers */
