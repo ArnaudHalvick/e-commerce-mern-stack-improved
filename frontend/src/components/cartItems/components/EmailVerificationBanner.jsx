@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useAuth } from "../../../hooks/state";
-import { useNavigate } from "react-router-dom";
 import "./EmailVerificationBanner.css";
 
 /**
@@ -9,7 +8,6 @@ import "./EmailVerificationBanner.css";
  */
 const EmailVerificationBanner = () => {
   const { user, fetchUserProfile, requestEmailVerification } = useAuth();
-  const navigate = useNavigate();
 
   const [requestState, setRequestState] = useState({
     loading: false,

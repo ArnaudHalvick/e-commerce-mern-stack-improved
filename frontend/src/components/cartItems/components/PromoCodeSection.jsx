@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./PromoCodeSection.css";
 
 /**
  * Component for entering and applying promo codes
