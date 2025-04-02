@@ -1,8 +1,17 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../hooks/state";
 import { useError } from "../../context/ErrorContext";
+
+// Redux Actions
+import {
+  updateUserProfile,
+  changePassword as changePasswordAction,
+  disableAccount as disableAccountAction,
+  requestEmailVerification as requestEmailVerificationAction,
+  logoutUser,
+} from "../../redux/slices/userSlice";
+import { resetCart } from "../../redux/slices/cartSlice";
 
 // Components
 import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
@@ -34,23 +43,18 @@ import {
 } from "../../utils/validationSchemas";
 
 const Profile = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { showError, showSuccess } = useError();
+
+  // Get user state from Redux
   const {
     user,
     loading,
     error,
-    updateProfile,
-    changePassword,
-    disableAccount,
-    verificationRequested,
+    isAuthenticated,
     isEmailVerified,
-    requestEmailVerification,
-  } = useAuth();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { showError, showSuccess } = useError();
-  const { loading: authLoading, logout, fetchUserProfile } = useAuth();
-  const {
-    loading: reduxLoading,
+    verificationRequested,
     passwordChanged,
     loadingStates,
   } = useSelector((state) => state.user);
@@ -81,14 +85,14 @@ const Profile = () => {
     let isMounted = true;
     const getCompleteProfile = async () => {
       if (user && isMounted) {
-        await fetchUserProfile();
+        // No need for fetchUserProfile as Redux will manage the state
       }
     };
     getCompleteProfile();
     return () => {
       isMounted = false;
     };
-  }, [user, fetchUserProfile]);
+  }, [user]);
 
   // Initialize form data with user profile data
   useEffect(() => {
@@ -138,10 +142,10 @@ const Profile = () => {
 
   // Redirect if not authenticated
   useEffect(() => {
-    if (!authLoading && !user) {
+    if (!loading && !isAuthenticated) {
       navigate("/login");
     }
-  }, [authLoading, user, navigate]);
+  }, [loading, isAuthenticated, navigate]);
 
   // Reset form and show success when password is changed
   useEffect(() => {
@@ -458,7 +462,9 @@ const Profile = () => {
       }
 
       // Call updateUserProfile action and wait for the response
-      const updatedUser = await dispatch(updateProfile(formattedData)).unwrap();
+      const updatedUser = await dispatch(
+        updateUserProfile(formattedData)
+      ).unwrap();
 
       // Only show success and update data if we get a successful response
       if (updatedUser) {
@@ -491,9 +497,6 @@ const Profile = () => {
 
         // Update local state
         setUpdatedUserData(updatedData);
-
-        // Refresh the complete profile to ensure data is in sync with backend
-        await fetchUserProfile();
       } else {
         showError("Failed to update profile - no response from server");
       }
@@ -551,7 +554,7 @@ const Profile = () => {
         newPassword: passwordData.newPassword,
         confirmPassword: passwordData.confirmPassword,
       };
-      await dispatch(changePassword(passwordPayload)).unwrap();
+      await dispatch(changePasswordAction(passwordPayload)).unwrap();
     } catch (error) {
       // Display the error message to the user
       if (error.message) {
@@ -575,19 +578,21 @@ const Profile = () => {
         window.dispatchEvent(event);
       }
       setFieldErrors({});
-      await logout();
+      await dispatch(logoutUser());
+      dispatch(resetCart());
       navigate("/");
     } catch (error) {
       console.error("Logout error:", error);
       setFieldErrors({});
-      logout();
+      dispatch(logoutUser());
+      dispatch(resetCart());
       navigate("/");
     }
-  }, [logout, navigate]);
+  }, [dispatch, navigate]);
 
   const handleDisableAccount = async (password) => {
     try {
-      await dispatch(disableAccount(password)).unwrap();
+      await dispatch(disableAccountAction(password)).unwrap();
       showSuccess(
         "Your account has been disabled. You will be logged out now."
       );
@@ -600,7 +605,7 @@ const Profile = () => {
 
   const handleResendVerification = async () => {
     try {
-      await dispatch(requestEmailVerification(user.email)).unwrap();
+      await dispatch(requestEmailVerificationAction(user.email)).unwrap();
       showSuccess("Verification email sent. Please check your inbox.");
     } catch (error) {
       showError(error || "Failed to send verification email");
@@ -623,7 +628,7 @@ const Profile = () => {
         routes={[{ label: "Home", path: "/" }, { label: "Profile" }]}
       />
       <h1 className="profile-heading">Profile</h1>
-      {authLoading ? (
+      {loading ? (
         <div className="profile-loading">
           <Spinner size="large" message="Loading your profile..." />
         </div>
