@@ -1,7 +1,7 @@
 import React, { memo, useState, useEffect, useRef } from "react";
 import remove_icon from "../../../components/assets/cart_cross_icon.png";
 import { config } from "../../../api";
-import "../CartItems.css";
+import "./CartItem.css";
 import { Link } from "react-router-dom";
 
 /**
