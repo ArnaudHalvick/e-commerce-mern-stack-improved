@@ -3,7 +3,6 @@
 .cart-items-page {
   max-width: 1200px;
   margin: 0 auto;
-  padding: var(--spacing-5);
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -111,10 +110,11 @@
 
   .cart-items-table th:nth-child(2),
   .cart-items-table td:nth-child(2) {
-    max-width: 100px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    max-width: 150px;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: initial;
+    word-break: break-word;
   }
 
   .cart-items-table th:nth-child(4),

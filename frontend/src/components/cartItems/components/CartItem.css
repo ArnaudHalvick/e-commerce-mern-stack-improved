@@ -16,7 +16,6 @@
   transition: color var(--transition-duration-fast)
     var(--transition-timing-ease);
   display: block; /* Ensure proper text wrapping */
-  word-break: break-word; /* Allow words to break if needed */
 }
 
 .cart-items-product-link:hover {
