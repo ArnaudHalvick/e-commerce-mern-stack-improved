@@ -13,41 +13,41 @@
 /* Small devices (≥576px) */
 @media (min-width: 576px) {
   .container {
-    max-width: 540px;
+    max-width: 576px;
   }
 }
 
 /* Medium devices (≥768px) */
 @media (min-width: 768px) {
   .container {
-    max-width: 720px;
+    max-width: 768px;
   }
 }
 
 /* Large devices (≥992px) */
 @media (min-width: 992px) {
   .container {
-    max-width: 960px;
+    max-width: 992px;
   }
 }
 
 /* Extra large devices (≥1200px) */
 @media (min-width: 1200px) {
   .container {
-    max-width: 1140px;
+    max-width: 1200px;
   }
 }
 
 /* Extra extra large devices (≥1400px) */
 @media (min-width: 1400px) {
   .container {
-    max-width: 1320px;
+    max-width: 1400px;
   }
 }
 
 /* Extra extra extra large devices (≥1536px) */
 @media (min-width: 1536px) {
   .container {
-    max-width: 1440px;
+    max-width: 1536px;
   }
 }
