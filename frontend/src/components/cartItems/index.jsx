@@ -92,41 +92,45 @@ const CartItems = () => {
   }
 
   return (
-    <div className="cart-items-container">
-      {/* Email Verification Banner */}
+    <div className="cart-items-page">
+      {/* Email Verification Banner - Now outside the container */}
       {showVerificationBanner && <EmailVerificationBanner />}
 
-      {/* Cart Table */}
-      <table className="cart-items-table">
-        <thead>
-          <tr>
-            <th>Image</th>
-            <th>Product</th>
-            <th>Price</th>
-            <th>Size</th>
-            <th>Quantity</th>
-            <th>Total</th>
-            <th>Remove</th>
-          </tr>
-        </thead>
-        <tbody>
-          {items.map((item) => (
-            <CartItem
-              key={`${item.productId}-${item.size}`}
-              item={item}
-              onRemoveItem={handleRemoveItem}
-              onAddItem={handleAddItem}
-              onRemoveAll={handleRemoveAll}
-              onQuantityBlur={handleQuantityBlur}
-            />
-          ))}
-        </tbody>
-      </table>
+      <div className="cart-items-container">
+        {/* Cart Table with responsive wrapper */}
+        <div className="cart-items-table-responsive">
+          <table className="cart-items-table">
+            <thead>
+              <tr>
+                <th>Image</th>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Size</th>
+                <th>Quantity</th>
+                <th>Total</th>
+                <th>Remove</th>
+              </tr>
+            </thead>
+            <tbody>
+              {items.map((item) => (
+                <CartItem
+                  key={`${item.productId}-${item.size}`}
+                  item={item}
+                  onRemoveItem={handleRemoveItem}
+                  onAddItem={handleAddItem}
+                  onRemoveAll={handleRemoveAll}
+                  onQuantityBlur={handleQuantityBlur}
+                />
+              ))}
+            </tbody>
+          </table>
+        </div>
 
-      {/* Cart Totals and Promo Code Section */}
-      <div>
-        <CartTotals totalPrice={localTotalPrice} />
-        <PromoCodeSection />
+        {/* Cart Totals and Promo Code Section */}
+        <div className="cart-summary-section">
+          <CartTotals totalPrice={localTotalPrice} />
+          <PromoCodeSection />
+        </div>
       </div>
     </div>
   );

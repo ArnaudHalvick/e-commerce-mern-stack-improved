@@ -5,6 +5,7 @@ import "./EmailVerificationBanner.css";
 /**
  * Banner component that displays a warning when the user's email is not verified.
  * Provides options to request a new verification email and check verification status.
+ * Responsive design for all screen sizes.
  */
 const EmailVerificationBanner = () => {
   const { user, fetchUserProfile, requestEmailVerification } = useAuth();
@@ -86,10 +87,9 @@ const EmailVerificationBanner = () => {
   return (
     <div className="cart-items-email-verification-banner">
       <div className="cart-items-email-verification-content">
-        <i
-          className="fa fa-exclamation-triangle cart-items-email-verification-icon"
-          aria-hidden="true"
-        ></i>
+        <div className="cart-items-email-verification-icon">
+          <i className="fa fa-exclamation-triangle" aria-hidden="true"></i>
+        </div>
         <div className="cart-items-email-verification-message">
           <h4 className="cart-items-email-verification-title">
             Email Verification Required
@@ -132,6 +132,7 @@ const EmailVerificationBanner = () => {
                 className="cart-items-email-verification-resend-btn"
                 onClick={handleVerificationRequest}
                 disabled={requestState.loading}
+                aria-label="Resend verification email"
               >
                 {requestState.loading
                   ? "Sending..."
@@ -143,6 +144,7 @@ const EmailVerificationBanner = () => {
               className="cart-items-email-verification-refresh-btn"
               onClick={handleForceRefresh}
               disabled={refreshState.loading}
+              aria-label="Check email verification status"
             >
               {refreshState.loading ? "Checking..." : "I Confirmed My Email"}
             </button>

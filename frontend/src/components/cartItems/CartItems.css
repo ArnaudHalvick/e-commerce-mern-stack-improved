@@ -4,6 +4,9 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }
 
 .cart-items-page-title {
@@ -18,13 +21,20 @@
   display: flex;
   flex-direction: column;
   gap: 30px;
+  width: 100%;
+  overflow-x: hidden; /* Prevent horizontal overflow */
 }
 
-@media (min-width: 992px) {
-  .cart-items-container {
-    flex-direction: row;
-    align-items: flex-start;
-  }
+/* Table responsive wrapper */
+.cart-items-table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Summary section containing totals and promo code */
+.cart-summary-section {
+  width: 100%;
 }
 
 /* ----- CART TABLE STYLES ----- */
@@ -51,31 +61,17 @@
   color: #333;
 }
 
-/* ----- RESPONSIVE BREAKPOINTS ----- */
-@media (max-width: 767.98px) {
-  .cart-items-table {
-    font-size: 0.8rem;
-  }
-
-  .cart-items-table thead th,
-  .cart-items-table tbody td {
-    padding: 0.5rem;
-  }
-
-  .cart-items-checkout-button {
-    padding: 10px;
-    font-size: 14px;
-  }
-
-  .cart-items-totals-title {
-    font-size: 1.2rem;
-  }
+/* For loading spinner */
+.cart-items-page-spinner {
+  margin: 50px auto;
 }
 
-@media (max-width: 575.98px) {
-  .cart-items-table {
-    font-size: 0.7rem;
-  }
+/* These verification note styles should be in EmailVerificationBanner.css */
+.cart-items-verification-note {
+  font-size: 13px;
+  color: #dc3545;
+  margin-top: 5px;
+  text-align: center;
 }
 
 @keyframes cart-items-highlight {
@@ -87,38 +83,99 @@
   }
 }
 
-@media (max-width: 768px) {
-  .cart-items-table th:nth-child(2),
-  .cart-items-table td:nth-child(2) {
-    max-width: 120px;
+/* ----- RESPONSIVE BREAKPOINTS ----- */
+/* Ordered from largest to smallest to ensure proper cascade */
+
+/* Large devices (≥992px) */
+@media (min-width: 992px) {
+  .cart-items-container {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .cart-items-table-responsive {
+    flex: 1;
+  }
+
+  .cart-summary-section {
+    width: 300px;
+    min-width: 300px;
   }
 }
 
+/* Tablets and medium devices (< 768px) */
+@media (max-width: 767.98px) {
+  .cart-items-table {
+    font-size: 0.8rem;
+  }
+
+  .cart-items-table thead th,
+  .cart-items-table tbody td {
+    padding: 0.5rem;
+  }
+
+  .cart-items-table th:nth-child(2),
+  .cart-items-table td:nth-child(2) {
+    max-width: 100px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .cart-items-table th:nth-child(4),
+  .cart-items-table td:nth-child(4) {
+    max-width: 40px;
+  }
+}
+
+/* Small devices (≤576px) */
 @media (max-width: 576px) {
+  .cart-summary-section {
+    margin-top: -10px;
+  }
+
+  .cart-items-table {
+    font-size: 0.7rem;
+    width: 100%;
+  }
+
+  .cart-items-table thead th,
+  .cart-items-table tbody td {
+    padding: 8px 4px;
+    white-space: nowrap;
+  }
+
+  .cart-items-table th:first-child,
+  .cart-items-table td:first-child {
+    padding-left: 8px;
+  }
+
+  .cart-items-table th:last-child,
+  .cart-items-table td:last-child {
+    padding-right: 8px;
+  }
+
   .cart-items-table th,
   .cart-items-table td {
     padding: 8px 5px;
   }
 }
 
-/* For loading spinner */
-.cart-items-page-spinner {
-  margin: 50px auto;
-}
+/* Very small screens (≤450px) */
+@media (max-width: 450px) {
+  .cart-items-table {
+    font-size: 0.65rem;
+  }
 
-/* These button modifiers should be kept for the checkout button */
-.cart-items-checkout-button.disabled {
-  background-color: #6c757d;
-  cursor: not-allowed;
-}
+  .cart-items-table thead th,
+  .cart-items-table tbody td {
+    padding: 6px 3px;
+  }
 
-.cart-items-checkout-button.disabled:hover {
-  background-color: #6c757d;
-}
-
-.cart-items-verification-note {
-  font-size: 13px;
-  color: #dc3545;
-  margin-top: 5px;
-  text-align: center;
+  .cart-items-table th:nth-child(3),
+  .cart-items-table td:nth-child(3),
+  .cart-items-table th:nth-child(6),
+  .cart-items-table td:nth-child(6) {
+    max-width: 50px;
+  }
 }

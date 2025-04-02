@@ -49,3 +49,25 @@
     margin-top: 5px;
   }
 }
+
+/* Small devices (≤576px) */
+@media (max-width: 576px) {
+  .cart-items-promo-code-section {
+    margin-top: 15px;
+  }
+
+  .cart-items-promo-code-text {
+    font-size: 13px;
+    margin-bottom: 8px;
+  }
+
+  .cart-items-promo-code-input {
+    padding: 8px;
+    font-size: 13px;
+  }
+
+  .cart-items-promo-code-submit {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+}
