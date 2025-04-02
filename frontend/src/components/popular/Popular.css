@@ -3,10 +3,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 80vh;
   height: auto;
   gap: 0.6rem;
-  padding: 3rem 1rem;
+  margin-bottom: 2rem;
 }
 
 .popular-container h1 {
@@ -24,7 +23,7 @@
 }
 
 .popular-items {
-  margin-top: 3.15rem;
+  margin-top: 1.5rem;
   display: flex;
   gap: 1.9rem;
   flex-wrap: wrap;

@@ -6,7 +6,6 @@
   min-height: 80vh;
   height: auto;
   gap: var(--spacing-3);
-  padding: var(--spacing-12) var(--spacing-4);
 }
 
 .new-collections-title {
