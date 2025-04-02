@@ -61,7 +61,7 @@ const ErrorDemo = () => {
         This component demonstrates how to use the error handling system in your
         application.
       </p>
-      <div className="error-demo-info-box">
+      <div className="error-demo-section">
         <p className="error-demo-note">
           <strong>Note:</strong> You don't need to be logged in to use this demo
           page. It's designed to demonstrate error handling capabilities

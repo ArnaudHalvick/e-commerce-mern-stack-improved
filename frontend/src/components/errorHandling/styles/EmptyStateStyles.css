@@ -4,15 +4,15 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 3rem 1rem;
+  padding: var(--spacing-12) var(--spacing-4);
   text-align: center;
   min-height: 40vh;
 }
 
 .empty-state-icon {
-  font-size: 4rem;
-  color: #ccc;
-  margin-bottom: 1.5rem;
+  font-size: var(--font-size-6xl);
+  color: var(--color-border);
+  margin-bottom: var(--spacing-6);
 }
 
 .empty-state-content {
@@ -20,30 +20,31 @@
 }
 
 .empty-state-content-title {
-  font-size: 1.8rem;
-  color: #333;
-  margin-bottom: 1rem;
+  font-size: var(--font-size-2xl);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-4);
 }
 
 .empty-state-content-text {
-  font-size: 1.1rem;
-  color: #666;
-  margin-bottom: 1.5rem;
+  font-size: var(--font-size-md);
+  color: var(--color-text-tertiary);
+  margin-bottom: var(--spacing-6);
   max-width: 500px;
 }
 
 .empty-state-actions {
   display: flex;
-  gap: 1rem;
+  gap: var(--spacing-4);
   justify-content: center;
 }
 
 .empty-state-button {
-  padding: 0.7rem 1.5rem;
-  border-radius: 30px;
-  font-weight: 600;
-  font-size: 0.9rem;
-  transition: all 0.3s ease;
+  padding: var(--spacing-3) var(--spacing-6);
+  border-radius: var(--border-radius-full);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
+  transition: all var(--transition-duration-normal)
+    var(--transition-timing-ease);
   text-decoration: none;
   display: inline-flex;
   align-items: center;
@@ -51,21 +52,21 @@
 }
 
 .empty-state-button.primary {
-  background-color: #4361ee;
-  color: white;
+  background-color: var(--color-secondary);
+  color: var(--color-background);
   border: none;
 }
 
 .empty-state-button.primary:hover {
-  background-color: #273aa9;
+  background-color: var(--color-secondary-dark);
 }
 
 .empty-state-button.secondary {
   background-color: transparent;
-  color: #4361ee;
-  border: 2px solid #4361ee;
+  color: var(--color-secondary);
+  border: var(--border-width-medium) solid var(--color-secondary);
 }
 
 .empty-state-button.secondary:hover {
-  background-color: #f0f3ff;
+  background-color: var(--color-secondary-light);
 }

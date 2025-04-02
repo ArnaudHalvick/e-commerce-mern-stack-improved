@@ -5,23 +5,23 @@
   align-items: center;
   justify-content: center;
   min-height: 40vh;
-  padding: 2rem;
+  padding: var(--spacing-8);
   text-align: center;
 }
 
 .loading-message {
-  margin-top: 1.5rem;
-  font-size: 1.1rem;
-  color: #555;
+  margin-top: var(--spacing-6);
+  font-size: var(--font-size-md);
+  color: var(--color-text-tertiary);
 }
 
 .loading-spinner {
-  width: 50px;
-  height: 50px;
-  border: 5px solid rgba(67, 97, 238, 0.2);
-  border-top-color: #4361ee;
-  border-radius: 50%;
-  animation: spin 1s infinite linear;
+  width: var(--spacing-12);
+  height: var(--spacing-12);
+  border: var(--border-width-thick) solid rgba(67, 97, 238, 0.2);
+  border-top-color: var(--color-secondary);
+  border-radius: var(--border-radius-full);
+  animation: spin var(--transition-duration-normal) infinite linear;
 }
 
 @keyframes spin {
@@ -45,17 +45,17 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  z-index: 100;
+  z-index: var(--z-index-modal);
 }
 
 .loading-overlay .loading-spinner {
-  width: 40px;
-  height: 40px;
-  border-width: 4px;
+  width: var(--spacing-10);
+  height: var(--spacing-10);
+  border-width: var(--border-width-medium);
 }
 
 .loading-overlay-message {
-  margin-top: 1rem;
-  font-size: 0.9rem;
-  color: #555;
+  margin-top: var(--spacing-4);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-tertiary);
 }
