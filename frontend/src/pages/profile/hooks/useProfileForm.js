@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { updateUserProfile } from "../../../redux/slices/userSlice";
 import { validateForm } from "../../../utils/validation";
@@ -45,36 +45,8 @@ const useProfileForm = (user, showSuccess, showError) => {
     }
   }, [user]);
 
-  // Initial validation after form data is populated
-  useEffect(() => {
-    if (formData.name) {
-      validateFormData();
-    }
-  }, [formData]);
-
-  // Input change handler
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-
-    if (name.includes(".")) {
-      const [parent, child] = name.split(".");
-      setFormData((prev) => ({
-        ...prev,
-        [parent]: {
-          ...prev[parent],
-          [child]: value,
-        },
-      }));
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
-    }
-  };
-
   // Validate entire form
-  const validateFormData = () => {
+  const validateFormData = useCallback(() => {
     // Validate basic info
     const basicInfoErrors = validateForm(formData, profileBasicInfoSchema);
 
@@ -99,6 +71,34 @@ const useProfileForm = (user, showSuccess, showError) => {
     } else {
       setFieldErrors(basicInfoErrors);
       return basicInfoErrors;
+    }
+  }, [formData]);
+
+  // Initial validation after form data is populated
+  useEffect(() => {
+    if (formData.name) {
+      validateFormData();
+    }
+  }, [formData, validateFormData]);
+
+  // Input change handler
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+
+    if (name.includes(".")) {
+      const [parent, child] = name.split(".");
+      setFormData((prev) => ({
+        ...prev,
+        [parent]: {
+          ...prev[parent],
+          [child]: value,
+        },
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
     }
   };
 
