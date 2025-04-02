@@ -3,7 +3,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #5e5e5e;
+  color: var(--color-text-tertiary);
   font-weight: 700;
   font-size: 16px;
   margin-top: 1rem;
@@ -11,19 +11,19 @@
 }
 
 .breadcrumb-link {
-  color: #5e5e5e;
+  color: var(--color-text-tertiary);
   text-decoration: none;
   transition: color 0.2s ease;
   cursor: pointer;
 }
 
 .breadcrumb-link:hover {
-  color: #ff4141;
+  color: var(--color-primary);
   text-decoration: underline;
 }
 
 .breadcrumb-current {
-  color: #ff4141;
+  color: var(--color-primary);
   font-weight: 700;
 }
 

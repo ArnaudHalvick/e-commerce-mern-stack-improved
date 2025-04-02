@@ -34,14 +34,16 @@
   right: 0;
   height: 3px;
   z-index: 9999;
-  background-color: #f0f0f0;
+  background-color: var(--color-border-light);
   overflow: hidden;
 }
 
 .auth-bar-animation {
   height: 100%;
   width: 50%;
-  background-color: #d23f57; /* Using the theme color instead of blue */
+  background-color: var(
+    --color-primary
+  ); /* Using CSS variable instead of hardcoded color */
   animation: auth-loading 1.5s infinite ease-in-out;
 }
 
