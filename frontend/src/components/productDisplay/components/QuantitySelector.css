@@ -1,0 +1,96 @@
+/* QuantitySelector.css */
+.product-display-right-quantity {
+  margin-top: var(--spacing-5);
+}
+
+.product-display-quantity-title {
+  margin-bottom: var(--spacing-2);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+}
+
+.product-display-right-quantity-container {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  height: 36px;
+}
+
+.quantity-btn {
+  width: 36px;
+  height: 36px;
+  border: var(--border-width-thin) solid var(--color-border);
+  background: var(--color-background-light);
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-duration-fast) var(--transition-timing-ease);
+  padding: 0;
+  line-height: 1;
+}
+
+.quantity-btn:hover:not(:disabled) {
+  background: var(--color-background-dark);
+  border-color: var(--color-border-dark);
+}
+
+.quantity-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.quantity-input {
+  width: 50px;
+  height: 36px;
+  border: var(--border-width-thin) solid var(--color-border);
+  border-radius: var(--border-radius-sm);
+  text-align: center;
+  font-size: var(--font-size-base);
+  padding: 0 var(--spacing-2);
+  appearance: none;
+  -moz-appearance: textfield; /* Remove spinner for Firefox */
+}
+
+/* Remove spinner for Chrome, Safari, Edge, Opera */
+.quantity-input::-webkit-outer-spin-button,
+.quantity-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Media queries */
+@media screen and (max-width: 768px) {
+  .product-display-right-quantity-container {
+    height: 40px;
+  }
+
+  .quantity-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .quantity-input {
+    width: 60px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .product-display-right-quantity-container {
+    height: 44px;
+  }
+
+  .quantity-btn {
+    width: 44px;
+    height: 44px;
+    font-size: var(--font-size-lg);
+  }
+
+  .quantity-input {
+    width: 60px;
+    font-size: var(--font-size-md);
+  }
+}

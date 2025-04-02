@@ -1,5 +1,6 @@
 import React, { useRef, useCallback, useMemo } from "react";
 import { getImageUrl } from "../../../utils/imageUtils";
+import "./ImageGallery.css";
 
 /**
  * Component for displaying product images with thumbnails

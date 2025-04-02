@@ -1,4 +1,5 @@
 import React from "react";
+import "./QuantitySelector.css";
 
 /**
  * Component for selecting product quantity
