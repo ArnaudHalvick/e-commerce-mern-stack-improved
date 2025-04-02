@@ -61,7 +61,7 @@ const NewCollection = () => {
   }
 
   return (
-    <div className="new-collections">
+    <div className="new-collections-container">
       <h1 className="new-collections-title">New Collection</h1>
       <hr className="new-collections-divider" />
       <div className="new-collections-grid">

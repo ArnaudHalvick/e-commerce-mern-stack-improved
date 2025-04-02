@@ -1,5 +1,5 @@
 /* Path: frontend/src/components/newCollections/NewCollections.css */
-.new-collections {
+.new-collections-container {
   display: flex;
   flex-direction: column;
   align-items: center;
