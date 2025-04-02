@@ -513,3 +513,68 @@
 }
 
 /* Removing all modal-related styles as they've been moved to dedicated modal components */
+
+/* Compact Address Form for Profile */
+.compact-address-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.profile-compact-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 576px) {
+  .profile-compact-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 992px) {
+  .profile-compact-row {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Address Display Improvements */
+.profile-address-container {
+  margin-top: 1rem;
+}
+
+.profile-address-details {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.profile-address-text {
+  margin: 0;
+  line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.profile-address-line {
+  display: block;
+}
+
+/* Field Validation Error Animation */
+@keyframes errorPulse {
+  0% {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.profile-field-error {
+  animation: errorPulse 0.3s ease-in-out;
+}

@@ -23,6 +23,7 @@ import "./FormInputField.css";
  * @param {Object} props.labelStyle - Additional inline styles for the label
  * @param {Object} props.validationSchema - Schema object for validation
  * @param {boolean} props.disabled - Whether the field is disabled
+ * @param {boolean} props.showErrorsImmediately - Whether to show errors immediately without waiting for field blur
  */
 const FormInputField = ({
   type = "text",
@@ -42,17 +43,18 @@ const FormInputField = ({
   labelStyle = {},
   validationSchema = null,
   disabled = false,
+  showErrorsImmediately = true, // Default to showing errors immediately
 }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [isTouched, setIsTouched] = useState(false);
 
   const handleFocus = () => {
     setIsFocused(true);
+    setIsTouched(true); // Mark as touched when focused
   };
 
   const handleBlur = () => {
     setIsFocused(false);
-    setIsTouched(true);
   };
 
   // Check if we're dealing with a nested field (e.g., address.street)
@@ -73,7 +75,8 @@ const FormInputField = ({
   };
 
   const errorMessage = getErrorMessage();
-  const showError = errorMessage && (isTouched || isFocused === false);
+  // Show errors immediately if showErrorsImmediately is true, or follow the old behavior
+  const showError = errorMessage && (showErrorsImmediately || isTouched);
 
   const inputId = `form-field-${name.replace(".", "-")}`;
   const errorId = `${inputId}-error`;
@@ -190,6 +193,7 @@ FormInputField.propTypes = {
   labelStyle: PropTypes.object,
   validationSchema: PropTypes.object,
   disabled: PropTypes.bool,
+  showErrorsImmediately: PropTypes.bool,
 };
 
 export default FormInputField;
