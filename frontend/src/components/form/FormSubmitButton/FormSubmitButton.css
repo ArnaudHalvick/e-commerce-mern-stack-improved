@@ -2,36 +2,38 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 7.5rem;
-  border-radius: 0.25rem;
-  font-weight: 600;
+  min-width: var(--spacing-32);
+  border-radius: var(--border-radius-md);
+  font-weight: var(--font-weight-semibold);
   background-color: var(--color-primary);
   color: var(--color-background);
   border: none;
   cursor: pointer;
-  transition: background-color 0.2s, transform 0.1s;
+  transition: background-color var(--transition-duration-fast)
+      var(--transition-timing-ease),
+    transform var(--transition-duration-fast) var(--transition-timing-ease);
   position: relative;
-  font-size: 1rem;
+  font-size: var(--font-size-base);
   box-sizing: border-box;
 }
 
 /* Size variants */
 .form-submit-button--small {
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
-  height: 2.25rem;
+  padding: var(--spacing-2) var(--spacing-4);
+  font-size: var(--font-size-sm);
+  height: var(--spacing-8);
 }
 
 .form-submit-button--medium {
-  padding: 0.75rem 1.25rem;
-  height: 2.75rem;
-  font-size: 1rem;
+  padding: var(--spacing-3) var(--spacing-5);
+  height: var(--spacing-10);
+  font-size: var(--font-size-base);
 }
 
 .form-submit-button--large {
-  padding: 1rem 1.5rem;
-  font-size: 1.125rem;
-  height: 3.25rem;
+  padding: var(--spacing-4) var(--spacing-6);
+  font-size: var(--font-size-md);
+  height: var(--spacing-12);
 }
 
 .form-submit-button:hover:not(:disabled) {
@@ -84,24 +86,25 @@
 
 .form-submit-button--outline {
   background-color: transparent;
-  border: 1px solid var(--color-primary);
+  border: var(--border-width-thin) solid var(--color-primary);
   color: var(--color-primary);
 }
 
 .form-submit-button--outline:hover:not(:disabled) {
-  background-color: rgba(255, 65, 65, 0.1);
+  background-color: var(--color-primary-light);
+  opacity: 0.1;
 }
 
 /* Spinner animation */
 .form-submit-button__spinner {
   display: inline-block;
-  width: 1rem;
-  height: 1rem;
-  margin-right: 0.5rem;
-  border: 0.125rem solid rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  border-top-color: #fff;
-  animation: spin 0.8s linear infinite;
+  width: var(--spacing-4);
+  height: var(--spacing-4);
+  margin-right: var(--spacing-2);
+  border: var(--border-width-thin) solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--border-radius-full);
+  border-top-color: var(--color-background);
+  animation: spin var(--transition-duration-slower) linear infinite;
 }
 
 @keyframes spin {
@@ -113,60 +116,60 @@
 /* Responsive styles */
 @media screen and (max-width: 768px) {
   .form-submit-button {
-    min-width: 6.5rem;
+    min-width: var(--spacing-24);
   }
 
   .form-submit-button--small {
-    padding: 0.4375rem 0.875rem;
-    font-size: 0.8125rem;
-    height: 2rem;
+    padding: var(--spacing-1) var(--spacing-3);
+    font-size: var(--font-size-sm);
+    height: var(--spacing-8);
   }
 
   .form-submit-button--medium {
-    padding: 0.625rem 1.125rem;
-    height: 2.5rem;
-    font-size: 0.9375rem;
+    padding: var(--spacing-2) var(--spacing-4);
+    height: var(--spacing-10);
+    font-size: var(--font-size-sm);
   }
 
   .form-submit-button--large {
-    padding: 0.875rem 1.25rem;
-    font-size: 1rem;
-    height: 2.875rem;
+    padding: var(--spacing-3) var(--spacing-5);
+    font-size: var(--font-size-base);
+    height: var(--spacing-12);
   }
 
   .form-submit-button__spinner {
-    width: 0.875rem;
-    height: 0.875rem;
-    margin-right: 0.4375rem;
+    width: var(--spacing-3);
+    height: var(--spacing-3);
+    margin-right: var(--spacing-1);
   }
 }
 
 @media screen and (max-width: 480px) {
   .form-submit-button {
-    min-width: 5.5rem;
+    min-width: var(--spacing-20);
   }
 
   .form-submit-button--small {
-    padding: 0.375rem 0.75rem;
-    font-size: 0.75rem;
-    height: 1.875rem;
+    padding: var(--spacing-1) var(--spacing-3);
+    font-size: var(--font-size-xs);
+    height: var(--spacing-6);
   }
 
   .form-submit-button--medium {
-    padding: 0.5rem 1rem;
-    height: 2.25rem;
-    font-size: 0.875rem;
+    padding: var(--spacing-2) var(--spacing-4);
+    height: var(--spacing-8);
+    font-size: var(--font-size-sm);
   }
 
   .form-submit-button--large {
-    padding: 0.75rem 1.125rem;
-    font-size: 0.9375rem;
-    height: 2.625rem;
+    padding: var(--spacing-3) var(--spacing-4);
+    font-size: var(--font-size-sm);
+    height: var(--spacing-10);
   }
 
   .form-submit-button__spinner {
-    width: 0.75rem;
-    height: 0.75rem;
-    margin-right: 0.375rem;
+    width: var(--spacing-3);
+    height: var(--spacing-3);
+    margin-right: var(--spacing-1);
   }
 }
