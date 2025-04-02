@@ -1,7 +1,7 @@
 /* Path: frontend/src/components/descriptionBox/DescriptionBox.css */
 .description-box-container {
   width: 80%;
-  margin: 0 auto 3rem;
+  margin: 0 auto var(--spacing-12);
 }
 
 .description-box-navigator {
@@ -12,13 +12,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
   width: 10.7rem;
-  height: 4.375rem;
-  border: 1px solid var(--color-border);
+  height: calc(var(--spacing-16) + var(--spacing-2));
+  border: var(--border-width-thin) solid var(--color-border);
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color var(--transition-duration-normal)
+    var(--transition-timing-ease);
 }
 
 .description-box-nav-item:hover:not(.description-box-fade) {
@@ -33,25 +34,25 @@
 /* See All Reviews Button */
 .description-box-see-all-reviews {
   text-align: center;
-  margin-top: 2rem;
+  margin-top: var(--spacing-8);
 }
 
 .description-box-see-all-button {
   background: none;
-  border: 1px solid var(--color-border);
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.25rem;
-  font-size: 0.9rem;
+  border: var(--border-width-thin) solid var(--color-border);
+  padding: var(--spacing-3) var(--spacing-6);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-sm);
   color: var(--color-text-secondary);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--transition-duration-fast) var(--transition-timing-ease);
 }
 
 .description-box-see-all-button:hover {
   background-color: var(--color-background-light);
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: var(--breakpoint-md)) {
   .description-box-container {
     width: 100%;
   }

@@ -1,28 +1,28 @@
 .description-box-review-item {
   background-color: var(--color-background);
-  border-radius: 0.5rem;
-  padding: 1.5rem;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  border: 1px solid var(--color-border-light);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-6);
+  box-shadow: var(--shadow-xs);
+  border: var(--border-width-thin) solid var(--color-border-light);
 }
 
 .description-box-review-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 1rem;
+  margin-bottom: var(--spacing-4);
 }
 
 .description-box-review-user-info {
   display: flex;
-  gap: 1rem;
+  gap: var(--spacing-4);
   align-items: center;
 }
 
 .description-box-review-avatar {
-  width: 3rem;
-  height: 3rem;
-  border-radius: 50%;
+  width: var(--spacing-12);
+  height: var(--spacing-12);
+  border-radius: var(--border-radius-full);
   overflow: hidden;
   background-color: var(--color-background-dark);
   display: flex;
@@ -37,41 +37,41 @@
 }
 
 .description-box-review-default-avatar {
-  font-size: 1.5rem;
-  font-weight: bold;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
   color: var(--color-text-tertiary);
 }
 
 .description-box-review-user-details {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: var(--spacing-1);
 }
 
 .description-box-review-user-name {
-  font-weight: 600;
-  font-size: 1rem;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-base);
   margin: 0;
   color: var(--color-text-secondary);
 }
 
 .description-box-review-date {
-  font-size: 0.85rem;
+  font-size: var(--font-size-xs);
   color: var(--color-text-light);
   margin: 0;
 }
 
 .description-box-review-title {
-  font-size: 1.1rem;
-  margin: 0 0 0.75rem 0;
+  font-size: var(--font-size-md);
+  margin: 0 0 var(--spacing-3) 0;
   color: var(--color-text-secondary);
 }
 
 .description-box-review-content {
-  font-size: 0.95rem;
-  line-height: 1.5;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
   color: var(--color-text-tertiary);
-  margin-bottom: 1rem;
+  margin-bottom: var(--spacing-4);
 }
 
 .description-box-review-content-text {
@@ -83,12 +83,12 @@
   align-items: center;
   background-color: var(--color-success-light);
   color: var(--color-text-primary);
-  font-size: 0.8rem;
-  padding: 0.25rem 0.5rem;
-  border-radius: 1rem;
-  gap: 0.25rem;
+  font-size: var(--font-size-xs);
+  padding: var(--spacing-1) var(--spacing-2);
+  border-radius: var(--border-radius-full);
+  gap: var(--spacing-1);
 }
 
 .description-box-review-verified-badge-check {
-  font-weight: bold;
+  font-weight: var(--font-weight-bold);
 }
