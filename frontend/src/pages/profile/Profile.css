@@ -241,6 +241,17 @@
   animation: slideIn 0.3s ease;
 }
 
+/* Field Success Message */
+.profile-field-success {
+  color: #28a745;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+  font-weight: 500;
+  padding-left: 0.5rem;
+  border-left: 2px solid #28a745;
+  animation: slideIn 0.3s ease;
+}
+
 /* Additional Form Sections */
 .profile-address-form {
   margin-top: 1rem;

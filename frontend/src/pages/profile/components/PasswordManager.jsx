@@ -183,43 +183,29 @@ const PasswordManager = ({
 
             <div
               id="newPassword-requirements"
-              className="password-requirements"
+              className="profile-password-requirements"
             >
-              <h3 className="password-requirements-title">Password must:</h3>
-              <ul className="password-requirements-list">
+              <h3>Password must:</h3>
+              <ul>
                 <li
-                  className={
-                    passwordValidations.length
-                      ? "requirement-met"
-                      : "requirement-not-met"
-                  }
+                  className={passwordValidations.length ? "valid" : "invalid"}
                 >
                   Be at least 8 characters
                 </li>
                 <li
                   className={
-                    passwordValidations.uppercase
-                      ? "requirement-met"
-                      : "requirement-not-met"
+                    passwordValidations.uppercase ? "valid" : "invalid"
                   }
                 >
                   Include at least 1 uppercase letter
                 </li>
                 <li
-                  className={
-                    passwordValidations.number
-                      ? "requirement-met"
-                      : "requirement-not-met"
-                  }
+                  className={passwordValidations.number ? "valid" : "invalid"}
                 >
                   Include at least 1 number
                 </li>
                 <li
-                  className={
-                    passwordValidations.special
-                      ? "requirement-met"
-                      : "requirement-not-met"
-                  }
+                  className={passwordValidations.special ? "valid" : "invalid"}
                 >
                   Include at least 1 special character
                 </li>
@@ -261,8 +247,8 @@ const PasswordManager = ({
                 <p
                   className={
                     passwordValidations.match
-                      ? "password-match-success"
-                      : "password-match-error"
+                      ? "profile-field-success"
+                      : "profile-field-error"
                   }
                 >
                   {passwordValidations.match

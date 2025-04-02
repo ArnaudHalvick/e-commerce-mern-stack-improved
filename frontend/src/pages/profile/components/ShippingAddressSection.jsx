@@ -273,6 +273,21 @@ const ShippingAddressSection = ({
     setLocalFormData({
       address: { ...initialFormData.address },
     });
+
+    // Also reset the parent form data to ensure UI consistency
+    if (handleInputChange) {
+      // Create synthetic events for each address field to update the parent state
+      Object.keys(initialFormData.address).forEach((key) => {
+        const syntheticEvent = {
+          target: {
+            name: `address.${key}`,
+            value: initialFormData.address[key] || "",
+          },
+        };
+        handleInputChange(syntheticEvent);
+      });
+    }
+
     setLocalFieldErrors({});
   };
 

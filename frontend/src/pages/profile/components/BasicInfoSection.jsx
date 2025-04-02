@@ -165,6 +165,18 @@ const BasicInfoSection = ({
     setIsEditingBasicInfo(false);
     // Reset to the initial data when cancel is clicked
     setLocalFormData({ ...initialFormData });
+    // Also reset the parent form data to ensure UI consistency
+    if (handleInputChange) {
+      // Create synthetic events for each field to update the parent state
+      Object.keys(initialFormData).forEach((key) => {
+        if (typeof initialFormData[key] !== "object") {
+          const syntheticEvent = {
+            target: { name: key, value: initialFormData[key] || "" },
+          };
+          handleInputChange(syntheticEvent);
+        }
+      });
+    }
     setLocalFieldErrors({});
   };
 
