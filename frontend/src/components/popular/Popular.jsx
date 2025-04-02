@@ -47,17 +47,21 @@ const Popular = () => {
   }, []);
 
   if (loading) {
-    return <div className="loading">Loading popular products...</div>;
+    return <div className="popular-loading">Loading popular products...</div>;
   }
 
   if (error) {
-    return <div className="error">Error loading popular products: {error}</div>;
+    return (
+      <div className="popular-error">
+        Error loading popular products: {error}
+      </div>
+    );
   }
 
   return (
     <div className="popular-container">
-      <h1>Popular For Women</h1>
-      <hr />
+      <h1 className="popular-title">Popular For Women</h1>
+      <hr className="popular-divider" />
       <div className="popular-items">
         {popularProducts.map((item, index) => (
           <Item
