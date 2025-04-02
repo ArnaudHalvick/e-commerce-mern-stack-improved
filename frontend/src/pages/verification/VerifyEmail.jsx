@@ -136,7 +136,7 @@ const VerifyEmail = () => {
   return (
     <div className="verify-email-container">
       <Breadcrumb
-        routes={[{ label: "HOME", path: "/" }, { label: "VERIFY EMAIL" }]}
+        routes={[{ label: "Home", path: "/" }, { label: "Verify Email" }]}
       />
 
       <div className="verify-email-content">

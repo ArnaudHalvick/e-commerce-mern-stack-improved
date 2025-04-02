@@ -2,18 +2,19 @@
 .breadcrumb {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--spacing-2);
   color: var(--color-text-tertiary);
-  font-weight: 700;
-  font-size: 16px;
-  margin-top: 1rem;
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-base);
+  margin-top: var(--spacing-4);
   text-transform: capitalize;
 }
 
 .breadcrumb-link {
   color: var(--color-text-tertiary);
   text-decoration: none;
-  transition: color 0.2s ease;
+  transition: color var(--transition-duration-fast)
+    var(--transition-timing-ease);
   cursor: pointer;
 }
 
@@ -24,22 +25,22 @@
 
 .breadcrumb-current {
   color: var(--color-primary);
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
 }
 
 /* Responsive adjustments */
 @media screen and (max-width: 768px) {
   .breadcrumb {
-    font-size: 14px;
-    gap: 6px;
-    margin-left: 1rem;
+    font-size: var(--font-size-sm);
+    gap: var(--spacing-1);
+    margin-left: var(--spacing-4);
   }
 }
 
 @media screen and (max-width: 480px) {
   .breadcrumb {
-    font-size: 12px;
-    gap: 4px;
-    margin-left: 0.5rem;
+    font-size: var(--font-size-xs);
+    gap: var(--spacing-1);
+    margin-left: var(--spacing-2);
   }
 }
