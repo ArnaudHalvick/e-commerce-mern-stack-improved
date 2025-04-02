@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 
 const Offers = () => {
   return (
-    <div className="offers">
+    <div className="offers-container">
       <div className="offers-left">
         <h1 className="offers-title">Exclusive Deals</h1>
         <h1 className="offers-title">Just for You</h1>
