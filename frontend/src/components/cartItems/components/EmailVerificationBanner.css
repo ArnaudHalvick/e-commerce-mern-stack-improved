@@ -1,11 +1,11 @@
 /* EmailVerificationBanner.css */
 .cart-items-email-verification-banner {
-  background-color: #fff3cd;
-  border: 1px solid #ffeeba;
+  background-color: var(--color-warning-light);
+  border: 1px solid var(--color-warning);
   border-radius: 8px;
   padding: 1rem;
   margin-bottom: 1.5rem;
-  color: #856404;
+  color: var(--color-text-primary);
   width: 100%;
   /* Ensure it's visible above everything */
   position: relative;
@@ -20,7 +20,7 @@
 .cart-items-email-verification-icon {
   margin-right: 1rem;
   font-size: 1.25rem;
-  color: #ffc107;
+  color: var(--color-warning);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -42,33 +42,34 @@
 }
 
 .cart-items-email-verification-success-message {
-  color: #155724;
-  background-color: #d4edda;
+  color: var(--color-text-primary);
+  background-color: var(--color-success-light);
   border-radius: 4px;
   padding: 0.5rem;
   margin-bottom: 1rem;
   font-size: 0.9375rem;
-  border: 1px solid #c3e6cb;
 }
 
 .cart-items-email-verification-error-message {
-  color: #721c24;
-  background-color: #f8d7da;
+  color: var(--color-danger-dark);
+  background-color: var(--color-danger-light);
   border-radius: 4px;
   padding: 0.5rem;
   margin-bottom: 1rem;
   font-size: 0.9375rem;
-  border: 1px solid #f5c6cb;
+  border: 1px solid var(--color-danger);
 }
 
 .cart-items-email-verification-warning-message {
-  color: #856404;
-  background-color: #fdde75;
+  color: var(--color-text-primary);
+  background-color: var(--color-warning);
   border-radius: 4px;
   padding: 0.5rem;
   margin-bottom: 1rem;
   font-size: 0.9375rem;
-  border: 1px solid #ffeeba;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  font-weight: 500;
+  line-height: 1.4;
 }
 
 .cart-items-email-verification-actions {
@@ -90,21 +91,21 @@
 }
 
 .cart-items-email-verification-resend-btn {
-  background-color: #ffc107;
-  color: #212529;
+  background-color: var(--color-warning);
+  color: var(--color-text-primary);
 }
 
 .cart-items-email-verification-resend-btn:hover {
-  background-color: #e0a800;
+  background-color: var(--color-warning-dark);
 }
 
 .cart-items-email-verification-refresh-btn {
-  background-color: #6c757d;
-  color: white;
+  background-color: var(--color-text-tertiary);
+  color: var(--color-background);
 }
 
 .cart-items-email-verification-refresh-btn:hover {
-  background-color: #5a6268;
+  background-color: var(--color-text-secondary);
 }
 
 .cart-items-email-verification-resend-btn:disabled,

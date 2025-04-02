@@ -4,7 +4,7 @@
 .cart-items-totals {
   width: 100%;
   padding: 20px;
-  background-color: #fff;
+  background-color: var(--color-background);
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
@@ -12,7 +12,7 @@
 .cart-items-totals-title {
   font-size: 1.5rem;
   margin-bottom: 20px;
-  color: #333;
+  color: var(--color-text-primary);
 }
 
 .cart-items-totals-item {
@@ -23,7 +23,7 @@
 
 .cart-items-totals-label {
   font-weight: 500;
-  color: #555;
+  color: var(--color-text-tertiary);
 }
 
 .cart-items-totals-value {
@@ -43,8 +43,8 @@
 .cart-items-checkout-button {
   width: 100%;
   padding: 12px;
-  background-color: #4caf50;
-  color: white;
+  background-color: var(--color-success);
+  color: var(--color-background);
   border: none;
   border-radius: 4px;
   font-size: 16px;
@@ -55,7 +55,7 @@
 }
 
 .cart-items-checkout-button:hover {
-  background-color: #43a047;
+  background-color: var(--color-success-dark);
 }
 
 /* Add a new class for discounted prices */
@@ -66,16 +66,16 @@
 
 /* Disabled checkout button styles */
 .cart-items-checkout-button.disabled {
-  background-color: #cccccc;
+  background-color: var(--color-border-dark);
   cursor: not-allowed;
 }
 
 .cart-items-checkout-button.disabled:hover {
-  background-color: #cccccc;
+  background-color: var(--color-border-dark);
 }
 
 .cart-items-verification-note {
-  color: #e63946;
+  color: var(--color-danger);
   font-size: 0.9rem;
   text-align: center;
   margin-top: -15px;

@@ -10,7 +10,7 @@
 
 /* Product Link */
 .cart-items-product-link {
-  color: #333;
+  color: var(--color-text-primary);
   text-decoration: none;
   font-weight: 500;
   transition: color 0.2s ease;
@@ -19,7 +19,7 @@
 }
 
 .cart-items-product-link:hover {
-  color: #ff4141;
+  color: var(--color-primary);
   text-decoration: underline;
 }
 
@@ -38,8 +38,8 @@
 .cart-items-quantity-adjust-btn {
   width: 30px;
   height: 30px;
-  border: 1px solid #ddd;
-  background-color: #f8f9fa;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-background-light);
   border-radius: 4px;
   cursor: pointer;
   font-size: 16px;
@@ -50,7 +50,7 @@
 }
 
 .cart-items-quantity-adjust-btn:hover {
-  background-color: #e9ecef;
+  background-color: var(--color-background-dark);
 }
 
 .cart-items-quantity-adjust-btn:disabled {
@@ -61,7 +61,7 @@
 .cart-items-quantity-input {
   width: 50px;
   height: 30px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-border);
   border-radius: 4px;
   text-align: center;
   font-size: 14px;
@@ -70,7 +70,7 @@
 }
 
 .cart-items-quantity-input:focus {
-  outline: 2px solid #4caf50;
+  outline: 2px solid var(--color-success);
   border-color: transparent;
 }
 
@@ -98,7 +98,7 @@
 
 /* Add a new class for discounted prices */
 .cart-items-price-discounted {
-  color: #e63946;
+  color: var(--color-danger);
   font-weight: 600;
 }
 

@@ -12,7 +12,7 @@
 .cart-items-page-title {
   font-size: 2rem;
   margin-bottom: 20px;
-  color: #333;
+  color: var(--color-text-primary);
   text-align: center;
 }
 
@@ -44,7 +44,7 @@
   border-collapse: collapse;
   margin-bottom: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  background-color: #fff;
+  background-color: var(--color-background);
   border-radius: 8px;
   overflow: hidden;
 }
@@ -53,13 +53,13 @@
 .cart-items-table td {
   padding: 15px;
   text-align: left;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .cart-items-table th {
-  background-color: #f8f9fa;
+  background-color: var(--color-background-light);
   font-weight: 600;
-  color: #333;
+  color: var(--color-text-primary);
 }
 
 /* For loading spinner */
