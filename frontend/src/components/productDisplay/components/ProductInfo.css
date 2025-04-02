@@ -71,13 +71,25 @@
 
 /* Medium devices (tablets, less than 992px) */
 @media screen and (max-width: 992px) {
+  .product-display-right-title {
+    font-size: var(--font-size-2xl);
+    text-align: center;
+  }
+
   .product-display-right-prices {
     gap: var(--spacing-4);
     font-size: var(--font-size-lg);
+    justify-content: center;
   }
 
   .product-display-right-price-single {
     font-size: var(--font-size-xl);
+  }
+
+  .product-display-right-description {
+    text-align: center;
+    max-width: 90%;
+    margin: var(--spacing-2) auto 0;
   }
 }
 

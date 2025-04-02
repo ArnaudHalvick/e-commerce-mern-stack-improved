@@ -1,6 +1,6 @@
 /* SizeSelector.css */
 .product-display-right-size {
-  margin-top: var(--spacing-8);
+  margin-top: var(--spacing-5);
 }
 
 .product-display-size-title {
@@ -49,7 +49,16 @@
 /* Medium devices (tablets, less than 992px) */
 @media screen and (max-width: 992px) {
   .product-display-right-size {
-    margin-top: var(--spacing-6);
+    margin-top: var(--spacing-4);
+  }
+
+  .product-display-right-size h1 {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--spacing-2);
+  }
+
+  .product-display-right-size-container {
+    justify-content: center;
   }
 }
 
@@ -63,7 +72,7 @@
 /* Extra small devices (portrait phones, less than 576px) */
 @media screen and (max-width: 576px) {
   .product-display-right-size {
-    margin-top: var(--spacing-4);
+    margin-top: var(--spacing-2);
   }
 
   .product-display-right-size-container {

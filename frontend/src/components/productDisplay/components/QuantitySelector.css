@@ -1,6 +1,6 @@
 /* QuantitySelector.css */
 .product-display-right-quantity {
-  margin-top: var(--spacing-5);
+  margin-top: var(--spacing-1);
 }
 
 .product-display-quantity-title {
@@ -13,6 +13,7 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-2);
+  margin-top: var(--spacing-2);
   height: 36px;
 }
 
@@ -67,11 +68,17 @@
 /* Medium devices (tablets, less than 992px) */
 @media screen and (max-width: 992px) {
   .product-display-right-quantity {
-    margin-top: var(--spacing-4);
+    margin-top: var(--spacing-1);
+  }
+
+  .product-display-right-quantity h1 {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--spacing-2);
   }
 
   .product-display-right-quantity-container {
     height: 40px;
+    justify-content: center;
   }
 
   .product-display-quantity-btn {
@@ -95,7 +102,7 @@
 /* Extra small devices (portrait phones, less than 576px) */
 @media screen and (max-width: 576px) {
   .product-display-right-quantity {
-    margin-top: var(--spacing-3);
+    margin-top: var(--spacing-1);
   }
 
   .product-display-right-quantity-container {
