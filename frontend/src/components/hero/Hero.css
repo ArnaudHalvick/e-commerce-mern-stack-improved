@@ -1,7 +1,7 @@
 /* Path: frontend/src/components/hero/Hero.css */
 .hero-container {
   display: flex;
-  background: linear-gradient(180deg, #fce6ff, #e1ffea22 60%);
+  background: var(--gradient-hero);
   min-height: 80vh;
   height: auto;
   flex-direction: row;
@@ -18,13 +18,13 @@
 }
 
 .hero-section-left h2 {
-  color: #171717;
+  color: var(--color-text-primary);
   font-weight: 600;
   font-size: 1.65rem;
 }
 
 .hero-section-left p {
-  color: #171717;
+  color: var(--color-text-primary);
   font-weight: 700;
   font-size: 6.25rem;
 }
@@ -44,8 +44,8 @@
   height: 4.5rem;
   border-radius: 4.7rem;
   margin-top: 1.9rem;
-  background: #ff6e6e;
-  color: white;
+  background: var(--color-primary-light);
+  color: var(--color-background);
   font-size: 1.4rem;
   font-weight: 500;
   text-decoration: none;
@@ -55,7 +55,7 @@
 .hero-discover-now {
   display: inline-block;
   margin-top: 1rem;
-  color: #007bff;
+  color: var(--color-secondary);
   font-size: 1.2rem;
   font-weight: 500;
   text-decoration: underline;
@@ -64,7 +64,7 @@
 }
 
 .hero-discover-now:hover {
-  color: #0056b3;
+  color: var(--color-secondary-dark);
 }
 
 .hero-section-right {

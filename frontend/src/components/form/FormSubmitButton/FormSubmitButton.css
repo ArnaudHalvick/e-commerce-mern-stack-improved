@@ -5,8 +5,8 @@
   min-width: 7.5rem;
   border-radius: 0.25rem;
   font-weight: 600;
-  background-color: #ff4141;
-  color: white;
+  background-color: var(--color-primary);
+  color: var(--color-background);
   border: none;
   cursor: pointer;
   transition: background-color 0.2s, transform 0.1s;
@@ -35,7 +35,7 @@
 }
 
 .form-submit-button:hover:not(:disabled) {
-  background-color: #ff6e6e;
+  background-color: var(--color-primary-hover);
 }
 
 .form-submit-button:active:not(:disabled) {
@@ -43,7 +43,7 @@
 }
 
 .form-submit-button:disabled {
-  background-color: #cccccc;
+  background-color: var(--color-border-dark);
   cursor: not-allowed;
   opacity: 0.7;
 }
@@ -54,28 +54,28 @@
 
 /* Color variants */
 .form-submit-button--primary {
-  background-color: #ff4141;
+  background-color: var(--color-primary);
 }
 
 .form-submit-button--primary:hover:not(:disabled) {
-  background-color: #ff6e6e;
+  background-color: var(--color-primary-hover);
 }
 
 .form-submit-button--secondary {
-  background-color: #6c757d;
+  background-color: var(--color-text-light);
 }
 
 .form-submit-button--secondary:hover:not(:disabled) {
-  background-color: #5a6268;
+  background-color: var(--color-text-tertiary);
 }
 
 /* Danger variant - for destructive actions like "Disable Account" */
 .form-submit-button--danger {
-  background-color: #dc3545;
+  background-color: var(--color-danger);
 }
 
 .form-submit-button--danger:hover:not(:disabled) {
-  background-color: #c82333;
+  background-color: var(--color-danger-dark);
 }
 
 .form-submit-button--danger:active:not(:disabled) {
@@ -84,8 +84,8 @@
 
 .form-submit-button--outline {
   background-color: transparent;
-  border: 1px solid #ff4141;
-  color: #ff4141;
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary);
 }
 
 .form-submit-button--outline:hover:not(:disabled) {

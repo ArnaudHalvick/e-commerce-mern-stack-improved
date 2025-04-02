@@ -1,5 +1,60 @@
 /* Path: frontend/src/index.css */
 
+:root {
+  /* Primary Colors */
+  --color-primary: #ff4141;
+  --color-primary-light: #ff6e6e;
+  --color-primary-dark: #e53935;
+  --color-primary-hover: #ff6e6e;
+  --color-primary-active: #e53935;
+
+  /* Secondary Colors */
+  --color-secondary: #4361ee;
+  --color-secondary-light: #6a83f1;
+  --color-secondary-dark: #273aa9;
+  --color-secondary-hover: #5a75f0;
+  --color-secondary-active: #273aa9;
+
+  /* Accent Colors (alternative brand color) */
+  --color-accent: #f85606;
+  --color-accent-light: #ff7a35;
+  --color-accent-dark: #e04e04;
+
+  /* Semantic Colors */
+  --color-success: #28a745;
+  --color-success-light: #48c664;
+  --color-success-dark: #2e7d32;
+
+  --color-danger: #dc3545;
+  --color-danger-light: #e25663;
+  --color-danger-dark: #c82333;
+
+  --color-warning: #ffc107;
+  --color-warning-light: #ffcd39;
+  --color-warning-dark: #e0a800;
+
+  --color-info: #17a2b8;
+  --color-info-light: #39b9cd;
+  --color-info-dark: #138496;
+
+  /* Neutral Colors */
+  --color-text-primary: #171717;
+  --color-text-secondary: #333333;
+  --color-text-tertiary: #666666;
+  --color-text-light: #999999;
+
+  --color-background: #ffffff;
+  --color-background-light: #f8f9fa;
+  --color-background-dark: #f6f6f6;
+
+  --color-border: #e0e0e0;
+  --color-border-light: #f0f0f0;
+  --color-border-dark: #cccccc;
+
+  /* Gradients */
+  --gradient-hero: linear-gradient(180deg, #fce6ff, #e1ffea22 60%);
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -14,6 +69,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-family: "Poppins", sans-serif;
+  color: var(--color-text-primary);
 }
 
 code {
