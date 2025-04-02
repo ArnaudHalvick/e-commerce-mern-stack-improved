@@ -246,6 +246,7 @@ const ReviewModal = ({ product }) => {
       onClose={handleCloseModal}
       title={modalTitle}
       className="review-modal"
+      size="xlarge"
       closeOnEscape={true}
       closeOnOverlayClick={true}
     >
