@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useError } from "../../context/ErrorContext";
@@ -25,7 +25,30 @@ const Profile = () => {
   const navigate = useNavigate();
   const { showError, showSuccess } = useError();
 
-  // Get user state from Redux
+  // Memoize selector to prevent unnecessary re-renders
+  const userState = useSelector(
+    (state) => ({
+      user: state.user.user,
+      loading: state.user.loading,
+      isAuthenticated: state.user.isAuthenticated,
+      verificationRequested: state.user.verificationRequested,
+      passwordChanged: state.user.passwordChanged,
+      loadingStates: state.user.loadingStates,
+    }),
+    // Custom equality function to prevent unnecessary updates
+    (prev, next) => {
+      return (
+        prev.user?.id === next.user?.id &&
+        prev.loading === next.loading &&
+        prev.isAuthenticated === next.isAuthenticated &&
+        prev.verificationRequested === next.verificationRequested &&
+        prev.passwordChanged === next.passwordChanged &&
+        JSON.stringify(prev.loadingStates) ===
+          JSON.stringify(next.loadingStates)
+      );
+    }
+  );
+
   const {
     user,
     loading,
@@ -33,9 +56,9 @@ const Profile = () => {
     verificationRequested,
     passwordChanged,
     loadingStates,
-  } = useSelector((state) => state.user);
+  } = userState;
 
-  // Custom hooks for profile functionality
+  // Custom hooks for profile functionality - memoize initial data
   const {
     formData,
     fieldErrors,
@@ -57,14 +80,22 @@ const Profile = () => {
   const { isDisablingAccount, handleDisableAccount, handleResendVerification } =
     useAccountManagement(user, verificationRequested, showSuccess, showError);
 
-  // Redirect if not authenticated
+  // Memoize navigation effect
   useEffect(() => {
     if (!loading && !isAuthenticated) {
       navigate("/login");
     }
   }, [loading, isAuthenticated, navigate]);
 
-  // Loading state check
+  // Memoize breadcrumb links
+  const breadcrumbLinks = useMemo(
+    () => [
+      { label: "Home", path: "/" },
+      { label: "Profile", path: "/profile" },
+    ],
+    []
+  );
+
   if (loading) {
     return (
       <div className="profile-page-container">
@@ -77,12 +108,7 @@ const Profile = () => {
 
   return (
     <div className="profile-page-container">
-      <Breadcrumb
-        links={[
-          { label: "Home", path: "/" },
-          { label: "Profile", path: "/profile" },
-        ]}
-      />
+      <Breadcrumb links={breadcrumbLinks} />
 
       <h1 className="profile-title">Profile</h1>
 
@@ -145,4 +171,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default React.memo(Profile);

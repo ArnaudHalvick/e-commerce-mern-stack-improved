@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useDispatch } from "react-redux";
 import { updateUserProfile } from "../../../redux/slices/userSlice";
 import { validateForm } from "../../../utils/validation";
@@ -6,6 +6,7 @@ import {
   profileBasicInfoSchema,
   profileAddressSchema,
 } from "../../../utils/validationSchemas";
+import { debounce } from "lodash";
 
 const useProfileForm = (user, showSuccess, showError) => {
   const dispatch = useDispatch();
@@ -31,7 +32,7 @@ const useProfileForm = (user, showSuccess, showError) => {
   // Initialize form with user data when available
   useEffect(() => {
     if (user) {
-      setFormData({
+      const newFormData = {
         name: user.username || user.name || "",
         phone: user.phone || "",
         address: {
@@ -41,9 +42,11 @@ const useProfileForm = (user, showSuccess, showError) => {
           zipCode: user.address?.zipCode || "",
           country: user.address?.country || "",
         },
-      });
+      };
+
+      setFormData(newFormData);
     }
-  }, [user]);
+  }, [user]); // Changed to depend only on user
 
   // Validate entire form
   const validateFormData = useCallback(() => {
@@ -61,71 +64,93 @@ const useProfileForm = (user, showSuccess, showError) => {
         profileAddressSchema
       );
 
-      // Update field errors state
-      setFieldErrors({
+      const newErrors = {
         ...basicInfoErrors,
         ...addressErrors,
-      });
+      };
 
-      return { ...basicInfoErrors, ...addressErrors };
+      // Only update errors if they've changed
+      if (JSON.stringify(fieldErrors) !== JSON.stringify(newErrors)) {
+        setFieldErrors(newErrors);
+      }
+
+      return newErrors;
     } else {
-      setFieldErrors(basicInfoErrors);
+      if (JSON.stringify(fieldErrors) !== JSON.stringify(basicInfoErrors)) {
+        setFieldErrors(basicInfoErrors);
+      }
       return basicInfoErrors;
     }
-  }, [formData]);
+  }, [formData, fieldErrors]);
 
-  // Initial validation after form data is populated
-  useEffect(() => {
-    if (formData.name) {
-      validateFormData();
-    }
-  }, [formData, validateFormData]);
+  // Debounced validation
+  const debouncedValidation = useMemo(
+    () => debounce(validateFormData, 300),
+    [validateFormData]
+  );
 
-  // Input change handler
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
+  // Input change handler with debounced validation
+  const handleInputChange = useCallback(
+    (e) => {
+      const { name, value } = e.target;
 
-    if (name.includes(".")) {
-      const [parent, child] = name.split(".");
-      setFormData((prev) => ({
-        ...prev,
-        [parent]: {
-          ...prev[parent],
-          [child]: value,
-        },
-      }));
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
-    }
-  };
+      setFormData((prev) => {
+        const newData = name.includes(".")
+          ? {
+              ...prev,
+              address: {
+                ...prev.address,
+                [name.split(".")[1]]: value,
+              },
+            }
+          : {
+              ...prev,
+              [name]: value,
+            };
+
+        // Trigger debounced validation
+        debouncedValidation();
+
+        return newData;
+      });
+    },
+    [debouncedValidation]
+  );
 
   // Form submission
-  const handleSubmit = async (e, customFormData = null) => {
-    e?.preventDefault();
+  const handleSubmit = useCallback(
+    async (e, customFormData = null) => {
+      e?.preventDefault();
 
-    const dataToSubmit = customFormData || formData;
-    const validationErrors = validateFormData();
+      const dataToSubmit = customFormData || formData;
+      const validationErrors = validateFormData();
 
-    if (Object.keys(validationErrors).length > 0) {
-      showError("Please fix the errors in the form before submitting.");
-      return;
-    }
+      if (Object.keys(validationErrors).length > 0) {
+        showError("Please fix the errors in the form before submitting.");
+        return;
+      }
 
-    setIsSubmitting(true);
+      setIsSubmitting(true);
 
-    try {
-      const result = await dispatch(updateUserProfile(dataToSubmit)).unwrap();
-      setUpdatedUserData(result);
-      showSuccess("Profile updated successfully!");
-    } catch (error) {
-      showError(error.message || "Failed to update profile");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+      try {
+        const result = await dispatch(updateUserProfile(dataToSubmit)).unwrap();
+        setUpdatedUserData(result);
+        showSuccess("Profile updated successfully!");
+      } catch (error) {
+        showError(error.message || "Failed to update profile");
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [formData, validateFormData, dispatch, showError, showSuccess]
+  );
+
+  // Cleanup
+  useEffect(() => {
+    return () => {
+      debouncedValidation.cancel();
+    };
+  }, [debouncedValidation]);
 
   return {
     formData,
