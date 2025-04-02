@@ -1,37 +1,37 @@
 import React, { useState, useEffect } from "react";
-import { useError } from "../../../context/ErrorContext";
 import { FormInputField, FormSubmitButton } from "../../../components/form";
 
 /**
  * BasicInfoSection component for displaying and editing user's basic information
- * Uses schema-based validation from backend for instant feedback
  */
 const BasicInfoSection = ({
   formData,
-  setFormData,
+  fieldErrors,
   handleInputChange,
   handleSubmit,
-  loading,
-  updatingProfile,
-  fieldErrors,
-  setFieldErrors,
-  displayUserData,
-  displayName,
-  validationSchema,
+  isSubmitting,
 }) => {
-  const { showError } = useError();
   const [isEditingBasicInfo, setIsEditingBasicInfo] = useState(false);
   const [isBasicInfoValid, setIsBasicInfoValid] = useState(false);
+  const [localFormData, setLocalFormData] = useState({ ...formData });
+
+  // Update local form data when props change and not in edit mode
+  useEffect(() => {
+    if (!isEditingBasicInfo) {
+      setLocalFormData({ ...formData });
+    }
+  }, [formData, isEditingBasicInfo]);
 
   // Validate basic info form when data or errors change
   useEffect(() => {
-    if (!formData) {
+    if (!localFormData) {
       setIsBasicInfoValid(false);
       return;
     }
 
     // Name is required and must be valid
-    const hasValidName = formData.name && formData.name.trim().length >= 2;
+    const hasValidName =
+      localFormData.name && localFormData.name.trim().length >= 2;
 
     // Check if there are any field errors (excluding address errors)
     const hasFieldErrors =
@@ -41,24 +41,38 @@ const BasicInfoSection = ({
       );
 
     setIsBasicInfoValid(hasValidName && !hasFieldErrors);
-  }, [formData, fieldErrors]);
+  }, [localFormData, fieldErrors]);
 
-  const handleBasicInfoSubmitWithValidation = (e) => {
+  const handleLocalInputChange = (e) => {
+    const { name, value } = e.target;
+    setLocalFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    handleInputChange(e);
+  };
+
+  const handleBasicInfoSubmit = (e) => {
     e.preventDefault();
 
-    // If form is not valid, show error and prevent submission
+    // If form is not valid, prevent submission
     if (!isBasicInfoValid) {
-      showError("Please fix the validation errors before submitting");
       return;
     }
 
-    // Only submit name and phone, don't include address at all
+    // Only submit name and phone, don't include address
     const basicInfoData = {
-      name: formData.name,
-      phone: formData.phone,
+      name: localFormData.name,
+      phone: localFormData.phone || "",
     };
+
     handleSubmit(e, basicInfoData);
     setIsEditingBasicInfo(false);
+  };
+
+  const handleCancel = () => {
+    setIsEditingBasicInfo(false);
+    setLocalFormData({ ...formData });
   };
 
   return (
@@ -77,17 +91,16 @@ const BasicInfoSection = ({
       </div>
 
       {isEditingBasicInfo ? (
-        <form onSubmit={handleBasicInfoSubmitWithValidation} noValidate>
+        <form onSubmit={handleBasicInfoSubmit} noValidate>
           <FormInputField
             type="text"
             name="name"
-            value={formData.name}
-            onChange={handleInputChange}
+            value={localFormData.name}
+            onChange={handleLocalInputChange}
             label="Name"
-            required={validationSchema?.name?.required}
+            required={true}
             error={fieldErrors}
-            disabled={loading || updatingProfile}
-            validationSchema={validationSchema}
+            disabled={isSubmitting}
             containerClassName="profile-form-group"
             labelClassName="profile-form-label"
             className={
@@ -100,12 +113,11 @@ const BasicInfoSection = ({
           <FormInputField
             type="tel"
             name="phone"
-            value={formData.phone || ""}
-            onChange={handleInputChange}
+            value={localFormData.phone || ""}
+            onChange={handleLocalInputChange}
             label="Phone"
             error={fieldErrors}
-            disabled={loading || updatingProfile}
-            validationSchema={validationSchema}
+            disabled={isSubmitting}
             containerClassName="profile-form-group"
             labelClassName="profile-form-label"
             className={
@@ -118,29 +130,21 @@ const BasicInfoSection = ({
           <div className="profile-form-actions">
             <FormSubmitButton
               type="submit"
-              text={updatingProfile ? "Saving..." : "Save Changes"}
-              isLoading={updatingProfile}
-              disabled={!isBasicInfoValid}
+              text={isSubmitting ? "Saving..." : "Save Changes"}
+              isLoading={isSubmitting}
+              disabled={!isBasicInfoValid || isSubmitting}
               variant="primary"
               size="small"
+              aria-label="Save basic information changes"
             />
             <FormSubmitButton
               type="button"
               text="Cancel"
               variant="secondary"
               size="small"
-              onClick={() => {
-                setIsEditingBasicInfo(false);
-                // Reset basic info form to original values
-                setFormData((prev) => ({
-                  ...prev,
-                  name:
-                    displayUserData?.name || displayUserData?.username || "",
-                  phone: displayUserData?.phone || "",
-                }));
-                setFieldErrors({});
-              }}
-              disabled={loading || updatingProfile}
+              onClick={handleCancel}
+              disabled={isSubmitting}
+              aria-label="Cancel basic information editing"
             />
           </div>
         </form>
@@ -148,12 +152,14 @@ const BasicInfoSection = ({
         <div className="profile-profile-details">
           <div className="profile-detail-item">
             <span className="profile-detail-label">Name:</span>
-            <span className="profile-detail-value">{displayName}</span>
+            <span className="profile-detail-value">
+              {formData.name || "Not provided"}
+            </span>
           </div>
           <div className="profile-detail-item">
             <span className="profile-detail-label">Phone:</span>
             <span className="profile-detail-value">
-              {displayUserData?.phone || "Not provided"}
+              {formData.phone || "Not provided"}
             </span>
           </div>
         </div>

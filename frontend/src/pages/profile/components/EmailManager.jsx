@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { requestEmailChange } from "../../../redux/slices/userSlice";
-import { useError } from "../../../context/ErrorContext";
 import { validateEmail } from "../../../utils/validation";
 import { FormSubmitButton } from "../../../components/form";
 
-const EmailManager = ({ user, showSuccess, showError }) => {
+const EmailManager = ({
+  user,
+  handleResendVerification,
+  isVerificationSending,
+}) => {
   const dispatch = useDispatch();
-  const { showError: contextShowError, showSuccess: contextShowSuccess } =
-    useError();
-  const displayError = showError || contextShowError;
-  const displaySuccess = showSuccess || contextShowSuccess;
-
   const emailChangePending = useSelector(
     (state) => state.user.emailChangeRequested
   );
@@ -67,24 +65,20 @@ const EmailManager = ({ user, showSuccess, showError }) => {
     return true;
   };
 
-  const handleEmailSubmitWithValidation = async (e) => {
+  const handleEmailSubmit = async (e) => {
     e.preventDefault();
     if (!isFormValid) {
-      displayError("Please fix the validation errors before submitting");
       return;
     }
+
     try {
       setIsLoading(true);
       await dispatch(requestEmailChange(emailData.email)).unwrap();
-      displaySuccess(
-        "Verification email sent to your new address. Please verify to complete the email change."
-      );
       setIsEditing(false);
     } catch (error) {
       setFieldError(
         typeof error === "string" ? error : "Failed to request email change"
       );
-      displayError(error || "Failed to request email change");
     } finally {
       setIsLoading(false);
     }
@@ -110,7 +104,8 @@ const EmailManager = ({ user, showSuccess, showError }) => {
             size="small"
             text="Edit"
             onClick={() => setIsEditing(true)}
-            disabled={isLoading}
+            disabled={isLoading || isVerificationSending}
+            aria-label="Edit email address"
           />
         )}
       </div>
@@ -128,6 +123,23 @@ const EmailManager = ({ user, showSuccess, showError }) => {
               )}
             </span>
           </div>
+          {!user?.isEmailVerified && (
+            <div className="profile-verification-actions">
+              <FormSubmitButton
+                type="button"
+                variant="secondary"
+                size="small"
+                text={
+                  isVerificationSending
+                    ? "Sending..."
+                    : "Resend Verification Email"
+                }
+                onClick={handleResendVerification}
+                disabled={isVerificationSending}
+                aria-label="Resend email verification"
+              />
+            </div>
+          )}
           {emailChangePending && (
             <div className="profile-verification-message success">
               <p>
@@ -139,7 +151,7 @@ const EmailManager = ({ user, showSuccess, showError }) => {
         </div>
       ) : (
         <form
-          onSubmit={handleEmailSubmitWithValidation}
+          onSubmit={handleEmailSubmit}
           className="profile-email-form"
           noValidate
         >
@@ -181,9 +193,10 @@ const EmailManager = ({ user, showSuccess, showError }) => {
                 isLoading ? "Sending Verification..." : "Request Email Change"
               }
               isLoading={isLoading}
-              disabled={!isFormValid}
+              disabled={!isFormValid || isLoading}
               variant="primary"
               size="small"
+              aria-label="Submit email change request"
             />
 
             <FormSubmitButton
@@ -193,6 +206,7 @@ const EmailManager = ({ user, showSuccess, showError }) => {
               size="small"
               onClick={handleCancel}
               disabled={isLoading}
+              aria-label="Cancel email edit"
             />
           </div>
         </form>

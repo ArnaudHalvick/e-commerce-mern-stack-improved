@@ -1,25 +1,20 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { useError } from "../../../context/ErrorContext";
+import React, { useEffect, useState } from "react";
 import { debounce } from "lodash";
 import { validatePassword } from "../../../utils/validation";
 import { FormSubmitButton } from "../../../components/form";
 
 /**
  * PasswordManager component for handling password changes
- * Uses schema-based validation from backend for instant feedback
  */
 const PasswordManager = ({
-  isChangingPassword,
-  setIsChangingPassword,
   passwordData,
+  passwordErrors,
+  isChangingPassword,
   handlePasswordInputChange,
   handlePasswordSubmit,
-  loading,
-  changingPassword,
-  fieldErrors,
-  validationSchema,
+  togglePasswordChange,
+  isSubmittingPassword,
 }) => {
-  const { showError } = useError();
   const [isFormValid, setIsFormValid] = useState(false);
 
   // State to track individual password validations
@@ -31,15 +26,8 @@ const PasswordManager = ({
     match: false,
   });
 
-  // Helper function to get the minimum password length from schema
-  const getMinPasswordLength = useCallback(() => {
-    const minLength = validationSchema?.newPassword?.minLength;
-    return typeof minLength === "number" ? minLength : 8;
-  }, [validationSchema]);
-
-  // Validate the entire form whenever password data or field errors change
+  // Validate the entire form whenever password data or password errors change
   useEffect(() => {
-    // If we're not changing password or there's no password data, form is invalid
     if (!isChangingPassword || !passwordData) {
       setIsFormValid(false);
       return;
@@ -48,22 +36,14 @@ const PasswordManager = ({
     // Check if any required fields are empty
     const hasEmptyField = Object.values(passwordData).some((val) => !val);
 
-    // Check if there are any field errors in password-related fields
-    const hasFieldErrors =
-      fieldErrors &&
-      Object.keys(fieldErrors).some(
-        (key) =>
-          fieldErrors[key] &&
-          ["currentPassword", "newPassword", "confirmPassword"].includes(key)
-      );
+    // Check if there are any password errors
+    const hasErrors = passwordErrors && Object.keys(passwordErrors).length > 0;
 
     // Form is valid only if all fields are filled and there are no errors
-    setIsFormValid(!hasEmptyField && !hasFieldErrors);
-  }, [passwordData, fieldErrors, isChangingPassword]);
+    setIsFormValid(!hasEmptyField && !hasErrors);
+  }, [passwordData, passwordErrors, isChangingPassword]);
 
   // Validate individual password requirements with debouncing
-  const minPasswordLength = getMinPasswordLength();
-
   useEffect(() => {
     const validatePasswordDetails = () => {
       const { newPassword, confirmPassword } = passwordData;
@@ -82,34 +62,13 @@ const PasswordManager = ({
       const result = validatePassword(newPassword);
 
       // Set visual validations based on the validation result details
-      const newValidations = {
+      setPasswordValidations({
         length: result.details.length,
         uppercase: result.details.uppercase,
         number: result.details.number,
         special: result.details.special,
         match: confirmPassword && newPassword === confirmPassword,
-      };
-
-      setPasswordValidations(newValidations);
-
-      // Ensure field errors are in sync with validations
-      if (result.isValid) {
-        // If all password criteria are met but we still have a newPassword error, clear it
-        if (fieldErrors?.newPassword) {
-          // We don't modify fieldErrors directly, but we can trigger a change
-          // by calling handlePasswordInputChange with the current value
-          handlePasswordInputChange({
-            target: { name: "newPassword", value: newPassword },
-          });
-        }
-      }
-
-      // Same for password match validation
-      if (newValidations.match && fieldErrors?.confirmPassword) {
-        handlePasswordInputChange({
-          target: { name: "confirmPassword", value: confirmPassword },
-        });
-      }
+      });
     };
 
     const debouncedValidate = debounce(validatePasswordDetails, 300);
@@ -118,22 +77,13 @@ const PasswordManager = ({
     return () => {
       debouncedValidate.cancel();
     };
-  }, [passwordData, minPasswordLength, fieldErrors, handlePasswordInputChange]);
+  }, [passwordData]);
 
-  // Handle form submission with validation
-  const handleSubmitWithValidation = (e) => {
+  // Handle form submission
+  const handleSubmitForm = (e) => {
     e.preventDefault();
 
-    // Double-check all validations
-    const allRequirementsMet =
-      passwordValidations.length &&
-      passwordValidations.uppercase &&
-      passwordValidations.number &&
-      passwordValidations.special &&
-      passwordValidations.match;
-
-    if (!isFormValid || !allRequirementsMet) {
-      showError("Please fix the validation errors before submitting");
+    if (!isFormValid) {
       return;
     }
 
@@ -142,34 +92,9 @@ const PasswordManager = ({
 
   // Determine input class based on validation state
   const getInputClass = (fieldName) => {
-    if (!fieldErrors) return "profile-form-input";
-    return fieldErrors[fieldName]
+    return passwordErrors?.[fieldName]
       ? "profile-form-input error"
       : "profile-form-input";
-  };
-
-  // Extract validation attributes for a field from the schema
-  const getValidationAttributes = (fieldName) => {
-    if (!validationSchema) return {};
-    const fieldSchema = validationSchema[fieldName];
-    if (!fieldSchema) return {};
-
-    const attributes = {};
-
-    if (fieldSchema.message) {
-      attributes.title = fieldSchema.message;
-    }
-
-    // Simply use the normalized values directly
-    if (fieldSchema.minLength) {
-      attributes.minLength = fieldSchema.minLength;
-    }
-
-    if (fieldSchema.maxLength) {
-      attributes.maxLength = fieldSchema.maxLength;
-    }
-
-    return attributes;
   };
 
   return (
@@ -182,15 +107,16 @@ const PasswordManager = ({
             variant="secondary"
             text="Change Password"
             size="small"
-            onClick={() => setIsChangingPassword(true)}
-            disabled={loading || changingPassword}
+            onClick={togglePasswordChange}
+            disabled={isSubmittingPassword}
+            aria-label="Open password change form"
           />
         )}
       </div>
 
       {isChangingPassword && (
         <form
-          onSubmit={handleSubmitWithValidation}
+          onSubmit={handleSubmitForm}
           noValidate
           className="profile-password-form"
         >
@@ -206,22 +132,21 @@ const PasswordManager = ({
               onChange={handlePasswordInputChange}
               required
               className={getInputClass("currentPassword")}
-              aria-invalid={fieldErrors?.currentPassword ? "true" : "false"}
+              aria-invalid={passwordErrors?.currentPassword ? "true" : "false"}
               aria-describedby={
-                fieldErrors?.currentPassword
+                passwordErrors?.currentPassword
                   ? "currentPassword-error"
                   : undefined
               }
-              disabled={loading || changingPassword}
-              {...getValidationAttributes("currentPassword")}
+              disabled={isSubmittingPassword}
             />
-            {fieldErrors?.currentPassword && (
+            {passwordErrors?.currentPassword && (
               <p
                 className="profile-field-error"
                 id="currentPassword-error"
                 role="alert"
               >
-                {fieldErrors.currentPassword}
+                {passwordErrors.currentPassword}
               </p>
             )}
           </div>
@@ -238,60 +163,66 @@ const PasswordManager = ({
               onChange={handlePasswordInputChange}
               required
               className={getInputClass("newPassword")}
-              aria-invalid={fieldErrors?.newPassword ? "true" : "false"}
+              aria-invalid={passwordErrors?.newPassword ? "true" : "false"}
               aria-describedby={
-                fieldErrors?.newPassword
+                passwordErrors?.newPassword
                   ? "newPassword-error"
                   : "newPassword-requirements"
               }
-              disabled={loading || changingPassword}
-              {...getValidationAttributes("newPassword")}
+              disabled={isSubmittingPassword}
             />
-            {fieldErrors?.newPassword && (
+            {passwordErrors?.newPassword && (
               <p
                 className="profile-field-error"
                 id="newPassword-error"
                 role="alert"
               >
-                {fieldErrors.newPassword}
+                {passwordErrors.newPassword}
               </p>
             )}
 
             <div
-              className="profile-password-requirements"
               id="newPassword-requirements"
+              className="password-requirements"
             >
-              <p>Password requirements:</p>
-              <ul>
+              <h3 className="password-requirements-title">Password must:</h3>
+              <ul className="password-requirements-list">
                 <li
-                  className={passwordValidations.length ? "valid" : "invalid"}
+                  className={
+                    passwordValidations.length
+                      ? "requirement-met"
+                      : "requirement-not-met"
+                  }
                 >
-                  At least {minPasswordLength} characters
+                  Be at least 8 characters
                 </li>
                 <li
                   className={
-                    passwordValidations.uppercase ? "valid" : "invalid"
+                    passwordValidations.uppercase
+                      ? "requirement-met"
+                      : "requirement-not-met"
                   }
                 >
-                  One uppercase letter
+                  Include at least 1 uppercase letter
                 </li>
                 <li
-                  className={passwordValidations.number ? "valid" : "invalid"}
+                  className={
+                    passwordValidations.number
+                      ? "requirement-met"
+                      : "requirement-not-met"
+                  }
                 >
-                  One number
+                  Include at least 1 number
                 </li>
                 <li
-                  className={passwordValidations.special ? "valid" : "invalid"}
+                  className={
+                    passwordValidations.special
+                      ? "requirement-met"
+                      : "requirement-not-met"
+                  }
                 >
-                  One special character
+                  Include at least 1 special character
                 </li>
-                {passwordData.confirmPassword && (
-                  <li
-                    className={passwordValidations.match ? "valid" : "invalid"}
-                  >
-                    Passwords match
-                  </li>
-                )}
               </ul>
             </div>
           </div>
@@ -308,58 +239,57 @@ const PasswordManager = ({
               onChange={handlePasswordInputChange}
               required
               className={getInputClass("confirmPassword")}
-              aria-invalid={fieldErrors?.confirmPassword ? "true" : "false"}
+              aria-invalid={passwordErrors?.confirmPassword ? "true" : "false"}
               aria-describedby={
-                fieldErrors?.confirmPassword
+                passwordErrors?.confirmPassword
                   ? "confirmPassword-error"
                   : undefined
               }
-              disabled={loading || changingPassword}
-              {...getValidationAttributes("confirmPassword")}
+              disabled={isSubmittingPassword}
             />
-            {fieldErrors?.confirmPassword && (
+            {passwordErrors?.confirmPassword && (
               <p
                 className="profile-field-error"
                 id="confirmPassword-error"
                 role="alert"
               >
-                {fieldErrors.confirmPassword}
+                {passwordErrors.confirmPassword}
               </p>
             )}
+            {passwordData.confirmPassword &&
+              !passwordErrors?.confirmPassword && (
+                <p
+                  className={
+                    passwordValidations.match
+                      ? "password-match-success"
+                      : "password-match-error"
+                  }
+                >
+                  {passwordValidations.match
+                    ? "Passwords match!"
+                    : "Passwords do not match"}
+                </p>
+              )}
           </div>
 
           <div className="profile-form-actions">
             <FormSubmitButton
               type="submit"
-              text={
-                loading || changingPassword
-                  ? "Changing Password..."
-                  : "Change Password"
-              }
-              isLoading={loading || changingPassword}
-              disabled={!isFormValid}
+              text={isSubmittingPassword ? "Updating..." : "Update Password"}
+              isLoading={isSubmittingPassword}
+              disabled={!isFormValid || isSubmittingPassword}
               variant="primary"
               size="small"
+              aria-label="Update password"
             />
             <FormSubmitButton
               type="button"
               text="Cancel"
               variant="secondary"
               size="small"
-              onClick={() => {
-                // Reset password fields before closing
-                handlePasswordInputChange({
-                  target: { name: "currentPassword", value: "" },
-                });
-                handlePasswordInputChange({
-                  target: { name: "newPassword", value: "" },
-                });
-                handlePasswordInputChange({
-                  target: { name: "confirmPassword", value: "" },
-                });
-                setIsChangingPassword(false);
-              }}
-              disabled={loading || changingPassword}
+              onClick={togglePasswordChange}
+              disabled={isSubmittingPassword}
+              aria-label="Cancel password change"
             />
           </div>
         </form>

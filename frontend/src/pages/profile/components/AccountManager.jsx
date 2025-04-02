@@ -5,7 +5,7 @@ import { FormSubmitButton } from "../../../components/form";
 /**
  * AccountManager component for account-related actions
  */
-const AccountManager = ({ handleDisableAccount, disablingAccount }) => {
+const AccountManager = ({ handleDisableAccount, isDisablingAccount }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [error, setError] = useState("");
 
@@ -15,7 +15,7 @@ const AccountManager = ({ handleDisableAccount, disablingAccount }) => {
   };
 
   const handleCloseModal = () => {
-    if (!disablingAccount) {
+    if (!isDisablingAccount) {
       setIsModalOpen(false);
       setError("");
     }
@@ -42,12 +42,13 @@ const AccountManager = ({ handleDisableAccount, disablingAccount }) => {
       <div className="profile-account-actions">
         <FormSubmitButton
           type="button"
-          text={disablingAccount ? "Disabling Account..." : "Disable Account"}
-          isLoading={disablingAccount}
-          disabled={disablingAccount}
+          text={isDisablingAccount ? "Disabling Account..." : "Disable Account"}
+          isLoading={isDisablingAccount}
+          disabled={isDisablingAccount}
           variant="danger"
           size="small"
           onClick={handleOpenModal}
+          aria-label="Open disable account confirmation"
         />
       </div>
       <div className="profile-account-warning">
@@ -63,7 +64,7 @@ const AccountManager = ({ handleDisableAccount, disablingAccount }) => {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         onConfirm={handleConfirmDisable}
-        isProcessing={disablingAccount}
+        isProcessing={isDisablingAccount}
         error={error}
       />
     </section>
