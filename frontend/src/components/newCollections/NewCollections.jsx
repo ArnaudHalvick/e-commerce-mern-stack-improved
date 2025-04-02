@@ -47,18 +47,24 @@ const NewCollection = () => {
   }, []);
 
   if (loading) {
-    return <div className="loading">Loading new collection...</div>;
+    return (
+      <div className="new-collections-loading">Loading new collection...</div>
+    );
   }
 
   if (error) {
-    return <div className="error">Error loading new collection: {error}</div>;
+    return (
+      <div className="new-collections-error">
+        Error loading new collection: {error}
+      </div>
+    );
   }
 
   return (
     <div className="new-collections">
-      <h1>New Collection</h1>
-      <hr />
-      <div className="collections">
+      <h1 className="new-collections-title">New Collection</h1>
+      <hr className="new-collections-divider" />
+      <div className="new-collections-grid">
         {newCollection.map((item, index) => (
           <Item
             key={item._id || index}
