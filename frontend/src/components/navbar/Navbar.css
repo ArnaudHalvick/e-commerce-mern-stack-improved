@@ -1,13 +1,16 @@
 /* Path: frontend/src/components/navbar/Navbar.css */
+
+/* Base styles (desktop first) */
 .navbar {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  padding: 1.3rem;
+  padding: 1.5rem 3rem;
   box-shadow: 0 0 0.625rem 0 rgba(0, 0, 0, 0.1);
   position: relative;
 }
 
+/* Logo */
 .navbar-logo {
   display: flex;
   align-items: center;
@@ -20,8 +23,10 @@
   font-weight: 500;
 }
 
+/* Menu */
 .navbar-menu {
   display: flex;
+  flex-direction: row;
   align-items: center;
   gap: 3.125rem;
   list-style: none;
@@ -30,7 +35,6 @@
   font-weight: 500;
 }
 
-/* Each menu item */
 .navbar-menu-item {
   display: flex;
   flex-direction: column;
@@ -38,6 +42,7 @@
   justify-content: center;
   gap: 0.25rem;
   cursor: pointer;
+  width: auto;
 }
 
 /* Underline indicator */
@@ -49,12 +54,14 @@
   background-color: #ff4141;
 }
 
+/* Right side - login/cart */
 .navbar-login-cart {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
 
+/* Buttons */
 .navbar-button {
   outline: none;
   width: 6rem;
@@ -73,6 +80,12 @@
   background-color: #e2e2e2;
 }
 
+/* Cart */
+.navbar-cart-icon {
+  width: 2rem;
+  height: auto;
+}
+
 .navbar-cart-count {
   margin-left: -1.7rem;
   margin-top: -1.5rem;
@@ -88,7 +101,7 @@
   font-weight: 500;
 }
 
-/* Hamburger Icon - hidden on larger screens */
+/* Hamburger - hidden on desktop */
 .navbar-hamburger {
   display: none;
   flex-direction: column;
@@ -103,13 +116,7 @@
   transition: 0.4s;
 }
 
-/* Add this new class for responsive cart icon */
-.navbar-cart-icon {
-  width: 2rem; /* Set a default width */
-  height: auto; /* Maintain aspect ratio */
-}
-
-/* User account styles */
+/* User account */
 .navbar-user-account {
   position: relative;
 }
@@ -172,13 +179,13 @@
   font-weight: 500;
 }
 
-/* Auth buttons container */
+/* Auth buttons */
 .navbar-auth-buttons {
   display: flex;
   gap: 0.5rem;
 }
 
-/* Login button styling */
+/* Login button */
 .navbar-login-btn {
   border-color: #171717;
   background-color: white;
@@ -189,7 +196,7 @@
   background-color: #f5f5f5;
 }
 
-/* Signup button styling */
+/* Signup button */
 .navbar-signup-btn {
   border-color: #ff4141;
   background-color: #ff4141;
@@ -201,90 +208,23 @@
   border-color: #ff7a7a;
 }
 
-/* Responsive styles */
-/* Extra small devices */
-@media (max-width: 576px) {
-  .navbar-logo-text {
-    font-size: 1.2rem;
-  }
-
-  .navbar-cart-count {
-    width: 1.2rem;
-    height: 1.2rem;
-    font-size: 0.75rem;
-    margin-left: -1.2rem;
-    margin-top: -1rem;
-  }
-
-  .navbar-button {
-    width: 4.5rem;
-    font-size: 0.85rem;
-  }
-
-  .navbar-cart-icon {
-    width: 1.5rem; /* Smaller size for extra small devices */
-  }
-
-  .navbar-welcome-user {
-    font-size: 0.85rem;
-  }
-}
-
-@media (max-width: 768px) {
+/* Extra large devices (large desktops, up to 1200px) */
+@media (max-width: 1200px) {
   .navbar {
-    justify-content: space-between;
-    padding: 1.3rem 1rem;
+    padding: 1.3rem;
   }
 
-  /* Hide default menu on mobile */
   .navbar-menu {
-    position: absolute;
-    top: 70px; /* Adjust based on your navbar height */
-    left: 0;
-    right: 0;
-    background-color: white;
-    flex-direction: column;
-    align-items: center;
-    padding: 0;
-    max-height: 0;
-    overflow: hidden;
-    transition: all 0.3s ease-in-out;
-    z-index: 999;
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+    gap: 2.5rem;
   }
 
-  .navbar-menu.active {
-    max-height: 500px;
-    padding: 1rem 0;
-  }
-
-  .navbar-menu-item {
-    margin: 0.5rem 0;
-    width: 100%;
-    text-align: center;
-  }
-
-  .navbar-hamburger {
-    display: flex;
-  }
-
-  .navbar-login-cart {
-    gap: 0.5rem;
-  }
-
-  .navbar-cart-count {
-    margin-left: -1.2rem;
-  }
-
-  .navbar-user-dropdown {
-    width: 100vw;
-    max-width: 300px;
-    right: -1rem;
+  .navbar-logo-text {
+    font-size: 2rem;
   }
 }
 
-/* Medium devices */
-@media (min-width: 769px) and (max-width: 992px) {
+/* Large devices (desktops, up to 992px) */
+@media (max-width: 992px) {
   .navbar {
     padding: 1rem;
   }
@@ -305,16 +245,139 @@
   }
 }
 
-/* Large devices */
-@media (min-width: 993px) and (max-width: 1200px) {
+/* Medium devices (tablets, up to 768px) */
+@media (max-width: 768px) {
+  .navbar {
+    justify-content: space-between;
+    padding: 1rem;
+  }
+
+  /* Hide and reposition menu on tablets/mobile */
   .navbar-menu {
-    gap: 2.5rem;
+    position: absolute;
+    top: 70px;
+    left: 0;
+    right: 0;
+    background-color: white;
+    flex-direction: column;
+    display: none;
+    align-items: center;
+    padding: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.3s ease-in-out;
+    z-index: 999;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+  }
+
+  .navbar-menu.active {
+    display: flex;
+    max-height: 500px;
+    padding: 1rem 0;
+  }
+
+  .navbar-menu-item {
+    margin: 0.5rem 0;
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Show hamburger menu */
+  .navbar-hamburger {
+    display: flex;
+  }
+
+  .navbar-login-cart {
+    gap: 0.8rem;
+  }
+
+  .navbar-cart-count {
+    margin-left: -1.2rem;
+  }
+
+  .navbar-user-dropdown {
+    width: 100vw;
+    max-width: 300px;
+    right: -1rem;
   }
 }
 
-/* Extra large devices */
-@media (min-width: 1201px) {
+/* Small devices (small tablets, up to 576px) */
+@media (max-width: 576px) {
+  .navbar-logo-text {
+    font-size: 1.2rem;
+  }
+
+  .navbar-button {
+    width: 5rem;
+    height: 2.2rem;
+    font-size: 0.9rem;
+  }
+
+  .navbar-cart-count {
+    width: 1.2rem;
+    height: 1.2rem;
+    font-size: 0.75rem;
+    margin-left: -1.2rem;
+    margin-top: -1rem;
+  }
+
+  .navbar-welcome-user {
+    font-size: 0.85rem;
+  }
+
+  .navbar-cart-icon {
+    width: 1.5rem;
+  }
+
+  .navbar-auth-buttons {
+    gap: 0.5rem;
+  }
+}
+
+/* Extra small devices (phones, up to 475px) */
+@media (max-width: 475px) {
   .navbar {
-    padding: 1.5rem 3rem;
+    padding: 0.8rem;
+  }
+
+  .navbar-logo-text {
+    display: none; /* Hide SHOPPER text */
+  }
+
+  .navbar-welcome-user {
+    display: none; /* Hide user name */
+  }
+
+  .navbar-user-icon {
+    width: 2rem; /* Make user icon bigger */
+    height: 2rem;
+    margin-right: 0;
+  }
+
+  .navbar-cart-icon {
+    width: 2.2rem; /* Make cart icon bigger */
+  }
+
+  .navbar-cart-count {
+    width: 1.4rem;
+    height: 1.4rem;
+    font-size: 0.8rem;
+    margin-left: -1.4rem;
+    margin-top: -1rem;
+  }
+
+  .navbar-user-trigger {
+    gap: 0; /* Remove gap when text is hidden */
+  }
+
+  .navbar-button {
+    width: 4.5rem;
+    height: 2rem;
+    font-size: 0.75rem;
+  }
+
+  .navbar-auth-buttons {
+    gap: 0.25rem;
   }
 }
