@@ -11,6 +11,7 @@ import {
   closeReviewModal,
   fetchInitialReviews,
 } from "../../../redux/slices/reviewsSlice";
+import "./ReviewModal.css";
 
 /**
  * Skeleton loader for review items

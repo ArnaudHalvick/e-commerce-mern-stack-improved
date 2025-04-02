@@ -2,6 +2,7 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import ReviewItem from "./ReviewItem";
 import { openReviewModal } from "../../../redux/slices/reviewsSlice";
+import "./ReviewsContent.css";
 
 /**
  * Component for the reviews tab content

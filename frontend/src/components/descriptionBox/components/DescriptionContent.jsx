@@ -1,4 +1,5 @@
 import React from "react";
+import "./DescriptionContent.css";
 
 /**
  * Component for the description tab content

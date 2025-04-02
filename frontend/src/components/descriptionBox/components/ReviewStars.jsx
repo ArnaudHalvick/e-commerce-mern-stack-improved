@@ -1,6 +1,7 @@
 import React from "react";
 import star_icon from "../../assets/star_icon.png";
 import star_dull_icon from "../../assets/star_dull_icon.png";
+import "./ReviewStars.css";
 
 /**
  * Render stars for a product or review rating

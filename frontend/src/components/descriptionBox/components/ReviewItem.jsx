@@ -1,6 +1,7 @@
 import React from "react";
 import ReviewStars from "./ReviewStars";
 import { formatDate } from "../utils/formatDate";
+import "./ReviewItem.css";
 
 /**
  * Display a single review item
