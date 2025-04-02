@@ -51,9 +51,7 @@ const Profile = () => {
   const {
     user,
     loading,
-    error,
     isAuthenticated,
-    isEmailVerified,
     verificationRequested,
     passwordChanged,
     loadingStates,
@@ -79,6 +77,8 @@ const Profile = () => {
 
   const [updatedUserData, setUpdatedUserData] = useState(null);
   const [fieldErrors, setFieldErrors] = useState({});
+  // Add local state to track whether password change form is displayed
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
 
   // Fetch complete profile on mount
   useEffect(() => {
@@ -155,6 +155,7 @@ const Profile = () => {
         newPassword: "",
         confirmPassword: "",
       });
+      setIsChangingPassword(false); // Close the password form after successful change
       showSuccess("Password changed successfully!");
     }
   }, [passwordChanged, showSuccess]);
@@ -676,11 +677,8 @@ const Profile = () => {
             handlePasswordInputChange={handlePasswordInputChange}
             handlePasswordSubmit={handlePasswordSubmit}
             fieldErrors={fieldErrors}
-            isChangingPassword={loadingStates?.changingPassword}
-            setIsChangingPassword={(value) => {
-              // This is a placeholder implementation. You might want to
-              // implement a proper state management for changing password
-            }}
+            isChangingPassword={isChangingPassword}
+            setIsChangingPassword={setIsChangingPassword}
             loading={loading}
             changingPassword={loadingStates?.changingPassword}
             validationSchema={profilePasswordChangeSchema}
