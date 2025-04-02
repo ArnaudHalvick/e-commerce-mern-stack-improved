@@ -70,12 +70,18 @@ const ImageGallery = ({
                 alt=""
                 onClick={() => handleThumbnailClick(index)}
                 className={
-                  selectedImageIndex === index ? "selected-thumbnail" : ""
+                  selectedImageIndex === index
+                    ? "product-display-thumbnail-img selected-thumbnail"
+                    : "product-display-thumbnail-img"
                 }
               />
             ))
           ) : (
-            <img src={getImageUrl("/images/pink-placeholder.png")} alt="" />
+            <img
+              src={getImageUrl("/images/pink-placeholder.png")}
+              alt=""
+              className="product-display-thumbnail-img"
+            />
           )}
         </div>
       </div>

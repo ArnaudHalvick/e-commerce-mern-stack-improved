@@ -26,6 +26,7 @@ const ProductInfo = ({ product }) => {
           key={i}
           src={i <= fullStars ? star_icon : star_dull_icon}
           alt="star"
+          className="product-display-star-icon"
         />
       );
     }
@@ -49,10 +50,10 @@ const ProductInfo = ({ product }) => {
 
   return (
     <>
-      <h1>{product.name}</h1>
+      <h1 className="product-display-right-title">{product.name}</h1>
       <div className="product-display-right-stars">
         {renderStarRating}
-        <p>({reviewCount})</p>
+        <p className="product-display-review-count">({reviewCount})</p>
       </div>
       <div className="product-display-right-prices">
         {hasDiscount ? (
@@ -71,14 +72,16 @@ const ProductInfo = ({ product }) => {
         )}
       </div>
       <div className="product-display-right-description">
-        <p>{product.shortDescription}</p>
+        <p className="product-display-description-text">
+          {product.shortDescription}
+        </p>
       </div>
       <p className="product-display-right-category">
-        <span>Category: </span>
+        <span className="product-display-category-label">Category: </span>
         {product.types && product.types.length > 0 ? productTypes : ""}
       </p>
       <p className="product-display-right-category">
-        <span>Tags: </span>
+        <span className="product-display-category-label">Tags: </span>
         {productTags}
       </p>
     </>

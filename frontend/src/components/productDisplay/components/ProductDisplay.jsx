@@ -88,6 +88,7 @@ const ProductDisplay = ({ product }) => {
           key={i}
           src={i <= fullStars ? star_icon : star_dull_icon}
           alt="star"
+          className="product-display-star-icon"
         />
       );
     }
@@ -176,21 +177,31 @@ const ProductDisplay = ({ product }) => {
                   alt=""
                   onClick={() => handleThumbnailClick(index)}
                   className={
-                    selectedImageIndex === index ? "selected-thumbnail" : ""
+                    selectedImageIndex === index
+                      ? "product-display-thumbnail-img selected-thumbnail"
+                      : "product-display-thumbnail-img"
                   }
                 />
               ))
             ) : (
-              <img src={`${getBaseUrl()}/images/pink-placeholder.png`} alt="" />
+              <img
+                src={`${getBaseUrl()}/images/pink-placeholder.png`}
+                alt=""
+                className="product-display-thumbnail-img"
+              />
             )}
           </div>
         </div>
       </div>
       <div className="product-display-right">
-        <h1>{product.name}</h1>
+        <h1 className="product-display-right-title">{product.name}</h1>
         <div className="product-display-right-stars">
-          {renderStarRating}
-          <p>({reviewCount})</p>
+          {renderStarRating.map((star, index) => (
+            <span key={index} className="product-display-star-wrapper">
+              {star}
+            </span>
+          ))}
+          <p className="product-display-review-count">({reviewCount})</p>
         </div>
         <div className="product-display-right-prices">
           {hasDiscount ? (
@@ -209,17 +220,23 @@ const ProductDisplay = ({ product }) => {
           )}
         </div>
         <div className="product-display-right-description">
-          <p>{product.shortDescription}</p>
+          <p className="product-display-description-text">
+            {product.shortDescription}
+          </p>
         </div>
         <div className="product-display-right-size">
-          <h1>Select Size</h1>
+          <h1 className="product-display-size-title">Select Size</h1>
           {sizeError && <p className="size-error">Please select a size</p>}
           <div className="product-display-right-size-container">
             {product.sizes &&
               product.sizes.map((size, index) => (
                 <div
                   key={index}
-                  className={selectedSize === size ? "size-selected" : ""}
+                  className={
+                    selectedSize === size
+                      ? "product-display-size-option size-selected"
+                      : "product-display-size-option"
+                  }
                   onClick={() => handleSizeSelect(size)}
                 >
                   {size}
@@ -228,7 +245,7 @@ const ProductDisplay = ({ product }) => {
           </div>
         </div>
         <div className="product-display-right-quantity">
-          <h1>Quantity</h1>
+          <h1 className="product-display-quantity-title">Quantity</h1>
           <div className="product-display-right-quantity-container">
             <button
               className="quantity-btn"
@@ -255,6 +272,7 @@ const ProductDisplay = ({ product }) => {
             </button>
           </div>
         </div>
+
         <button
           onClick={handleAddToCart}
           disabled={isAdding}
@@ -265,11 +283,11 @@ const ProductDisplay = ({ product }) => {
           {isAdding ? "Adding..." : "Add to Cart"}
         </button>
         <p className="product-display-right-category">
-          <span>Category: </span>
+          <span className="product-display-category-label">Category: </span>
           {product.types && product.types.length > 0 ? productTypes : ""}
         </p>
         <p className="product-display-right-category">
-          <span>Tags: </span>
+          <span className="product-display-category-label">Tags: </span>
           {productTags}
         </p>
       </div>

@@ -19,7 +19,11 @@ const SizeSelector = ({ sizes, selectedSize, onSizeSelect, sizeError }) => {
           sizes.map((size, index) => (
             <div
               key={index}
-              className={selectedSize === size ? "size-selected" : ""}
+              className={
+                selectedSize === size
+                  ? "product-display-size-option size-selected"
+                  : "product-display-size-option"
+              }
               onClick={() => onSizeSelect(size)}
             >
               {size}
