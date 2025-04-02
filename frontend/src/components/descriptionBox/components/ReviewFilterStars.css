@@ -57,7 +57,7 @@
   color: var(--color-primary-dark);
 }
 
-@media screen and (max-width: var(--breakpoint-md)) {
+@media screen and (max-width: 768px) {
   .description-box-filter-ratings-row {
     width: 100%;
   }

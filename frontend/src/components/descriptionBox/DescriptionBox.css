@@ -52,7 +52,7 @@
   background-color: var(--color-background-light);
 }
 
-@media screen and (max-width: var(--breakpoint-md)) {
+@media screen and (max-width: 768px) {
   .description-box-container {
     width: 100%;
   }

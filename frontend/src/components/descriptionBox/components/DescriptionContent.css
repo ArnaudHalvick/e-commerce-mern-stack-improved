@@ -9,7 +9,7 @@
   color: var(--color-text-tertiary);
 }
 
-@media screen and (max-width: var(--breakpoint-md)) {
+@media screen and (max-width: 768px) {
   .description-box-content {
     padding: var(--spacing-6);
   }

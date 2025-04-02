@@ -179,7 +179,7 @@
   --transition-timing-ease-out: cubic-bezier(0, 0, 0.58, 1);
   --transition-timing-ease-in-out: cubic-bezier(0.42, 0, 0.58, 1);
 
-  /* Common Breakpoints - defined as variables for JS reference, use media queries for CSS */
+  /* Common Breakpoints - defined as variables for JS reference, do not use them in media queries for CSS */
   --breakpoint-xs: 0;
   --breakpoint-sm: 576px;
   --breakpoint-md: 768px;

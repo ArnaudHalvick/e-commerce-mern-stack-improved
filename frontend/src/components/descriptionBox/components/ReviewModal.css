@@ -212,7 +212,7 @@ body.description-box-modal-open {
   }
 }
 
-@media screen and (max-width: var(--breakpoint-md)) {
+@media screen and (max-width: 768px) {
   .description-box-modal {
     width: 100%;
     height: 100%;
