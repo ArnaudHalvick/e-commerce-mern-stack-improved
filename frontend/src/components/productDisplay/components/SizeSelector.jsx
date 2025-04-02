@@ -14,7 +14,9 @@ const SizeSelector = ({ sizes, selectedSize, onSizeSelect, sizeError }) => {
   return (
     <div className="product-display-right-size">
       <h1>Select Size</h1>
-      {sizeError && <p className="size-error">Please select a size</p>}
+      {sizeError && (
+        <p className="product-display-size-error">Please select a size</p>
+      )}
       <div className="product-display-right-size-container">
         {sizes &&
           sizes.map((size, index) => (

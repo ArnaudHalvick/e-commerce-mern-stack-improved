@@ -38,7 +38,7 @@
   border-color: var(--color-primary);
 }
 
-.size-error {
+.product-display-size-error {
   color: var(--color-danger);
   margin-top: var(--spacing-2);
   font-size: var(--font-size-sm);

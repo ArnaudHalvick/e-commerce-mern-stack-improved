@@ -63,7 +63,9 @@ const ProductDisplay = ({ product }) => {
           onClick={handleAddToCart}
           disabled={isAdding}
           className={
-            isAdding ? "add-to-cart-btn adding-to-cart" : "add-to-cart-btn"
+            isAdding
+              ? "product-display-add-to-cart-btn product-display-adding-to-cart"
+              : "product-display-add-to-cart-btn"
           }
         >
           {isAdding ? "Adding..." : "Add to Cart"}

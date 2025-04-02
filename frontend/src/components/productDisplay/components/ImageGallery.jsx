@@ -72,7 +72,7 @@ const ImageGallery = ({
                 onClick={() => handleThumbnailClick(index)}
                 className={
                   selectedImageIndex === index
-                    ? "product-display-thumbnail-img selected-thumbnail"
+                    ? "product-display-thumbnail-img product-display-thumbnail-selected"
                     : "product-display-thumbnail-img"
                 }
               />

@@ -14,7 +14,7 @@ const QuantitySelector = ({ quantity, onQuantityChange }) => {
       <h1>Quantity</h1>
       <div className="product-display-right-quantity-container">
         <button
-          className="quantity-btn"
+          className="product-display-quantity-btn"
           onClick={() => onQuantityChange(quantity - 1)}
           disabled={quantity <= 1}
           aria-label="Decrease quantity"
@@ -26,11 +26,11 @@ const QuantitySelector = ({ quantity, onQuantityChange }) => {
           min="1"
           value={quantity}
           onChange={(e) => onQuantityChange(e.target.value)}
-          className="quantity-input"
+          className="product-display-quantity-input"
           aria-label="Quantity"
         />
         <button
-          className="quantity-btn"
+          className="product-display-quantity-btn"
           onClick={() => onQuantityChange(quantity + 1)}
           aria-label="Increase quantity"
         >
