@@ -87,7 +87,6 @@
 /* Large devices (≥992px) */
 @media (min-width: 992px) {
   .cart-items-totals {
-    width: 350px;
     position: sticky;
     top: 20px;
   }

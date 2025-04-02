@@ -2,7 +2,7 @@
 
 /* Promo Code Section */
 .cart-items-promo-code-section {
-  margin-top: 20px;
+  padding: 20px;
 }
 
 .cart-items-promo-code-text {
@@ -53,7 +53,7 @@
 /* Small devices (≤576px) */
 @media (max-width: 576px) {
   .cart-items-promo-code-section {
-    margin-top: 15px;
+    padding: 10px;
   }
 
   .cart-items-promo-code-text {
