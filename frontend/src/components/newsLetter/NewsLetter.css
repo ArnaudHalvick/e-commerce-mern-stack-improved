@@ -1,31 +1,31 @@
 /* Path: frontend/src/components/newsLetter/NewsLetter.css */
 .newsletter-container {
   width: 90%;
-  max-width: 1200px;
+  max-width: var(--container-xl);
   min-height: 22rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   margin: auto;
-  padding: 2rem;
-  margin-bottom: 2rem;
-  margin-top: 2rem;
-  background: linear-gradient(180deg, #fde1ff 0%, #e1ffea22 60%);
-  gap: 1.85rem;
-  border-radius: 1.25rem;
+  padding: var(--spacing-8);
+  margin-bottom: var(--spacing-8);
+  margin-top: var(--spacing-8);
+  background: var(--gradient-hero);
+  gap: var(--spacing-8);
+  border-radius: var(--border-radius-xl);
 }
 
-.newsletter-container h1 {
-  color: #454545;
-  font-size: 3.44rem;
-  font-weight: 600;
+.newsletter-title {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-5xl);
+  font-weight: var(--font-weight-semibold);
   text-align: center;
 }
 
-.newsletter-container p {
-  color: #454545;
-  font-size: 1.25rem;
+.newsletter-description {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-lg);
   text-align: center;
 }
 
@@ -33,105 +33,105 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: white;
+  background-color: var(--color-background);
   width: 100%;
   max-width: 45.625rem;
   height: 4.4rem;
-  border-radius: 5rem;
-  border: 0.0625rem solid #e3e3e3;
+  border-radius: var(--border-radius-full);
+  border: var(--border-width-thin) solid var(--color-border);
 }
 
-.newsletter-input-container input {
+.newsletter-input {
   width: 60%;
-  margin-left: 1.85rem;
+  margin-left: var(--spacing-8);
   border: none;
   outline: none;
-  color: #616161;
+  color: var(--color-text-tertiary);
   font-family: Poppins;
-  font-size: 1rem;
+  font-size: var(--font-size-base);
 }
 
-.newsletter-input-container button {
+.newsletter-button {
   width: 40%;
   max-width: 13.15rem;
   height: 4.4rem;
-  border-radius: 5rem;
-  background: black;
-  color: white;
-  font-size: 1rem;
+  border-radius: var(--border-radius-full);
+  background: var(--color-text-primary);
+  color: var(--color-background);
+  font-size: var(--font-size-base);
   cursor: pointer;
 }
 
 /* Media Queries */
 @media (max-width: 1199.98px) {
-  .newsletter-container h1 {
-    font-size: 3rem;
+  .newsletter-title {
+    font-size: var(--font-size-4xl);
   }
 }
 
 @media (max-width: 991.98px) {
-  .newsletter-container h1 {
-    font-size: 2.5rem;
+  .newsletter-title {
+    font-size: var(--font-size-3xl);
   }
 
-  .newsletter-container p {
-    font-size: 1.1rem;
+  .newsletter-description {
+    font-size: var(--font-size-md);
   }
 
   .newsletter-input-container {
     height: 3.8rem;
   }
 
-  .newsletter-input-container button {
+  .newsletter-button {
     height: 3.8rem;
-    font-size: 0.9rem;
+    font-size: var(--font-size-sm);
   }
 }
 
 @media (max-width: 767.98px) {
-  .newsletter-container h1 {
-    font-size: 2rem;
+  .newsletter-title {
+    font-size: var(--font-size-2xl);
   }
 
-  .newsletter-container p {
-    font-size: 1rem;
+  .newsletter-description {
+    font-size: var(--font-size-base);
   }
 
   .newsletter-input-container {
     height: 3.5rem;
   }
 
-  .newsletter-input-container button {
+  .newsletter-button {
     height: 3.5rem;
   }
 }
 
 @media (max-width: 575.98px) {
   .newsletter-container {
-    padding: 1.5rem;
+    padding: var(--spacing-6);
   }
 
-  .newsletter-container h1 {
-    font-size: 1.8rem;
+  .newsletter-title {
+    font-size: var(--font-size-xl);
   }
 
   .newsletter-input-container {
     flex-direction: column;
     height: auto;
-    padding: 1rem;
-    gap: 1rem;
-    border-radius: 1rem;
+    padding: var(--spacing-4);
+    gap: var(--spacing-4);
+    border-radius: var(--border-radius-lg);
   }
 
-  .newsletter-input-container input {
+  .newsletter-input {
     width: 100%;
     margin-left: 0;
-    padding: 0.8rem;
-    border-radius: 0.5rem;
-    border: 1px solid #e3e3e3;
+    padding: var(--spacing-3);
+    border-radius: var(--border-radius-md);
+    border: var(--border-width-thin) solid var(--color-border);
   }
 
-  .newsletter-input-container button {
+  .newsletter-button {
     width: 100%;
     max-width: 100%;
     height: 3rem;
