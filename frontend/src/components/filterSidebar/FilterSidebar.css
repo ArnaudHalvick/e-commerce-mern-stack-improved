@@ -178,67 +178,6 @@
   border-color: var(--color-secondary);
 }
 
-/* Product Listing Filter Styles */
-.filter-sidebar-product-listing-filter-text {
-  font-size: var(--font-size-base);
-  color: var(--color-text-secondary);
-}
-
-.filter-sidebar-product-listing-filter-highlight {
-  color: var(--color-text-primary);
-  font-weight: var(--font-weight-medium);
-}
-
-.filter-sidebar-product-listing-controls {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-4);
-}
-
-.filter-sidebar-product-listing-items-per-page {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-2);
-}
-
-.filter-sidebar-product-listing-select-label {
-  font-size: var(--font-size-base);
-  color: var(--color-text-secondary);
-}
-
-.filter-sidebar-product-listing-select {
-  font-size: var(--font-size-base);
-  padding: var(--spacing-1) var(--spacing-2);
-  border: var(--border-width-thin) solid var(--color-border);
-  border-radius: var(--border-radius-sm);
-  color: var(--color-text-primary);
-}
-
-.filter-sidebar-product-listing-sort {
-  margin-left: auto;
-}
-
-.filter-sidebar-product-listing-sort-dropdown {
-  font-size: var(--font-size-base);
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-2);
-  padding: var(--spacing-2) var(--spacing-3);
-  border: var(--border-width-thin) solid var(--color-border);
-  border-radius: var(--border-radius-sm);
-  cursor: pointer;
-  color: var(--color-text-primary);
-}
-
-.filter-sidebar-product-listing-page-number {
-  font-size: var(--font-size-base);
-  color: var(--color-text-primary);
-}
-
-.filter-sidebar-product-listing-page-btn {
-  font-size: var(--font-size-base);
-}
-
 /* --------------------
    Responsive Styles 
    -------------------- */
@@ -323,18 +262,6 @@
     margin-bottom: var(--spacing-4);
     padding-bottom: var(--spacing-3);
   }
-
-  .filter-sidebar-product-listing-filter-text,
-  .filter-sidebar-product-listing-select-label,
-  .filter-sidebar-product-listing-select,
-  .filter-sidebar-product-listing-sort-dropdown {
-    font-size: var(--font-size-sm);
-  }
-
-  .filter-sidebar-product-listing-page-number,
-  .filter-sidebar-product-listing-page-btn {
-    font-size: var(--font-size-sm);
-  }
 }
 
 /* Small Devices (Landscape Phones, less than 768px) */
@@ -392,24 +319,6 @@
 
   .filter-sidebar-options {
     max-height: 150px;
-  }
-
-  .filter-sidebar-product-listing-filter-text,
-  .filter-sidebar-product-listing-select-label,
-  .filter-sidebar-product-listing-select,
-  .filter-sidebar-product-listing-sort-dropdown {
-    font-size: var(--font-size-xs);
-  }
-
-  .filter-sidebar-product-listing-controls {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--spacing-2);
-  }
-
-  .filter-sidebar-product-listing-page-number,
-  .filter-sidebar-product-listing-page-btn {
-    font-size: var(--font-size-xs);
   }
 }
 
@@ -475,26 +384,6 @@
   .filter-sidebar-section:not(:first-child) .filter-sidebar-options {
     max-height: 100px;
   }
-
-  .filter-sidebar-product-listing-filter-text,
-  .filter-sidebar-product-listing-select-label,
-  .filter-sidebar-product-listing-select,
-  .filter-sidebar-product-listing-sort-dropdown {
-    font-size: var(--font-size-xs);
-  }
-
-  .filter-sidebar-product-listing-controls {
-    gap: var(--spacing-1);
-  }
-
-  .filter-sidebar-product-listing-sort-dropdown {
-    padding: var(--spacing-1) var(--spacing-2);
-  }
-
-  .filter-sidebar-product-listing-page-number,
-  .filter-sidebar-product-listing-page-btn {
-    font-size: var(--font-size-xs);
-  }
 }
 
 /* Ultra Small Devices (Small Portrait Phones, less than 400px) */
@@ -524,11 +413,5 @@
 
   .filter-sidebar-options {
     max-height: 120px;
-  }
-
-  .filter-sidebar-product-listing-items-per-page {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--spacing-1);
   }
 }
