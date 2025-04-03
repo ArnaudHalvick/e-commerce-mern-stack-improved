@@ -47,7 +47,7 @@
 .product-display-main-img {
   width: 100%;
   height: auto;
-  max-height: 43.75rem;
+  max-height: 35rem;
   object-fit: contain;
   border-radius: var(--border-radius-lg);
 }
@@ -68,7 +68,7 @@
   }
 
   .product-display-main-img {
-    max-height: 35rem;
+    max-height: 32rem;
   }
 }
 

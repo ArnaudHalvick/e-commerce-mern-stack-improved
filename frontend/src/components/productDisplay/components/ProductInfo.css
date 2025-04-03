@@ -74,6 +74,7 @@
   .product-display-right-title {
     font-size: var(--font-size-2xl);
     text-align: center;
+    margin-bottom: var(--spacing-2);
   }
 
   .product-display-right-prices {
@@ -96,7 +97,7 @@
 /* Small devices (landscape phones, less than 768px) */
 @media screen and (max-width: 768px) {
   .product-display-right-title {
-    font-size: var(--font-size-2xl);
+    font-size: var(--font-size-xl);
   }
 
   .product-display-right-stars {

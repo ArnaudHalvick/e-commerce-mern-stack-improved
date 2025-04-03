@@ -9,8 +9,8 @@
 .product-display-right {
   margin-left: var(--spacing-16);
   display: flex;
+  justify-content: space-between;
   flex-direction: column;
-  gap: var(--spacing-4);
 }
 
 .product-display-right-title {
@@ -124,6 +124,7 @@
   .product-display-right {
     margin-left: 0;
     margin-top: var(--spacing-6);
+    gap: var(--spacing-2);
     width: 100%;
     max-width: 600px;
     align-items: center;
