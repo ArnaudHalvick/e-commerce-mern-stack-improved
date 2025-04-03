@@ -1,116 +1,116 @@
 /* Order Confirmation Page Specific Styles */
 .order-confirmation-page {
-  max-width: 1000px;
+  max-width: var(--container-lg);
   margin: 0 auto;
-  padding: 2rem;
+  padding: var(--spacing-8);
   text-align: center;
 }
 
 .order-confirmation-success-icon {
-  color: #4caf50;
+  color: var(--color-success);
   width: 80px;
   height: 80px;
-  margin: 0 auto 1.5rem;
+  margin: 0 auto var(--spacing-6);
 }
 
 .order-confirmation-page h1 {
-  color: #333;
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-3xl);
+  margin-bottom: var(--spacing-2);
 }
 
 .order-confirmation-id {
-  font-size: 1.1rem;
-  color: #666;
-  margin-bottom: 0.3rem;
+  font-size: var(--font-size-md);
+  color: var(--color-text-tertiary);
+  margin-bottom: var(--spacing-1);
 }
 
 .order-confirmation-date {
-  color: #888;
-  margin-bottom: 2rem;
+  color: var(--color-text-light);
+  margin-bottom: var(--spacing-8);
 }
 
 .order-confirmation-details-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 2rem;
+  gap: var(--spacing-6);
+  margin-bottom: var(--spacing-8);
 }
 
 .order-confirmation-section {
-  background-color: #fff;
-  border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  background-color: var(--color-background);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-6);
+  box-shadow: var(--shadow-lg);
   text-align: left;
 }
 
 .order-confirmation-section h2 {
-  font-size: 1.3rem;
-  margin-bottom: 1rem;
-  color: #333;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid #f0f0f0;
+  font-size: var(--font-size-lg);
+  margin-bottom: var(--spacing-4);
+  color: var(--color-text-secondary);
+  padding-bottom: var(--spacing-2);
+  border-bottom: var(--border-width-thin) solid var(--color-border-light);
 }
 
 .order-confirmation-summary-row,
 .order-confirmation-payment-row {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 0.8rem;
+  margin-bottom: var(--spacing-3);
 }
 
 .order-confirmation-summary-row.order-confirmation-total {
-  font-weight: 700;
-  font-size: 1.1rem;
-  padding-top: 0.8rem;
-  margin-top: 0.5rem;
-  border-top: 1px solid #eee;
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-md);
+  padding-top: var(--spacing-3);
+  margin-top: var(--spacing-2);
+  border-top: var(--border-width-thin) solid var(--color-border-light);
 }
 
 .order-confirmation-shipping-info p {
-  margin: 0.5rem 0;
-  color: #555;
+  margin: var(--spacing-2) 0;
+  color: var(--color-text-tertiary);
 }
 
 .order-confirmation-payment-status {
-  padding: 0.3rem 0.8rem;
-  border-radius: 50px;
-  font-size: 0.9rem;
-  font-weight: 500;
+  padding: var(--spacing-1) var(--spacing-3);
+  border-radius: var(--border-radius-full);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
 }
 
 .order-confirmation-payment-status.order-confirmation-status-success {
-  background-color: #e8f5e9;
-  color: #2e7d32;
+  background-color: var(--color-success-light);
+  color: var(--color-success-dark);
 }
 
 .order-confirmation-items {
-  margin-top: 1.5rem;
-  margin-bottom: 2.5rem;
+  margin-top: var(--spacing-6);
+  margin-bottom: var(--spacing-10);
 }
 
 .order-confirmation-item {
   display: flex;
   align-items: center;
-  padding: 1.5rem;
-  margin-bottom: 1rem;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: var(--spacing-6);
+  margin-bottom: var(--spacing-4);
+  background-color: var(--color-background);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
 }
 
 .order-confirmation-item-image {
   width: 80px;
   height: 80px;
-  margin-right: 1.5rem;
+  margin-right: var(--spacing-6);
 }
 
 .order-confirmation-item-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 4px;
+  border-radius: var(--border-radius-sm);
 }
 
 .order-confirmation-item-details {
@@ -119,25 +119,25 @@
 }
 
 .order-confirmation-item-details h3 {
-  font-size: 1.1rem;
-  margin-bottom: 0.5rem;
+  font-size: var(--font-size-md);
+  margin-bottom: var(--spacing-2);
 }
 
 .order-confirmation-item-size,
 .order-confirmation-item-quantity {
-  color: #666;
-  font-size: 0.9rem;
-  margin: 0.3rem 0;
+  color: var(--color-text-tertiary);
+  font-size: var(--font-size-sm);
+  margin: var(--spacing-1) 0;
 }
 
 .order-confirmation-item-price {
-  font-weight: 600;
-  font-size: 1.1rem;
-  color: #333;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-md);
+  color: var(--color-text-secondary);
 }
 
 .order-confirmation-status-container {
-  margin-bottom: 2.5rem;
+  margin-bottom: var(--spacing-10);
 }
 
 .order-confirmation-status {
@@ -145,48 +145,49 @@
   align-items: center;
   justify-content: space-between;
   max-width: 600px;
-  margin: 2rem auto;
+  margin: var(--spacing-8) auto;
 }
 
 .order-confirmation-status-step {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--spacing-2);
 }
 
 .order-confirmation-status-icon {
   width: 40px;
   height: 40px;
-  border-radius: 50%;
-  background-color: #f0f0f0;
-  color: #777;
+  border-radius: var(--border-radius-full);
+  background-color: var(--color-background-dark);
+  color: var(--color-text-light);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 600;
-  transition: all 0.3s ease;
+  font-weight: var(--font-weight-semibold);
+  transition: all var(--transition-duration-normal)
+    var(--transition-timing-ease);
 }
 
 .order-confirmation-status-step.active .order-confirmation-status-icon {
-  background-color: #4caf50;
-  color: white;
+  background-color: var(--color-success);
+  color: var(--color-background);
 }
 
 .order-confirmation-status-text {
-  font-size: 0.9rem;
-  color: #555;
-  font-weight: 500;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-tertiary);
+  font-weight: var(--font-weight-medium);
 }
 
 .order-confirmation-status-step.active .order-confirmation-status-text {
-  color: #333;
+  color: var(--color-text-secondary);
 }
 
 .order-confirmation-status-line {
   flex: 1;
   height: 3px;
-  background-color: #f0f0f0;
+  background-color: var(--color-background-dark);
   position: relative;
   max-width: 100px;
 }
@@ -194,8 +195,8 @@
 .order-confirmation-actions {
   display: flex;
   justify-content: center;
-  gap: 1.5rem;
-  margin-top: 2rem;
+  gap: var(--spacing-6);
+  margin-top: var(--spacing-8);
 }
 
 .order-confirmation-loading-spinner,
@@ -208,19 +209,19 @@
 }
 
 .order-confirmation-error-message h2 {
-  font-size: 1.5rem;
-  color: #e63535;
-  margin-bottom: 0.5rem;
+  font-size: var(--font-size-xl);
+  color: var(--color-danger);
+  margin-bottom: var(--spacing-2);
 }
 
 .order-confirmation-error-message p {
-  color: #666;
-  margin-bottom: 1.5rem;
+  color: var(--color-text-tertiary);
+  margin-bottom: var(--spacing-6);
 }
 
 @media (max-width: 768px) {
   .order-confirmation-page {
-    padding: 1.5rem;
+    padding: var(--spacing-6);
   }
 
   .order-confirmation-details-container {
@@ -233,7 +234,7 @@
   }
 
   .order-confirmation-item-image {
-    margin: 0 auto 1rem;
+    margin: 0 auto var(--spacing-4);
   }
 
   .order-confirmation-item-details {
@@ -242,6 +243,6 @@
 
   .order-confirmation-actions {
     flex-direction: column;
-    gap: 1rem;
+    gap: var(--spacing-4);
   }
 }
