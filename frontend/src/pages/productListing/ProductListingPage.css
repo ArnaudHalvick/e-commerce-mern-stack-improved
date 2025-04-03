@@ -11,6 +11,7 @@
 /* Main content layout */
 .product-listing-content {
   display: flex;
+  gap: var(--spacing-8);
   margin-bottom: var(--spacing-16);
 }
 
@@ -59,6 +60,13 @@
 /* Responsive styles */
 @media screen and (max-width: 992px) {
   .product-listing-content {
+    gap: var(--spacing-3);
     flex-direction: column;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .product-listing-content {
+    gap: 0;
   }
 }
