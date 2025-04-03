@@ -15,7 +15,7 @@ import React from "react";
  */
 const Breadcrumb = ({ routes = [], links }) => {
   // For backward compatibility, use links if provided (older components still use links prop)
-  const breadcrumbRoutes = links || routes;
+  let breadcrumbRoutes = links || routes;
 
   // If no routes provided, show at least Home
   if (!breadcrumbRoutes || breadcrumbRoutes.length === 0) {
