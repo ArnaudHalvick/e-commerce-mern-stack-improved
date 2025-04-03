@@ -4,6 +4,7 @@ import { paymentsService } from "../../api";
 import Spinner from "../../components/ui/spinner";
 import { FormSubmitButton } from "../../components/form";
 import { getImageUrl } from "../../utils/imageUtils";
+import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
 import "./OrderConfirmationPage.css";
 
 const OrderConfirmationPage = () => {
@@ -96,6 +97,14 @@ const OrderConfirmationPage = () => {
 
   return (
     <div className="order-confirmation-page">
+      <Breadcrumb
+        routes={[
+          { label: "Home", path: "/" },
+          { label: "Order History", path: "/account/orders" },
+          { label: "Order Details" },
+        ]}
+      />
+
       <div className="order-confirmation-success-icon">
         <svg
           xmlns="http://www.w3.org/2000/svg"

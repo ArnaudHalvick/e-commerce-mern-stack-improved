@@ -88,11 +88,8 @@ const Profile = () => {
   }, [loading, isAuthenticated, navigate]);
 
   // Memoize breadcrumb links
-  const breadcrumbLinks = useMemo(
-    () => [
-      { label: "Home", path: "/" },
-      { label: "Profile", path: "/profile" },
-    ],
+  const breadcrumbRoutes = useMemo(
+    () => [{ label: "Home", path: "/" }, { label: "Profile" }],
     []
   );
 
@@ -108,7 +105,7 @@ const Profile = () => {
 
   return (
     <div className="profile-page-container">
-      <Breadcrumb links={breadcrumbLinks} />
+      <Breadcrumb routes={breadcrumbRoutes} />
 
       <h1 className="profile-title">Profile</h1>
 

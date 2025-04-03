@@ -4,6 +4,7 @@ import { paymentsService } from "../../api";
 import Spinner from "../../components/ui/spinner";
 import { FormSubmitButton } from "../../components/form";
 import { getImageUrl } from "../../utils/imageUtils";
+import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
 import "./OrderHistoryPage.css";
 
 const OrderHistoryPage = () => {
@@ -81,6 +82,10 @@ const OrderHistoryPage = () => {
 
   return (
     <div className="order-history-page">
+      <Breadcrumb
+        routes={[{ label: "Home", path: "/" }, { label: "Order History" }]}
+      />
+
       <h1>Order History</h1>
 
       {orders.length === 0 ? (

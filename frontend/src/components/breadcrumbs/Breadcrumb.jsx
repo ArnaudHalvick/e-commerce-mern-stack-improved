@@ -8,20 +8,24 @@ import React from "react";
  * A reusable breadcrumb component that can be used across all pages
  * @param {Object} props - Component props
  * @param {Array} props.routes - Array of route objects
+ * @param {Array} props.links - Legacy prop name for routes (for backward compatibility)
  * @param {string} props.routes[].label - Display label for the route
  * @param {string} props.routes[].path - URL path for the route (optional for last item)
  * @param {boolean} props.routes[].isCurrent - Whether this is the current page (applied to last item by default)
  */
-const Breadcrumb = ({ routes = [] }) => {
-  // If no routes provided, show at least HOME
-  if (!routes || routes.length === 0) {
-    routes = [{ label: "Home", path: "/" }];
+const Breadcrumb = ({ routes = [], links }) => {
+  // For backward compatibility, use links if provided (older components still use links prop)
+  const breadcrumbRoutes = links || routes;
+
+  // If no routes provided, show at least Home
+  if (!breadcrumbRoutes || breadcrumbRoutes.length === 0) {
+    breadcrumbRoutes = [{ label: "Home", path: "/" }];
   }
 
   return (
     <div className="breadcrumb">
-      {routes.map((route, index) => {
-        const isLast = index === routes.length - 1;
+      {breadcrumbRoutes.map((route, index) => {
+        const isLast = index === breadcrumbRoutes.length - 1;
         const isCurrent = route.isCurrent || isLast;
 
         // Render current page as a span, others as links
