@@ -1,79 +1,8 @@
 /* ============================================
    Email Management
 ============================================ */
-.profile-section {
-  background-color: var(--color-background-light);
-  border-radius: var(--border-radius-lg);
-  padding: 0 var(--spacing-7) var(--spacing-7) var(--spacing-7);
-  transition: all var(--transition-duration-normal) ease;
-  display: flex;
-  flex-direction: column;
-}
 
-.profile-section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.profile-section-title {
-  color: var(--color-text-secondary);
-  font-size: var(--font-size-xl);
-  margin: 0;
-  font-weight: var(--font-weight-semibold);
-  position: relative;
-  padding-bottom: var(--spacing-2);
-  margin-bottom: var(--spacing-4);
-}
-
-.profile-section-title::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 40px;
-  height: var(--border-width-medium);
-  background-color: var(--color-accent);
-}
-
-.profile-profile-details {
-  display: flex;
-  flex-direction: column;
-  margin-top: var(--spacing-4);
-  margin-bottom: var(--spacing-4);
-}
-
-.profile-detail-item {
-  margin-bottom: var(--spacing-3);
-  padding-bottom: var(--spacing-3);
-  border-bottom: var(--border-width-thin) solid var(--color-border);
-  display: flex;
-  flex-direction: column;
-}
-
-.profile-detail-item:last-child {
-  border-bottom: none;
-}
-
-@media (min-width: 576px) {
-  .profile-detail-item {
-    flex-direction: row;
-    align-items: center;
-  }
-}
-
-.profile-detail-label {
-  font-weight: var(--font-weight-medium);
-  margin-right: var(--spacing-4);
-  min-width: 120px;
-  color: var(--color-text-tertiary);
-}
-
-.profile-detail-value {
-  display: flex;
-  align-items: center;
-}
-
+/* Email status badges */
 .profile-verified-badge {
   display: inline-flex;
   align-items: center;
@@ -125,23 +54,7 @@
   margin-top: var(--spacing-3);
 }
 
-.profile-form-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.profile-form-label {
-  color: var(--color-text-tertiary);
-  margin-bottom: var(--spacing-3);
-  font-weight: var(--font-weight-medium);
-  display: block;
-}
-
-.profile-form-label span.profile-required {
-  color: var(--color-danger);
-  font-weight: var(--font-weight-bold);
-}
-
+/* Email specific form elements */
 .profile-form-note {
   font-size: var(--font-size-sm);
   color: var(--color-text-tertiary);
@@ -151,80 +64,6 @@
   border-radius: var(--border-radius-md);
 }
 
-.profile-form-input {
-  padding: var(--spacing-3) var(--spacing-4);
-  border: var(--border-width-thin) solid var(--color-border);
-  border-radius: var(--border-radius-md);
-  font-size: var(--font-size-base);
-  background-color: var(--color-background);
-  transition: all var(--transition-duration-normal) ease;
-}
-
-.profile-form-input:focus {
-  outline: none;
-  border-color: var(--color-accent);
-  box-shadow: 0 0 0 2px rgba(var(--color-accent-rgb), 0.2);
-}
-
-.profile-form-input.error {
-  border-color: var(--color-danger);
-}
-
-.profile-form-input.error:focus {
-  box-shadow: 0 0 0 2px rgba(var(--color-danger-rgb), 0.2);
-}
-
-.profile-field-error {
-  margin-top: var(--spacing-2);
-  padding: var(--spacing-2) var(--spacing-3);
-  background-color: rgba(var(--color-danger-rgb), 0.1);
-  color: var(--color-danger);
-  border-radius: var(--border-radius-md);
-  font-size: var(--font-size-sm);
-  animation: errorPulse 0.3s ease-out;
-}
-
-.profile-form-actions {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-3);
-  margin-top: var(--spacing-6);
-}
-
-@media (min-width: 576px) {
-  .profile-form-actions {
-    flex-direction: row;
-    justify-content: flex-start;
-    gap: var(--spacing-4);
-  }
-}
-
 .profile-email-form {
   margin-top: var(--spacing-4);
-}
-
-@keyframes errorPulse {
-  0% {
-    transform: scale(1);
-    opacity: 0.5;
-  }
-  50% {
-    transform: scale(1.02);
-    opacity: 0.8;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-5px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
