@@ -257,15 +257,16 @@
 
 .actions-container {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: center;
   gap: var(--spacing-4);
   margin: var(--spacing-8) 0;
 }
 
-@media (min-width: 576px) {
+/* Small devices (< 576px) */
+@media (max-width: 575.98px) {
   .actions-container {
-    flex-direction: row;
-    justify-content: center;
+    flex-direction: column;
   }
 }
 

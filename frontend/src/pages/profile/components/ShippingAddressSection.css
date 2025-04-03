@@ -14,19 +14,23 @@
 
 .profile-compact-row {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(3, 1fr);
   grid-gap: var(--spacing-3);
 }
 
-@media (min-width: 576px) {
+/* Large devices (≥992px) - Default is 3 columns */
+
+/* Medium devices (< 992px) */
+@media (max-width: 991.98px) {
   .profile-compact-row {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (min-width: 992px) {
+/* Small devices (< 576px) */
+@media (max-width: 575.98px) {
   .profile-compact-row {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: 1fr;
   }
 }
 

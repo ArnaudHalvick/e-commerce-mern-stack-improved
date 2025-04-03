@@ -3,13 +3,14 @@
 ============================================ */
 .profile-account-actions {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  gap: var(--spacing-4);
 }
 
-@media (min-width: 576px) {
+/* Small devices (< 576px) */
+@media (max-width: 575.98px) {
   .profile-account-actions {
-    flex-direction: row;
-    gap: var(--spacing-4);
+    flex-direction: column;
   }
 }
 

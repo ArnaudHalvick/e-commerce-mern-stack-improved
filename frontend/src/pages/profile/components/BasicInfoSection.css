@@ -5,13 +5,14 @@
 /* Form Elements */
 .profile-form-row {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(2, 1fr);
   grid-gap: var(--spacing-5);
 }
 
-@media (min-width: 768px) {
+/* Medium devices (< 768px) */
+@media (max-width: 767.98px) {
   .profile-form-row {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
   }
 }
 
