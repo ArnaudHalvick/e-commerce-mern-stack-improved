@@ -3,9 +3,9 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "./DescriptionBox.css";
 import {
-  fetchInitialReviews,
+  fetchPageReviews,
   fetchReviewCounts,
-  resetReviewsState,
+  resetAllReviewsState,
 } from "../../redux/slices/reviewsSlice";
 
 // Import components
@@ -23,40 +23,35 @@ const DescriptionBox = ({ product }) => {
   const [activeTab, setActiveTab] = useState("description");
   const dispatch = useDispatch();
 
-  const { bestReviews, loading, error } = useSelector((state) => state.reviews);
+  const {
+    pageReviews,
+    pageReviewsLoading,
+    pageReviewsError,
+    pageReviewsLoaded,
+    currentProductId,
+  } = useSelector((state) => state.reviews);
 
   // Get the review count
   const reviewCount = product && product.reviews ? product.reviews.length : 0;
 
-  // Reset reviews state when product changes
+  // Reset reviews state when product changes completely
   useEffect(() => {
-    dispatch(resetReviewsState());
-  }, [product?._id, dispatch]);
+    // If product ID changed, reset everything
+    if (product?._id !== currentProductId) {
+      dispatch(resetAllReviewsState());
+    }
+  }, [product?._id, currentProductId, dispatch]);
 
-  // Fetch latest reviews and review counts when the product changes or the active tab changes to reviews
+  // Fetch STATIC page reviews ONCE when product changes or tab becomes active
   useEffect(() => {
-    if (activeTab === "reviews" && product?._id) {
-      // Check if we already have initial reviews
-      const alreadyHasInitialReviews = bestReviews && bestReviews.length > 0;
+    if (product?._id && !pageReviewsLoaded) {
+      // Fetch page reviews only once per product
+      dispatch(fetchPageReviews(product._id));
 
-      // Only fetch initial latest reviews if we don't have them yet
-      if (!alreadyHasInitialReviews) {
-        // Fetch initial latest reviews - using date-desc sort to get the most recent ones
-        dispatch(
-          fetchInitialReviews({
-            productId: product._id,
-            limit: 5,
-            sort: "date-desc", // Changed from rating-desc to date-desc to get latest reviews
-            ratingFilter: 0,
-            bestRated: false, // Changed from true to false since we're not fetching best rated reviews
-          })
-        );
-      }
-
-      // Fetch counts for star ratings
+      // Also fetch counts for star ratings
       dispatch(fetchReviewCounts(product._id));
     }
-  }, [activeTab, product?._id, dispatch, bestReviews]);
+  }, [product?._id, pageReviewsLoaded, dispatch]);
 
   const handleKeyDown = (e, tabName) => {
     if (e.key === "Enter" || e.key === " ") {
@@ -114,9 +109,9 @@ const DescriptionBox = ({ product }) => {
         <div id="reviews-content" role="tabpanel" aria-labelledby="reviews-tab">
           <ReviewsContent
             product={product}
-            reviews={bestReviews}
-            loading={loading}
-            error={error}
+            reviews={pageReviews}
+            loading={pageReviewsLoading}
+            error={pageReviewsError}
             reviewCount={reviewCount}
           />
           <ReviewModal product={product} />

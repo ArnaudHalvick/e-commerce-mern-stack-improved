@@ -188,16 +188,18 @@
 .description-box-modal-reviews-container {
   flex: 1;
   overflow-y: auto;
-
+  max-height: 60vh;
   display: flex;
   flex-direction: column;
   gap: var(--spacing-6);
+  padding-right: var(--spacing-2);
 }
 
 .description-box-modal-infinite-scroll {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-6);
+  width: 100%;
 }
 
 .description-box-modal-reviews-loader {
@@ -255,6 +257,8 @@ body.description-box-modal-open {
     height: 100%;
     max-height: 100vh;
     border-radius: 0;
+    display: flex;
+    flex-direction: column;
   }
 
   .description-box-modal-header {
@@ -298,7 +302,10 @@ body.description-box-modal-open {
   }
 
   .description-box-modal-reviews-container {
-    gap: var(--spacing-4);
+    max-height: 70vh;
+    padding-right: var(--spacing-1);
+    flex: 1;
+    overflow-y: auto;
   }
 
   .description-box-modal-infinite-scroll {
@@ -330,6 +337,7 @@ body.description-box-modal-open {
   }
 
   .description-box-modal-reviews-container {
+    max-height: 60vh;
     gap: var(--spacing-3);
   }
 

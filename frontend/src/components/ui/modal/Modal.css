@@ -21,7 +21,9 @@
   box-shadow: var(--shadow-lg);
   width: 90%;
   max-height: 90vh;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   animation: modal-slideUp var(--transition-duration-normal)
     var(--transition-timing-ease-out);
 }
@@ -85,6 +87,10 @@
 /* Modal content */
 .modal__content {
   padding: var(--spacing-6);
+  overflow-y: visible;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 /* Modal animations */

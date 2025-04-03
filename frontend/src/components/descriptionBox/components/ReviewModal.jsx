@@ -6,10 +6,10 @@ import ReviewFilterStars from "./ReviewFilterStars";
 import Modal from "../../../components/ui/modal/Modal";
 import {
   fetchMoreReviews,
+  fetchModalReviews,
   setRatingFilter,
   setSortOption,
   closeReviewModal,
-  fetchInitialReviews,
 } from "../../../redux/slices/reviewsSlice";
 import "./ReviewModal.css";
 
@@ -41,8 +41,8 @@ const ReviewModal = ({ product }) => {
   const dispatch = useDispatch();
   const {
     modalReviews: reviews,
-    loading,
-    error,
+    modalLoading: loading,
+    modalError: error,
     currentOffset,
     hasMore,
     totalReviews,
@@ -112,14 +112,14 @@ const ReviewModal = ({ product }) => {
     setInitialLoad(true);
     setPreloaded(false);
 
-    // Fetch initial reviews with current filters
+    // Fetch modal reviews with current filters
+    // This is completely separate from the static page reviews
     dispatch(
-      fetchInitialReviews({
+      fetchModalReviews({
         productId: product._id,
         limit: reviewsPerPage,
         sort: sortOption,
         ratingFilter,
-        bestRated: false,
       })
     );
   }, [
@@ -140,7 +140,7 @@ const ReviewModal = ({ product }) => {
 
     setPreloaded(true);
 
-    // Pre-load the next batch
+    // Pre-load the next batch - this only affects the modal reviews
     dispatch(
       fetchMoreReviews({
         productId: product._id,
@@ -243,6 +243,7 @@ const ReviewModal = ({ product }) => {
           }
           scrollableTarget="reviewsContainer"
           className="description-box-modal-infinite-scroll"
+          style={{ overflow: "visible" }}
         >
           {reviews.map((review, index) => (
             <ReviewItem key={`${review._id}-${index}`} review={review} />
