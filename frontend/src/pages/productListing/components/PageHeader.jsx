@@ -1,6 +1,9 @@
 import { memo } from "react";
 import PropTypes from "prop-types";
 
+// Import styles
+import "./PageHeader.css";
+
 /**
  * Page header component for product listing pages (offers and category)
  * Shows different content based on pageType
