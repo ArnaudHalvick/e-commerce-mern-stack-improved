@@ -67,16 +67,17 @@
 }
 
 .description-box-modal-filters {
-  padding: var(--spacing-4) var(--spacing-6);
+  padding: 0;
 }
 
 .description-box-modal-filters-container {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  gap: var(--spacing-8);
-  padding: var(--spacing-4) 0;
+  gap: var(--spacing-4);
   border-bottom: var(--border-width-thin) solid var(--color-border);
+  padding-bottom: var(--spacing-4);
 }
 
 .description-box-modal-filters-title {
@@ -84,6 +85,7 @@
   font-weight: var(--font-weight-semibold);
   color: var(--color-text-secondary);
   margin: 0;
+  white-space: nowrap;
 }
 
 .description-box-modal-sort-options {
@@ -212,6 +214,16 @@ body.description-box-modal-open {
   }
 }
 
+@media screen and (max-width: 992px) {
+  .description-box-modal-filters-container {
+    padding-bottom: var(--spacing-3);
+  }
+
+  .description-box-modal-filters-title {
+    font-size: var(--font-size-base);
+  }
+}
+
 @media screen and (max-width: 768px) {
   .description-box-modal {
     width: 100%;
@@ -233,8 +245,17 @@ body.description-box-modal-open {
   }
 
   .description-box-modal-filters-container {
-    flex-direction: column;
     align-items: flex-start;
+    gap: var(--spacing-2);
+  }
+
+  .description-box-filter-star {
+    width: var(--spacing-3);
+    height: var(--spacing-3);
+  }
+
+  .description-box-filter-rating-item {
+    padding: var(--spacing-1) var(--spacing-3);
   }
 
   .description-box-modal-rating-filters {
@@ -243,5 +264,25 @@ body.description-box-modal-open {
 
   .description-box-modal-reviews-container {
     padding: var(--spacing-4);
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .description-box-filter-ratings-row {
+    gap: var(--spacing-2);
+  }
+
+  .description-box-filter-star {
+    width: var(--spacing-2);
+    height: var(--spacing-2);
+  }
+
+  .description-box-filter-rating-count {
+    font-size: var(--font-size-xs);
+  }
+
+  .description-box-filter-rating-item {
+    padding: var(--spacing-1) var(--spacing-2);
+    gap: var(--spacing-1);
   }
 }

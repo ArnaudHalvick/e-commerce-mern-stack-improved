@@ -30,6 +30,45 @@ const ReviewFilterStars = ({ ratingFilter, ratingCounts, onRatingFilter }) => {
 
   const counts = ensureValidCounts();
 
+  // Handler for keyboard events
+  const handleKeyDown = (e, rating) => {
+    if (e.key === "Enter" || e.key === " ") {
+      onRatingFilter(rating);
+      e.preventDefault();
+    }
+  };
+
+  // Render star images for a rating
+  const renderStars = (rating) => {
+    const stars = [];
+
+    // Filled stars
+    for (let i = 0; i < rating; i++) {
+      stars.push(
+        <img
+          key={`filled-${i}`}
+          src={star_icon}
+          alt="star"
+          className="description-box-filter-star"
+        />
+      );
+    }
+
+    // Empty stars
+    for (let i = rating; i < 5; i++) {
+      stars.push(
+        <img
+          key={`empty-${i}`}
+          src={star_dull_icon}
+          alt="star"
+          className="description-box-filter-star"
+        />
+      );
+    }
+
+    return stars;
+  };
+
   return (
     <div className="description-box-filter-ratings-row">
       {[5, 4, 3, 2, 1].map((rating) => {
@@ -42,35 +81,11 @@ const ReviewFilterStars = ({ ratingFilter, ratingCounts, onRatingFilter }) => {
             }`}
             onClick={() => onRatingFilter(rating)}
             aria-label={`Filter by ${rating} star reviews`}
-            tabIndex="0"
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                onRatingFilter(rating);
-                e.preventDefault();
-              }
-            }}
+            tabIndex={0}
+            onKeyDown={(e) => handleKeyDown(e, rating)}
           >
             <div className="description-box-filter-star-row">
-              {Array(rating)
-                .fill()
-                .map((_, index) => (
-                  <img
-                    key={index}
-                    src={star_icon}
-                    alt="star"
-                    className="description-box-filter-star"
-                  />
-                ))}
-              {Array(5 - rating)
-                .fill()
-                .map((_, index) => (
-                  <img
-                    key={index + rating}
-                    src={star_dull_icon}
-                    alt="star"
-                    className="description-box-filter-star"
-                  />
-                ))}
+              {renderStars(rating)}
             </div>
             <span
               className="description-box-filter-rating-count"

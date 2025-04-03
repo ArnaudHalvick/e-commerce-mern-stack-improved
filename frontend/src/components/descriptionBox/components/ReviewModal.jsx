@@ -176,17 +176,15 @@ const ReviewModal = ({ product }) => {
 
   const modalContent = (
     <>
-      <div className="description-box-modal-filters">
-        <div className="description-box-modal-filters-container">
-          <h3 className="description-box-modal-filters-title">
-            Filter by Rating:
-          </h3>
-          <ReviewFilterStars
-            ratingFilter={ratingFilter}
-            ratingCounts={ratingCounts}
-            onRatingFilter={handleRatingFilter}
-          />
-        </div>
+      <div className="description-box-modal-filters-container">
+        <h3 className="description-box-modal-filters-title">
+          Filter by Rating:
+        </h3>
+        <ReviewFilterStars
+          ratingFilter={ratingFilter}
+          ratingCounts={ratingCounts}
+          onRatingFilter={handleRatingFilter}
+        />
       </div>
 
       <div className="description-box-modal-sort-options">
