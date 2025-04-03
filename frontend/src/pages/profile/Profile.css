@@ -7,23 +7,14 @@
   padding: 0 var(--spacing-6);
 }
 
+/* Profile Title - Consistent with product-listing-title */
 .profile-title {
-  color: var(--color-text-secondary);
-  font-size: var(--font-size-3xl);
-  margin-bottom: var(--spacing-7);
-  padding-bottom: var(--spacing-5);
-  border-bottom: var(--border-width-medium) solid var(--color-border-light);
-  position: relative;
-}
-
-.profile-title::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: calc(-1 * var(--border-width-medium));
-  width: 60px;
-  height: var(--border-width-medium);
-  background-color: var(--color-accent);
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--spacing-2);
+  color: var(--color-text-primary);
+  line-height: var(--line-height-tight);
+  text-align: center;
 }
 
 .profile-container {
@@ -218,5 +209,24 @@
   100% {
     transform: scale(1);
     opacity: 1;
+  }
+}
+
+/* Responsive styles for profile-title */
+@media screen and (max-width: 992px) {
+  .profile-title {
+    font-size: var(--font-size-3xl);
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .profile-title {
+    font-size: var(--font-size-2xl);
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .profile-title {
+    font-size: var(--font-size-xl);
   }
 }

@@ -87,7 +87,7 @@ const OrderHistoryPage = () => {
         routes={[{ label: "Home", path: "/" }, { label: "Order History" }]}
       />
       <div className="order-history-page">
-        <h1>Order History</h1>
+        <h1 className="order-history-page-title">Order History</h1>
 
         {orders.length === 0 ? (
           <div className="order-history-no-orders">

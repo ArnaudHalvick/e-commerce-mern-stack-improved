@@ -1,22 +1,31 @@
-/* Path: frontend/src/pages/CSS/Cart.css */
-.cart-page-title {
-  text-align: center;
-  margin-bottom: var(--spacing-4);
-  color: var(--color-text-secondary);
-  font-size: var(--font-size-3xl);
+/* ============================================
+   Cart Page Styles
+============================================ */
+.cart-page-container {
+  margin: var(--spacing-8) auto;
+  max-width: var(--container-xl);
+  padding: 0 var(--spacing-6);
 }
 
-/* Responsive adjustments */
-@media screen and (max-width: 768px) {
+/* Cart Title - Consistent with product-listing-title */
+.cart-page-title {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--spacing-3);
+  color: var(--color-text-primary);
+  line-height: var(--line-height-tight);
+  text-align: center;
+}
+
+/* Responsive styles for cart-page-title */
+@media screen and (max-width: 992px) {
+  .cart-page-title {
+    font-size: var(--font-size-2xl);
+  }
+}
+
+@media screen and (max-width: 576px) {
   .cart-page-title {
     font-size: var(--font-size-xl);
   }
 }
-
-@media screen and (max-width: 480px) {
-  .cart-page-title {
-    font-size: var(--font-size-lg);
-  }
-}
-
-/* Removed checkout-button styles as they're now in CartItems.css */
