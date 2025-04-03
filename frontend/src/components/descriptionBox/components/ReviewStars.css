@@ -1,9 +1,36 @@
 .description-box-review-rating {
   display: flex;
   gap: var(--spacing-1);
+  align-items: center;
 }
 
 .description-box-review-star {
   width: var(--spacing-4);
   height: var(--spacing-4);
+}
+
+/* Media queries for responsiveness */
+@media screen and (max-width: 992px) {
+  .description-box-review-star {
+    width: var(--spacing-3);
+    height: var(--spacing-3);
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .description-box-review-rating {
+    gap: calc(var(--spacing-1) / 2);
+  }
+
+  .description-box-review-star {
+    width: var(--spacing-3);
+    height: var(--spacing-3);
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .description-box-review-star {
+    width: var(--spacing-2);
+    height: var(--spacing-2);
+  }
 }

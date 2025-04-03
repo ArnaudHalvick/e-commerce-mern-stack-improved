@@ -242,6 +242,7 @@ const ReviewModal = ({ product }) => {
             )
           }
           scrollableTarget="reviewsContainer"
+          className="description-box-modal-infinite-scroll"
         >
           {reviews.map((review, index) => (
             <ReviewItem key={`${review._id}-${index}`} review={review} />

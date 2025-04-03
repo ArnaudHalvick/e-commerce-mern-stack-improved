@@ -98,6 +98,7 @@
 .description-box-modal-sort-label {
   font-size: var(--font-size-sm);
   color: var(--color-text-tertiary);
+  white-space: nowrap;
 }
 
 .description-box-modal-sort-select {
@@ -107,6 +108,17 @@
   background-color: var(--color-background);
   font-size: var(--font-size-sm);
   cursor: pointer;
+  transition: all var(--transition-duration-fast) var(--transition-timing-ease);
+}
+
+.description-box-modal-sort-select:hover {
+  border-color: var(--color-primary-light);
+}
+
+.description-box-modal-sort-select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(255, 65, 65, 0.2);
 }
 
 .description-box-modal-no-reviews {
@@ -181,6 +193,12 @@
   gap: var(--spacing-6);
 }
 
+.description-box-modal-infinite-scroll {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+}
+
 .description-box-modal-reviews-loader {
   display: flex;
   justify-content: center;
@@ -222,6 +240,10 @@ body.description-box-modal-open {
   .description-box-modal-filters-title {
     font-size: var(--font-size-base);
   }
+
+  .description-box-modal-sort-options {
+    padding: var(--spacing-3) var(--spacing-4);
+  }
 }
 
 @media screen and (max-width: 768px) {
@@ -242,6 +264,20 @@ body.description-box-modal-open {
 
   .description-box-modal-sort-options {
     flex-direction: column;
+    padding: var(--spacing-3);
+    gap: var(--spacing-1);
+    align-items: flex-start;
+  }
+
+  .description-box-modal-sort-select {
+    width: 100%;
+    margin-top: var(--spacing-1);
+    padding: var(--spacing-1) var(--spacing-3);
+    font-size: var(--font-size-xs);
+  }
+
+  .description-box-modal-sort-label {
+    font-size: var(--font-size-xs);
   }
 
   .description-box-modal-filters-container {
@@ -263,6 +299,11 @@ body.description-box-modal-open {
 
   .description-box-modal-reviews-container {
     padding: var(--spacing-4);
+    gap: var(--spacing-4);
+  }
+
+  .description-box-modal-infinite-scroll {
+    gap: var(--spacing-4);
   }
 }
 
@@ -283,5 +324,18 @@ body.description-box-modal-open {
   .description-box-filter-rating-item {
     padding: var(--spacing-1) var(--spacing-2);
     gap: var(--spacing-1);
+  }
+
+  .description-box-modal-sort-options {
+    padding: var(--spacing-2);
+  }
+
+  .description-box-modal-reviews-container {
+    padding: var(--spacing-3);
+    gap: var(--spacing-3);
+  }
+
+  .description-box-modal-infinite-scroll {
+    gap: var(--spacing-3);
   }
 }
