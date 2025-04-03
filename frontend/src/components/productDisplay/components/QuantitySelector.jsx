@@ -11,7 +11,7 @@ import "./QuantitySelector.css";
 const QuantitySelector = ({ quantity, onQuantityChange }) => {
   return (
     <div className="product-display-right-quantity">
-      <h1>Quantity</h1>
+      <h1 className="product-display-quantity-title">Quantity</h1>
       <div className="product-display-right-quantity-container">
         <button
           className="product-display-quantity-btn"

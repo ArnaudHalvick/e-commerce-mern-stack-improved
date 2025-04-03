@@ -13,7 +13,7 @@ import "./SizeSelector.css";
 const SizeSelector = ({ sizes, selectedSize, onSizeSelect, sizeError }) => {
   return (
     <div className="product-display-right-size">
-      <h1>Select Size</h1>
+      <h1 className="product-display-size-title">Select Size</h1>
       {sizeError && (
         <p className="product-display-size-error">Please select a size</p>
       )}

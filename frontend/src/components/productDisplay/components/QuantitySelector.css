@@ -12,7 +12,7 @@
 .product-display-right-quantity-container {
   display: flex;
   align-items: center;
-  gap: var(--spacing-2);
+  gap: var(--spacing-5);
   margin-top: var(--spacing-2);
   height: 36px;
 }
@@ -71,24 +71,24 @@
     margin-top: var(--spacing-1);
   }
 
-  .product-display-right-quantity h1 {
+  .product-display-quantity-title {
     font-size: var(--font-size-lg);
     margin-bottom: var(--spacing-2);
   }
 
   .product-display-right-quantity-container {
-    height: 40px;
-    justify-content: center;
+    height: 38px;
+    justify-content: flex-start;
   }
 
   .product-display-quantity-btn {
-    width: 40px;
-    height: 40px;
+    width: 38px;
+    height: 38px;
   }
 
   .product-display-quantity-input {
-    width: 60px;
-    height: 40px;
+    width: 55px;
+    height: 38px;
   }
 }
 
@@ -96,6 +96,22 @@
 @media screen and (max-width: 768px) {
   .product-display-quantity-title {
     font-size: var(--font-size-base);
+    margin-bottom: var(--spacing-1);
+  }
+
+  .product-display-right-quantity-container {
+    justify-content: center;
+    height: 34px;
+  }
+
+  .product-display-quantity-btn {
+    width: 34px;
+    height: 34px;
+  }
+
+  .product-display-quantity-input {
+    width: 50px;
+    height: 34px;
   }
 }
 
@@ -103,21 +119,29 @@
 @media screen and (max-width: 576px) {
   .product-display-right-quantity {
     margin-top: var(--spacing-1);
+    width: 100%;
+  }
+
+  .product-display-quantity-title {
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--spacing-1);
   }
 
   .product-display-right-quantity-container {
-    height: 44px;
+    height: 32px;
+    justify-content: center;
+    width: 100%;
   }
 
   .product-display-quantity-btn {
-    width: 44px;
-    height: 44px;
-    font-size: var(--font-size-lg);
+    width: 32px;
+    height: 32px;
+    font-size: var(--font-size-base);
   }
 
   .product-display-quantity-input {
-    width: 60px;
-    height: 44px;
-    font-size: var(--font-size-md);
+    width: 45px;
+    height: 32px;
+    font-size: var(--font-size-base);
   }
 }
