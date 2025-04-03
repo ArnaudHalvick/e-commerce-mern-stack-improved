@@ -21,6 +21,13 @@ const ReviewsContent = ({ reviews, loading, error, reviewCount }) => {
     dispatch(openReviewModal());
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      handleOpenModal();
+    }
+  };
+
   return (
     <div className="description-box-reviews-content">
       <div className="description-box-reviews-header">
@@ -55,8 +62,11 @@ const ReviewsContent = ({ reviews, loading, error, reviewCount }) => {
           <button
             className="description-box-reviews-see-all-button"
             onClick={handleOpenModal}
+            onKeyDown={handleKeyDown}
+            aria-label={`See all ${reviewCount} reviews`}
+            tabIndex={0}
           >
-            See All Reviews ({reviewCount})
+            <span>See All Reviews ({reviewCount})</span>
           </button>
         </div>
       )}
