@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { FormInputField, FormSubmitButton } from "../../../components/form";
 import { debounce } from "lodash";
 import { validateName, validatePhone } from "../../../utils/validation";
+import "./BasicInfoSection.css";
 
 /**
  * BasicInfoSection component for displaying and editing user's basic information

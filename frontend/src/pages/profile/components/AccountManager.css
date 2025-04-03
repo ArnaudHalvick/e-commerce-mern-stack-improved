@@ -1,0 +1,52 @@
+/* ============================================
+   Account Management
+============================================ */
+.profile-section {
+  background-color: var(--color-background-light);
+  border-radius: var(--border-radius-lg);
+  padding: 0 var(--spacing-7) var(--spacing-7) var(--spacing-7);
+  transition: all var(--transition-duration-normal) ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-section-title {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xl);
+  margin: 0;
+  font-weight: var(--font-weight-semibold);
+  position: relative;
+  padding-bottom: var(--spacing-2);
+  margin-bottom: var(--spacing-4);
+}
+
+.profile-section-title::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 40px;
+  height: var(--border-width-medium);
+  background-color: var(--color-accent);
+}
+
+.profile-account-actions {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 576px) {
+  .profile-account-actions {
+    flex-direction: row;
+    gap: var(--spacing-4);
+  }
+}
+
+.profile-account-warning {
+  margin-top: var(--spacing-4);
+  padding: var(--spacing-4);
+  background-color: rgba(220, 53, 69, 0.1);
+  border-left: var(--border-width-thick) solid var(--color-danger);
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-sm);
+}

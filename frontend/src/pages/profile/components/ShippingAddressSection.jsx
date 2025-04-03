@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { FormInputField, FormSubmitButton } from "../../../components/form";
 import { debounce } from "lodash";
 import { validateAddress } from "../../../utils/validation";
+import "./ShippingAddressSection.css";
 
 /**
  * ShippingAddressSection component for displaying and editing user's shipping address

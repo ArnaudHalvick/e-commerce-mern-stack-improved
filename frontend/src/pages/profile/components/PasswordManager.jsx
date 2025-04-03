@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { debounce } from "lodash";
 import { validatePassword } from "../../../utils/validation";
 import { FormSubmitButton } from "../../../components/form";
+import "./PasswordManager.css";
 
 /**
  * PasswordManager component for handling password changes
