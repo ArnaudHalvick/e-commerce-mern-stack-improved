@@ -245,7 +245,6 @@ body.description-box-modal-open {
   }
 
   .description-box-modal-filters-container {
-    align-items: flex-start;
     gap: var(--spacing-2);
   }
 
