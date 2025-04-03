@@ -36,8 +36,8 @@
   color: var(--color-primary);
 }
 
-.product-display-right-price-single {
-  color: var(--color-primary);
+.product-display-right-price-current {
+  color: var(--color-text-primary);
   font-size: var(--font-size-2xl);
 }
 
@@ -82,7 +82,7 @@
     justify-content: center;
   }
 
-  .product-display-right-price-single {
+  .product-display-right-price-current {
     font-size: var(--font-size-xl);
   }
 
@@ -110,6 +110,10 @@
 
 /* Extra small devices (portrait phones, less than 576px) */
 @media screen and (max-width: 576px) {
+  .product-display-right-price-current {
+    font-size: var(--font-size-m);
+  }
+
   .product-display-right-prices {
     flex-direction: column;
     gap: var(--spacing-1);

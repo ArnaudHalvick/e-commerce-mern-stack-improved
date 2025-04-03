@@ -67,7 +67,7 @@ const ProductInfo = ({ product }) => {
             </div>
           </>
         ) : (
-          <div className="product-display-right-price-single">
+          <div className="product-display-right-price-current">
             ${product.old_price}
           </div>
         )}

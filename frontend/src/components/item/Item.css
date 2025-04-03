@@ -126,7 +126,7 @@
 
   .product-item-price-current,
   .product-item-price-discounted {
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-base);
   }
 
   .product-item-price-previous {
