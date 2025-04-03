@@ -31,13 +31,11 @@ const PageHeader = ({ pageType, category, banner }) => {
 
     return (
       <div className="product-listing-header">
-        <div className="product-listing-title-container">
-          <h1 className="product-listing-title">{categoryTitle}</h1>
-          <p className="product-listing-subtitle">
-            Explore our latest {category} collection with the finest quality and
-            trends.
-          </p>
-        </div>
+        <h1 className="product-listing-title">{categoryTitle}</h1>
+        <p className="product-listing-subtitle">
+          Explore our latest {category} collection with the finest quality and
+          trends.
+        </p>
       </div>
     );
   }
@@ -45,12 +43,10 @@ const PageHeader = ({ pageType, category, banner }) => {
   // For offers page
   return (
     <div className="product-listing-header">
-      <div className="product-listing-title-container">
-        <h1 className="product-listing-title">Special Offers & Deals</h1>
-        <p className="product-listing-subtitle">
-          Discover our best deals and special offers on premium clothing items.
-        </p>
-      </div>
+      <h1 className="product-listing-title">Special Offers & Deals</h1>
+      <p className="product-listing-subtitle">
+        Discover our best deals and special offers on premium clothing items.
+      </p>
     </div>
   );
 };
