@@ -1,9 +1,6 @@
 /* ============================================
    Basic Information Section
 ============================================ */
-.profile-info-section {
-  margin-bottom: var(--spacing-6);
-}
 
 /* Form Elements */
 .profile-form-row {
