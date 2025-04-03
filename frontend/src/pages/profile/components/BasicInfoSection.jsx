@@ -253,7 +253,7 @@ const BasicInfoSection = ({
             <FormSubmitButton
               size="small"
               type="button"
-              variant="outline"
+              variant="secondary"
               text="Cancel"
               onClick={handleCancel}
               disabled={isSubmitting}
