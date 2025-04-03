@@ -2,7 +2,6 @@
 .order-history-page {
   max-width: var(--container-xl);
   margin: 0 auto;
-  padding: var(--spacing-8);
 }
 
 .order-history-page-title {
@@ -186,10 +185,6 @@
 @media (max-width: 768px) {
   .order-history-page-title {
     margin-bottom: var(--spacing-1);
-  }
-
-  .order-history-page {
-    padding: var(--spacing-6);
   }
 
   .order-history-header {
