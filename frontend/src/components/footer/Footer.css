@@ -66,6 +66,40 @@
 }
 
 /* Responsive styles */
+/* Default styles are for large devices (≥992px) */
+/* Default styles already work well for larger screens */
+
+/* Medium devices (< 992px) */
+@media (max-width: 991.98px) {
+  .footer-brand p {
+    font-size: var(--font-size-4xl);
+  }
+
+  .footer-navigation {
+    gap: var(--spacing-10);
+  }
+}
+
+/* Small devices (< 768px) */
+@media (max-width: 767.98px) {
+  .footer-container {
+    gap: var(--spacing-10);
+  }
+
+  .footer-brand p {
+    font-size: var(--font-size-4xl);
+  }
+
+  .footer-navigation {
+    gap: var(--spacing-8);
+    font-size: var(--font-size-md);
+  }
+
+  .footer-legal {
+    font-size: var(--font-size-base);
+  }
+}
+
 /* Extra small devices (phones, <576px) */
 @media (max-width: 575.98px) {
   .footer-container {
@@ -86,10 +120,6 @@
     font-size: var(--font-size-base);
   }
 
-  .footer-legal {
-    font-size: var(--font-size-sm);
-  }
-
   .footer-social-links {
     gap: var(--spacing-3);
   }
@@ -103,40 +133,4 @@
     width: 20px;
     height: auto;
   }
-}
-
-/* Small devices (≥576px and <768px) */
-@media (min-width: 576px) and (max-width: 767.98px) {
-  .footer-container {
-    gap: var(--spacing-10);
-  }
-
-  .footer-brand p {
-    font-size: var(--font-size-4xl);
-  }
-
-  .footer-navigation {
-    gap: var(--spacing-8);
-    font-size: var(--font-size-md);
-  }
-
-  .footer-legal {
-    font-size: var(--font-size-base);
-  }
-}
-
-/* Medium devices (≥768px and <992px) */
-@media (min-width: 768px) and (max-width: 991.98px) {
-  .footer-brand p {
-    font-size: var(--font-size-4xl);
-  }
-
-  .footer-navigation {
-    gap: var(--spacing-10);
-  }
-}
-
-/* Large devices and above (≥992px) */
-@media (min-width: 992px) {
-  /* Default styles already work well for larger screens */
 }

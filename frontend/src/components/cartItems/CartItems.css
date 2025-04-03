@@ -86,14 +86,19 @@
 /* ----- RESPONSIVE BREAKPOINTS ----- */
 /* Ordered from largest to smallest to ensure proper cascade */
 
-/* Large devices (≥992px) */
-@media (min-width: 992px) {
-  .cart-items-table-responsive {
-    flex: 1;
-  }
+/* Default styles are for large devices (≥992px) */
+.cart-items-table-responsive {
+  flex: 1;
+}
 
+.cart-summary-section {
+  width: 450px;
+}
+
+/* Medium devices (< 992px) */
+@media (max-width: 991.98px) {
   .cart-summary-section {
-    width: 450px;
+    width: 100%;
   }
 }
 
