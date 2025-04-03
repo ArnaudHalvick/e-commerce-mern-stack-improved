@@ -5,14 +5,14 @@
   align-items: center;
   justify-content: center;
   min-height: 40vh;
-  padding: 2rem;
+  padding: var(--spacing-8);
   text-align: center;
 }
 
 /* Inline Spinner */
 .inline-spinner {
   display: inline-flex;
-  margin-left: 0.5rem;
+  margin-left: var(--spacing-2);
   height: auto !important;
 }
 
@@ -29,7 +29,7 @@
 
 .btn-loading .inline-spinner {
   position: absolute;
-  right: 10px;
+  right: var(--spacing-4);
   top: 50%;
   transform: translateY(-50%);
 }
@@ -42,7 +42,7 @@
   width: 100%;
   height: 100%;
   background-color: rgba(255, 255, 255, 0.85);
-  z-index: 9999;
+  z-index: var(--z-index-modal);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -50,9 +50,9 @@
 
 /* Animation durations */
 .animation-fast .spinner {
-  animation-duration: 0.5s;
+  animation-duration: var(--transition-duration-fast);
 }
 
 .animation-slow .spinner {
-  animation-duration: 1.5s;
+  animation-duration: var(--transition-duration-slow);
 }

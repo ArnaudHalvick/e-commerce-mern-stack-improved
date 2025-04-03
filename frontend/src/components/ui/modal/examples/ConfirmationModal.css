@@ -2,36 +2,36 @@
 .confirmation-modal__content {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: var(--spacing-6);
 }
 
 .confirmation-modal__message {
   margin: 0;
-  font-size: 1rem;
-  line-height: 1.5;
-  color: #333;
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-primary);
 }
 
 .confirmation-modal__actions {
   display: flex;
   justify-content: flex-end;
-  gap: 1rem;
-  margin-top: 0.5rem;
+  gap: var(--spacing-4);
+  margin-top: var(--spacing-2);
 }
 
 .confirmation-modal__button {
-  padding: 0.7rem 1.5rem;
-  border-radius: 4px;
-  font-weight: 500;
-  font-size: 0.95rem;
+  padding: var(--spacing-3) var(--spacing-6);
+  border-radius: var(--border-radius-md);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-sm);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--transition-duration-fast) var(--transition-timing-ease);
   border: none;
 }
 
 .confirmation-modal__button:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+  box-shadow: var(--shadow-outline);
 }
 
 .confirmation-modal__button:disabled {
@@ -41,47 +41,47 @@
 
 /* Button variants */
 .confirmation-modal__button--secondary {
-  background-color: #f8f9fa;
-  color: #495057;
-  border: 1px solid #ced4da;
+  background-color: var(--color-background-light);
+  color: var(--color-text-secondary);
+  border: var(--border-width-thin) solid var(--color-border);
 }
 
 .confirmation-modal__button--secondary:hover:not(:disabled) {
-  background-color: #e9ecef;
+  background-color: var(--color-background-dark);
 }
 
 .confirmation-modal__button--primary {
-  background-color: #007bff;
-  color: white;
+  background-color: var(--color-secondary);
+  color: var(--color-background);
 }
 
 .confirmation-modal__button--primary:hover:not(:disabled) {
-  background-color: #0069d9;
+  background-color: var(--color-secondary-dark);
 }
 
 .confirmation-modal__button--success {
-  background-color: #28a745;
-  color: white;
+  background-color: var(--color-success);
+  color: var(--color-background);
 }
 
 .confirmation-modal__button--success:hover:not(:disabled) {
-  background-color: #218838;
+  background-color: var(--color-success-dark);
 }
 
 .confirmation-modal__button--danger {
-  background-color: #dc3545;
-  color: white;
+  background-color: var(--color-danger);
+  color: var(--color-background);
 }
 
 .confirmation-modal__button--danger:hover:not(:disabled) {
-  background-color: #c82333;
+  background-color: var(--color-danger-dark);
 }
 
 .confirmation-modal__button--warning {
-  background-color: #ffc107;
-  color: #212529;
+  background-color: var(--color-warning);
+  color: var(--color-text-primary);
 }
 
 .confirmation-modal__button--warning:hover:not(:disabled) {
-  background-color: #e0a800;
+  background-color: var(--color-warning-dark);
 }
