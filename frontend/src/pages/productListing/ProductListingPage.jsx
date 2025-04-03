@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 // Import components
 import { PageHeader, ProductsContent } from "./components";
 import FilterSidebar from "../../components/filterSidebar/FilterSidebar";
+import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
 
 // Import custom hook
 import { useProductListingData } from "./hooks";
@@ -28,6 +29,25 @@ const ProductListingPage = ({
   const { category: paramCategory } = useParams();
   const category = propCategory || paramCategory;
   const location = useLocation();
+
+  // Configure breadcrumbs based on page type
+  const getBreadcrumbRoutes = () => {
+    const routes = [{ label: "Home", path: "/" }];
+
+    if (pageType === "category" && category) {
+      routes.push({
+        label: category.charAt(0).toUpperCase() + category.slice(1),
+        isCurrent: true,
+      });
+    } else if (pageType === "offers") {
+      routes.push({
+        label: "Special Offers",
+        isCurrent: true,
+      });
+    }
+
+    return routes;
+  };
 
   // Add a local loading timeout state to prevent flickering
   const [showLoading, setShowLoading] = useState(false);
@@ -110,77 +130,94 @@ const ProductListingPage = ({
   // Show loading state
   if (showLoading) {
     return (
-      <div className="product-listing-container">
-        {isCategoryPage && (
-          <PageHeader pageType={pageType} category={category} banner={banner} />
-        )}
-        {!isCategoryPage && <PageHeader pageType={pageType} />}
-        <div className="product-listing-loading">Loading products...</div>
-      </div>
+      <>
+        <Breadcrumb routes={getBreadcrumbRoutes()} />
+        <div className="product-listing-container">
+          {isCategoryPage && (
+            <PageHeader
+              pageType={pageType}
+              category={category}
+              banner={banner}
+            />
+          )}
+          {!isCategoryPage && <PageHeader pageType={pageType} />}
+          <div className="product-listing-loading">Loading products...</div>
+        </div>
+      </>
     );
   }
 
   // Show error state
   if (error) {
     return (
-      <div className="product-listing-container">
-        {isCategoryPage && (
-          <PageHeader pageType={pageType} category={category} banner={banner} />
-        )}
-        {!isCategoryPage && <PageHeader pageType={pageType} />}
-        <div className="product-listing-error">
-          <h2 className="product-listing-error-title">
-            Error Loading Products
-          </h2>
-          <p className="product-listing-error-message">{error}</p>
-          <button
-            className="product-listing-error-button"
-            onClick={clearAllFilters}
-          >
-            Try Again
-          </button>
+      <>
+        <Breadcrumb routes={getBreadcrumbRoutes()} />
+        <div className="product-listing-container">
+          {isCategoryPage && (
+            <PageHeader
+              pageType={pageType}
+              category={category}
+              banner={banner}
+            />
+          )}
+          {!isCategoryPage && <PageHeader pageType={pageType} />}
+          <div className="product-listing-error">
+            <h2 className="product-listing-error-title">
+              Error Loading Products
+            </h2>
+            <p className="product-listing-error-message">{error}</p>
+            <button
+              className="product-listing-error-button"
+              onClick={clearAllFilters}
+            >
+              Try Again
+            </button>
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
   return (
-    <div className="product-listing-container">
-      {/* Header - different based on page type */}
-      {isCategoryPage && (
-        <PageHeader pageType={pageType} category={category} banner={banner} />
-      )}
-      {!isCategoryPage && <PageHeader pageType={pageType} />}
+    <>
+      <Breadcrumb routes={getBreadcrumbRoutes()} />
+      <div className="product-listing-container">
+        {/* Header - different based on page type */}
+        {isCategoryPage && (
+          <PageHeader pageType={pageType} category={category} banner={banner} />
+        )}
+        {!isCategoryPage && <PageHeader pageType={pageType} />}
 
-      <div className="product-listing-content">
-        {/* Filter sidebar */}
-        <FilterSidebar
-          filters={filters}
-          handleFilterChange={handleFilterChange}
-          availableTags={availableTags}
-          availableTypes={availableTypes}
-          clearAllFilters={clearAllFilters}
-          showCategoryFilter={!isCategoryPage} // Only show category filter on offers page
-        />
+        <div className="product-listing-content">
+          {/* Filter sidebar */}
+          <FilterSidebar
+            filters={filters}
+            handleFilterChange={handleFilterChange}
+            availableTags={availableTags}
+            availableTypes={availableTypes}
+            clearAllFilters={clearAllFilters}
+            showCategoryFilter={!isCategoryPage} // Only show category filter on offers page
+          />
 
-        {/* Products area */}
-        <ProductsContent
-          displayedProducts={displayedProducts || []}
-          totalProducts={totalProducts}
-          displayRange={displayRange}
-          showSortOptions={showSortOptions}
-          setShowSortOptions={setShowSortOptions}
-          sortBy={sortBy}
-          handleSortChange={handleSortChange}
-          itemsPerPage={itemsPerPage}
-          handleItemsPerPageChange={handleItemsPerPageChange}
-          currentPage={currentPage}
-          totalPages={totalPages}
-          handlePageChange={handlePageChange}
-          clearAllFilters={clearAllFilters}
-        />
+          {/* Products area */}
+          <ProductsContent
+            displayedProducts={displayedProducts || []}
+            totalProducts={totalProducts}
+            displayRange={displayRange}
+            showSortOptions={showSortOptions}
+            setShowSortOptions={setShowSortOptions}
+            sortBy={sortBy}
+            handleSortChange={handleSortChange}
+            itemsPerPage={itemsPerPage}
+            handleItemsPerPageChange={handleItemsPerPageChange}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            handlePageChange={handlePageChange}
+            clearAllFilters={clearAllFilters}
+          />
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
