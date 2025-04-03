@@ -3,6 +3,9 @@ import PropTypes from "prop-types";
 import Item from "../../../components/item/Item";
 import dropdown_icon from "../../../components/assets/dropdown_icon.png";
 
+// Import styles
+import "./ProductsContent.css";
+
 /**
  * ProductsContent component that displays the product grid and filter controls
  * Uses flex layout with wrap for responsive design
