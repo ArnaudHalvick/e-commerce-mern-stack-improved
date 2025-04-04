@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 // Import components
 import { PageHeader, ProductsContent } from "./components";
-import FilterSidebar from "../../components/filterSidebar/FilterSidebar";
+import FilterSidebar from "../../components/filterSidebar/";
 import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
 
 // Import custom hook

@@ -1,0 +1,74 @@
+.filter-sidebar {
+  flex: 0 0 250px;
+  border: var(--border-width-thin) solid var(--color-border);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-5);
+  height: fit-content;
+  background-color: var(--color-background);
+  box-shadow: var(--shadow-sm);
+}
+
+.filter-sidebar-section {
+  margin-bottom: var(--spacing-6);
+  border-bottom: var(--border-width-thin) solid var(--color-border-light);
+  padding-bottom: var(--spacing-5);
+}
+
+.filter-sidebar-section:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+.filter-sidebar-section-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--spacing-4);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.filter-sidebar-section-subtitle {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--spacing-3);
+  color: var(--color-text-secondary);
+}
+
+.filter-sidebar-clear-btn {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.filter-sidebar-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  max-height: 200px;
+  overflow-y: auto;
+  padding-right: var(--spacing-2);
+}
+
+/* Scrollbar styles for filter options */
+.filter-sidebar-options::-webkit-scrollbar {
+  width: var(--spacing-2);
+}
+
+.filter-sidebar-options::-webkit-scrollbar-track {
+  background: var(--color-border-light);
+  border-radius: var(--border-radius-full);
+}
+
+.filter-sidebar-options::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: var(--border-radius-full);
+}
+
+.filter-sidebar-options::-webkit-scrollbar-thumb:hover {
+  background: var(--color-border-dark);
+}

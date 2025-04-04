@@ -1,0 +1,6 @@
+/* Import all filter sidebar styles */
+@import "./FilterSidebar.css";
+@import "./Checkbox.css";
+@import "./PriceInputs.css";
+@import "./RatingFilter.css";
+@import "./Responsive.css";

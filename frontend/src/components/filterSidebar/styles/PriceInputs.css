@@ -1,0 +1,17 @@
+.filter-sidebar-price-inputs {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.filter-sidebar-price-field {
+  width: var(--spacing-20);
+  padding: var(--spacing-2);
+  border: var(--border-width-thin) solid var(--color-border);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-sm);
+}
+
+.filter-sidebar-price-separator {
+  color: var(--color-text-tertiary);
+}

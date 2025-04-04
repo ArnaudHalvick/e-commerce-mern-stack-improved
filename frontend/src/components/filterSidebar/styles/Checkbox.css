@@ -1,0 +1,53 @@
+.filter-sidebar-checkbox {
+  display: flex;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  user-select: none;
+  padding-left: var(--spacing-6);
+}
+
+.filter-sidebar-checkbox-input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.filter-sidebar-checkmark {
+  position: absolute;
+  left: 0;
+  height: var(--spacing-4);
+  width: var(--spacing-4);
+  background-color: var(--color-background);
+  border: var(--border-width-thin) solid var(--color-border);
+  border-radius: var(--border-radius-xs);
+}
+
+.filter-sidebar-checkbox-input:checked ~ .filter-sidebar-checkmark {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.filter-sidebar-checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.filter-sidebar-checkbox-input:checked ~ .filter-sidebar-checkmark:after {
+  display: block;
+}
+
+.filter-sidebar-checkbox .filter-sidebar-checkmark:after {
+  left: var(--spacing-2);
+  top: var(--spacing-1);
+  width: var(--spacing-1);
+  height: var(--spacing-2);
+  border: solid var(--color-background);
+  border-width: 0 var(--border-width-medium) var(--border-width-medium) 0;
+  transform: rotate(45deg);
+}
