@@ -4,7 +4,7 @@ import { ResetPasswordForm } from "./components";
 import { usePasswordRecovery } from "./hooks";
 import { usePasswordValidation } from "./hooks";
 import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
-import { useError } from "../../context/ErrorContext";
+import useErrorRedux from "../../hooks/useErrorRedux";
 
 // Styles
 import "./Auth.css";
@@ -16,7 +16,7 @@ import "./Auth.css";
 const ResetPassword = () => {
   const { token } = useParams();
   const navigate = useNavigate();
-  const { showError } = useError();
+  const { showError } = useErrorRedux();
 
   const {
     formData,

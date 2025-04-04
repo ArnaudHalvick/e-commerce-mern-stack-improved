@@ -1,7 +1,7 @@
 // frontend/src/hooks/useNetwork.js
 
 import { useState, useEffect, useRef } from "react";
-import { useError } from "../context/ErrorContext";
+import useErrorRedux from "./useErrorRedux";
 
 /**
  * Custom hook to monitor network connectivity and show appropriate messages
@@ -12,7 +12,7 @@ const useNetwork = (options = {}) => {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [connectionType, setConnectionType] = useState(null);
   const [reconnecting, setReconnecting] = useState(false);
-  const { showError, showSuccess, showWarning } = useError();
+  const { showError, showSuccess, showWarning } = useErrorRedux();
 
   // Use refs to track previous values and to hold merged options
   const prevOnlineState = useRef(navigator.onLine);

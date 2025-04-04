@@ -1,7 +1,7 @@
 // frontend/src/hooks/useAsync.js
 
 import { useState, useCallback, useMemo } from "react";
-import { useError } from "../context/ErrorContext";
+import useErrorRedux from "../hooks/useErrorRedux";
 
 // Define default options outside the hook to keep the reference stable
 const DEFAULT_OPTIONS = {
@@ -22,7 +22,7 @@ const useAsync = (asyncFunction, options = {}) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const { showError, showSuccess } = useError();
+  const { showError, showSuccess } = useErrorRedux();
 
   // Merge options and memoize the config to prevent re-creation on every render
   const config = useMemo(() => {

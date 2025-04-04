@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { useAuth } from "../../../hooks/state";
 import { addToCart } from "../../../redux/slices/cartSlice";
-import { useError } from "../../../context/ErrorContext";
+import useErrorRedux from "../../../hooks/useErrorRedux";
 
 /**
  * Custom hook for product display logic
@@ -13,7 +13,7 @@ import { useError } from "../../../context/ErrorContext";
 const useProductDisplay = (product) => {
   const dispatch = useDispatch();
   const { isAuthenticated } = useAuth();
-  const { showError } = useError();
+  const { showError } = useErrorRedux();
   const [isAdding, setIsAdding] = useState(false);
 
   // State for selected size and quantity

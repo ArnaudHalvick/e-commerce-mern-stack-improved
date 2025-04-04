@@ -1,143 +1,41 @@
 // frontend/src/context/ErrorContext.jsx
 
-import React, { createContext, useContext, useState, useCallback } from "react";
+import React, { createContext, useContext } from "react";
+import useErrorRedux from "../hooks/useErrorRedux";
 
 /**
- * ErrorContext - Provides global error state management and toast notifications
+ * ErrorContext - Compatibility layer for the migration from Context API to Redux
+ * This uses Redux under the hood but exposes the same API as the old ErrorContext
  */
 const ErrorContext = createContext();
 
 /**
- * Generate a unique toast ID
- * This ensures we don't have duplicate keys when multiple toasts are created in the same millisecond
- */
-let uniqueToastId = 0;
-const generateUniqueId = () => {
-  const timestamp = Date.now();
-  uniqueToastId++;
-  return `${timestamp}-${uniqueToastId}`;
-};
-
-/**
- * ErrorProvider Component - Wraps the application to provide error handling capabilities
+ * ErrorProvider Component - Compatibility wrapper that uses Redux
+ * This allows components to continue using the old useError hook while we migrate them
  */
 export const ErrorProvider = ({ children }) => {
-  // Array of active toast notifications
-  const [toasts, setToasts] = useState([]);
-
-  /**
-   * Remove a specific toast by ID
-   * @param {string} id - The ID of the toast to remove
-   */
-  const removeToast = useCallback((id) => {
-    setToasts((prevToasts) => prevToasts.filter((toast) => toast.id !== id));
-  }, []);
-
-  /**
-   * Add a toast notification
-   * @param {string} message - The message to display
-   * @param {string} type - The type of toast (error, warning, success, info)
-   * @param {number} duration - How long to show the toast in ms
-   */
-  const addToast = useCallback(
-    (message, type = "error", duration = 5000) => {
-      const id = generateUniqueId();
-      setToasts((prevToasts) => [
-        ...prevToasts,
-        { id, message, type, duration },
-      ]);
-
-      // Auto-remove toast after duration
-      if (duration !== Infinity) {
-        setTimeout(() => {
-          removeToast(id);
-        }, duration);
-      }
-
-      return id;
-    },
-    [removeToast]
-  );
-
-  /**
-   * Show an error toast
-   * @param {string} message - Error message to display
-   * @param {number} duration - How long to show the toast in ms
-   */
-  const showError = useCallback(
-    (message, duration = 5000) => {
-      if (typeof message === "object") {
-        // If an error object was passed instead of a string
-        const errorMessage = message.message || JSON.stringify(message);
-        return addToast(errorMessage, "error", duration);
-      }
-      return addToast(message, "error", duration);
-    },
-    [addToast]
-  );
-
-  /**
-   * Show a success toast
-   * @param {string} message - Success message to display
-   * @param {number} duration - How long to show the toast in ms
-   */
-  const showSuccess = useCallback(
-    (message, duration = 3000) => {
-      return addToast(message, "success", duration);
-    },
-    [addToast]
-  );
-
-  /**
-   * Show a warning toast
-   * @param {string} message - Warning message to display
-   * @param {number} duration - How long to show the toast in ms
-   */
-  const showWarning = useCallback(
-    (message, duration = 4000) => {
-      return addToast(message, "warning", duration);
-    },
-    [addToast]
-  );
-
-  /**
-   * Show an info toast
-   * @param {string} message - Info message to display
-   * @param {number} duration - How long to show the toast in ms
-   */
-  const showInfo = useCallback(
-    (message, duration = 3000) => {
-      return addToast(message, "info", duration);
-    },
-    [addToast]
-  );
-
-  // Value provided by the context
-  const value = {
-    toasts,
-    addToast,
-    removeToast,
-    showError,
-    showSuccess,
-    showWarning,
-    showInfo,
-  };
+  // Use the Redux error hook to get the error state and methods
+  const errorRedux = useErrorRedux();
 
   return (
-    <ErrorContext.Provider value={value}>{children}</ErrorContext.Provider>
+    <ErrorContext.Provider value={errorRedux}>{children}</ErrorContext.Provider>
   );
 };
 
 /**
  * Custom hook to use the error context
+ * This now uses Redux under the hood but keeps the same API
  * @returns {Object} Error context value
  */
 export const useError = () => {
+  // Get direct access to Redux error state through the hook
+  const errorRedux = useErrorRedux();
+
+  // Try to get context value if it exists (for compatibility)
   const context = useContext(ErrorContext);
-  if (context === undefined) {
-    throw new Error("useError must be used within an ErrorProvider");
-  }
-  return context;
+
+  // Return either the context value (if ErrorProvider is used) or direct Redux access
+  return context !== undefined ? context : errorRedux;
 };
 
 export default ErrorContext;

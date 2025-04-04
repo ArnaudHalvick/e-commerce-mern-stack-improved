@@ -7,7 +7,7 @@ import {
   updateCartItem,
 } from "../../../redux/slices/cartSlice";
 import { useAuth } from "../../../hooks/state";
-import { useError } from "../../../context/ErrorContext";
+import useErrorRedux from "../../../hooks/useErrorRedux";
 
 /**
  * Custom hook for cart operations and state management
@@ -17,7 +17,7 @@ import { useError } from "../../../context/ErrorContext";
 const useCart = () => {
   const dispatch = useDispatch();
   const { isAuthenticated } = useAuth();
-  const { showError } = useError();
+  const { showError } = useErrorRedux();
 
   // Get cart state from Redux with fallback values
   const {
@@ -248,13 +248,13 @@ const useCart = () => {
         })
       )
         .unwrap()
-        .then((result) => {
+        .then(() => {
           console.log("Item removed successfully");
         })
         .catch((err) => {
           console.error("Error removing item:", err);
 
-          // If the remove operation fails, revert the optimistic UI update
+          // If the operation fails, revert the optimistic UI update
           if (item) {
             setLocalTotalPrice((prev) => prev + item.price);
           }
@@ -269,10 +269,10 @@ const useCart = () => {
             } else if (err.includes("Size is required")) {
               showError("Please select a size for this item");
             } else {
-              showError(err || "Failed to update cart. Please try again.");
+              showError(err || "Failed to remove item. Please try again.");
             }
           } else {
-            showError("Failed to update cart. Please try again.");
+            showError("Failed to remove item. Please try again.");
           }
         });
     },
@@ -281,14 +281,15 @@ const useCart = () => {
 
   return {
     items,
-    totalPrice: localTotalPrice,
     loading,
     error,
+    totalPrice: localTotalPrice, // Use local state for better UX
     handleQuantityChange,
     handleQuantityBlur,
     handleRemoveAll,
     handleAddItem,
     handleRemoveItem,
+    editableQuantities,
   };
 };
 

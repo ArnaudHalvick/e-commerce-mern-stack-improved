@@ -8,9 +8,7 @@ import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
 
 // Hooks
 import { useAuthForm } from "./hooks";
-
-// Context
-import { useError } from "../../context/ErrorContext";
+import useErrorRedux from "../../hooks/useErrorRedux";
 
 // Styles
 import "./Auth.css";
@@ -21,7 +19,7 @@ import "./Auth.css";
 const Auth = ({ initialState }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { showSuccess } = useError();
+  const { showSuccess } = useErrorRedux();
   const { isAuthenticated, loading: authLoading, inTransition } = useAuth();
 
   // Determine form type based on the initialState prop

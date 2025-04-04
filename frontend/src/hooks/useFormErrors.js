@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useError } from "../context/ErrorContext";
+import useErrorRedux from "./useErrorRedux";
 
 /**
  * Custom hook for handling form errors
@@ -8,7 +8,7 @@ import { useError } from "../context/ErrorContext";
  */
 const useFormErrors = (initialErrors = {}) => {
   const [errors, setErrors] = useState(initialErrors);
-  const { showError } = useError();
+  const { showError } = useErrorRedux();
 
   /**
    * Set a specific field error

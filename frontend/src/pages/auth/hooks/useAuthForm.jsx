@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { authService } from "../../../api";
-import { useError } from "../../../context/ErrorContext";
+import useErrorRedux from "../../../hooks/useErrorRedux";
 // Import the useAuth hook from the state directory
 import { useAuth } from "../../../hooks/state";
 import useFormErrors from "../../../hooks/useFormErrors";
@@ -33,7 +33,7 @@ const useAuthForm = (formType = "login") => {
     clearAllErrors: clearFormError,
     handleApiError: setFormError,
   } = useFormErrors();
-  const { showSuccess } = useError();
+  const { showSuccess } = useErrorRedux();
 
   const { login } = useAuth();
 

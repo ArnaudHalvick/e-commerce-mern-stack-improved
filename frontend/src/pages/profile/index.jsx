@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { useError } from "../../context/ErrorContext";
+import useErrorRedux from "../../hooks/useErrorRedux";
 
 // Hooks
 import { useProfileForm, usePasswordForm, useAccountManagement } from "./hooks";
@@ -23,7 +23,7 @@ import "./Profile.css";
 
 const Profile = () => {
   const navigate = useNavigate();
-  const { showError, showSuccess } = useError();
+  const { showError, showSuccess } = useErrorRedux();
 
   // Memoize selector to prevent unnecessary re-renders
   const userState = useSelector(

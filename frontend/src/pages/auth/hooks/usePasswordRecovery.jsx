@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { authService } from "../../../api";
-import { useError } from "../../../context/ErrorContext";
+import useErrorRedux from "../../../hooks/useErrorRedux";
 import useFormErrors from "../../../hooks/useFormErrors";
 import {
   validateEmail,
@@ -36,7 +36,7 @@ const usePasswordRecovery = (
     clearAllErrors: clearFormError,
     handleApiError: setFormError,
   } = useFormErrors();
-  const { showSuccess } = useError();
+  const { showSuccess } = useErrorRedux();
 
   // Initialize form data based on mode
   const [formData, setFormData] = useState({

@@ -10,7 +10,7 @@ import {
   verifyEmail as verifyEmailAction,
   requestEmailVerification,
 } from "../../redux/slices/userSlice";
-import { useError } from "../../context/ErrorContext";
+import useErrorRedux from "../../hooks/useErrorRedux";
 import { useAuth } from "../../hooks/state";
 import LoadingScreen from "../../components/loadingScreen/LoadingScreen";
 
@@ -30,6 +30,7 @@ const VerifyEmail = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+  const { showError, showSuccess } = useErrorRedux();
 
   // Use a separate state for token verification loading
   const [verifyingToken, setVerifyingToken] = useState(!!token);
