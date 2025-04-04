@@ -1,5 +1,12 @@
-/* Import all product display styles */
-@import "./ProductDisplay.css";
-@import "./Responsive.css";
+/* Import base styles */
+@import "./base/ProductDisplay.css";
+@import "./base/Responsive.css";
+
+/* Import component-specific styles */
+@import "./components/ImageGallery.css";
+@import "./components/ProductInfo.css";
+@import "./components/SizeSelector.css";
+@import "./components/QuantitySelector.css";
+@import "./components/AddToCartButton.css";
 
 /* Component-specific styles are imported in their respective components */

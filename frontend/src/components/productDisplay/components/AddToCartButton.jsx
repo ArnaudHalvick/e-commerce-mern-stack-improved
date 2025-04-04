@@ -1,5 +1,4 @@
 import React from "react";
-import "./AddToCartButton.css";
 
 /**
  * Component for Add to Cart button
@@ -10,16 +9,29 @@ import "./AddToCartButton.css";
  * @returns {JSX.Element} AddToCartButton component
  */
 const AddToCartButton = ({ onClick, isAdding }) => {
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      if (!isAdding) {
+        onClick();
+      }
+    }
+  };
+
   return (
     <button
       onClick={onClick}
+      onKeyDown={handleKeyDown}
       disabled={isAdding}
       className={
         isAdding
           ? "product-display-add-to-cart-btn product-display-adding-to-cart"
           : "product-display-add-to-cart-btn"
       }
-      aria-label="Add product to cart"
+      aria-label={
+        isAdding ? "Adding product to cart..." : "Add product to cart"
+      }
+      aria-busy={isAdding}
     >
       {isAdding ? "Adding..." : "Add to Cart"}
     </button>

@@ -1,7 +1,6 @@
 import React, { useMemo } from "react";
 import star_icon from "../../assets/star_icon.png";
 import star_dull_icon from "../../assets/star_dull_icon.png";
-import "./ProductInfo.css";
 
 /**
  * Component for displaying product information (name, rating, price, description)

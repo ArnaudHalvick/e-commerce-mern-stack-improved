@@ -1,6 +1,5 @@
 import React, { useRef, useCallback, useMemo } from "react";
-import { getImageUrl } from "../../../utils/imageUtils";
-import "./ImageGallery.css";
+import { getProductImageUrl, getPlaceholderImage } from "../utils";
 
 /**
  * Component for displaying product images with thumbnails
@@ -9,22 +8,21 @@ import "./ImageGallery.css";
  * @param {Array} props.images - Array of image URLs
  * @param {Number} props.selectedImageIndex - Index of currently selected image
  * @param {Function} props.setSelectedImageIndex - Function to update selected image
- * @param {String} props.getBaseUrl - Base URL for fallback images
+ * @returns {JSX.Element} ImageGallery component
  */
 const ImageGallery = ({
   images,
   selectedImageIndex,
   setSelectedImageIndex,
-  getBaseUrl,
 }) => {
   const thumbnailsContainerRef = useRef(null);
 
   // Determine the main image based on the selected image index
   const mainImage = useMemo(() => {
     if (images && images.length > 0) {
-      return getImageUrl(images[selectedImageIndex]);
+      return getProductImageUrl(images[selectedImageIndex]);
     }
-    return getImageUrl("/images/pink-placeholder.png");
+    return getPlaceholderImage();
   }, [images, selectedImageIndex]);
 
   // Scroll thumbnails to center the selected one
@@ -50,11 +48,26 @@ const ImageGallery = ({
     [scrollToSelectedThumbnail, setSelectedImageIndex]
   );
 
+  // Handle keyboard navigation for accessibility
+  const handleKeyDown = useCallback(
+    (e, index) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        handleThumbnailClick(index);
+      }
+    },
+    [handleThumbnailClick]
+  );
+
   return (
     <div className="product-display-left">
       {/* Main image display */}
-      <div className="product-display-img">
-        <img src={mainImage} alt="" className="product-display-main-img" />
+      <div className="product-display-img" aria-hidden="true">
+        <img
+          src={mainImage}
+          alt={`Product ${selectedImageIndex + 1}`}
+          className="product-display-main-img"
+        />
       </div>
 
       {/* Horizontal thumbnail gallery */}
@@ -62,14 +75,21 @@ const ImageGallery = ({
         <div
           className="product-display-thumbnails"
           ref={thumbnailsContainerRef}
+          role="tablist"
+          aria-label="Product images"
         >
           {images && images.length > 0 ? (
             images.map((img, index) => (
               <img
                 key={index}
-                src={getImageUrl(img)}
-                alt=""
+                src={getProductImageUrl(img)}
+                alt={`Product view ${index + 1}`}
                 onClick={() => handleThumbnailClick(index)}
+                onKeyDown={(e) => handleKeyDown(e, index)}
+                tabIndex={0}
+                role="tab"
+                aria-selected={selectedImageIndex === index}
+                aria-controls="main-product-image"
                 className={
                   selectedImageIndex === index
                     ? "product-display-thumbnail-img product-display-thumbnail-selected"
@@ -79,8 +99,8 @@ const ImageGallery = ({
             ))
           ) : (
             <img
-              src={getImageUrl("/images/pink-placeholder.png")}
-              alt=""
+              src={getPlaceholderImage()}
+              alt="Product placeholder"
               className="product-display-thumbnail-img"
             />
           )}

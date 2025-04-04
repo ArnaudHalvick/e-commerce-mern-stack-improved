@@ -29,10 +29,6 @@
     align-items: center;
     text-align: center;
   }
-
-  .product-display-add-to-cart-btn {
-    align-self: center;
-  }
 }
 
 /* Small devices (landscape phones, less than 768px) */
@@ -50,10 +46,5 @@
 
   .product-display-right {
     gap: var(--spacing-3);
-  }
-
-  .product-display-add-to-cart-btn {
-    margin-top: var(--spacing-4);
-    height: 44px;
   }
 }

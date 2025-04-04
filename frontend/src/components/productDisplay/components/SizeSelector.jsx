@@ -1,5 +1,4 @@
 import React from "react";
-import "./SizeSelector.css";
 
 /**
  * Component for selecting product size
