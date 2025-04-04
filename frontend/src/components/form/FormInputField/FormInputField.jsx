@@ -129,7 +129,7 @@ const FormInputField = ({
   const baseClassName = "form-input";
   const inputClassName = `${baseClassName} ${
     showError ? `${baseClassName}--error` : ""
-  } ${className}`;
+  } ${isFocused ? `${baseClassName}--focused` : ""} ${className}`;
 
   const combinedValidation = getValidationAttributes();
 

@@ -1,18 +1,11 @@
 import React, { useEffect, useState } from "react";
-import {
-  useSearchParams,
-  Link,
-  useNavigate,
-  useLocation,
-} from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useSearchParams, Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import {
   verifyEmail as verifyEmailAction,
   requestEmailVerification,
 } from "../../redux/slices/userSlice";
-import useErrorRedux from "../../hooks/useErrorRedux";
 import { useAuth } from "../../hooks/state";
-import LoadingScreen from "../../components/loadingScreen/LoadingScreen";
 
 // Components
 import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
@@ -28,9 +21,7 @@ const VerifyEmail = () => {
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
-  const { showError, showSuccess } = useErrorRedux();
 
   // Use a separate state for token verification loading
   const [verifyingToken, setVerifyingToken] = useState(!!token);
