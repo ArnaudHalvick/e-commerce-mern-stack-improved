@@ -1,22 +1,32 @@
-import "./ProductDisplay.css";
-import React, { useEffect, useRef } from "react";
+import React from "react";
+
+// Internal Components
 import {
   ImageGallery,
   ProductInfo,
   SizeSelector,
   QuantitySelector,
+  AddToCartButton,
 } from "./components";
-import useProductDisplay from "./hooks/useProductDisplay";
+
+// Internal Hooks
+import { useProductDisplay, useProductId } from "./hooks";
+
+// Styles
+import "./styles/index.css";
 
 /**
  * Product display component showing product details and purchase options
  *
  * @param {Object} props
  * @param {Object} props.product - The product data
+ * @returns {JSX.Element} ProductDisplay component
  */
 const ProductDisplay = ({ product }) => {
-  const displayRef = useRef(null);
+  // Get reference for product display container
+  const displayRef = useProductId();
 
+  // Get product display state and handlers
   const {
     selectedSize,
     quantity,
@@ -28,13 +38,6 @@ const ProductDisplay = ({ product }) => {
     handleQuantityChange,
     handleAddToCart,
   } = useProductDisplay(product);
-
-  // Make the ref accessible via an ID for easier scrolling from outside
-  useEffect(() => {
-    if (displayRef.current) {
-      displayRef.current.id = "product-display";
-    }
-  }, []);
 
   return (
     <div className="product-display" ref={displayRef}>
@@ -59,17 +62,7 @@ const ProductDisplay = ({ product }) => {
           onQuantityChange={handleQuantityChange}
         />
 
-        <button
-          onClick={handleAddToCart}
-          disabled={isAdding}
-          className={
-            isAdding
-              ? "product-display-add-to-cart-btn product-display-adding-to-cart"
-              : "product-display-add-to-cart-btn"
-          }
-        >
-          {isAdding ? "Adding..." : "Add to Cart"}
-        </button>
+        <AddToCartButton onClick={handleAddToCart} isAdding={isAdding} />
       </div>
     </div>
   );

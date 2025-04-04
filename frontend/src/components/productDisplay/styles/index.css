@@ -1,0 +1,5 @@
+/* Import all product display styles */
+@import "./ProductDisplay.css";
+@import "./Responsive.css";
+
+/* Component-specific styles are imported in their respective components */

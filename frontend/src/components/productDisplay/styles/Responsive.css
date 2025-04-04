@@ -1,0 +1,59 @@
+/* Responsive styles using standard breakpoints */
+
+/* Large devices (desktops, less than 1200px) */
+@media screen and (max-width: 1200px) {
+  .product-display {
+    width: 90%;
+  }
+
+  .product-display-right {
+    margin-left: var(--spacing-8);
+  }
+}
+
+/* Medium devices (tablets, less than 992px) */
+@media screen and (max-width: 992px) {
+  .product-display {
+    flex-direction: column;
+    width: 90%;
+    margin: var(--spacing-3) auto var(--spacing-6);
+    align-items: center;
+  }
+
+  .product-display-right {
+    margin-left: 0;
+    margin-top: var(--spacing-6);
+    gap: var(--spacing-2);
+    width: 100%;
+    max-width: 600px;
+    align-items: center;
+    text-align: center;
+  }
+
+  .product-display-add-to-cart-btn {
+    align-self: center;
+  }
+}
+
+/* Small devices (landscape phones, less than 768px) */
+@media screen and (max-width: 768px) {
+  .product-display {
+    width: 95%;
+  }
+}
+
+/* Extra small devices (portrait phones, less than 576px) */
+@media screen and (max-width: 576px) {
+  .product-display {
+    margin: var(--spacing-3) auto var(--spacing-5);
+  }
+
+  .product-display-right {
+    gap: var(--spacing-3);
+  }
+
+  .product-display-add-to-cart-btn {
+    margin-top: var(--spacing-4);
+    height: 44px;
+  }
+}
