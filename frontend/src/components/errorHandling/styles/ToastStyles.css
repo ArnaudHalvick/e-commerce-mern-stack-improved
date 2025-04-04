@@ -46,7 +46,7 @@
 }
 
 .toast.info {
-  border-left-color: var(--color-secondary);
+  border-left-color: var(--color-info);
 }
 
 .toast-icon {
@@ -77,8 +77,8 @@
 }
 
 .toast.info .toast-icon {
-  background-color: var(--color-secondary-light);
-  color: var(--color-secondary);
+  background-color: var(--color-info-light);
+  color: var(--color-info);
 }
 
 .toast-message {
