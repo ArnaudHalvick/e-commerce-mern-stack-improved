@@ -4,7 +4,7 @@ import { useParams, useLocation } from "react-router-dom";
 // Components
 import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
 import ProductDisplay from "../../components/productDisplay";
-import DescriptionBox from "../../components/descriptionBox/DescriptionBox";
+import DescriptionBox from "../../components/descriptionBox/index";
 import RelatedProducts from "../../components/relatedProducts/RelatedProducts";
 import ProductPageStatus from "./components/ProductPageStatus";
 import EmptyState from "../../components/errorHandling/emptyState/EmptyState";

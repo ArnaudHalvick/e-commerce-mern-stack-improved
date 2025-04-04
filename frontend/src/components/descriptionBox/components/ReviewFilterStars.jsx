@@ -1,7 +1,7 @@
 import React from "react";
 import star_icon from "../../assets/star_icon.png";
 import star_dull_icon from "../../assets/star_dull_icon.png";
-import "./ReviewFilterStars.css";
+import "../styles/ReviewFilterStars.css";
 
 /**
  * Component for filtering reviews by star rating

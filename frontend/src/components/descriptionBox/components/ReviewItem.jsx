@@ -1,7 +1,7 @@
 import React from "react";
-import ReviewStars from "./ReviewStars";
-import { formatDate } from "../utils/formatDate";
-import "./ReviewItem.css";
+import { ReviewStars } from "./";
+import { formatDate } from "../utils";
+import "../styles/ReviewItem.css";
 
 /**
  * Display a single review item

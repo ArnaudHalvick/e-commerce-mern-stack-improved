@@ -1,8 +1,8 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import ReviewItem from "./ReviewItem";
+import { ReviewItem } from "./";
 import { openReviewModal } from "../../../redux/slices/reviewsSlice";
-import "./ReviewsContent.css";
+import "../styles/ReviewsContent.css";
 
 /**
  * Component for the reviews tab content

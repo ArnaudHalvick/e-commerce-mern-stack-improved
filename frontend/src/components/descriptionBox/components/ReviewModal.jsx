@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import InfiniteScroll from "react-infinite-scroll-component";
-import ReviewItem from "./ReviewItem";
-import ReviewFilterStars from "./ReviewFilterStars";
+import { ReviewItem, ReviewFilterStars } from "./";
 import Modal from "../../../components/ui/modal/Modal";
 import {
   fetchMoreReviews,
@@ -11,7 +10,7 @@ import {
   setSortOption,
   closeReviewModal,
 } from "../../../redux/slices/reviewsSlice";
-import "./ReviewModal.css";
+import "../styles/ReviewModal.css";
 
 /**
  * Skeleton loader for review items
