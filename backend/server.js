@@ -63,14 +63,17 @@ app.use(
 // Special handling for Stripe webhook (must be raw)
 app.use((req, res, next) => {
   if (req.originalUrl === "/api/payment/webhook") {
-    // Create a buffer of the request body for Stripe webhook
-    let rawBody = "";
+    // For Stripe webhooks, we need the raw body as a Buffer for signature verification
+    let rawBody = Buffer.from([]);
+
     req.on("data", (chunk) => {
-      rawBody += chunk.toString();
+      rawBody = Buffer.concat([rawBody, chunk]);
     });
 
     req.on("end", () => {
-      req.rawBody = rawBody;
+      if (rawBody.length > 0) {
+        req.rawBody = rawBody;
+      }
       next();
     });
   } else {

@@ -346,12 +346,34 @@ const processWebhook = catchAsync(async (req, res, next) => {
   const signature = req.headers["stripe-signature"];
   let event;
 
+  // Add debug logging
+  logger.info(
+    `Received webhook request with signature: ${
+      signature ? "present" : "missing"
+    }`
+  );
+  logger.info(`Raw body type: ${req.rawBody ? typeof req.rawBody : "missing"}`);
+
+  if (!signature) {
+    logger.error("Webhook Error: No signature header");
+    return res.status(400).json({ error: "No signature header" });
+  }
+
+  if (!req.rawBody) {
+    logger.error("Webhook Error: No raw body available");
+    return res.status(400).json({ error: "No raw body available" });
+  }
+
   // Verify webhook signature
   try {
     event = stripe.webhooks.constructEvent(
-      req.rawBody, // This property is set in the middleware
+      req.rawBody, // This is now a Buffer which is what Stripe expects
       signature,
       process.env.STRIPE_WEBHOOK_SECRET
+    );
+
+    logger.info(
+      `Successfully verified webhook signature for event type: ${event.type}`
     );
   } catch (err) {
     logger.error(`Webhook signature verification failed: ${err.message}`);

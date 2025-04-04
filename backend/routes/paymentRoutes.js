@@ -31,10 +31,6 @@ router.get("/order/:id", isAuthenticated, paymentController.getOrderById);
 
 // Webhook route - no auth required, comes from Stripe
 // This should be exempted from CSRF protection
-router.post(
-  "/webhook",
-  express.raw({ type: "application/json" }),
-  paymentController.processWebhook
-);
+router.post("/webhook", paymentController.processWebhook);
 
 module.exports = router;
