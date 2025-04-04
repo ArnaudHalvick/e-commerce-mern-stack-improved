@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useAuth } from "../../../hooks/state";
-import "./EmailVerificationBanner.css";
+import "../styles/EmailVerificationBanner.css";
 
 /**
  * Banner component that displays a warning when the user's email is not verified.

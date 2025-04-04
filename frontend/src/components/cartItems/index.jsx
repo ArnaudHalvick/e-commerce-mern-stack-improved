@@ -1,15 +1,21 @@
 // External Libraries
 import { useAuth } from "../../hooks/state";
-import { useCart } from "../../hooks/state";
 
 // Internal Components
-import { CartItem, CartTotals, PromoCodeSection } from "./components";
-import EmailVerificationBanner from "./components/EmailVerificationBanner";
+import {
+  CartItem,
+  CartTotals,
+  PromoCodeSection,
+  EmailVerificationBanner,
+} from "./components";
 import EmptyState from "../errorHandling/emptyState/EmptyState";
 import Spinner from "../ui/spinner";
 
+// Internal Hooks
+import { useCart } from "../../hooks/state";
+
 // Styles
-import "./CartItems.css";
+import "./styles/CartItems.css";
 import "../errorHandling/styles/LoadingIndicator.css";
 
 /**
@@ -22,10 +28,10 @@ const CartItems = () => {
     totalPrice: localTotalPrice,
     loading,
     error,
-    updateQuantity: handleQuantityBlur,
-    removeAllItems: handleRemoveAll,
-    addItem: handleAddItem,
-    removeItem: handleRemoveItem,
+    updateQuantity,
+    removeAllItems,
+    addItem,
+    removeItem,
   } = useCart();
 
   // Check if we should show the email verification banner
@@ -116,10 +122,10 @@ const CartItems = () => {
                 <CartItem
                   key={`${item.productId}-${item.size}`}
                   item={item}
-                  onRemoveItem={handleRemoveItem}
-                  onAddItem={handleAddItem}
-                  onRemoveAll={handleRemoveAll}
-                  onQuantityBlur={handleQuantityBlur}
+                  onRemoveItem={removeItem}
+                  onAddItem={addItem}
+                  onRemoveAll={removeAllItems}
+                  onQuantityBlur={updateQuantity}
                 />
               ))}
             </tbody>

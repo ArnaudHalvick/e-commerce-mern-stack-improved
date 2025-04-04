@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../../hooks/state";
-import "./CartTotals.css";
+import "../styles/CartTotals.css";
 
 /**
  * Displays cart total and checkout button

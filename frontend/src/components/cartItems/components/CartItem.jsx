@@ -6,7 +6,7 @@ import remove_icon from "../../../components/assets/cart_cross_icon.png";
 import { config } from "../../../api";
 
 // Styles
-import "./CartItem.css";
+import "../styles/CartItem.css";
 
 /**
  * Individual cart item component
