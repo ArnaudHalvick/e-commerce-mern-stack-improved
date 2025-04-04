@@ -1,0 +1,93 @@
+/* Shipping Form Styles */
+.shipping-form-container {
+  flex: 1;
+  min-width: 300px;
+  background-color: var(--color-background);
+  border-radius: var(--border-radius-xl);
+  padding: var(--spacing-6);
+  box-shadow: var(--shadow-lg);
+}
+
+.shipping-form-title {
+  font-size: var(--font-size-xl);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-6);
+  padding-bottom: var(--spacing-3);
+  border-bottom: var(--border-width-thin) solid var(--color-border-light);
+}
+
+.shipping-form {
+  width: 100%;
+}
+
+.shipping-form-group {
+  margin-bottom: var(--spacing-6);
+  width: 100%;
+}
+
+.shipping-form-row {
+  display: flex;
+  gap: var(--spacing-4);
+  margin-bottom: var(--spacing-6);
+}
+
+.shipping-form-select {
+  width: 100%;
+  padding: var(--spacing-3) var(--spacing-4);
+  border: var(--border-width-thin) solid var(--color-border);
+  border-radius: var(--border-radius-lg);
+  font-size: var(--font-size-base);
+  transition: border-color var(--transition-duration-normal)
+    var(--transition-timing-ease);
+  background-color: var(--color-background);
+  height: 48px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right var(--spacing-4) center;
+  background-size: 1em;
+  padding-right: var(--spacing-10);
+}
+
+.shipping-form-select:focus {
+  border-color: var(--color-primary);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 65, 65, 0.1);
+}
+
+.shipping-form-loading {
+  text-align: center;
+  padding: var(--spacing-6);
+  color: var(--color-text-tertiary);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .shipping-form-row {
+    flex-direction: column;
+    gap: var(--spacing-4);
+  }
+
+  .shipping-form-title {
+    font-size: var(--font-size-lg);
+  }
+}
+
+@media (max-width: 480px) {
+  .shipping-form-container {
+    padding: var(--spacing-4);
+  }
+
+  .shipping-form-title {
+    font-size: var(--font-size-md);
+    margin-bottom: var(--spacing-4);
+  }
+
+  .shipping-form-select {
+    padding: var(--spacing-3);
+    font-size: var(--font-size-sm);
+    height: 42px;
+  }
+}

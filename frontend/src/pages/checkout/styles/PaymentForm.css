@@ -1,0 +1,124 @@
+/* Payment Form Styles */
+.payment-form-container {
+  flex: 1;
+  min-width: 300px;
+  background-color: var(--color-background);
+  border-radius: var(--border-radius-xl);
+  padding: var(--spacing-6);
+  box-shadow: var(--shadow-lg);
+}
+
+.payment-form-title {
+  font-size: var(--font-size-xl);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-6);
+  padding-bottom: var(--spacing-3);
+  border-bottom: var(--border-width-thin) solid var(--color-border-light);
+}
+
+.payment-form {
+  width: 100%;
+}
+
+.payment-form-group {
+  margin-bottom: var(--spacing-6);
+  width: 100%;
+}
+
+.payment-form-row {
+  display: flex;
+  gap: var(--spacing-4);
+  margin-bottom: var(--spacing-6);
+}
+
+.payment-form-label {
+  display: block;
+  margin-bottom: var(--spacing-2);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-tertiary);
+}
+
+/* Special style for the card row */
+.payment-form-row.payment-card-row {
+  margin-bottom: var(--spacing-2);
+}
+
+.payment-card-container {
+  padding: var(--spacing-4);
+  border: var(--border-width-thin) solid var(--color-border);
+  border-radius: var(--border-radius-lg);
+  background-color: var(--color-background);
+  min-height: 20px;
+  display: flex;
+  align-items: center;
+  transition: border-color var(--transition-duration-normal)
+    var(--transition-timing-ease);
+}
+
+.payment-card-container:focus-within {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(255, 65, 65, 0.1);
+}
+
+.payment-stripe-element {
+  width: 100%;
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+}
+
+/* Stripe Element specific styles - we can't change these class names */
+.StripeElement {
+  width: 100%;
+}
+
+.StripeElement--focus {
+  box-shadow: none;
+}
+
+.StripeElement--invalid {
+  border-color: var(--color-danger);
+}
+
+/* Placeholder styling for Stripe Elements */
+.StripeElement--empty .__PrivateStripeElement iframe {
+  color: var(--color-text-light);
+}
+
+/* Error styling for Stripe Elements */
+.StripeElement--invalid .__PrivateStripeElement iframe {
+  color: var(--color-danger-dark);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .payment-form-row {
+    flex-direction: column;
+  }
+
+  .payment-form-title {
+    font-size: var(--font-size-lg);
+  }
+}
+
+@media (max-width: 480px) {
+  .payment-form-container {
+    padding: var(--spacing-4);
+  }
+
+  .payment-form-title {
+    font-size: var(--font-size-md);
+    margin-bottom: var(--spacing-4);
+  }
+
+  .payment-form-label {
+    font-size: var(--font-size-sm);
+  }
+
+  .payment-card-container {
+    padding: var(--spacing-3);
+  }
+
+  .payment-form-row.payment-card-row {
+    margin-bottom: var(--spacing-1);
+  }
+}

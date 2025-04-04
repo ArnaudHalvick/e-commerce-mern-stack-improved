@@ -1,0 +1,36 @@
+/* Test Card Info Styles */
+.test-card-info {
+  margin-top: var(--spacing-8);
+  padding: var(--spacing-4);
+  background-color: var(--color-background-light);
+  border-radius: var(--border-radius-lg);
+  border-left: 4px solid var(--color-info);
+}
+
+.test-card-title {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-3);
+}
+
+.test-card-detail {
+  margin: var(--spacing-1) 0;
+  color: var(--color-text-tertiary);
+  font-size: var(--font-size-sm);
+}
+
+/* Responsive styles */
+@media (max-width: 480px) {
+  .test-card-info {
+    margin-top: var(--spacing-6);
+    padding: var(--spacing-3);
+  }
+
+  .test-card-title {
+    font-size: var(--font-size-sm);
+  }
+
+  .test-card-detail {
+    font-size: var(--font-size-xs);
+  }
+}
