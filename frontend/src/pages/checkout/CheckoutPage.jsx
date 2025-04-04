@@ -11,9 +11,13 @@ import {
   PaymentForm,
   TestCardInfo,
 } from "./components";
+import useErrorRedux from "../../hooks/useErrorRedux";
 import "./styles/CheckoutPage.css";
 
 const CheckoutPage = () => {
+  // Use error Redux hook for global error handling
+  const { showError, globalError } = useErrorRedux();
+
   // Use custom hooks
   const {
     shippingInfo,
@@ -34,13 +38,12 @@ const CheckoutPage = () => {
     handleSubmit,
     isLoading: isSubmitting,
     error: submitError,
-    setError,
   } = useCheckoutSubmit();
 
   const cardElementOptions = useCardElementOptions();
 
   // Combines errors from different sources
-  const error = submitError || cartSummaryError;
+  const error = submitError || cartSummaryError || globalError;
 
   // Handles form submission
   const onSubmit = async (e) => {
@@ -48,12 +51,12 @@ const CheckoutPage = () => {
 
     // Only proceed if shipping info is valid and payment info is loaded
     if (!isShippingInfoValid()) {
-      setError("Please fill out all shipping information fields.");
+      showError("Please fill out all shipping information fields.");
       return;
     }
 
     if (!cartSummary) {
-      setError("Unable to process payment: cart information is missing.");
+      showError("Unable to process payment: cart information is missing.");
       return;
     }
 

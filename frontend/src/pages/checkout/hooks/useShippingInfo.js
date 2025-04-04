@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import { authService } from "../../../api";
+import useErrorRedux from "../../../hooks/useErrorRedux";
 
 // List of countries with ISO codes
 const COUNTRIES = [
@@ -40,8 +41,8 @@ const useShippingInfo = () => {
     phoneNumber: "",
   });
 
-  const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const { showError, globalError } = useErrorRedux();
 
   // Load user profile and prefill shipping info
   useEffect(() => {
@@ -77,14 +78,17 @@ const useShippingInfo = () => {
         }));
       } catch (err) {
         console.error("Error loading user profile:", err);
-        // Don't show error to user - just use empty shipping info
+        // Show error using Redux
+        showError(
+          "Error loading user profile. Using default shipping information."
+        );
       } finally {
         setIsLoading(false);
       }
     };
 
     loadUserProfile();
-  }, []);
+  }, [showError]);
 
   // Handle form field changes
   const handleShippingInfoChange = useCallback((e) => {
@@ -143,7 +147,7 @@ const useShippingInfo = () => {
     getFormattedShippingInfo,
     COUNTRIES,
     isLoading,
-    error,
+    error: globalError, // Return global error from Redux for backward compatibility
   };
 };
 

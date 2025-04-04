@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { useError } from "../../../context/ErrorContext";
+import useErrorRedux from "../../../hooks/useErrorRedux";
 import Spinner from "../../ui/spinner"; // Assuming you have a Spinner component
 import EmptyState from "../emptyState/EmptyState";
 
 /**
  * Higher-order component that adds loading, error handling, and empty state handling
+ * Now using Redux for state management instead of Context API
  * @param {React.Component} WrappedComponent - Component to wrap
  * @param {Object} options - Configuration options
  * @returns {React.Component} - Enhanced component with error handling
@@ -32,7 +33,7 @@ const withErrorHandling = (WrappedComponent, options = {}) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [isEmpty, setIsEmpty] = useState(false);
-    const { showError } = useError();
+    const { showError } = useErrorRedux();
 
     // Function to execute an async operation with error handling
     const handleAsync = async (asyncFn, successCallback, errorCallback) => {
@@ -105,35 +106,30 @@ const withErrorHandling = (WrappedComponent, options = {}) => {
         <EmptyState
           title={config.errorTitle}
           message={error.message || "An unexpected error occurred"}
-          icon="⚠️"
           actions={errorActions}
         />
       );
     }
 
-    // Show empty state if data is empty and we have empty state config
-    if (isEmpty && config.emptyState) {
+    // Show empty state if no data
+    if (isEmpty && props.showEmptyState !== false) {
       return (
         <EmptyState
-          title={config.emptyState.title || "No Results Found"}
-          message={config.emptyState.message || "No data available"}
-          icon={config.emptyState.icon || "📭"}
-          actions={config.emptyState.actions || []}
+          title={config.emptyTitle || "No data found"}
+          message={config.emptyMessage || "There are no items to display."}
+          actions={config.emptyActions || []}
         />
       );
     }
 
-    // Render the wrapped component with additional props
+    // Pass the handleAsync function to the wrapped component
     return (
       <WrappedComponent
         {...props}
         handleAsync={handleAsync}
         isLoading={loading}
-        setLoading={setLoading}
         error={error}
-        setError={setError}
         isEmpty={isEmpty}
-        setIsEmpty={setIsEmpty}
       />
     );
   };

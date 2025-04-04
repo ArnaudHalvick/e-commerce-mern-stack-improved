@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { useError } from "../../../context/ErrorContext";
+import useErrorRedux from "../../../hooks/useErrorRedux";
 import { apiClient } from "../../../api";
 import "../styles/DemoStyles.css";
 import Spinner from "../../ui/spinner";
 
 const ErrorDemo = () => {
-  const { showError, showSuccess, showWarning, showInfo } = useError();
+  const { showError, showSuccess, showWarning, showInfo } = useErrorRedux();
   const [message, setMessage] = useState("This is a test message");
   const [apiPath, setApiPath] = useState("/api/error-demo/test-error");
   const [statusCode, setStatusCode] = useState(404);
@@ -155,11 +155,12 @@ const ErrorDemo = () => {
       <div className="error-demo-code">
         <h3>Usage Example:</h3>
         <pre>
-          {`import { useError } from '../context/ErrorContext';
+          {`import { useDispatch } from 'react-redux';
+import useErrorRedux from '../hooks/useErrorRedux';
 import { apiClient } from '../api';
 
 const YourComponent = () => {
-  const { showError, showSuccess } = useError();
+  const { showError, showSuccess } = useErrorRedux();
   
   const handleSubmit = async (formData) => {
     try {

@@ -8,15 +8,16 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { clearCart } from "../../../redux/slices/cartSlice";
 import { paymentsService } from "../../../api";
+import useErrorRedux from "../../../hooks/useErrorRedux";
 
 const useCheckoutSubmit = () => {
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { showError, setError: setGlobalError, globalError } = useErrorRedux();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
 
   const handleSubmit = useCallback(
     async (formattedShippingInfo, isShippingInfoValid) => {
@@ -26,94 +27,57 @@ const useCheckoutSubmit = () => {
       }
 
       if (!isShippingInfoValid()) {
-        setError("Please fill out all shipping information fields.");
+        showError("Please fill out all shipping information fields.");
         return;
       }
 
       setIsLoading(true);
-      setError(null);
+      setGlobalError(null);
 
       try {
-        // 1. Create a payment intent on the server
-        const intentResponse = await paymentsService.createPaymentIntent(
+        // Step 1: Create payment intent on the server
+        const { clientSecret } = await paymentsService.createPaymentIntent(
           formattedShippingInfo
         );
-        const { clientSecret } = intentResponse;
 
-        if (!clientSecret) {
-          throw new Error("Failed to create payment intent.");
-        }
-
-        // 2. Confirm the card payment
-        const cardElement = elements.getElement(CardNumberElement);
-        const { error: stripeError, paymentIntent } =
-          await stripe.confirmCardPayment(clientSecret, {
-            payment_method: {
-              card: cardElement,
-              billing_details: {
-                name: formattedShippingInfo.name,
-                address: {
-                  line1: formattedShippingInfo.shippingAddress.street,
-                  city: formattedShippingInfo.shippingAddress.city,
-                  state: formattedShippingInfo.shippingAddress.state,
-                  postal_code: formattedShippingInfo.shippingAddress.zip,
-                  country: formattedShippingInfo.shippingAddress.country,
-                },
-              },
+        // Step 2: Confirm card payment with Stripe.js
+        const result = await stripe.confirmCardPayment(clientSecret, {
+          payment_method: {
+            card: elements.getElement(CardNumberElement),
+            billing_details: {
+              name: formattedShippingInfo.name,
             },
-          });
+          },
+        });
 
-        if (stripeError) {
-          throw new Error(stripeError.message);
+        if (result.error) {
+          // Show error to customer
+          showError(result.error.message);
+          return;
         }
 
-        if (paymentIntent.status === "succeeded") {
-          // 3. Confirm the order
-          const paymentMethodId = paymentIntent.payment_method;
-
-          // Format shipping info for the backend
-          const formattedShippingInfoForOrder = {
-            address: formattedShippingInfo.shippingAddress.street,
-            city: formattedShippingInfo.shippingAddress.city,
-            state: formattedShippingInfo.shippingAddress.state,
-            country: formattedShippingInfo.shippingAddress.country,
-            postalCode: formattedShippingInfo.shippingAddress.zip,
-            phoneNumber: formattedShippingInfo.phoneNumber,
-            name: formattedShippingInfo.name,
-          };
-
-          const orderResponse = await paymentsService.confirmOrder(
-            paymentIntent.id,
-            paymentMethodId,
-            formattedShippingInfoForOrder
-          );
-
-          // 4. Clear the cart and redirect to the order confirmation page
+        if (result.paymentIntent.status === "succeeded") {
+          // Payment successful - clear the cart and navigate to confirmation
           dispatch(clearCart());
-          navigate(`/order-confirmation/${orderResponse.order._id}`);
-
-          return true;
-        } else {
-          throw new Error(
-            `Payment failed with status: ${paymentIntent.status}`
-          );
+          navigate(`/order-confirmation/${result.paymentIntent.id}`);
         }
-      } catch (err) {
-        console.error("Payment error:", err);
-        setError(err.message || "Payment failed. Please try again.");
-        return false;
+      } catch (error) {
+        console.error("Payment error:", error);
+        showError(
+          error.message || "An error occurred during payment. Please try again."
+        );
       } finally {
         setIsLoading(false);
       }
     },
-    [stripe, elements, navigate, dispatch]
+    [stripe, elements, navigate, dispatch, showError, setGlobalError]
   );
 
   return {
     handleSubmit,
     isLoading,
-    error,
-    setError,
+    error: globalError,
+    setError: setGlobalError, // For backward compatibility
   };
 };
 

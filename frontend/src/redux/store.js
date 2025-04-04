@@ -4,6 +4,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import userReducer, { verifyToken } from "./slices/userSlice";
 import cartReducer from "./slices/cartSlice";
 import reviewsReducer from "./slices/reviewsSlice";
+import errorReducer from "./slices/errorSlice";
 
 // Create the store with our reducers
 const store = configureStore({
@@ -11,6 +12,7 @@ const store = configureStore({
     user: userReducer,
     cart: cartReducer,
     reviews: reviewsReducer,
+    error: errorReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
