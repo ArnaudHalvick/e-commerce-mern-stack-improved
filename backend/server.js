@@ -63,7 +63,16 @@ app.use(
 // Special handling for Stripe webhook (must be raw)
 app.use((req, res, next) => {
   if (req.originalUrl === "/api/payment/webhook") {
-    next();
+    // Create a buffer of the request body for Stripe webhook
+    let rawBody = "";
+    req.on("data", (chunk) => {
+      rawBody += chunk.toString();
+    });
+
+    req.on("end", () => {
+      req.rawBody = rawBody;
+      next();
+    });
   } else {
     express.json({ limit: "10kb" })(req, res, next);
   }

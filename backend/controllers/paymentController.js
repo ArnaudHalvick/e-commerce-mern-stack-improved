@@ -6,6 +6,7 @@ const AppError = require("../utils/errors/AppError");
 const Cart = require("../models/Cart");
 const Order = require("../models/Order");
 const logger = require("../utils/common/logger");
+const mongoose = require("mongoose");
 
 /**
  * Calculate tax and shipping costs
@@ -68,6 +69,7 @@ const createPaymentIntent = catchAsync(async (req, res, next) => {
       userId: req.user.id.toString(),
       cartId: cart._id.toString(),
       integration_check: "accept_a_payment",
+      shippingInfo: JSON.stringify(shippingInfo),
     },
     receipt_email: req.user.email,
     automatic_payment_methods: {
@@ -91,6 +93,121 @@ const createPaymentIntent = catchAsync(async (req, res, next) => {
     shippingAmount,
   });
 });
+
+/**
+ * Create an order in the database
+ * Helper function used by both confirmOrder and webhook handlers
+ */
+const createOrderFromPaymentIntent = async (
+  paymentIntentId,
+  userId,
+  shippingInfo = null
+) => {
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+
+    // Verify the payment intent with Stripe
+    const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+
+    if (paymentIntent.status !== "succeeded") {
+      throw new AppError("Payment has not been completed", 400);
+    }
+
+    // Check if this payment has already been processed
+    const existingOrder = await Order.findOne({
+      "paymentInfo.id": paymentIntentId,
+    }).session(session);
+
+    if (existingOrder) {
+      // If order already exists, return it without creating a duplicate
+      await session.commitTransaction();
+      session.endSession();
+      return existingOrder;
+    }
+
+    // Get cart data for the user
+    const cart = await Cart.findOne({ user: userId }).session(session);
+
+    if (!cart || cart.items.length === 0) {
+      throw new AppError("Cart is empty", 400);
+    }
+
+    // Calculate subtotal, tax, and shipping
+    const subtotal = cart.totalPrice;
+    const { taxAmount, shippingAmount } = calculateTaxAndShipping(subtotal);
+    const totalAmount = subtotal + taxAmount + shippingAmount;
+
+    // Determine shipping information
+    // If we have shipping info from the request, use it
+    // Otherwise try to get it from the payment intent metadata
+    const finalShippingInfo =
+      shippingInfo ||
+      (paymentIntent.metadata.shippingInfo
+        ? JSON.parse(paymentIntent.metadata.shippingInfo)
+        : null);
+
+    if (!finalShippingInfo) {
+      throw new AppError("Shipping information is required", 400);
+    }
+
+    // Create new order
+    const order = await Order.create(
+      [
+        {
+          user: userId,
+          items: cart.items,
+          shippingInfo: {
+            address: finalShippingInfo.address,
+            city: finalShippingInfo.city,
+            state: finalShippingInfo.state,
+            country: finalShippingInfo.country || "US",
+            postalCode: finalShippingInfo.postalCode,
+            phoneNumber: finalShippingInfo.phoneNumber,
+          },
+          paymentInfo: {
+            id: paymentIntentId,
+            status: "succeeded",
+            paymentMethod: "stripe",
+          },
+          taxAmount,
+          shippingAmount,
+          totalAmount,
+          itemsPrice: subtotal,
+          paidAt: new Date(),
+        },
+      ],
+      { session }
+    );
+
+    // Clear the cart after order is created
+    cart.items = [];
+    cart.totalItems = 0;
+    cart.totalPrice = 0;
+    await cart.save({ session });
+
+    // Commit the transaction
+    await session.commitTransaction();
+    logger.info(
+      `Order ${order[0]._id} created for user ${userId} via ${
+        shippingInfo ? "direct confirmation" : "webhook"
+      }`
+    );
+
+    return order[0];
+  } catch (error) {
+    // If an error occurs, abort the transaction
+    await session.abortTransaction();
+    logger.error(
+      `Error creating order for payment ${paymentIntentId}: ${error.message}`
+    );
+    throw error;
+  } finally {
+    // End the session
+    session.endSession();
+  }
+};
 
 /**
  * Confirm order after successful payment
@@ -167,71 +284,21 @@ const confirmOrder = catchAsync(async (req, res, next) => {
     return;
   }
 
-  // Original code for verifying with Stripe continues here...
-  // Verify the payment intent with Stripe
-  const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+  try {
+    // Use the common function to create the order
+    const order = await createOrderFromPaymentIntent(
+      paymentIntentId,
+      req.user.id,
+      shippingInfo
+    );
 
-  if (paymentIntent.status !== "succeeded") {
-    return next(new AppError("Payment has not been completed", 400));
+    res.status(201).json({
+      success: true,
+      order,
+    });
+  } catch (error) {
+    return next(error);
   }
-
-  // Check if this payment has already been processed
-  const existingOrder = await Order.findOne({
-    "paymentInfo.id": paymentIntentId,
-  });
-
-  if (existingOrder) {
-    return next(new AppError("Order has already been processed", 400));
-  }
-
-  // Get cart data for the current user
-  const cart = await Cart.findOne({ user: req.user.id });
-
-  if (!cart || cart.items.length === 0) {
-    return next(new AppError("Your cart is empty", 400));
-  }
-
-  // Calculate subtotal, tax, and shipping
-  const subtotal = cart.totalPrice;
-  const { taxAmount, shippingAmount } = calculateTaxAndShipping(subtotal);
-  const totalAmount = subtotal + taxAmount + shippingAmount;
-
-  // Create new order
-  const order = await Order.create({
-    user: req.user.id,
-    items: cart.items,
-    shippingInfo: {
-      address: shippingInfo.address,
-      city: shippingInfo.city,
-      state: shippingInfo.state,
-      country: shippingInfo.country || "US",
-      postalCode: shippingInfo.postalCode,
-      phoneNumber: shippingInfo.phoneNumber,
-    },
-    paymentInfo: {
-      id: paymentIntentId,
-      status: "succeeded",
-      paymentMethod: "stripe",
-    },
-    taxAmount,
-    shippingAmount,
-    totalAmount,
-    itemsPrice: subtotal,
-    paidAt: new Date(),
-  });
-
-  // Clear the cart after order is confirmed
-  cart.items = [];
-  cart.totalItems = 0;
-  cart.totalPrice = 0;
-  await cart.save();
-
-  logger.info(`Order ${order._id} created for user ${req.user.id}`);
-
-  res.status(201).json({
-    success: true,
-    order,
-  });
 });
 
 /**
@@ -282,39 +349,110 @@ const processWebhook = catchAsync(async (req, res, next) => {
   // Verify webhook signature
   try {
     event = stripe.webhooks.constructEvent(
-      req.rawBody, // You need to configure Express to preserve the raw body
+      req.rawBody, // This property is set in the middleware
       signature,
       process.env.STRIPE_WEBHOOK_SECRET
     );
   } catch (err) {
     logger.error(`Webhook signature verification failed: ${err.message}`);
-    return next(new AppError(`Webhook Error: ${err.message}`, 400));
+    return res.status(400).json({ error: `Webhook Error: ${err.message}` });
   }
 
   // Handle different event types
-  switch (event.type) {
-    case "payment_intent.succeeded":
-      const paymentIntent = event.data.object;
-      logger.info(`PaymentIntent ${paymentIntent.id} was successful`);
-      // You can trigger additional logic here, such as fulfillment processes
-      break;
+  try {
+    switch (event.type) {
+      case "payment_intent.succeeded":
+        const paymentIntent = event.data.object;
+        logger.info(`PaymentIntent ${paymentIntent.id} was successful`);
 
-    case "payment_intent.payment_failed":
-      const failedPaymentIntent = event.data.object;
-      logger.warn(
-        `Payment failed for PaymentIntent ${failedPaymentIntent.id}: ${
-          failedPaymentIntent.last_payment_error?.message || "Unknown error"
-        }`
-      );
-      break;
+        // Extract the user ID from metadata
+        const userId = paymentIntent.metadata.userId;
 
-    // Add other event types as needed
+        if (userId) {
+          // Try to create an order as a fallback if the client-side confirmation failed
+          try {
+            // Check if order already exists
+            const existingOrder = await Order.findOne({
+              "paymentInfo.id": paymentIntent.id,
+            });
 
-    default:
-      logger.info(`Unhandled event type: ${event.type}`);
+            if (!existingOrder) {
+              logger.info(
+                `Creating order from webhook for payment ${paymentIntent.id}`
+              );
+              await createOrderFromPaymentIntent(paymentIntent.id, userId);
+              logger.info(
+                `Successfully created order from webhook for payment ${paymentIntent.id}`
+              );
+            } else {
+              logger.info(
+                `Order already exists for payment ${paymentIntent.id}, skipping creation`
+              );
+            }
+          } catch (orderError) {
+            logger.error(
+              `Error creating order from webhook: ${orderError.message}`
+            );
+            // We don't rethrow here because we want to acknowledge receipt of the webhook
+          }
+        } else {
+          logger.warn(
+            `PaymentIntent ${paymentIntent.id} is missing userId in metadata`
+          );
+        }
+        break;
+
+      case "payment_intent.payment_failed":
+        const failedPaymentIntent = event.data.object;
+        logger.warn(
+          `Payment failed for PaymentIntent ${failedPaymentIntent.id}: ${
+            failedPaymentIntent.last_payment_error?.message || "Unknown error"
+          }`
+        );
+        break;
+
+      // Handle charge events
+      case "charge.succeeded":
+        logger.info(
+          `Charge succeeded for PaymentIntent ${event.data.object.payment_intent}`
+        );
+        break;
+
+      case "charge.failed":
+        logger.warn(
+          `Charge failed for PaymentIntent ${event.data.object.payment_intent}`
+        );
+        break;
+
+      // Add other relevant events
+      case "charge.refunded":
+        // Update order status to refunded
+        const refundedCharge = event.data.object;
+
+        if (refundedCharge.payment_intent) {
+          const order = await Order.findOne({
+            "paymentInfo.id": refundedCharge.payment_intent,
+          });
+          if (order) {
+            order.orderStatus = "Cancelled";
+            order.refundedAt = new Date();
+            await order.save();
+            logger.info(
+              `Order updated to Cancelled due to refund for payment ${refundedCharge.payment_intent}`
+            );
+          }
+        }
+        break;
+
+      default:
+        logger.info(`Unhandled event type: ${event.type}`);
+    }
+  } catch (err) {
+    logger.error(`Error processing webhook event: ${err.message}`);
+    // Don't return an error response, just log it
   }
 
-  // Acknowledge receipt of the event
+  // Always acknowledge receipt of the event to prevent Stripe from retrying
   res.status(200).json({ received: true });
 });
 

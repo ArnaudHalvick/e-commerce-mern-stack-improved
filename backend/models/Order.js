@@ -108,6 +108,7 @@ const OrderSchema = new mongoose.Schema(
       enum: ["Processing", "Shipped", "Delivered", "Cancelled"],
     },
     deliveredAt: Date,
+    refundedAt: Date,
     paidAt: {
       type: Date,
       required: true,
