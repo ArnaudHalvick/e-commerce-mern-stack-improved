@@ -12,7 +12,8 @@ import {
 
 /**
  * Custom hook to access and manage error state from Redux
- * This replaces the useError hook that used context
+ * This is the primary hook for error handling in the application.
+ * @returns {Object} Error state and methods for managing errors and toasts
  */
 const useErrorRedux = () => {
   const dispatch = useDispatch();

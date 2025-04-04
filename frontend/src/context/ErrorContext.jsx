@@ -1,41 +1,22 @@
 // frontend/src/context/ErrorContext.jsx
+// MIGRATION COMPLETE: This file now only exists for backwards compatibility
+// All components have been migrated to use useErrorRedux directly
 
-import React, { createContext, useContext } from "react";
 import useErrorRedux from "../hooks/useErrorRedux";
 
 /**
- * ErrorContext - Compatibility layer for the migration from Context API to Redux
- * This uses Redux under the hood but exposes the same API as the old ErrorContext
- */
-const ErrorContext = createContext();
-
-/**
- * ErrorProvider Component - Compatibility wrapper that uses Redux
- * This allows components to continue using the old useError hook while we migrate them
- */
-export const ErrorProvider = ({ children }) => {
-  // Use the Redux error hook to get the error state and methods
-  const errorRedux = useErrorRedux();
-
-  return (
-    <ErrorContext.Provider value={errorRedux}>{children}</ErrorContext.Provider>
-  );
-};
-
-/**
- * Custom hook to use the error context
- * This now uses Redux under the hood but keeps the same API
- * @returns {Object} Error context value
+ * @deprecated Use useErrorRedux from '../hooks/useErrorRedux' instead
+ * This hook is maintained only for backwards compatibility.
+ * @returns {Object} Error handler functions and state
  */
 export const useError = () => {
-  // Get direct access to Redux error state through the hook
-  const errorRedux = useErrorRedux();
-
-  // Try to get context value if it exists (for compatibility)
-  const context = useContext(ErrorContext);
-
-  // Return either the context value (if ErrorProvider is used) or direct Redux access
-  return context !== undefined ? context : errorRedux;
+  console.warn(
+    "useError is deprecated and will be removed in a future version. Please use useErrorRedux from '../hooks/useErrorRedux' instead."
+  );
+  return useErrorRedux();
 };
 
-export default ErrorContext;
+// No longer exporting ErrorProvider or context since all components have been migrated
+export default {
+  __NOTICE__: "This context is deprecated. Use useErrorRedux directly instead.",
+};

@@ -7,7 +7,6 @@ import Navbar from "./components/navbar/Navbar";
 import Footer from "./components/footer/Footer";
 import ErrorBoundary from "./components/errorHandling/boundary/ErrorBoundary";
 import { ToastContainer } from "./components/errorHandling";
-import { ErrorProvider } from "./context/ErrorContext";
 import AuthLoadingIndicator from "./components/authLoadingIndicator/AuthLoadingIndicator.jsx";
 import AuthGuard from "./components/authGuard/AuthGuard.jsx";
 import EmailVerificationGuard from "./components/authGuard/EmailVerificationGuard.jsx";
@@ -102,173 +101,171 @@ function App() {
   }, [fetchUserProfile]);
 
   return (
-    <ErrorProvider>
-      <ErrorBoundary>
-        {/* Auth Loading Indicator */}
-        <AuthLoadingIndicator />
+    <ErrorBoundary>
+      {/* Auth Loading Indicator */}
+      <AuthLoadingIndicator />
 
-        {/* Fixed Header - Always visible */}
-        <Container fluid={true}>
-          <Navbar />
-        </Container>
+      {/* Fixed Header - Always visible */}
+      <Container fluid={true}>
+        <Navbar />
+      </Container>
 
-        {/* Main Content Area */}
-        <Container>
-          <Routes>
-            {/* Home and Category Routes - Public */}
-            <Route path="/" element={<Shop />} />
-            <Route
-              path="/men"
-              element={
-                <ProductListingPage
-                  pageType="category"
-                  category="men"
-                  banner={men_banner}
-                />
-              }
-            />
-            <Route
-              path="/women"
-              element={
-                <ProductListingPage
-                  pageType="category"
-                  category="women"
-                  banner={women_banner}
-                />
-              }
-            />
-            <Route
-              path="/kids"
-              element={
-                <ProductListingPage
-                  pageType="category"
-                  category="kids"
-                  banner={kids_banner}
-                />
-              }
-            />
+      {/* Main Content Area */}
+      <Container>
+        <Routes>
+          {/* Home and Category Routes - Public */}
+          <Route path="/" element={<Shop />} />
+          <Route
+            path="/men"
+            element={
+              <ProductListingPage
+                pageType="category"
+                category="men"
+                banner={men_banner}
+              />
+            }
+          />
+          <Route
+            path="/women"
+            element={
+              <ProductListingPage
+                pageType="category"
+                category="women"
+                banner={women_banner}
+              />
+            }
+          />
+          <Route
+            path="/kids"
+            element={
+              <ProductListingPage
+                pageType="category"
+                category="kids"
+                banner={kids_banner}
+              />
+            }
+          />
 
-            {/* Special Offer Routes - Public */}
-            <Route
-              path="/offers"
-              element={<ProductListingPage pageType="offers" />}
-            />
+          {/* Special Offer Routes - Public */}
+          <Route
+            path="/offers"
+            element={<ProductListingPage pageType="offers" />}
+          />
 
-            {/* Product Detail Routes - Public */}
-            <Route path="/product" element={<Product />}>
-              <Route path=":productId" element={<Product />} />
-            </Route>
-            <Route path="/products/:productSlug" element={<Product />} />
+          {/* Product Detail Routes - Public */}
+          <Route path="/product" element={<Product />}>
+            <Route path=":productId" element={<Product />} />
+          </Route>
+          <Route path="/products/:productSlug" element={<Product />} />
 
-            {/* Cart - Public */}
-            <Route path="/cart" element={<Cart />} />
+          {/* Cart - Public */}
+          <Route path="/cart" element={<Cart />} />
 
-            {/* Auth Routes - Only when NOT authenticated */}
-            <Route
-              path="/login"
-              element={
-                <UnauthenticatedRoute>
-                  <Auth />
-                </UnauthenticatedRoute>
-              }
-            />
-            <Route
-              path="/signup"
-              element={
-                <UnauthenticatedRoute>
-                  <Auth initialState="Signup" />
-                </UnauthenticatedRoute>
-              }
-            />
+          {/* Auth Routes - Only when NOT authenticated */}
+          <Route
+            path="/login"
+            element={
+              <UnauthenticatedRoute>
+                <Auth />
+              </UnauthenticatedRoute>
+            }
+          />
+          <Route
+            path="/signup"
+            element={
+              <UnauthenticatedRoute>
+                <Auth initialState="Signup" />
+              </UnauthenticatedRoute>
+            }
+          />
 
-            {/* Password Recovery Routes - Public */}
-            <Route
-              path="/forgot-password"
-              element={
-                <UnauthenticatedRoute>
-                  <ForgotPassword />
-                </UnauthenticatedRoute>
-              }
-            />
-            <Route
-              path="/reset-password/:token"
-              element={
-                <UnauthenticatedRoute>
-                  <ResetPassword />
-                </UnauthenticatedRoute>
-              }
-            />
+          {/* Password Recovery Routes - Public */}
+          <Route
+            path="/forgot-password"
+            element={
+              <UnauthenticatedRoute>
+                <ForgotPassword />
+              </UnauthenticatedRoute>
+            }
+          />
+          <Route
+            path="/reset-password/:token"
+            element={
+              <UnauthenticatedRoute>
+                <ResetPassword />
+              </UnauthenticatedRoute>
+            }
+          />
 
-            {/* Protected Routes - Only when authenticated */}
-            <Route
-              path="/profile"
-              element={
-                <ProtectedRoute>
-                  <Profile />
-                </ProtectedRoute>
-              }
-            />
+          {/* Protected Routes - Only when authenticated */}
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
 
-            {/* Verification Routes - Public */}
-            <Route path="/verify-email" element={<VerifyEmail />} />
-            <Route path="/verify-pending" element={<VerifyPending />} />
-            <Route
-              path="/verify-password-change"
-              element={<VerifyPasswordChange />}
-            />
+          {/* Verification Routes - Public */}
+          <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/verify-pending" element={<VerifyPending />} />
+          <Route
+            path="/verify-password-change"
+            element={<VerifyPasswordChange />}
+          />
 
-            {/* Demo Routes - Public */}
-            <Route path="/error-demo" element={<ErrorDemoPage />} />
+          {/* Demo Routes - Public */}
+          <Route path="/error-demo" element={<ErrorDemoPage />} />
 
-            {/* Protected routes that also require email verification */}
-            <Route
-              path="/checkout"
-              element={
-                <ProtectedRoute>
-                  <EmailVerificationGuard>
-                    <StripeProvider>
-                      <CheckoutPage />
-                    </StripeProvider>
-                  </EmailVerificationGuard>
-                </ProtectedRoute>
-              }
-            />
+          {/* Protected routes that also require email verification */}
+          <Route
+            path="/checkout"
+            element={
+              <ProtectedRoute>
+                <EmailVerificationGuard>
+                  <StripeProvider>
+                    <CheckoutPage />
+                  </StripeProvider>
+                </EmailVerificationGuard>
+              </ProtectedRoute>
+            }
+          />
 
-            <Route
-              path="/order-confirmation/:orderId"
-              element={
-                <ProtectedRoute>
-                  <EmailVerificationGuard>
-                    <OrderConfirmationPage />
-                  </EmailVerificationGuard>
-                </ProtectedRoute>
-              }
-            />
+          <Route
+            path="/order-confirmation/:orderId"
+            element={
+              <ProtectedRoute>
+                <EmailVerificationGuard>
+                  <OrderConfirmationPage />
+                </EmailVerificationGuard>
+              </ProtectedRoute>
+            }
+          />
 
-            {/* Add a route for order history */}
-            <Route
-              path="/account/orders"
-              element={
-                <ProtectedRoute>
-                  <OrderHistoryPage />
-                </ProtectedRoute>
-              }
-            />
+          {/* Add a route for order history */}
+          <Route
+            path="/account/orders"
+            element={
+              <ProtectedRoute>
+                <OrderHistoryPage />
+              </ProtectedRoute>
+            }
+          />
 
-            {/* 404 Route - Public */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Container>
+          {/* 404 Route - Public */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Container>
 
-        {/* Fixed Footer - Always visible */}
-        <Container fluid={true}>
-          <Footer />
-        </Container>
+      {/* Fixed Footer - Always visible */}
+      <Container fluid={true}>
+        <Footer />
+      </Container>
 
-        {/* Toast Notifications */}
-        <ToastContainer />
-      </ErrorBoundary>
-    </ErrorProvider>
+      {/* Toast Notifications */}
+      <ToastContainer />
+    </ErrorBoundary>
   );
 }
 
