@@ -3,7 +3,7 @@
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import Container from "./components/container/Container";
-import Navbar from "./components/navbar/Navbar";
+import Navbar from "./components/navbar/";
 import Footer from "./components/footer/Footer";
 import ErrorBoundary from "./components/errorHandling/boundary/ErrorBoundary";
 import { ToastContainer } from "./components/errorHandling";

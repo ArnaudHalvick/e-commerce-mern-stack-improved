@@ -1,0 +1,45 @@
+/* Menu */
+.navbar-menu {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-12);
+  list-style: none;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
+}
+
+.navbar-menu-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-1);
+  cursor: pointer;
+  width: auto;
+}
+
+/* Underline indicator */
+.navbar-menu-indicator {
+  border: none;
+  width: 80%;
+  height: 0.22rem;
+  border-radius: var(--border-radius-full);
+  background-color: var(--color-primary);
+}
+
+/* Hamburger - hidden on desktop */
+.navbar-hamburger {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.navbar-hamburger-line {
+  height: 3px;
+  width: 25px;
+  background: var(--color-text-primary);
+  margin: 4px 0;
+  transition: var(--transition-duration-normal);
+}

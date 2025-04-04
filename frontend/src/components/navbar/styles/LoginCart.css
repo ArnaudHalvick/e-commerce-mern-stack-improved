@@ -1,0 +1,76 @@
+/* Right side - login/cart */
+.navbar-login-cart {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4);
+}
+
+/* Buttons */
+.navbar-button {
+  outline: none;
+  width: 6rem;
+  height: 2.5rem;
+  border-radius: var(--border-radius-full);
+  border: var(--border-width-thin) solid var(--color-text-tertiary);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  background-color: var(--color-background);
+  cursor: pointer;
+  transition: all var(--transition-duration-normal)
+    var(--transition-timing-ease);
+}
+
+.navbar-button:active {
+  background-color: var(--color-background-dark);
+}
+
+/* Cart */
+.navbar-cart-icon {
+  width: 2rem;
+  height: auto;
+}
+
+.navbar-cart-count {
+  margin-left: -1.7rem;
+  margin-top: -1.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--color-primary-light);
+  color: var(--color-background);
+  border-radius: var(--border-radius-full);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+/* Auth buttons */
+.navbar-auth-buttons {
+  display: flex;
+  gap: var(--spacing-2);
+}
+
+/* Login button */
+.navbar-login-btn {
+  border-color: var(--color-text-primary);
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+}
+
+.navbar-login-btn:hover {
+  background-color: var(--color-background-light);
+}
+
+/* Signup button */
+.navbar-signup-btn {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary);
+  color: var(--color-background);
+}
+
+.navbar-signup-btn:hover {
+  background-color: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+}

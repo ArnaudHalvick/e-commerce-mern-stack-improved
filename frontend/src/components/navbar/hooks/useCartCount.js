@@ -1,9 +1,13 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchCart } from "../../redux/slices/cartSlice";
-import { useAuth } from "../../hooks/state";
+import { fetchCart } from "../../../redux/slices/cartSlice";
+import { useAuth } from "../../../hooks/state";
 
-const CartCount = () => {
+/**
+ * Custom hook for managing cart count
+ * @returns {Object} Cart count state
+ */
+const useCartCount = () => {
   const dispatch = useDispatch();
   const { isAuthenticated } = useAuth();
   const { totalItems = 0 } = useSelector(
@@ -17,16 +21,10 @@ const CartCount = () => {
     dispatch(fetchCart());
   }, [dispatch, isAuthenticated]);
 
-  // Only show cart count if user is authenticated
-  return (
-    <div
-      className="navbar-cart-count"
-      aria-label={`${totalItems} items in cart`}
-      role="status"
-    >
-      {isAuthenticated ? totalItems : 0}
-    </div>
-  );
+  return {
+    totalItems: isAuthenticated ? totalItems : 0,
+    isAuthenticated,
+  };
 };
 
-export default CartCount;
+export default useCartCount;

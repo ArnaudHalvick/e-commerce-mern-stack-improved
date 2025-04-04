@@ -1,0 +1,6 @@
+/* Import all navbar styles */
+@import "./Navbar.css";
+@import "./Menu.css";
+@import "./LoginCart.css";
+@import "./UserAccount.css";
+@import "./Responsive.css";

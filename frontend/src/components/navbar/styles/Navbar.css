@@ -1,0 +1,22 @@
+/* Base styles (desktop first) */
+.navbar {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: var(--spacing-6) var(--spacing-12);
+  box-shadow: var(--shadow-sm);
+  position: relative;
+}
+
+/* Logo */
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.navbar-logo-text {
+  color: var(--color-text-primary);
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-medium);
+}
