@@ -1,7 +1,7 @@
 // Path: frontend/src/App.js
 
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import Container from "./components/container/Container";
 import Navbar from "./components/navbar/";
 import Footer from "./components/footer/Footer";
@@ -85,19 +85,22 @@ const UnauthenticatedRoute = ({ children }) => {
  */
 function App() {
   const { fetchUserProfile } = useAuth();
+  const authInitialized = useRef(false);
 
-  // Check authentication status on app mount
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        // Verify token and load user profile
-        await fetchUserProfile();
-      } catch (error) {
-        console.error("Error initializing auth state:", error);
-      }
-    };
+    if (!authInitialized.current) {
+      authInitialized.current = true;
+      const checkAuth = async () => {
+        try {
+          // Verify token and load user profile
+          await fetchUserProfile();
+        } catch (error) {
+          console.error("Error initializing auth state:", error);
+        }
+      };
 
-    checkAuth();
+      checkAuth();
+    }
   }, [fetchUserProfile]);
 
   return (

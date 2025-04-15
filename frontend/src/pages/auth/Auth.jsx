@@ -23,6 +23,8 @@ const Auth = ({ initialState }) => {
 
   // Use a ref to track if we've already shown the success message
   const successMessageShown = useRef(false);
+  // Use a ref to track previous auth state to prevent infinite loops
+  const prevAuthState = useRef({ isAuthenticated, authLoading });
 
   // Determine form type based on the initialState prop
   const formType = initialState === "Signup" ? "register" : "login";
@@ -60,12 +62,23 @@ const Auth = ({ initialState }) => {
 
   // Redirect authenticated users away from login/signup pages.
   useEffect(() => {
-    if (!authLoading && isAuthenticated) {
+    // Only redirect if auth state has actually changed to prevent infinite loops
+    const authStateChanged =
+      prevAuthState.current.isAuthenticated !== isAuthenticated ||
+      prevAuthState.current.authLoading !== authLoading;
+
+    if (!authLoading && isAuthenticated && authStateChanged) {
+      // Update the previous state ref
+      prevAuthState.current = { isAuthenticated, authLoading };
+
       const returnTo = location.state?.from || "/";
       navigate(returnTo, {
         replace: true,
         state: { message: "You are already logged in" },
       });
+    } else {
+      // Update the previous state ref even if we don't redirect
+      prevAuthState.current = { isAuthenticated, authLoading };
     }
   }, [isAuthenticated, authLoading, navigate, location.state?.from]);
 

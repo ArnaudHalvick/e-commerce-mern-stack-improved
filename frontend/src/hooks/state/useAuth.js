@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
@@ -44,6 +44,11 @@ const useAuth = () => {
     userState.isInitialized
   );
 
+  // Add refs at the top level of the hook
+  const hasInitialized = useRef(false);
+  const lastFetchTime = useRef(0);
+  const prevPathname = useRef(location.pathname);
+
   // Derive isUserLoggedOut from localStorage for consistency with existing code
   const [isUserLoggedOut, setIsUserLoggedOut] = useState(
     () => localStorage.getItem("user-logged-out") === "true"
@@ -87,20 +92,31 @@ const useAuth = () => {
     // Don't try to fetch profile if there's no token or user is logged out
     const token = localStorage.getItem("auth-token");
     const isLoggedOut = localStorage.getItem("user-logged-out") === "true";
+    const now = Date.now();
+    const MIN_FETCH_INTERVAL = 5000; // 5 seconds minimum between fetches
 
-    if (!token || isLoggedOut) {
-      return null;
+    if (
+      !token ||
+      isLoggedOut ||
+      now - lastFetchTime.current < MIN_FETCH_INTERVAL
+    ) {
+      return userState.user; // Return current user instead of null to prevent state thrashing
     }
+
+    lastFetchTime.current = now;
 
     try {
       const response = await authService.getCurrentUser();
       if (response.success) {
         const normalizedUser = normalizeUserData(response.user);
-        dispatch(setUser(normalizedUser));
-        setLastVerificationCheck(Date.now());
+        // Only dispatch if user data has actually changed
+        if (JSON.stringify(normalizedUser) !== JSON.stringify(userState.user)) {
+          dispatch(setUser(normalizedUser));
+        }
+        setLastVerificationCheck(now);
         return normalizedUser;
       }
-      return null;
+      return userState.user; // Return current user on non-error failures
     } catch (err) {
       // Only log the error if it's not a 401 Unauthorized
       if (err.status !== 401) {
@@ -117,11 +133,12 @@ const useAuth = () => {
 
       return null;
     }
-  }, [dispatch, showError]);
+  }, [dispatch, showError, userState.user]);
 
   // Initialize auth state on mount
   useEffect(() => {
-    if (!userState.isInitialized) {
+    if (!userState.isInitialized && !hasInitialized.current) {
+      hasInitialized.current = true;
       checkAuthStatus();
     } else {
       setInitialLoadComplete(true);
@@ -153,13 +170,16 @@ const useAuth = () => {
       const timeSinceLastCheck = Date.now() - lastVerificationCheck;
       const requiresRefresh = timeSinceLastCheck > 30000; // 30 seconds
 
-      // Check if we're on a page that requires a fresh verification check
+      // Check if we're on a page that requires a fresh verification check AND pathname has changed
       const isCartOrCheckout =
         location.pathname === "/cart" ||
         location.pathname === "/checkout" ||
         location.pathname.startsWith("/order-confirmation");
 
-      if (isCartOrCheckout && requiresRefresh) {
+      const pathnameChanged = prevPathname.current !== location.pathname;
+      prevPathname.current = location.pathname;
+
+      if (isCartOrCheckout && requiresRefresh && pathnameChanged) {
         // Refresh the user profile to check verification status
         fetchUserProfile();
         setLastVerificationCheck(Date.now());
