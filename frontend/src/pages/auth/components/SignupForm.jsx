@@ -43,6 +43,36 @@ const SignupForm = ({
     validationStarted: formData.password?.length > 0,
   };
 
+  // Check if the password meets all requirements
+  const isPasswordValid =
+    passwordValidation.validLength &&
+    passwordValidation.hasUppercase &&
+    passwordValidation.hasNumber &&
+    passwordValidation.specialChar &&
+    passwordValidation.match;
+
+  // Check if all required fields are filled and valid
+  const isFormValid = () => {
+    // Required fields
+    const requiredFields = [
+      { field: "username", value: formData.username },
+      { field: "email", value: formData.email },
+      { field: "password", value: formData.password },
+      { field: "confirmPassword", value: formData.confirmPassword },
+    ];
+
+    // Check if any required fields are empty
+    const hasEmptyFields = requiredFields.some(
+      (item) => !item.value || item.value.trim() === ""
+    );
+
+    // Check if there are any validation errors
+    const hasErrors = errors && Object.keys(errors).some((key) => errors[key]);
+
+    // Form is valid if all required fields are filled, password is valid, and there are no errors
+    return !hasEmptyFields && isPasswordValid && !hasErrors;
+  };
+
   // Only show validation feedback when user has started typing a password
   const showValidation = formData.password?.length > 0;
 
@@ -58,6 +88,9 @@ const SignupForm = ({
 
     handleSubmit(e);
   };
+
+  // Determine if the submit button should be disabled
+  const isSubmitDisabled = !termsAccepted || !isFormValid();
 
   return (
     <form
@@ -177,7 +210,7 @@ const SignupForm = ({
           isLoading={loading}
           text="Create Account"
           loadingText="Creating account..."
-          disabled={!termsAccepted}
+          disabled={isSubmitDisabled}
           className="auth-form__submit-btn"
           size="medium"
           variant="primary"
