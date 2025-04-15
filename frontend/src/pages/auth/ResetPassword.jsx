@@ -1,9 +1,8 @@
 import React, { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ResetPasswordForm } from "./components";
+import { ResetPasswordForm, AuthLayout } from "./components";
 import { usePasswordRecovery } from "./hooks";
 import { usePasswordValidation } from "./hooks";
-import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
 import useErrorRedux from "../../hooks/useErrorRedux";
 
 // Styles
@@ -46,36 +45,25 @@ const ResetPassword = () => {
   }
 
   return (
-    <div className="auth-page">
-      <Breadcrumb
-        routes={[
-          { label: "Home", path: "/" },
-          { label: "Login", path: "/login" },
-          { label: "Reset Password" },
-        ]}
+    <AuthLayout
+      title="Reset Password"
+      breadcrumbRoutes={[
+        { label: "Home", path: "/" },
+        { label: "Login", path: "/login" },
+        { label: "Reset Password" },
+      ]}
+      errorMessage={formErrors.general}
+    >
+      <ResetPasswordForm
+        formData={formData}
+        handleChange={handleChange}
+        handleSubmit={handleSubmit}
+        handleBlur={handleBlur}
+        errors={fieldErrors}
+        loading={loading}
+        passwordValidation={passwordValidation}
       />
-      <div className="auth-page__content">
-        <div className="auth-page__container">
-          <h1 className="auth-page__title">Reset Password</h1>
-
-          {formErrors.general && (
-            <div className="auth-page__error" role="alert">
-              {formErrors.general}
-            </div>
-          )}
-
-          <ResetPasswordForm
-            formData={formData}
-            handleChange={handleChange}
-            handleSubmit={handleSubmit}
-            handleBlur={handleBlur}
-            errors={fieldErrors}
-            loading={loading}
-            passwordValidation={passwordValidation}
-          />
-        </div>
-      </div>
-    </div>
+    </AuthLayout>
   );
 };
 

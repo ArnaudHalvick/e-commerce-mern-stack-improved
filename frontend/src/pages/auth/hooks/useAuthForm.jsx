@@ -1,24 +1,23 @@
-import { useState, useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { authService } from "../../../api";
 import useErrorRedux from "../../../hooks/useErrorRedux";
-// Import the useAuth hook from the state directory
 import { useAuth } from "../../../hooks/state";
-import useFormErrors from "../../../hooks/useFormErrors";
 import {
   validateEmail,
   validateName,
   validatePassword,
   validatePasswordMatch,
-  validateForm,
-  isFormValid,
 } from "../../../utils/validation";
 
-// Import validation schemas for form validation rules
+// Import validation schemas
 import {
   loginFormSchema,
   registrationFormSchema,
 } from "../../../utils/validationSchemas";
+
+// Import our form handler
+import useFormHandler from "./useFormHandler";
 
 /**
  * Custom hook for managing auth forms (login/register)
@@ -28,23 +27,20 @@ import {
  */
 const useAuthForm = (formType = "login") => {
   const navigate = useNavigate();
-  const {
-    errors: formErrors,
-    clearAllErrors: clearFormError,
-    handleApiError: setFormError,
-  } = useFormErrors();
   const { showSuccess } = useErrorRedux();
-
   const { login } = useAuth();
 
-  const [formData, setFormData] = useState({
+  // Initial form data
+  const initialFormData = {
     username: "",
     email: "",
     password: "",
     confirmPassword: "",
-  });
-  const [loading, setLoading] = useState(false);
-  const [fieldErrors, setFieldErrors] = useState({});
+  };
+
+  // State to store password temporarily for use in validation
+  // This fixes the "used before defined" issue with formData
+  const [password, setPassword] = useState("");
 
   // Use form schemas for validation rules
   const validationRules = useMemo(
@@ -58,60 +54,75 @@ const useAuthForm = (formType = "login") => {
   /**
    * Validate a single field
    */
-  const validateField = useCallback(
-    (name, value) => {
-      let errorMessage = "";
+  const validateField = useCallback((name, value, currentPassword) => {
+    let errorMessage = "";
 
-      switch (name) {
-        case "username": {
-          const result = validateName(value);
-          if (!result.isValid) errorMessage = result.message;
-          break;
-        }
-        case "email": {
-          const result = validateEmail(value);
-          if (!result.isValid) errorMessage = result.message;
-          break;
-        }
-        case "password": {
-          const result = validatePassword(value);
-          if (!result.isValid) errorMessage = result.message;
-          break;
-        }
-        case "confirmPassword": {
-          const result = validatePasswordMatch(formData.password, value);
-          if (!result.isValid) errorMessage = result.message;
-          break;
-        }
-        default:
-          break;
+    switch (name) {
+      case "username": {
+        const result = validateName(value);
+        if (!result.isValid) errorMessage = result.message;
+        break;
+      }
+      case "email": {
+        const result = validateEmail(value);
+        if (!result.isValid) errorMessage = result.message;
+        break;
+      }
+      case "password": {
+        const result = validatePassword(value);
+        if (!result.isValid) errorMessage = result.message;
+        break;
+      }
+      case "confirmPassword": {
+        const result = validatePasswordMatch(currentPassword, value);
+        if (!result.isValid) errorMessage = result.message;
+        break;
+      }
+      default:
+        break;
+    }
+
+    return errorMessage;
+  }, []);
+
+  // Create a temporary state for field errors to avoid the circular dependency
+  const [tempFieldErrors, setTempFieldErrors] = useState({});
+
+  // Create field validator that includes password from state
+  const fieldValidator = useCallback(
+    (name, value) => {
+      const errorMessage = validateField(name, value, password);
+
+      // Update our temporary field errors state
+      setTempFieldErrors((prev) => ({ ...prev, [name]: errorMessage }));
+
+      // If the field is password, update our password state
+      if (name === "password") {
+        setPassword(value);
       }
 
-      setFieldErrors((prev) => ({ ...prev, [name]: errorMessage }));
       return errorMessage === "";
     },
-    [formData.password]
+    [validateField, password]
   );
 
-  /**
-   * Validate the entire form
-   */
-  const validateFormData = useCallback(() => {
-    const errors = validateForm(formData, validationRules[formType]);
-    setFieldErrors(errors);
-    return isFormValid(errors);
-  }, [formData, formType, validationRules]);
-
-  /**
-   * Handle input changes
-   */
-  const handleChange = useCallback(
-    (e) => {
-      const { name, value } = e.target;
-      setFormData((prev) => ({ ...prev, [name]: value }));
-      if (formErrors.general) clearFormError();
-    },
-    [formErrors, clearFormError]
+  // Use our common form handler
+  const {
+    formData,
+    loading,
+    setLoading,
+    fieldErrors,
+    setFieldErrors,
+    formErrors,
+    clearFormError,
+    setFormError,
+    handleChange,
+    handleBlur,
+    validateFormData,
+  } = useFormHandler(
+    initialFormData,
+    validationRules[formType],
+    fieldValidator
   );
 
   /**
@@ -187,24 +198,15 @@ const useAuthForm = (formType = "login") => {
       validateFormData,
       showSuccess,
       login,
+      setLoading,
+      setFieldErrors,
     ]
-  );
-
-  /**
-   * Handle blur event (validate field on blur)
-   */
-  const handleBlur = useCallback(
-    (e) => {
-      const { name, value } = e.target;
-      validateField(name, value);
-    },
-    [validateField]
   );
 
   return {
     formData,
     loading,
-    fieldErrors,
+    fieldErrors: { ...fieldErrors, ...tempFieldErrors },
     handleChange,
     handleSubmit,
     handleBlur,

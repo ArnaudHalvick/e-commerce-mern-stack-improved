@@ -4,17 +4,17 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { authService } from "../../../api";
 import useErrorRedux from "../../../hooks/useErrorRedux";
-import useFormErrors from "../../../hooks/useFormErrors";
 import {
   validateEmail,
   validatePassword,
   validatePasswordMatch,
-  validateForm,
-  isFormValid,
 } from "../../../utils/validation";
 
 // Import appropriate schemas
 import { passwordResetFormSchema } from "../../../utils/validationSchemas";
+
+// Import our form handler
+import useFormHandler from "./useFormHandler";
 
 /**
  * Custom hook for password recovery functionality
@@ -31,31 +31,21 @@ const usePasswordRecovery = (
   redirectAfterReset = true
 ) => {
   const navigate = useNavigate();
-  const {
-    errors: formErrors,
-    clearAllErrors: clearFormError,
-    handleApiError: setFormError,
-  } = useFormErrors();
   const { showSuccess } = useErrorRedux();
 
   // Initialize form data based on mode
-  const [formData, setFormData] = useState({
+  const initialFormData = {
     email: "",
     password: "",
     confirmPassword: "",
     token: token || "",
-  });
+  };
 
-  const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [fieldErrors, setFieldErrors] = useState({});
 
-  // Set token when it's provided
-  useEffect(() => {
-    if (token) {
-      setFormData((prev) => ({ ...prev, token }));
-    }
-  }, [token]);
+  // State to store password temporarily for use in validation
+  // This fixes the "used before defined" issue with formData
+  const [password, setPassword] = useState("");
 
   // Define validation rules based on mode, using imported schema for reset mode
   const validationRules = useMemo(
@@ -71,72 +61,85 @@ const usePasswordRecovery = (
   /**
    * Validate a single field
    */
-  const validateField = useCallback(
+  const validateField = useCallback((name, value, currentPassword) => {
+    let errorMessage = "";
+
+    switch (name) {
+      case "email":
+        const emailResult = validateEmail(value);
+        if (!emailResult.isValid) errorMessage = emailResult.message;
+        break;
+
+      case "password":
+        const passwordResult = validatePassword(value);
+        if (!passwordResult.isValid) errorMessage = passwordResult.message;
+        break;
+
+      case "confirmPassword":
+        const matchResult = validatePasswordMatch(currentPassword, value);
+        if (!matchResult.isValid) errorMessage = matchResult.message;
+        break;
+
+      case "token":
+        if (!value || value.trim() === "") {
+          errorMessage = "Reset token is required";
+        } else if (value.length < 10) {
+          errorMessage = "Invalid reset token";
+        }
+        break;
+
+      default:
+        break;
+    }
+
+    return errorMessage;
+  }, []);
+
+  // Create a temporary state for field errors to avoid the circular dependency
+  const [tempFieldErrors, setTempFieldErrors] = useState({});
+
+  // Create field validator that includes password from state
+  const fieldValidator = useCallback(
     (name, value) => {
-      let errorMessage = "";
+      const errorMessage = validateField(name, value, password);
 
-      switch (name) {
-        case "email":
-          const emailResult = validateEmail(value);
-          if (!emailResult.isValid) errorMessage = emailResult.message;
-          break;
-
-        case "password":
-          const passwordResult = validatePassword(value);
-          if (!passwordResult.isValid) errorMessage = passwordResult.message;
-          break;
-
-        case "confirmPassword":
-          const matchResult = validatePasswordMatch(formData.password, value);
-          if (!matchResult.isValid) errorMessage = matchResult.message;
-          break;
-
-        case "token":
-          if (!value || value.trim() === "") {
-            errorMessage = "Reset token is required";
-          } else if (value.length < 10) {
-            errorMessage = "Invalid reset token";
-          }
-          break;
-
-        default:
-          break;
-      }
-
-      setFieldErrors((prev) => ({
+      // Update our temporary field errors state
+      setTempFieldErrors((prev) => ({
         ...prev,
         [name]: errorMessage,
       }));
 
+      // If the field is password, update our password state
+      if (name === "password") {
+        setPassword(value);
+      }
+
       return errorMessage === "";
     },
-    [formData.password]
+    [validateField, password]
   );
 
-  /**
-   * Validate the entire form
-   */
-  const validateFormData = useCallback(() => {
-    const errors = validateForm(formData, validationRules[mode]);
-    setFieldErrors(errors);
-    return isFormValid(errors);
-  }, [formData, mode, validationRules]);
+  // Use our common form handler
+  const {
+    formData,
+    setFormData,
+    loading,
+    setLoading,
+    fieldErrors,
+    formErrors,
+    clearFormError,
+    setFormError,
+    handleChange,
+    handleBlur,
+    validateFormData,
+  } = useFormHandler(initialFormData, validationRules[mode], fieldValidator);
 
-  /**
-   * Handle input changes
-   */
-  const handleChange = useCallback(
-    (e) => {
-      const { name, value } = e.target;
-      setFormData((prev) => ({ ...prev, [name]: value }));
-
-      // Clear any form-level errors when user starts typing
-      if (formErrors.general) {
-        clearFormError();
-      }
-    },
-    [formErrors, clearFormError]
-  );
+  // Set token when it's provided
+  useEffect(() => {
+    if (token) {
+      setFormData((prev) => ({ ...prev, token }));
+    }
+  }, [token, setFormData]);
 
   /**
    * Handle form submission
@@ -179,8 +182,7 @@ const usePasswordRecovery = (
           try {
             const result = await authService.resetPassword(
               formData.token,
-              formData.password,
-              formData.confirmPassword
+              formData.password
             );
 
             if (result.success) {
@@ -198,23 +200,16 @@ const usePasswordRecovery = (
                         "Your password has been reset successfully. Please login with your new password.",
                     },
                   });
-                }, 1500); // Delay to allow the user to see the success message
+                }, 1500);
               }
             }
           } catch (error) {
-            // Don't redirect if we get a 401 during password reset
-            if (error.status === 401 && error.message.includes("logged out")) {
-              setFormError({
-                message:
-                  "Your password reset link may have expired. Please request a new one.",
-              });
-            } else {
-              setFormError(error);
-            }
+            setFormError(error);
             setSuccess(false);
           }
         }
       } catch (error) {
+        console.error("Password recovery error:", error);
         setFormError(error);
         setSuccess(false);
       } finally {
@@ -222,42 +217,27 @@ const usePasswordRecovery = (
       }
     },
     [
-      formData,
       mode,
+      formData,
+      navigate,
+      redirectAfterReset,
       clearFormError,
       setFormError,
       validateFormData,
       showSuccess,
-      navigate,
-      redirectAfterReset,
+      setLoading,
     ]
-  );
-
-  /**
-   * Handle blur event (validate field on blur)
-   */
-  const handleBlur = useCallback(
-    (e) => {
-      const { name, value } = e.target;
-      validateField(name, value);
-    },
-    [validateField]
   );
 
   return {
     formData,
     loading,
     success,
-    fieldErrors,
+    fieldErrors: { ...fieldErrors, ...tempFieldErrors },
     formErrors,
     handleChange,
     handleSubmit,
     handleBlur,
-    validatePassword: (password) => validateField("password", password),
-    validatePasswordMatch: (password, confirm) => {
-      setFormData((prev) => ({ ...prev, password, confirmPassword: confirm }));
-      return validateField("confirmPassword", confirm);
-    },
   };
 };
 

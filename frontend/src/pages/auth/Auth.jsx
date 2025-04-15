@@ -3,8 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/state";
 
 // Components
-import { LoginForm, SignupForm } from "./components";
-import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
+import { LoginForm, SignupForm, AuthLayout } from "./components";
 
 // Hooks
 import { useAuthForm } from "./hooks";
@@ -72,66 +71,53 @@ const Auth = ({ initialState }) => {
 
   // Determine current authentication mode based on URL path
   const authMode = location.pathname === "/login" ? "Login" : "Signup";
+  const title = authMode === "Signup" ? "Create Account" : "Login";
+
+  // Success message from password reset if available
+  const successMessage = location.state?.passwordResetSuccess
+    ? location.state.message ||
+      "Password reset successful. Please log in with your new password."
+    : "";
 
   return (
-    <div className="auth-page">
-      <Breadcrumb
-        routes={[{ label: "Home", path: "/" }, { label: authMode }]}
-      />
-      <div className="auth-page__content">
-        <div className="auth-page__container">
-          <h1 className="auth-page__title">
-            {authMode === "Signup" ? "Create Account" : "Login"}
-          </h1>
+    <AuthLayout
+      title={title}
+      breadcrumbRoutes={[{ label: "Home", path: "/" }, { label: authMode }]}
+      errorMessage={formErrors.general}
+      successMessage={successMessage}
+    >
+      {authMode === "Login" ? (
+        <LoginForm
+          formData={formData}
+          handleChange={handleChange}
+          loading={loading || inTransition}
+          errors={fieldErrors}
+          handleSubmit={handleSubmit}
+          handleBlur={handleBlur}
+        />
+      ) : (
+        <SignupForm
+          formData={formData}
+          handleChange={handleChange}
+          loading={loading || inTransition}
+          errors={fieldErrors}
+          handleSubmit={handleSubmit}
+          handleBlur={handleBlur}
+        />
+      )}
 
-          {/* Display success message from password reset if available */}
-          {location.state?.passwordResetSuccess && (
-            <div className="auth-page__success" role="alert">
-              {location.state.message ||
-                "Password reset successful. Please log in with your new password."}
-            </div>
-          )}
-
-          {formErrors.general && (
-            <div className="auth-page__error" role="alert">
-              {formErrors.general}
-            </div>
-          )}
-
-          {authMode === "Login" ? (
-            <LoginForm
-              formData={formData}
-              handleChange={handleChange}
-              loading={loading || inTransition}
-              errors={fieldErrors}
-              handleSubmit={handleSubmit}
-              handleBlur={handleBlur}
-            />
-          ) : (
-            <SignupForm
-              formData={formData}
-              handleChange={handleChange}
-              loading={loading || inTransition}
-              errors={fieldErrors}
-              handleSubmit={handleSubmit}
-              handleBlur={handleBlur}
-            />
-          )}
-
-          <p className="auth-page__switch">
-            {authMode === "Signup"
-              ? "Already have an account? "
-              : "Don't have an account? "}
-            <Link
-              className="auth-page__switch-link"
-              to={authMode === "Signup" ? "/login" : "/signup"}
-            >
-              {authMode === "Signup" ? "Sign in" : "Sign up"}
-            </Link>
-          </p>
-        </div>
-      </div>
-    </div>
+      <p className="auth-page__switch">
+        {authMode === "Signup"
+          ? "Already have an account? "
+          : "Don't have an account? "}
+        <Link
+          className="auth-page__switch-link"
+          to={authMode === "Signup" ? "/login" : "/signup"}
+        >
+          {authMode === "Signup" ? "Sign in" : "Sign up"}
+        </Link>
+      </p>
+    </AuthLayout>
   );
 };
 
