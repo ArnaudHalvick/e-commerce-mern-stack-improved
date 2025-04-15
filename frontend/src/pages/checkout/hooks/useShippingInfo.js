@@ -136,7 +136,6 @@ const useShippingInfo = () => {
 
         // Mark as loaded so we don't fetch again
         hasLoadedProfile.current = true;
-        console.log("Successfully loaded user profile");
       } catch (err) {
         console.error("Error loading user profile:", err);
 
