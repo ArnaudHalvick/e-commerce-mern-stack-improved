@@ -1,6 +1,5 @@
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { authService } from "../../../api";
-import useErrorRedux from "../../../hooks/useErrorRedux";
 
 // List of countries with ISO codes
 const COUNTRIES = [
@@ -36,147 +35,64 @@ const useShippingInfo = () => {
     address: "",
     city: "",
     state: "",
-    country: "US", // Default to US
+    country: "US",
     postalCode: "",
     phoneNumber: "",
   });
 
-  const [isLoading, setIsLoading] = useState(true);
-  const { showError, globalError } = useErrorRedux();
-
-  // Add a ref to track if we've already loaded the profile data
-  const hasLoadedProfile = useRef(false);
-  // Add a ref to track if component is mounted
-  const isMounted = useRef(true);
-  // Add debug flag
-  const debugAttempts = useRef(0);
-
-  // Load user profile and prefill shipping info
+  // Load user profile data once on component mount
   useEffect(() => {
-    // Skip if we've already loaded the profile
-    if (hasLoadedProfile.current) {
-      setIsLoading(false);
-      return;
-    }
-
     const loadUserProfile = async () => {
+      // Check if user is logged in
+      const token = localStorage.getItem("auth-token");
+      if (!token || localStorage.getItem("user-logged-out") === "true") {
+        return; // Exit if not logged in
+      }
+
       try {
-        setIsLoading(true);
-
-        // Increment attempt counter (for debugging)
-        debugAttempts.current += 1;
-
-        // Check if we have a valid token first
-        const token = localStorage.getItem("auth-token");
-        if (!token || localStorage.getItem("user-logged-out") === "true") {
-          console.log("No auth token or user logged out, using default values");
-          // If user isn't logged in, just use default values
-          if (isMounted.current) {
-            setIsLoading(false);
-            hasLoadedProfile.current = true;
-          }
-          return;
-        }
-
-        // Try to get current user data
+        // Get user data
         const response = await authService.getCurrentUser();
 
-        // Skip update if component unmounted during async operation
-        if (!isMounted.current) return;
+        // Process response if it contains user data
+        if (
+          response &&
+          ((response.success && response.user) || response._id || response.id)
+        ) {
+          const userData =
+            response.success && response.user ? response.user : response;
+          const userAddress = userData.address || {};
 
-        // Handle backend response format - response may not have success/user fields
-        // but might directly be the user object
-        let userData;
-
-        if (response === null || response === undefined) {
-          console.error("Null response from getCurrentUser");
-          hasLoadedProfile.current = true;
-          setIsLoading(false);
-          return;
+          // Update shipping info with user data
+          setShippingInfo({
+            name: userData.name || userData.username || "",
+            address: userAddress.street || "",
+            city: userAddress.city || "",
+            state: userAddress.state || "",
+            country: userAddress.country || "US",
+            postalCode: userAddress.zipCode || userAddress.postalCode || "",
+            phoneNumber: userData.phone || "",
+          });
         }
-
-        // Check if response is the user object directly or has a user field
-        if (response.user) {
-          // If API follows { success: true, user: {...} } format
-          userData = response.user;
-        } else if (response._id) {
-          // If API returns user object directly
-          userData = response;
-        } else {
-          // Fallback to empty object if we can't determine the format
-          console.error("Unrecognized API response format:", response);
-          userData = {};
-        }
-
-        // Only update shipping info fields that exist in user profile
-        const userAddress = userData.address || {};
-        const userPhone = userData.phone || "";
-
-        // Convert country name to country code if needed
-        let countryCode = userAddress.country || "US";
-        if (countryCode && countryCode.length > 2) {
-          // If it's a full country name, try to match it to a code
-          const foundCountry = COUNTRIES.find(
-            (c) => c.name.toLowerCase() === countryCode.toLowerCase()
-          );
-          countryCode = foundCountry ? foundCountry.code : "US";
-        }
-
-        // Update shipping info with user data
-        setShippingInfo((prevState) => ({
-          ...prevState,
-          name: userData.name || userData.username || "",
-          address: userAddress.street || "",
-          city: userAddress.city || "",
-          state: userAddress.state || "",
-          country: countryCode,
-          postalCode: userAddress.zipCode || userAddress.postalCode || "",
-          phoneNumber: userPhone,
-        }));
-
-        // Mark as loaded so we don't fetch again
-        hasLoadedProfile.current = true;
       } catch (err) {
+        // Silently fail - form will remain empty
         console.error("Error loading user profile:", err);
-
-        // If there's a specific error message, use it
-        const errorMessage =
-          err.message ||
-          "Error loading user profile. Using default shipping information.";
-
-        // Show error using Redux
-        showError(errorMessage);
-
-        // Mark as loaded even on error so we don't keep trying forever
-        hasLoadedProfile.current = true;
-      } finally {
-        // Skip update if component unmounted during async operation
-        if (isMounted.current) {
-          setIsLoading(false);
-        }
       }
     };
 
-    // Call immediately without timeout - the delay was potentially causing issues
     loadUserProfile();
-
-    // Cleanup function to handle component unmounting
-    return () => {
-      isMounted.current = false;
-    };
-  }, [showError]); // Keep the showError dependency
+  }, []);
 
   // Handle form field changes
-  const handleShippingInfoChange = useCallback((e) => {
+  const handleShippingInfoChange = (e) => {
     const { name, value } = e.target;
     setShippingInfo((prevState) => ({
       ...prevState,
       [name]: value,
     }));
-  }, []);
+  };
 
   // Validate shipping info
-  const isShippingInfoValid = useCallback(() => {
+  const isShippingInfoValid = () => {
     return (
       shippingInfo.name &&
       shippingInfo.address &&
@@ -186,35 +102,21 @@ const useShippingInfo = () => {
       shippingInfo.postalCode &&
       shippingInfo.phoneNumber
     );
-  }, [
-    shippingInfo.name,
-    shippingInfo.address,
-    shippingInfo.city,
-    shippingInfo.state,
-    shippingInfo.country,
-    shippingInfo.postalCode,
-    shippingInfo.phoneNumber,
-  ]);
+  };
 
   // Format shipping info for API
-  const getFormattedShippingInfo = useCallback(() => {
-    // Format shipping address for API - the backend expects a nested structure
-    const shippingAddress = {
+  const getFormattedShippingInfo = () => ({
+    shippingAddress: {
       street: shippingInfo.address,
       city: shippingInfo.city,
       state: shippingInfo.state,
       zip: shippingInfo.postalCode,
       country: shippingInfo.country,
-    };
-
-    // Format shipping information as expected by the backend
-    return {
-      shippingAddress,
-      shippingMethod: "standard",
-      name: shippingInfo.name,
-      phoneNumber: shippingInfo.phoneNumber,
-    };
-  }, [shippingInfo]);
+    },
+    shippingMethod: "standard",
+    name: shippingInfo.name,
+    phoneNumber: shippingInfo.phoneNumber,
+  });
 
   return {
     shippingInfo,
@@ -222,8 +124,6 @@ const useShippingInfo = () => {
     isShippingInfoValid,
     getFormattedShippingInfo,
     COUNTRIES,
-    isLoading,
-    error: globalError, // Return global error from Redux for backward compatibility
   };
 };
 

@@ -63,6 +63,35 @@
   color: var(--color-text-tertiary);
 }
 
+/* Loading indicator styles */
+.shipping-form-loading-indicator {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-tertiary);
+  font-weight: var(--font-weight-normal);
+  opacity: 0.8;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+/* Form field styles for disabled state */
+.shipping-form input:disabled,
+.shipping-form select:disabled {
+  background-color: var(--color-background-light);
+  opacity: 0.7;
+  cursor: wait;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.5;
+  }
+}
+
 /* Responsive styles */
 @media (max-width: 768px) {
   .shipping-form-row {

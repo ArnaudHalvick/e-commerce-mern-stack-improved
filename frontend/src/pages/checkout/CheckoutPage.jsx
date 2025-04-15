@@ -25,7 +25,6 @@ const CheckoutPage = () => {
     isShippingInfoValid,
     getFormattedShippingInfo,
     COUNTRIES,
-    isLoading: isLoadingShippingInfo,
   } = useShippingInfo();
 
   const {
@@ -67,6 +66,7 @@ const CheckoutPage = () => {
     await handleSubmit(formattedShippingInfo, isShippingInfoValid);
   };
 
+  // Always show the checkout page, regardless of loading state
   return (
     <div className="checkout-page">
       <h1 className="checkout-title">Checkout</h1>
@@ -74,12 +74,11 @@ const CheckoutPage = () => {
       {error && <div className="checkout-error">{error}</div>}
 
       <div className="checkout-container">
-        {/* Shipping Information Section */}
+        {/* Shipping Information Section - Always show this */}
         <ShippingForm
           shippingInfo={shippingInfo}
           handleShippingInfoChange={handleShippingInfoChange}
           countries={COUNTRIES}
-          isLoading={isLoadingShippingInfo}
         />
 
         {/* Payment Information Section */}
@@ -91,14 +90,16 @@ const CheckoutPage = () => {
             error={cartSummaryError}
           />
 
-          {/* Payment Form Component */}
-          <PaymentForm
-            cardElementOptions={cardElementOptions}
-            isLoading={isSubmitting}
-            onSubmit={onSubmit}
-            disabled={!cartSummary || isSubmitting}
-            totalAmount={cartSummary?.amount || 0}
-          />
+          {/* Payment Form Component - Only show when cart has loaded */}
+          {cartSummary && (
+            <PaymentForm
+              cardElementOptions={cardElementOptions}
+              isLoading={isSubmitting}
+              onSubmit={onSubmit}
+              disabled={!cartSummary || isSubmitting}
+              totalAmount={cartSummary?.amount || 0}
+            />
+          )}
 
           {/* Test Card Info Component */}
           <TestCardInfo />

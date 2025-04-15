@@ -6,19 +6,11 @@ const ShippingForm = ({
   shippingInfo,
   handleShippingInfoChange,
   countries,
-  isLoading,
 }) => {
-  if (isLoading) {
-    return (
-      <div className="shipping-form-loading">
-        Loading shipping information...
-      </div>
-    );
-  }
-
   return (
     <div className="shipping-form-container">
       <h2 className="shipping-form-title">Shipping Information</h2>
+
       <form className="shipping-form">
         <FormInputField
           type="text"
