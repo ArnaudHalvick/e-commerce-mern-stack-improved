@@ -1,0 +1,20 @@
+/* Auth styles index file
+ * This file imports all auth-related styles and re-exports them.
+ * Import this single file in your components instead of importing individual CSS files.
+ */
+
+@import "./layout.css";
+@import "./forms.css";
+@import "./password-validation.css";
+
+/* Animations shared across auth components */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

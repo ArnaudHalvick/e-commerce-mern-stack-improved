@@ -3,7 +3,7 @@ import { ForgotPasswordForm, AuthLayout } from "./components";
 import { usePasswordRecovery } from "./hooks";
 
 // Styles
-import "./Auth.css";
+import "./styles/index.css";
 
 /**
  * Forgot Password page component

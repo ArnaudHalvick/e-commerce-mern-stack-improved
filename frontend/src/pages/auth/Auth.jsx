@@ -10,7 +10,7 @@ import { useAuthForm } from "./hooks";
 import useErrorRedux from "../../hooks/useErrorRedux";
 
 // Styles
-import "./Auth.css";
+import "./styles/index.css";
 
 /**
  * Auth component for handling user login and signup

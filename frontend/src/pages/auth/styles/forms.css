@@ -1,0 +1,203 @@
+/* Auth Form Styles */
+.auth-form {
+  width: 100%;
+}
+
+.auth-form__fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  margin-top: var(--spacing-7);
+}
+
+/* Custom styling for form input in auth context */
+.auth-form__input {
+  height: 3rem;
+  padding-left: var(--spacing-5);
+  margin-top: var(--spacing-2);
+  color: var(--color-text-tertiary);
+  font-size: inherit;
+  border-radius: var(--border-radius-lg);
+}
+
+.auth-form__input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(255, 65, 65, 0.1);
+}
+
+.auth-form__input--validation-active {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 2px rgba(248, 86, 6, 0.2);
+}
+
+.auth-form__error {
+  color: var(--color-danger);
+  background-color: var(--color-danger-light);
+  padding: var(--spacing-3) var(--spacing-4);
+  border-radius: var(--border-radius-md);
+  margin-top: var(--spacing-4);
+  font-size: var(--font-size-sm);
+  border-left: 3px solid var(--color-danger);
+  text-align: left;
+}
+
+.auth-form__terms {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-5);
+  margin-top: var(--spacing-6);
+  color: var(--color-text-tertiary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  background-color: var(--color-background-light);
+  padding: var(--spacing-4);
+  border-radius: var(--border-radius-lg);
+}
+
+.auth-form__checkbox {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--color-primary);
+}
+
+.auth-form__terms-text {
+  margin: 0;
+}
+
+.auth-form__actions {
+  margin-top: var(--spacing-6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-6);
+}
+
+/* Specific styling for auth form submit buttons */
+.auth-form__submit-btn {
+  width: 100%;
+  max-width: 300px;
+  height: 3.25rem !important;
+  font-size: var(--font-size-md) !important;
+  border-radius: var(--border-radius-md) !important;
+  margin: 0 auto;
+}
+
+/* Match/No match indicators for password confirmation */
+.auth-form__input--match {
+  border-color: var(--color-success) !important;
+  background-color: rgba(76, 175, 80, 0.05) !important;
+}
+
+.auth-form__input--no-match {
+  border-color: var(--color-danger) !important;
+  background-color: rgba(229, 57, 53, 0.05) !important;
+}
+
+/* Improved link styling */
+.auth-form__link {
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-sm);
+  padding: var(--spacing-2) var(--spacing-4);
+  border-radius: var(--border-radius-sm);
+  transition: all var(--transition-duration-fast) var(--transition-timing-ease);
+  display: inline-block;
+}
+
+.auth-form__link:hover {
+  background-color: rgba(255, 65, 65, 0.08);
+  text-decoration: underline;
+}
+
+/* Primary variant for important actions */
+.auth-form__link--primary {
+  background-color: var(--color-primary);
+  color: var(--color-background);
+  font-weight: var(--font-weight-semibold);
+  padding: var(--spacing-3) var(--spacing-6);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.auth-form__link--primary:hover {
+  background-color: var(--color-primary-dark);
+  text-decoration: none;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.auth-form__forgot-password {
+  text-align: right;
+  margin-top: calc(-1 * var(--spacing-2));
+}
+
+.auth-form__forgot-password .auth-form__link {
+  font-size: var(--font-size-sm);
+}
+
+.auth-form__forgot-password .auth-form__link:hover {
+  background-color: transparent;
+}
+
+.auth-form__links {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--spacing-4);
+  margin-top: var(--spacing-6);
+}
+
+.auth-form__success {
+  text-align: center;
+  padding: var(--spacing-8);
+  background-color: var(--color-success-light);
+  border-radius: var(--border-radius-lg);
+  margin: var(--spacing-6) 0;
+}
+
+.auth-form__success h2 {
+  color: var(--color-success);
+  margin-bottom: var(--spacing-4);
+  font-size: var(--font-size-xl);
+}
+
+.auth-form__success p {
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-4);
+  font-size: var(--font-size-md);
+}
+
+.auth-form__success p:last-child {
+  margin-bottom: 0;
+}
+
+/* Media queries for responsive forms */
+@media (max-width: 768px) {
+  .auth-form__fields {
+    gap: var(--spacing-3);
+  }
+
+  .auth-form__actions {
+    gap: var(--spacing-4);
+  }
+
+  .auth-form__terms {
+    padding: var(--spacing-3);
+  }
+
+  .auth-form__links {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-form__input {
+    height: 2.75rem;
+  }
+
+  .auth-form__submit-btn {
+    height: 3rem !important;
+    font-size: var(--font-size-base) !important;
+    max-width: 100%;
+  }
+}

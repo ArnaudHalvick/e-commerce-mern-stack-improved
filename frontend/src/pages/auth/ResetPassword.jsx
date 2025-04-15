@@ -6,7 +6,7 @@ import { usePasswordValidation } from "./hooks";
 import useErrorRedux from "../../hooks/useErrorRedux";
 
 // Styles
-import "./Auth.css";
+import "./styles/index.css";
 
 /**
  * Reset Password page component
