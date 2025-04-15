@@ -20,6 +20,7 @@ import {
 import { resetCart } from "../../redux/slices/cartSlice";
 import { authService } from "../../api";
 import { cancelPendingRequests } from "../../api/client";
+import useErrorRedux from "../../hooks/useErrorRedux";
 
 /**
  * Custom hook for authentication and user management
@@ -31,6 +32,7 @@ const useAuth = () => {
   const userState = useSelector((state) => state.user);
   const navigate = useNavigate();
   const location = useLocation();
+  const { showError } = useErrorRedux();
 
   // Local state for auth-specific UI states
   const [tokenRefreshInProgress, setTokenRefreshInProgress] = useState(false);
@@ -102,7 +104,8 @@ const useAuth = () => {
     } catch (err) {
       // Only log the error if it's not a 401 Unauthorized
       if (err.status !== 401) {
-        console.error("Fetch profile error:", err);
+        // Use redux for error handling instead of console logging in production
+        showError("Failed to load user profile.");
       }
 
       // If unauthorized, clear the token and mark as logged out
@@ -114,7 +117,7 @@ const useAuth = () => {
 
       return null;
     }
-  }, [dispatch]);
+  }, [dispatch, showError]);
 
   // Initialize auth state on mount
   useEffect(() => {
@@ -253,7 +256,7 @@ const useAuth = () => {
       }
       return null;
     } catch (error) {
-      console.error("Failed to refresh token:", error);
+      // Silent handling is appropriate here - no need for console.error
       handleLogout();
       return null;
     } finally {
@@ -299,23 +302,24 @@ const useAuth = () => {
             await fetchUserProfile();
           } else {
             // If refresh failed too, log the user out
-            console.error("Token refresh failed after verification failure");
+            showError("Your session has expired. Please log in again.");
             handleLogout();
           }
         } catch (refreshError) {
-          console.error("Error refreshing token:", refreshError);
+          // Silent handling for refresh errors
           handleLogout();
         }
       }
     } catch (error) {
-      console.error("Error checking auth status:", error);
+      // Use error handling through Redux
+      showError("Authentication error. Please log in again.");
       handleLogout();
     } finally {
       setInTransition(false);
       dispatch(setInitialized(true));
       setInitialLoadComplete(true);
     }
-  }, [dispatch, fetchUserProfile, handleLogout, refreshAccessToken]);
+  }, [dispatch, fetchUserProfile, handleLogout, refreshAccessToken, showError]);
 
   /**
    * Login user with email and password
@@ -378,7 +382,7 @@ const useAuth = () => {
             };
           }
         } catch (profileError) {
-          console.error("Error fetching profile after signup:", profileError);
+          // Silent handling - the user is already registered
         }
 
         // Registration successful
@@ -413,7 +417,9 @@ const useAuth = () => {
 
     authService
       .logout()
-      .catch(console.error)
+      .catch(() => {
+        // Silent catch - we're logging out anyway
+      })
       .finally(() => {
         handleLogout();
         setInTransition(false);

@@ -31,7 +31,7 @@ const usePasswordRecovery = (
   redirectAfterReset = true
 ) => {
   const navigate = useNavigate();
-  const { showSuccess } = useErrorRedux();
+  const { showSuccess, showError } = useErrorRedux();
   // Use a ref to track if we've already redirected
   const hasRedirected = useRef(false);
 
@@ -135,6 +135,7 @@ const usePasswordRecovery = (
     handleChange,
     handleBlur,
     validateFormData,
+    touchedFields,
   } = useFormHandler(initialFormData, validationRules[mode], fieldValidator);
 
   // Set token when it's provided
@@ -143,6 +144,25 @@ const usePasswordRecovery = (
       setFormData((prev) => ({ ...prev, token }));
     }
   }, [token, setFormData]);
+
+  // Update validations when formData changes, but only for touched fields
+  useEffect(() => {
+    if (formData.email !== undefined && touchedFields.email) {
+      fieldValidator("email", formData.email);
+    }
+    if (formData.password !== undefined && touchedFields.password) {
+      fieldValidator("password", formData.password);
+    }
+    if (
+      formData.confirmPassword !== undefined &&
+      touchedFields.confirmPassword
+    ) {
+      fieldValidator("confirmPassword", formData.confirmPassword);
+    }
+    if (formData.token !== undefined && touchedFields.token) {
+      fieldValidator("token", formData.token);
+    }
+  }, [formData, fieldValidator, touchedFields]);
 
   /**
    * Handle form submission
@@ -213,7 +233,10 @@ const usePasswordRecovery = (
           }
         }
       } catch (error) {
-        console.error("Password recovery error:", error);
+        // Use the error redux instead of console
+        showError(
+          error.message || "Password recovery failed. Please try again."
+        );
         setFormError(error);
         setSuccess(false);
       } finally {
@@ -229,15 +252,35 @@ const usePasswordRecovery = (
       setFormError,
       validateFormData,
       showSuccess,
+      showError,
       setLoading,
     ]
   );
+
+  // Filter out errors for fields that haven't been touched yet
+  const filteredFieldErrors = useMemo(() => {
+    const errors = { ...fieldErrors, ...tempFieldErrors };
+    const filteredErrors = {};
+
+    Object.keys(errors).forEach((field) => {
+      // Always show general errors
+      if (field === "general") {
+        filteredErrors[field] = errors[field];
+      }
+      // Only show field errors for touched fields
+      else if (touchedFields[field]) {
+        filteredErrors[field] = errors[field];
+      }
+    });
+
+    return filteredErrors;
+  }, [fieldErrors, tempFieldErrors, touchedFields]);
 
   return {
     formData,
     loading,
     success,
-    fieldErrors: { ...fieldErrors, ...tempFieldErrors },
+    fieldErrors: filteredFieldErrors,
     formErrors,
     handleChange,
     handleSubmit,

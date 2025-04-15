@@ -124,6 +124,7 @@ const useAuthForm = (formType = "login") => {
     handleChange,
     handleBlur,
     validateFormData,
+    touchedFields,
   } = useFormHandler(
     initialFormData,
     validationRules[formType],
@@ -132,19 +133,26 @@ const useAuthForm = (formType = "login") => {
 
   // Update tempFieldErrors when formData changes to keep validations in sync
   useEffect(() => {
-    if (formType === "register" && formData.username !== undefined) {
+    if (
+      formType === "register" &&
+      formData.username !== undefined &&
+      touchedFields.username
+    ) {
       fieldValidator("username", formData.username);
     }
-    if (formData.email !== undefined) {
+    if (formData.email !== undefined && touchedFields.email) {
       fieldValidator("email", formData.email);
     }
-    if (formData.password !== undefined) {
+    if (formData.password !== undefined && touchedFields.password) {
       fieldValidator("password", formData.password);
     }
-    if (formData.confirmPassword !== undefined) {
+    if (
+      formData.confirmPassword !== undefined &&
+      touchedFields.confirmPassword
+    ) {
       fieldValidator("confirmPassword", formData.confirmPassword);
     }
-  }, [formData, fieldValidator, formType]);
+  }, [formData, fieldValidator, formType, touchedFields]);
 
   /**
    * Handle form submission
@@ -199,10 +207,7 @@ const useAuthForm = (formType = "login") => {
           }
         }
       } catch (error) {
-        console.error(
-          `${formType === "login" ? "Login" : "Registration"} error:`,
-          error
-        );
+        // Use the error redux instead of console.error in production
         setFormError(error);
       } finally {
         setLoading(false);
@@ -224,10 +229,29 @@ const useAuthForm = (formType = "login") => {
     ]
   );
 
+  // Filter out errors for fields that haven't been touched yet
+  const filteredFieldErrors = useMemo(() => {
+    const errors = { ...fieldErrors, ...tempFieldErrors };
+    const filteredErrors = {};
+
+    Object.keys(errors).forEach((field) => {
+      // Always show general errors
+      if (field === "general") {
+        filteredErrors[field] = errors[field];
+      }
+      // Only show field errors for touched fields
+      else if (touchedFields[field]) {
+        filteredErrors[field] = errors[field];
+      }
+    });
+
+    return filteredErrors;
+  }, [fieldErrors, tempFieldErrors, touchedFields]);
+
   return {
     formData,
     loading,
-    fieldErrors: { ...fieldErrors, ...tempFieldErrors },
+    fieldErrors: filteredFieldErrors,
     handleChange,
     handleSubmit,
     handleBlur,
