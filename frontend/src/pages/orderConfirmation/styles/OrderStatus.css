@@ -1,0 +1,63 @@
+/* Status container */
+.order-confirmation-status-container {
+  margin-bottom: var(--spacing-10);
+}
+
+/* Status tracker layout */
+.order-confirmation-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 600px;
+  margin: var(--spacing-8) auto;
+}
+
+/* Individual status step */
+.order-confirmation-status-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+/* Status step icon */
+.order-confirmation-status-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--border-radius-full);
+  background-color: var(--color-background-dark);
+  color: var(--color-text-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--font-weight-semibold);
+  transition: all var(--transition-duration-normal)
+    var(--transition-timing-ease);
+}
+
+/* Active status step icon */
+.order-confirmation-status-step.active .order-confirmation-status-icon {
+  background-color: var(--color-success);
+  color: var(--color-background);
+}
+
+/* Status step text */
+.order-confirmation-status-text {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-tertiary);
+  font-weight: var(--font-weight-medium);
+}
+
+/* Active status step text */
+.order-confirmation-status-step.active .order-confirmation-status-text {
+  color: var(--color-text-secondary);
+}
+
+/* Status connector line */
+.order-confirmation-status-line {
+  flex: 1;
+  height: 3px;
+  background-color: var(--color-background-dark);
+  position: relative;
+  max-width: 100px;
+}

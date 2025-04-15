@@ -1,0 +1,15 @@
+/* Summary row styling */
+.order-confirmation-summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-3);
+}
+
+/* Total row styling */
+.order-confirmation-summary-row.order-confirmation-total {
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-md);
+  padding-top: var(--spacing-3);
+  margin-top: var(--spacing-2);
+  border-top: var(--border-width-thin) solid var(--color-border-light);
+}

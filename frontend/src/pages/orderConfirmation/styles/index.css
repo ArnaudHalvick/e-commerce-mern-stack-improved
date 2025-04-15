@@ -1,0 +1,8 @@
+/* Import all component-specific styles */
+@import "./OrderHeader.css";
+@import "./OrderSummary.css";
+@import "./ShippingInfo.css";
+@import "./PaymentInfo.css";
+@import "./OrderItems.css";
+@import "./OrderStatus.css";
+@import "./Common.css";

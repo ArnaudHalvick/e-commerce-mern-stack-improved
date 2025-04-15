@@ -1,0 +1,27 @@
+/* Success icon styling */
+.order-confirmation-success-icon {
+  color: var(--color-success);
+  width: 80px;
+  height: 80px;
+  margin: 0 auto var(--spacing-6);
+}
+
+/* Order confirmation title */
+.order-confirmation-title {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-3xl);
+  margin-bottom: var(--spacing-2);
+}
+
+/* Order ID style */
+.order-confirmation-id {
+  font-size: var(--font-size-md);
+  color: var(--color-text-tertiary);
+  margin-bottom: var(--spacing-1);
+}
+
+/* Order date style */
+.order-confirmation-date {
+  color: var(--color-text-light);
+  margin-bottom: var(--spacing-8);
+}

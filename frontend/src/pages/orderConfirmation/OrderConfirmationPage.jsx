@@ -13,7 +13,7 @@ import {
   OrderItems,
   OrderStatus,
 } from "./components";
-import "./OrderConfirmationPage.css";
+import "./styles/index.css";
 
 const OrderConfirmationPage = () => {
   const { orderId } = useParams();

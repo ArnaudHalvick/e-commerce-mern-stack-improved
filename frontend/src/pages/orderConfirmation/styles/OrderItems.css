@@ -1,0 +1,74 @@
+/* Order items container */
+.order-confirmation-items {
+  margin-top: var(--spacing-6);
+  margin-bottom: var(--spacing-10);
+}
+
+/* Individual order item */
+.order-confirmation-item {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-6);
+  margin-bottom: var(--spacing-4);
+  background-color: var(--color-background);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Item image container */
+.order-confirmation-item-image {
+  width: 80px;
+  height: 80px;
+  margin-right: var(--spacing-6);
+}
+
+/* Item image */
+.order-confirmation-item-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--border-radius-sm);
+}
+
+/* Item details container */
+.order-confirmation-item-details {
+  flex: 1;
+  text-align: left;
+}
+
+/* Item name */
+.order-confirmation-item-name {
+  font-size: var(--font-size-md);
+  margin-bottom: var(--spacing-2);
+}
+
+/* Item size and quantity */
+.order-confirmation-item-size,
+.order-confirmation-item-quantity {
+  color: var(--color-text-tertiary);
+  font-size: var(--font-size-sm);
+  margin: var(--spacing-1) 0;
+}
+
+/* Item price */
+.order-confirmation-item-price {
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-md);
+  color: var(--color-text-secondary);
+}
+
+/* Responsive styles for order items */
+@media (max-width: 768px) {
+  .order-confirmation-item {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .order-confirmation-item-image {
+    margin: 0 auto var(--spacing-4);
+  }
+
+  .order-confirmation-item-details {
+    text-align: center;
+  }
+}

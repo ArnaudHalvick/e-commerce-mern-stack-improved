@@ -1,0 +1,66 @@
+/* Common section container */
+.order-confirmation-section {
+  background-color: var(--color-background);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-6);
+  box-shadow: var(--shadow-lg);
+  text-align: left;
+}
+
+/* Section title styling */
+.order-confirmation-section-title {
+  font-size: var(--font-size-lg);
+  margin-bottom: var(--spacing-4);
+  color: var(--color-text-secondary);
+  padding-bottom: var(--spacing-2);
+  border-bottom: var(--border-width-thin) solid var(--color-border-light);
+}
+
+/* Main page container */
+.order-confirmation-page {
+  max-width: var(--container-lg);
+  margin: 0 auto;
+  padding: var(--spacing-8);
+  text-align: center;
+}
+
+/* Details container layout */
+.order-confirmation-details-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--spacing-6);
+  margin-bottom: var(--spacing-8);
+}
+
+/* Loading spinner container */
+.order-confirmation-loading-spinner {
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Action buttons container */
+.order-confirmation-actions {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-6);
+  margin-top: var(--spacing-8);
+}
+
+/* Responsive styles for page layout */
+@media (max-width: 768px) {
+  .order-confirmation-page {
+    padding: var(--spacing-6);
+  }
+
+  .order-confirmation-details-container {
+    grid-template-columns: 1fr;
+  }
+
+  .order-confirmation-actions {
+    flex-direction: column;
+    gap: var(--spacing-4);
+  }
+}

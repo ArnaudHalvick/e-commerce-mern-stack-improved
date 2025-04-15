@@ -1,0 +1,5 @@
+/* Shipping details text */
+.order-confirmation-shipping-detail {
+  margin: var(--spacing-2) 0;
+  color: var(--color-text-tertiary);
+}

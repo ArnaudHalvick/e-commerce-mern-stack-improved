@@ -1,0 +1,20 @@
+/* Payment row styling */
+.order-confirmation-payment-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-3);
+}
+
+/* Payment status badge */
+.order-confirmation-payment-status {
+  padding: var(--spacing-1) var(--spacing-3);
+  border-radius: var(--border-radius-full);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+/* Success status styling */
+.order-confirmation-payment-status.order-confirmation-status-success {
+  background-color: var(--color-success-light);
+  color: var(--color-success-dark);
+}
