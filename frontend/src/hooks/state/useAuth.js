@@ -82,6 +82,14 @@ const useAuth = () => {
    * @returns {Promise<Object|null>} User profile or null
    */
   const fetchUserProfile = useCallback(async () => {
+    // Don't try to fetch profile if there's no token or user is logged out
+    const token = localStorage.getItem("auth-token");
+    const isLoggedOut = localStorage.getItem("user-logged-out") === "true";
+
+    if (!token || isLoggedOut) {
+      return null;
+    }
+
     try {
       const response = await authService.getCurrentUser();
       if (response.success) {
@@ -92,7 +100,18 @@ const useAuth = () => {
       }
       return null;
     } catch (err) {
-      console.error("Fetch profile error:", err);
+      // Only log the error if it's not a 401 Unauthorized
+      if (err.status !== 401) {
+        console.error("Fetch profile error:", err);
+      }
+
+      // If unauthorized, clear the token and mark as logged out
+      if (err.status === 401) {
+        localStorage.removeItem("auth-token");
+        localStorage.setItem("user-logged-out", "true");
+        dispatch(clearUser());
+      }
+
       return null;
     }
   }, [dispatch]);

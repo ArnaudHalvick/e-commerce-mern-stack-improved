@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { authService } from "../../../api";
 import useErrorRedux from "../../../hooks/useErrorRedux";
@@ -59,8 +59,13 @@ const useAuthForm = (formType = "login") => {
 
     switch (name) {
       case "username": {
-        const result = validateName(value);
-        if (!result.isValid) errorMessage = result.message;
+        // Make sure username is properly validated
+        if (!value || value.trim() === "") {
+          errorMessage = "Name is required";
+        } else {
+          const result = validateName(value);
+          if (!result.isValid) errorMessage = result.message;
+        }
         break;
       }
       case "email": {
@@ -124,6 +129,22 @@ const useAuthForm = (formType = "login") => {
     validationRules[formType],
     fieldValidator
   );
+
+  // Update tempFieldErrors when formData changes to keep validations in sync
+  useEffect(() => {
+    if (formType === "register" && formData.username !== undefined) {
+      fieldValidator("username", formData.username);
+    }
+    if (formData.email !== undefined) {
+      fieldValidator("email", formData.email);
+    }
+    if (formData.password !== undefined) {
+      fieldValidator("password", formData.password);
+    }
+    if (formData.confirmPassword !== undefined) {
+      fieldValidator("confirmPassword", formData.confirmPassword);
+    }
+  }, [formData, fieldValidator, formType]);
 
   /**
    * Handle form submission

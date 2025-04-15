@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/state";
 
@@ -21,6 +21,9 @@ const Auth = ({ initialState }) => {
   const { showSuccess } = useErrorRedux();
   const { isAuthenticated, loading: authLoading, inTransition } = useAuth();
 
+  // Use a ref to track if we've already shown the success message
+  const successMessageShown = useRef(false);
+
   // Determine form type based on the initialState prop
   const formType = initialState === "Signup" ? "register" : "login";
   const {
@@ -35,21 +38,23 @@ const Auth = ({ initialState }) => {
 
   // Show success message if redirected from password reset
   useEffect(() => {
-    if (location.state?.passwordResetSuccess) {
+    // Only process if there's a password reset success message and we haven't shown it yet
+    if (location.state?.passwordResetSuccess && !successMessageShown.current) {
+      // Mark that we've shown the message to prevent infinite loop
+      successMessageShown.current = true;
+
       showSuccess(
         location.state.message ||
           "Password reset successful. Please log in with your new password."
       );
 
-      // Clear the message from location state after showing it
-      navigate(location.pathname, {
-        replace: true,
-        state: {
-          ...location.state,
-          passwordResetSuccess: undefined,
-          message: undefined,
-        },
-      });
+      // Clear the state in a separate effect to avoid re-triggering this effect
+      setTimeout(() => {
+        navigate(location.pathname, {
+          replace: true,
+          state: undefined,
+        });
+      }, 0);
     }
   }, [location.state, showSuccess, navigate, location.pathname]);
 
@@ -73,11 +78,13 @@ const Auth = ({ initialState }) => {
   const authMode = location.pathname === "/login" ? "Login" : "Signup";
   const title = authMode === "Signup" ? "Create Account" : "Login";
 
-  // Success message from password reset if available
-  const successMessage = location.state?.passwordResetSuccess
-    ? location.state.message ||
-      "Password reset successful. Please log in with your new password."
-    : "";
+  // Success message from password reset if available, but don't use location.state
+  // directly in the component to avoid infinite rerendering
+  const successMessage =
+    successMessageShown.current && location.state?.passwordResetSuccess
+      ? location.state.message ||
+        "Password reset successful. Please log in with your new password."
+      : "";
 
   return (
     <AuthLayout

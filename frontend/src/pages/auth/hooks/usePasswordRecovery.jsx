@@ -1,6 +1,6 @@
 // frontend/src/pages/auth/hooks/usePasswordRecovery.jsx
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { authService } from "../../../api";
 import useErrorRedux from "../../../hooks/useErrorRedux";
@@ -32,6 +32,8 @@ const usePasswordRecovery = (
 ) => {
   const navigate = useNavigate();
   const { showSuccess } = useErrorRedux();
+  // Use a ref to track if we've already redirected
+  const hasRedirected = useRef(false);
 
   // Initialize form data based on mode
   const initialFormData = {
@@ -126,6 +128,7 @@ const usePasswordRecovery = (
     loading,
     setLoading,
     fieldErrors,
+    setFieldErrors,
     formErrors,
     clearFormError,
     setFormError,
@@ -190,7 +193,8 @@ const usePasswordRecovery = (
               showSuccess("Password has been reset successfully");
 
               // Redirect to login page after successful password reset
-              if (redirectAfterReset) {
+              if (redirectAfterReset && !hasRedirected.current) {
+                hasRedirected.current = true;
                 setTimeout(() => {
                   navigate("/login", {
                     replace: true,

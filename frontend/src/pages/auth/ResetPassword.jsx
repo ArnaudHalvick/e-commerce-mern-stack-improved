@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ResetPasswordForm, AuthLayout } from "./components";
 import { usePasswordRecovery } from "./hooks";
@@ -16,6 +16,7 @@ const ResetPassword = () => {
   const { token } = useParams();
   const navigate = useNavigate();
   const { showError } = useErrorRedux();
+  const redirectedRef = useRef(false);
 
   const {
     formData,
@@ -32,7 +33,8 @@ const ResetPassword = () => {
 
   // Validate that we have a token
   useEffect(() => {
-    if (!token) {
+    if (!token && !redirectedRef.current) {
+      redirectedRef.current = true;
       showError(
         "Invalid or missing reset token. Please request a new password reset link."
       );
