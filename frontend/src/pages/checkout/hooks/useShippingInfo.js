@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { authService } from "../../../api";
 import useErrorRedux from "../../../hooks/useErrorRedux";
 
@@ -44,13 +44,69 @@ const useShippingInfo = () => {
   const [isLoading, setIsLoading] = useState(true);
   const { showError, globalError } = useErrorRedux();
 
+  // Add a ref to track if we've already loaded the profile data
+  const hasLoadedProfile = useRef(false);
+  // Add a ref to track if component is mounted
+  const isMounted = useRef(true);
+  // Add debug flag
+  const debugAttempts = useRef(0);
+
   // Load user profile and prefill shipping info
   useEffect(() => {
+    // Skip if we've already loaded the profile
+    if (hasLoadedProfile.current) {
+      setIsLoading(false);
+      return;
+    }
+
     const loadUserProfile = async () => {
       try {
         setIsLoading(true);
+
+        // Increment attempt counter (for debugging)
+        debugAttempts.current += 1;
+
+        // Check if we have a valid token first
+        const token = localStorage.getItem("auth-token");
+        if (!token || localStorage.getItem("user-logged-out") === "true") {
+          console.log("No auth token or user logged out, using default values");
+          // If user isn't logged in, just use default values
+          if (isMounted.current) {
+            setIsLoading(false);
+            hasLoadedProfile.current = true;
+          }
+          return;
+        }
+
+        // Try to get current user data
         const response = await authService.getCurrentUser();
-        const userData = response.user || {};
+
+        // Skip update if component unmounted during async operation
+        if (!isMounted.current) return;
+
+        // Handle backend response format - response may not have success/user fields
+        // but might directly be the user object
+        let userData;
+
+        if (response === null || response === undefined) {
+          console.error("Null response from getCurrentUser");
+          hasLoadedProfile.current = true;
+          setIsLoading(false);
+          return;
+        }
+
+        // Check if response is the user object directly or has a user field
+        if (response.user) {
+          // If API follows { success: true, user: {...} } format
+          userData = response.user;
+        } else if (response._id) {
+          // If API returns user object directly
+          userData = response;
+        } else {
+          // Fallback to empty object if we can't determine the format
+          console.error("Unrecognized API response format:", response);
+          userData = {};
+        }
 
         // Only update shipping info fields that exist in user profile
         const userAddress = userData.address || {};
@@ -58,7 +114,7 @@ const useShippingInfo = () => {
 
         // Convert country name to country code if needed
         let countryCode = userAddress.country || "US";
-        if (countryCode.length > 2) {
+        if (countryCode && countryCode.length > 2) {
           // If it's a full country name, try to match it to a code
           const foundCountry = COUNTRIES.find(
             (c) => c.name.toLowerCase() === countryCode.toLowerCase()
@@ -66,6 +122,7 @@ const useShippingInfo = () => {
           countryCode = foundCountry ? foundCountry.code : "US";
         }
 
+        // Update shipping info with user data
         setShippingInfo((prevState) => ({
           ...prevState,
           name: userData.name || userData.username || "",
@@ -76,19 +133,39 @@ const useShippingInfo = () => {
           postalCode: userAddress.zipCode || userAddress.postalCode || "",
           phoneNumber: userPhone,
         }));
+
+        // Mark as loaded so we don't fetch again
+        hasLoadedProfile.current = true;
+        console.log("Successfully loaded user profile");
       } catch (err) {
         console.error("Error loading user profile:", err);
+
+        // If there's a specific error message, use it
+        const errorMessage =
+          err.message ||
+          "Error loading user profile. Using default shipping information.";
+
         // Show error using Redux
-        showError(
-          "Error loading user profile. Using default shipping information."
-        );
+        showError(errorMessage);
+
+        // Mark as loaded even on error so we don't keep trying forever
+        hasLoadedProfile.current = true;
       } finally {
-        setIsLoading(false);
+        // Skip update if component unmounted during async operation
+        if (isMounted.current) {
+          setIsLoading(false);
+        }
       }
     };
 
+    // Call immediately without timeout - the delay was potentially causing issues
     loadUserProfile();
-  }, [showError]);
+
+    // Cleanup function to handle component unmounting
+    return () => {
+      isMounted.current = false;
+    };
+  }, [showError]); // Keep the showError dependency
 
   // Handle form field changes
   const handleShippingInfoChange = useCallback((e) => {
