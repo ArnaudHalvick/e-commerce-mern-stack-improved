@@ -4,7 +4,7 @@ import { getImageUrl } from "../../../utils/imageUtils";
 const OrderItems = ({ items }) => {
   return (
     <>
-      <h2>Order Items</h2>
+      <h2 className="order-confirmation-section-title">Order Items</h2>
       <div className="order-confirmation-items">
         {items.map((item) => (
           <div
@@ -12,10 +12,14 @@ const OrderItems = ({ items }) => {
             key={item._id || item.productId}
           >
             <div className="order-confirmation-item-image">
-              <img src={getImageUrl(item.image)} alt={item.name} />
+              <img
+                className="order-confirmation-item-img"
+                src={getImageUrl(item.image)}
+                alt={item.name}
+              />
             </div>
             <div className="order-confirmation-item-details">
-              <h3>{item.name}</h3>
+              <h3 className="order-confirmation-item-name">{item.name}</h3>
               <p className="order-confirmation-item-size">Size: {item.size}</p>
               <p className="order-confirmation-item-quantity">
                 Quantity: {item.quantity}

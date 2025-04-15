@@ -13,7 +13,7 @@
   margin: 0 auto var(--spacing-6);
 }
 
-.order-confirmation-page h1 {
+.order-confirmation-title {
   color: var(--color-text-secondary);
   font-size: var(--font-size-3xl);
   margin-bottom: var(--spacing-2);
@@ -45,7 +45,7 @@
   text-align: left;
 }
 
-.order-confirmation-section h2 {
+.order-confirmation-section-title {
   font-size: var(--font-size-lg);
   margin-bottom: var(--spacing-4);
   color: var(--color-text-secondary);
@@ -68,7 +68,7 @@
   border-top: var(--border-width-thin) solid var(--color-border-light);
 }
 
-.order-confirmation-shipping-info p {
+.order-confirmation-shipping-detail {
   margin: var(--spacing-2) 0;
   color: var(--color-text-tertiary);
 }
@@ -106,7 +106,7 @@
   margin-right: var(--spacing-6);
 }
 
-.order-confirmation-item-image img {
+.order-confirmation-item-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -118,7 +118,7 @@
   text-align: left;
 }
 
-.order-confirmation-item-details h3 {
+.order-confirmation-item-name {
   font-size: var(--font-size-md);
   margin-bottom: var(--spacing-2);
 }
@@ -199,24 +199,12 @@
   margin-top: var(--spacing-8);
 }
 
-.order-confirmation-loading-spinner,
-.order-confirmation-error-message {
+.order-confirmation-loading-spinner {
   min-height: 300px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-}
-
-.order-confirmation-error-message h2 {
-  font-size: var(--font-size-xl);
-  color: var(--color-danger);
-  margin-bottom: var(--spacing-2);
-}
-
-.order-confirmation-error-message p {
-  color: var(--color-text-tertiary);
-  margin-bottom: var(--spacing-6);
 }
 
 @media (max-width: 768px) {

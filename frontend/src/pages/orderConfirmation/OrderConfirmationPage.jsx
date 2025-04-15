@@ -3,6 +3,7 @@ import { useParams, useLocation, Link } from "react-router-dom";
 import Spinner from "../../components/ui/spinner";
 import { FormSubmitButton } from "../../components/form";
 import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
+import { EmptyState } from "../../components/errorHandling";
 import { useOrderDetails } from "./hooks";
 import {
   OrderHeader,
@@ -11,7 +12,6 @@ import {
   PaymentInfo,
   OrderItems,
   OrderStatus,
-  ErrorState,
 } from "./components";
 import "./OrderConfirmationPage.css";
 
@@ -35,11 +35,39 @@ const OrderConfirmationPage = () => {
   }
 
   if (error) {
-    return <ErrorState error={error} />;
+    return (
+      <EmptyState
+        title="Error"
+        message={error}
+        icon="⚠️"
+        className="order-confirmation-page"
+        actions={[
+          {
+            label: "View All Orders",
+            to: "/account/orders",
+            type: "secondary",
+          },
+        ]}
+      />
+    );
   }
 
   if (!order) {
-    return <ErrorState isNotFound={true} />;
+    return (
+      <EmptyState
+        title="Order Not Found"
+        message="The order you're looking for could not be found."
+        icon="🔍"
+        className="order-confirmation-page"
+        actions={[
+          {
+            label: "View All Orders",
+            to: "/account/orders",
+            type: "secondary",
+          },
+        ]}
+      />
+    );
   }
 
   return (

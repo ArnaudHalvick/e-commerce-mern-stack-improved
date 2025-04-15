@@ -3,7 +3,7 @@ import React from "react";
 const PaymentInfo = ({ paymentInfo }) => {
   return (
     <div className="order-confirmation-section">
-      <h2>Payment Information</h2>
+      <h2 className="order-confirmation-section-title">Payment Information</h2>
       <div className="order-confirmation-payment-info">
         <div className="order-confirmation-payment-row">
           <span>Method:</span>

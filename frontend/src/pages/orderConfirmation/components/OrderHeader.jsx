@@ -14,7 +14,7 @@ const OrderHeader = ({ orderId, createdAt }) => {
         </svg>
       </div>
 
-      <h1>Thank You For Your Order!</h1>
+      <h1 className="order-confirmation-title">Thank You For Your Order!</h1>
       <p className="order-confirmation-id">Order #{orderId}</p>
       <p className="order-confirmation-date">
         Placed on {formatDate(createdAt)}

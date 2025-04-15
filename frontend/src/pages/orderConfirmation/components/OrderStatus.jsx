@@ -3,7 +3,7 @@ import React from "react";
 const OrderStatus = ({ orderStatus }) => {
   return (
     <div className="order-confirmation-status-container">
-      <h2>Order Status</h2>
+      <h2 className="order-confirmation-section-title">Order Status</h2>
       <div className="order-confirmation-status">
         <div
           className={`order-confirmation-status-step ${

@@ -4,7 +4,6 @@ import ShippingInfo from "./ShippingInfo";
 import PaymentInfo from "./PaymentInfo";
 import OrderItems from "./OrderItems";
 import OrderStatus from "./OrderStatus";
-import ErrorState from "./ErrorState";
 
 export {
   OrderHeader,
@@ -13,5 +12,4 @@ export {
   PaymentInfo,
   OrderItems,
   OrderStatus,
-  ErrorState,
 };

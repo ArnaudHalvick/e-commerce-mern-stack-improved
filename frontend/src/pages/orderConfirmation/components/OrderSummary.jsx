@@ -3,7 +3,7 @@ import React from "react";
 const OrderSummary = ({ order }) => {
   return (
     <div className="order-confirmation-section">
-      <h2>Order Summary</h2>
+      <h2 className="order-confirmation-section-title">Order Summary</h2>
       <div className="order-confirmation-summary">
         <div className="order-confirmation-summary-row">
           <span>Items Total:</span>
