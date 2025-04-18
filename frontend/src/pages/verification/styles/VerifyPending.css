@@ -1,0 +1,71 @@
+/* Styles for the Verification Pending page */
+.verification-pending {
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.verification-pending h2 {
+  color: var(--color-accent);
+  font-size: var(--font-size-2xl);
+  margin: var(--spacing-4) 0;
+}
+
+.verification-pending p {
+  color: var(--color-text-tertiary);
+  line-height: var(--line-height-relaxed);
+  margin-bottom: var(--spacing-6);
+  font-size: var(--font-size-md);
+}
+
+.info-box {
+  background-color: rgba(13, 110, 253, 0.08);
+  border-left: 4px solid var(--color-primary);
+  padding: var(--spacing-4) var(--spacing-6);
+  margin: var(--spacing-6) 0;
+  text-align: left;
+  border-radius: var(--border-radius-md);
+}
+
+.info-box p {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.info-box i {
+  margin-right: var(--spacing-2);
+  color: var(--color-primary);
+}
+
+.actions-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-4);
+  margin: var(--spacing-8) 0;
+}
+
+.help-text {
+  margin-top: var(--spacing-8);
+  padding-top: var(--spacing-6);
+  border-top: 1px solid var(--color-border-light);
+}
+
+.help-text p {
+  color: var(--color-text-tertiary);
+  font-size: var(--font-size-sm);
+}
+
+/* Mobile adjustments */
+@media (max-width: 576px) {
+  .actions-container {
+    flex-direction: column;
+  }
+
+  .actions-container button,
+  .actions-container a {
+    width: 100%;
+    margin: var(--spacing-2) 0;
+  }
+}

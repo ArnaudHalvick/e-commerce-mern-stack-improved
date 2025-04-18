@@ -5,9 +5,11 @@ import { requestEmailVerification } from "../../redux/slices/userSlice";
 
 // Components
 import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
+import StatusIcon from "./components/StatusIcon";
 
-// CSS
-import "./VerifyEmail.css";
+// Styles
+import "./styles/Verification.css";
+import "./styles/VerifyPending.css";
 
 /**
  * Verification pending page - shown after registration
@@ -55,19 +57,23 @@ const VerifyPending = () => {
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      handleResendVerification();
+    }
+  };
+
   return (
-    <div className="verify-email-container">
+    <div className="verification-container">
       <Breadcrumb
         routes={[{ label: "HOME", path: "/" }, { label: "VERIFY ACCOUNT" }]}
       />
 
-      <div className="verify-email-content">
-        <h1>Verify Your Account</h1>
+      <div className="verification-content">
+        <h1 className="verification-title">Verify Your Account</h1>
 
         <div className="verification-pending">
-          <div className="email-icon">
-            <i className="fas fa-envelope"></i>
-          </div>
+          <StatusIcon status="success" />
 
           <h2>Almost there!</h2>
 
@@ -77,21 +83,21 @@ const VerifyPending = () => {
             registration.
           </p>
 
-          <div className="info-box">
+          <div className="info-box" role="alert">
             <p>
-              <i className="fas fa-info-circle"></i>
+              <i className="fas fa-info-circle" aria-hidden="true"></i>
               If you don't see the email, please check your spam or junk folder.
             </p>
           </div>
 
           {resendStatus.success ? (
-            <div className="resend-success">
+            <div className="resend-success" role="status" aria-live="polite">
               <p>
                 A new verification email has been sent! Please check your inbox.
               </p>
             </div>
           ) : resendStatus.error ? (
-            <div className="resend-error">
+            <div className="resend-error" role="alert">
               <p>{resendStatus.error}</p>
             </div>
           ) : null}
@@ -99,8 +105,17 @@ const VerifyPending = () => {
           <div className="actions-container">
             <button
               onClick={handleResendVerification}
+              onKeyDown={handleKeyDown}
               disabled={resendStatus.loading || resendStatus.success}
               className="btn-secondary"
+              tabIndex="0"
+              aria-label={
+                resendStatus.loading
+                  ? "Sending verification email"
+                  : resendStatus.success
+                  ? "Email has been sent"
+                  : "Resend verification email"
+              }
             >
               {resendStatus.loading
                 ? "Sending..."
@@ -109,7 +124,12 @@ const VerifyPending = () => {
                 : "Resend Verification Email"}
             </button>
 
-            <Link to="/login" className="btn-primary">
+            <Link
+              to="/login"
+              className="btn-primary"
+              tabIndex="0"
+              aria-label="Return to login page"
+            >
               Return to Login
             </Link>
           </div>
