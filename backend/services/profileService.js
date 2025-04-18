@@ -40,13 +40,6 @@ const getUserById = async (userId) => {
 const updateUserProfile = async (userId, userData) => {
   const { name, phone, address, profileImage } = userData;
 
-  // Log the incoming data for debugging
-  logger.debug(`Profile update request for user ${userId}:`, {
-    userData,
-    hasAddress: !!address,
-    addressFields: address ? Object.keys(address) : null,
-  });
-
   if (!name) {
     logger.warn(
       `Profile update missing required name field for user: ${userId}`
@@ -78,16 +71,8 @@ const updateUserProfile = async (userId, userData) => {
     user.phone = phone;
   }
 
-  // Debug existing address
-  logger.debug(
-    `Existing address for user ${userId} before update:`,
-    user.address
-  );
-
   // Update address if provided - handle explicitly without any middleware interference
   if (address) {
-    logger.debug(`Updating address for user ${userId}:`, address);
-
     try {
       // Set address fields individually to avoid issues with schema validation
       if (user.address === undefined) {
@@ -102,8 +87,6 @@ const updateUserProfile = async (userId, userData) => {
 
       // Mark the address field as modified to ensure it's saved
       user.markModified("address");
-
-      logger.debug(`Address after assignment:`, user.address);
     } catch (error) {
       logger.error(`Error setting address fields for user ${userId}:`, error);
       return {
@@ -124,14 +107,6 @@ const updateUserProfile = async (userId, userData) => {
   try {
     await user.save();
     logger.info(`Profile updated for user: ${userId}`);
-
-    // Log the updated address if it was part of the update
-    if (address) {
-      logger.debug(
-        `Updated address in database for user ${userId}:`,
-        user.address
-      );
-    }
 
     // Create a fresh copy of the user object to return
     const updatedUser = {

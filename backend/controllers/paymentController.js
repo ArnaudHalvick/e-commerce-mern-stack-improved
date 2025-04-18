@@ -111,9 +111,6 @@ const validateShippingInfo = (rawShippingInfo) => {
   // Normalize the shipping info to a consistent structure
   const shippingInfo = normalizeShippingInfo(rawShippingInfo);
 
-  // Log normalized shipping info for debugging
-  logger.debug("Normalized shipping info", { shippingInfo });
-
   if (
     !shippingInfo.address ||
     !shippingInfo.city ||

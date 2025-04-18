@@ -28,7 +28,7 @@ const Popular = () => {
       } catch (error) {
         // Don't show errors for canceled requests
         if (axios.isCancel(error)) {
-          console.log("Request canceled:", error.message);
+          console.error("Request canceled:", error.message);
         } else {
           console.error("Error fetching popular products:", error);
           setError("Failed to load popular products");

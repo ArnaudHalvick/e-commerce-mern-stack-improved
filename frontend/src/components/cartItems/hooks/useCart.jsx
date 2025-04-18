@@ -41,10 +41,13 @@ const useCart = () => {
   // Fetch cart data when component mounts or auth status changes
   useEffect(() => {
     if (isAuthenticated) {
-      dispatch(fetchCart()).catch((err) => {
-        console.error("Error fetching cart:", err);
-        // Don't show error to user to prevent UI disruption
-      });
+      dispatch(fetchCart())
+        .then(() => {
+          // Don't show error to user to prevent UI disruption
+        })
+        .catch((err) => {
+          console.error("Error fetching cart:", err);
+        });
     }
   }, [dispatch, isAuthenticated]);
 
@@ -75,12 +78,7 @@ const useCart = () => {
           })
         )
           .unwrap()
-          .then(() => {
-            console.log("Quantity updated successfully");
-          })
           .catch((err) => {
-            console.error("Error updating quantity:", err);
-
             // Show appropriate error message
             if (typeof err === "string") {
               if (
@@ -136,12 +134,7 @@ const useCart = () => {
         })
       )
         .unwrap()
-        .then(() => {
-          console.log("Items removed successfully");
-        })
         .catch((err) => {
-          console.error("Error removing items:", err);
-
           // If the operation fails, revert the optimistic UI update
           if (item) {
             setLocalTotalPrice((prev) => prev + item.price * item.quantity);
@@ -192,12 +185,7 @@ const useCart = () => {
         })
       )
         .unwrap()
-        .then((result) => {
-          console.log("Item added successfully");
-        })
         .catch((err) => {
-          console.error("Error adding item:", err);
-
           // If the add operation fails, revert the optimistic UI update
           if (item) {
             setLocalTotalPrice((prev) => prev - item.price);
@@ -248,12 +236,7 @@ const useCart = () => {
         })
       )
         .unwrap()
-        .then(() => {
-          console.log("Item removed successfully");
-        })
         .catch((err) => {
-          console.error("Error removing item:", err);
-
           // If the operation fails, revert the optimistic UI update
           if (item) {
             setLocalTotalPrice((prev) => prev + item.price);

@@ -10,7 +10,6 @@ const PromoCodeSection = () => {
   const handleSubmit = (e) => {
     if (e) e.preventDefault();
     // Future implementation: Handle promo code submission
-    console.log("Promo code submitted:", promoCode);
     // Reset after submission
     setPromoCode("");
   };
