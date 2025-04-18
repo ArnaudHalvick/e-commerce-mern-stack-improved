@@ -15,7 +15,7 @@ const DiscountFilter = ({ filters, onFilterChange }) => {
           type="checkbox"
           className="filter-sidebar-checkbox-input"
           checked={filters.discount}
-          onChange={() => onFilterChange("discount", !filters.discount)}
+          onChange={onFilterChange}
         />
         <span className="filter-sidebar-checkmark"></span>
         Discounted Items Only

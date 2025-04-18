@@ -28,6 +28,7 @@ import "./styles/index.css";
  * @param {array} props.availableTags - List of available tags
  * @param {array} props.availableTypes - List of available product types
  * @param {function} props.handleFilterChange - Function to handle filter changes
+ * @param {function} props.handleDiscountFilterChange - Function to handle discount filter changes with URL updates
  * @param {function} props.clearAllFilters - Function to clear all filters
  * @param {boolean} props.showCategoryFilter - Controls category filter visibility
  * @returns {JSX.Element} FilterSidebar component
@@ -37,6 +38,7 @@ const FilterSidebar = ({
   availableTags = [],
   availableTypes = [],
   handleFilterChange,
+  handleDiscountFilterChange,
   clearAllFilters,
   showCategoryFilter = true,
 }) => {
@@ -59,7 +61,10 @@ const FilterSidebar = ({
       <PriceFilter filters={filters} onFilterChange={onFilterChange} />
 
       {/* Discount Filter */}
-      <DiscountFilter filters={filters} onFilterChange={onFilterChange} />
+      <DiscountFilter
+        filters={filters}
+        onFilterChange={handleDiscountFilterChange || onFilterChange}
+      />
 
       {/* Rating Filter */}
       <RatingFilter filters={filters} onFilterChange={onFilterChange} />

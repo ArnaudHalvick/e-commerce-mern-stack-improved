@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
 
@@ -115,41 +115,65 @@ const ProductListingPage = ({
     }
   }, [isCategoryPage, category]);
 
-  // Check for URL parameters and set filters accordingly (for shop page)
+  // Remove the effect that synchronizes URL to filter state, and replace it with a simpler
+  // approach - only initialize the filter on first load
   useEffect(() => {
+    // Only run once on component mount to initialize from URL
     if (!isCategoryPage) {
       const params = new URLSearchParams(location.search);
       const discountParam = params.get("discount");
 
-      // Only update filter if URL has discount=true and filter is not already set
-      if (discountParam === "true" && !filters.discount) {
+      if (discountParam === "true") {
+        // Initial setup from URL, won't be called again on filter changes
         handleFilterChange("discount", true);
       }
-      // If URL doesn't have discount=true but filter is set, clear it
-      else if (discountParam !== "true" && filters.discount) {
-        handleFilterChange("discount", false);
-      }
     }
-  }, [location.search, filters.discount, handleFilterChange, isCategoryPage]);
+    // Run only once on component mount despite dependencies
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isCategoryPage, handleFilterChange, location.search]);
 
-  // Update URL when discount filter changes
-  useEffect(() => {
-    if (!isCategoryPage) {
-      const params = new URLSearchParams(location.search);
+  // Custom handler for discount filter changes that also updates URL
+  const handleDiscountFilterChange = useCallback(() => {
+    // Toggle the current discount filter state
+    const newValue = !filters.discount;
 
-      if (filters.discount) {
-        params.set("discount", "true");
-      } else {
-        params.delete("discount");
-      }
+    // Update filter state
+    handleFilterChange("discount", newValue);
 
-      // Replace the current URL without reloading the page
-      const newUrl = `${location.pathname}${
-        params.toString() ? `?${params.toString()}` : ""
-      }`;
-      window.history.replaceState({}, "", newUrl);
+    // Update URL without causing a navigation/reload
+    const params = new URLSearchParams(location.search);
+
+    if (newValue) {
+      params.set("discount", "true");
+    } else {
+      params.delete("discount");
     }
-  }, [filters.discount, isCategoryPage, location.pathname, location.search]);
+
+    const newUrl = `${location.pathname}${
+      params.toString() ? `?${params.toString()}` : ""
+    }`;
+    window.history.replaceState({}, "", newUrl);
+  }, [
+    filters.discount,
+    handleFilterChange,
+    location.pathname,
+    location.search,
+  ]);
+
+  // Custom clear all handler that also updates URL
+  const handleClearAll = useCallback(() => {
+    // First clear all filters using the existing function
+    clearAllFilters();
+
+    // Then manually update the URL to remove discount parameter
+    const params = new URLSearchParams(location.search);
+    params.delete("discount");
+
+    const newUrl = `${location.pathname}${
+      params.toString() ? `?${params.toString()}` : ""
+    }`;
+    window.history.replaceState({}, "", newUrl);
+  }, [clearAllFilters, location.pathname, location.search]);
 
   // Show loading state
   if (showLoading) {
@@ -192,7 +216,7 @@ const ProductListingPage = ({
             <p className="product-listing-error-message">{error}</p>
             <button
               className="product-listing-error-button"
-              onClick={clearAllFilters}
+              onClick={handleClearAll}
             >
               Try Again
             </button>
@@ -217,9 +241,10 @@ const ProductListingPage = ({
           <FilterSidebar
             filters={filters}
             handleFilterChange={handleFilterChange}
+            handleDiscountFilterChange={handleDiscountFilterChange}
             availableTags={availableTags}
             availableTypes={availableTypes}
-            clearAllFilters={clearAllFilters}
+            clearAllFilters={handleClearAll}
             showCategoryFilter={!isCategoryPage} // Only show category filter on offers page
           />
 
@@ -237,7 +262,7 @@ const ProductListingPage = ({
             currentPage={currentPage}
             totalPages={totalPages}
             handlePageChange={handlePageChange}
-            clearAllFilters={clearAllFilters}
+            clearAllFilters={handleClearAll}
           />
         </div>
       </div>
