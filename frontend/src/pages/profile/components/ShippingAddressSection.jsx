@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { FormInputField, FormSubmitButton } from "../../../components/form";
 import { debounce } from "lodash";
 import { validateAddress } from "../../../utils/validation";
+import { COUNTRIES } from "../../../utils/validationSchemas";
 import "./ShippingAddressSection.css";
 
 /**
@@ -292,6 +293,13 @@ const ShippingAddressSection = ({
     setLocalFieldErrors({});
   };
 
+  // Get country name from code for display
+  const getCountryNameByCode = (code) => {
+    if (!code) return "";
+    const country = COUNTRIES.find((c) => c.code === code);
+    return country ? country.name : code;
+  };
+
   // Clean up debounce on unmount
   useEffect(() => {
     return () => {
@@ -399,7 +407,7 @@ const ShippingAddressSection = ({
 
           <div className="profile-form-group">
             <FormInputField
-              type="text"
+              type="select"
               name="address.country"
               value={localFormData.address.country}
               onChange={handleLocalInputChange}
@@ -414,6 +422,8 @@ const ShippingAddressSection = ({
                   ? "profile-form-input error"
                   : "profile-form-input"
               }
+              options={COUNTRIES}
+              placeholder="Select a country"
             />
           </div>
 
@@ -438,7 +448,9 @@ const ShippingAddressSection = ({
         </form>
       ) : (
         <div className="profile-address-container">
-          {Object.values(formData.address).some((val) => val.trim() !== "") ? (
+          {Object.values(formData.address).some(
+            (val) => val && val.trim() !== ""
+          ) ? (
             <div className="profile-address-details">
               <p className="profile-address-text">
                 {formData.address.street && (
@@ -460,7 +472,7 @@ const ShippingAddressSection = ({
                 )}
                 {formData.address.country && (
                   <span className="profile-address-line">
-                    {formData.address.country}
+                    {getCountryNameByCode(formData.address.country)}
                   </span>
                 )}
               </p>

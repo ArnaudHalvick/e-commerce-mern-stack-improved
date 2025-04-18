@@ -8,6 +8,34 @@ const Order = require("../models/Order");
 const logger = require("../utils/common/logger");
 const mongoose = require("mongoose");
 
+// Define valid country codes - must match backend/models/User.js
+const VALID_COUNTRY_CODES = [
+  "US",
+  "CA",
+  "MX",
+  "AR",
+  "BR",
+  "GB",
+  "FR",
+  "DE",
+  "IT",
+  "ES",
+  "NL",
+  "BE",
+  "PT",
+  "CH",
+  "AT",
+  "SE",
+  "NO",
+  "DK",
+  "FI",
+  "AU",
+  "NZ",
+  "JP",
+  "CN",
+  "IN",
+];
+
 /**
  * Calculate tax and shipping costs
  * @param {number} subtotal - Cart subtotal
@@ -22,6 +50,43 @@ const calculateTaxAndShipping = (subtotal) => {
   const shippingAmount = 0;
 
   return { taxAmount, shippingAmount };
+};
+
+/**
+ * Validate shipping information
+ * @param {Object} shippingInfo - Shipping information object
+ * @returns {Object} - Validation result with success flag and error message
+ */
+const validateShippingInfo = (shippingInfo) => {
+  if (!shippingInfo) {
+    return { success: false, message: "Shipping information is required" };
+  }
+
+  if (!shippingInfo.shippingAddress) {
+    return { success: false, message: "Shipping address is required" };
+  }
+
+  const { street, city, state, zip, country } = shippingInfo.shippingAddress;
+
+  if (!street || !city || !state || !zip) {
+    return {
+      success: false,
+      message: "All shipping address fields are required",
+    };
+  }
+
+  if (!country) {
+    return { success: false, message: "Country is required" };
+  }
+
+  if (!VALID_COUNTRY_CODES.includes(country)) {
+    return {
+      success: false,
+      message: "Invalid country code. Please select a valid country.",
+    };
+  }
+
+  return { success: true };
 };
 
 /**
@@ -40,8 +105,10 @@ const createPaymentIntent = catchAsync(async (req, res, next) => {
     );
   }
 
-  if (!shippingInfo) {
-    return next(new AppError("Shipping information is required", 400));
+  // Validate shipping information
+  const shippingValidation = validateShippingInfo(shippingInfo);
+  if (!shippingValidation.success) {
+    return next(new AppError(shippingValidation.message, 400));
   }
 
   // Get cart data for the current user
@@ -151,6 +218,12 @@ const createOrderFromPaymentIntent = async (
       throw new AppError("Shipping information is required", 400);
     }
 
+    // Validate shipping information
+    const shippingValidation = validateShippingInfo(finalShippingInfo);
+    if (!shippingValidation.success) {
+      throw new AppError(shippingValidation.message, 400);
+    }
+
     // Create new order
     const order = await Order.create(
       [
@@ -158,11 +231,11 @@ const createOrderFromPaymentIntent = async (
           user: userId,
           items: cart.items,
           shippingInfo: {
-            address: finalShippingInfo.address,
-            city: finalShippingInfo.city,
-            state: finalShippingInfo.state,
-            country: finalShippingInfo.country || "US",
-            postalCode: finalShippingInfo.postalCode,
+            address: finalShippingInfo.shippingAddress.street,
+            city: finalShippingInfo.shippingAddress.city,
+            state: finalShippingInfo.shippingAddress.state,
+            country: finalShippingInfo.shippingAddress.country,
+            postalCode: finalShippingInfo.shippingAddress.zip,
             phoneNumber: finalShippingInfo.phoneNumber,
           },
           paymentInfo: {
@@ -224,13 +297,18 @@ const confirmOrder = catchAsync(async (req, res, next) => {
     );
   }
 
-  if (!paymentIntentId || !shippingInfo) {
-    return next(
-      new AppError(
-        "Payment intent ID and shipping information are required",
-        400
-      )
-    );
+  if (!paymentIntentId) {
+    return next(new AppError("Payment intent ID is required", 400));
+  }
+
+  // Validate shipping information if provided
+  if (shippingInfo) {
+    const shippingValidation = validateShippingInfo(shippingInfo);
+    if (!shippingValidation.success) {
+      return next(new AppError(shippingValidation.message, 400));
+    }
+  } else {
+    return next(new AppError("Shipping information is required", 400));
   }
 
   // For testing purposes ONLY: Force succeed the payment if testing flag is provided
@@ -253,7 +331,14 @@ const confirmOrder = catchAsync(async (req, res, next) => {
     const order = await Order.create({
       user: req.user.id,
       items: cart.items,
-      shippingInfo,
+      shippingInfo: {
+        address: shippingInfo.shippingAddress.street,
+        city: shippingInfo.shippingAddress.city,
+        state: shippingInfo.shippingAddress.state,
+        country: shippingInfo.shippingAddress.country,
+        postalCode: shippingInfo.shippingAddress.zip,
+        phoneNumber: shippingInfo.phoneNumber,
+      },
       paymentInfo: {
         id: paymentIntentId,
         status: "succeeded",

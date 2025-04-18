@@ -21,6 +21,7 @@ import {
   passwordSchema,
   phoneSchema,
   addressSchema,
+  VALID_COUNTRY_CODES,
 } from "./validationSchemas";
 
 /**
@@ -202,7 +203,7 @@ export const validateAddress = (address) => {
     errors.country = "Country is required";
   } else if (
     address.country &&
-    address.country.trim().length < addressSchema.country.minLength
+    !VALID_COUNTRY_CODES.includes(address.country)
   ) {
     errors.country = addressSchema.country.message;
   }

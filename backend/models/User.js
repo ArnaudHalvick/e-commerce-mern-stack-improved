@@ -6,6 +6,34 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const { normalizeEmail } = require("../utils/emails/emailNormalizer");
 
+// Define valid country codes - aligns with the frontend country list
+const VALID_COUNTRY_CODES = [
+  "US",
+  "CA",
+  "MX",
+  "AR",
+  "BR",
+  "GB",
+  "FR",
+  "DE",
+  "IT",
+  "ES",
+  "NL",
+  "BE",
+  "PT",
+  "CH",
+  "AT",
+  "SE",
+  "NO",
+  "DK",
+  "FI",
+  "AU",
+  "NZ",
+  "JP",
+  "CN",
+  "IN",
+];
+
 const UserSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -158,9 +186,10 @@ const UserSchema = new mongoose.Schema({
       type: String,
       validate: {
         validator: function (v) {
-          return !v || v.length >= 2;
+          return !v || VALID_COUNTRY_CODES.includes(v);
         },
-        message: (props) => "Country must be at least 2 characters long",
+        message: (props) =>
+          `${props.value} is not a valid country code. Please select a valid country.`,
       },
     },
   },

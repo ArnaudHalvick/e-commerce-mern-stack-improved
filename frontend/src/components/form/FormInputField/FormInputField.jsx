@@ -6,7 +6,7 @@ import "./FormInputField.css";
  * FormInputField - A reusable customizable form input field with error display and validation
  *
  * @param {Object} props - Component props
- * @param {string} props.type - Input type (text, email, password, etc.)
+ * @param {string} props.type - Input type (text, email, password, etc.) or "select" for dropdown
  * @param {string} props.name - Input name (supports nested fields like "address.street")
  * @param {string} props.value - Input value
  * @param {Function} props.onChange - Change handler
@@ -24,6 +24,7 @@ import "./FormInputField.css";
  * @param {Object} props.validationSchema - Schema object for validation
  * @param {boolean} props.disabled - Whether the field is disabled
  * @param {boolean} props.showErrorsImmediately - Whether to show errors immediately without waiting for field blur
+ * @param {Array} props.options - Options for select inputs (array of {value, label} objects)
  */
 const FormInputField = ({
   type = "text",
@@ -44,6 +45,7 @@ const FormInputField = ({
   validationSchema = null,
   disabled = false,
   showErrorsImmediately = true, // Default to showing errors immediately
+  options = [], // Options for select inputs
 }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [isTouched, setIsTouched] = useState(false);
@@ -147,23 +149,51 @@ const FormInputField = ({
       )}
 
       <div className="form-field__input-container">
-        <input
-          id={inputId}
-          type={type}
-          name={name}
-          value={value}
-          onChange={onChange}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-          placeholder={placeholder}
-          className={inputClassName}
-          required={required}
-          aria-invalid={!!errorMessage}
-          aria-describedby={errorMessage ? errorId : undefined}
-          style={style}
-          disabled={disabled}
-          {...combinedValidation}
-        />
+        {type === "select" ? (
+          <select
+            id={inputId}
+            name={name}
+            value={value}
+            onChange={onChange}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            className={inputClassName}
+            required={required}
+            aria-invalid={!!errorMessage}
+            aria-describedby={errorMessage ? errorId : undefined}
+            style={style}
+            disabled={disabled}
+          >
+            {placeholder && (
+              <option value="" disabled>
+                {placeholder}
+              </option>
+            )}
+            {options.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        ) : (
+          <input
+            id={inputId}
+            type={type}
+            name={name}
+            value={value}
+            onChange={onChange}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            placeholder={placeholder}
+            className={inputClassName}
+            required={required}
+            aria-invalid={!!errorMessage}
+            aria-describedby={errorMessage ? errorId : undefined}
+            style={style}
+            disabled={disabled}
+            {...combinedValidation}
+          />
+        )}
       </div>
 
       {showError && (
@@ -194,6 +224,12 @@ FormInputField.propTypes = {
   validationSchema: PropTypes.object,
   disabled: PropTypes.bool,
   showErrorsImmediately: PropTypes.bool,
+  options: PropTypes.arrayOf(
+    PropTypes.shape({
+      value: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired,
+    })
+  ),
 };
 
 export default FormInputField;
