@@ -3,11 +3,11 @@ import { useAuth } from "../../../hooks/state";
 
 // Navigation menu items
 export const NAV_ITEMS = [
-  { id: "shop", label: "Home", path: "/" },
+  { id: "home", label: "Home", path: "/" },
   { id: "men", label: "Men", path: "/men" },
   { id: "women", label: "Women", path: "/women" },
   { id: "kids", label: "Kids", path: "/kids" },
-  { id: "offers", label: "Shop", path: "/offers" },
+  { id: "shop", label: "Shop", path: "/shop" },
 ];
 
 /**
@@ -16,7 +16,7 @@ export const NAV_ITEMS = [
  */
 const useNavbarState = () => {
   const { isAuthenticated, user, logout, inTransition } = useAuth();
-  const [activeMenu, setActiveMenu] = useState("shop");
+  const [activeMenu, setActiveMenu] = useState("home");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [displayName, setDisplayName] = useState("User");
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);

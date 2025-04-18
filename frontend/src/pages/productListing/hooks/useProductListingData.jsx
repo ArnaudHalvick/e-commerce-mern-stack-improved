@@ -5,7 +5,7 @@ import { scrollToElement } from "../../../utils/scrollHelpers";
 
 /**
  * Custom hook for fetching, filtering, and sorting products on product listing pages
- * Works for both Offers and Category pages
+ * Works for both Shop and Category pages
  *
  * @param {Object} options Options object
  * @param {string} options.pageType Type of page ('offers' or 'category')
@@ -245,7 +245,7 @@ const useProductListingData = ({ pageType, category }) => {
             data = [];
           }
         } else if (pageType === "offers") {
-          // For offers page, check if we need to load global products first
+          // For offers/shop page, check if we need to load global products first
           if (!isInitialized && !offersLoadedRef.current) {
             offersLoadedRef.current = true; // Prevent infinite recursion
             fetchGlobalProducts(); // Trigger global product loading
@@ -253,12 +253,9 @@ const useProductListingData = ({ pageType, category }) => {
             return; // We'll wait for context to update
           }
 
-          // Once global products are loaded, filter them for offers
+          // Once global products are loaded, use all products (not just discounted)
           if (all_product && all_product.length > 0) {
-            data = all_product.filter(
-              (product) =>
-                product.new_price > 0 && product.new_price < product.old_price
-            );
+            data = all_product;
           }
         }
 
@@ -317,20 +314,18 @@ const useProductListingData = ({ pageType, category }) => {
         return;
       }
 
-      const offersData = all_product.filter(
-        (product) =>
-          product.new_price > 0 && product.new_price < product.old_price
-      );
+      // Use all products, not just discounted ones
+      const shopData = all_product;
 
       if (isMounted.current) {
-        setAllProducts(offersData);
+        setAllProducts(shopData);
         setAvailableTags([
-          ...new Set(offersData.flatMap((item) => item.tags || [])),
+          ...new Set(shopData.flatMap((item) => item.tags || [])),
         ]);
         setAvailableTypes([
-          ...new Set(offersData.flatMap((item) => item.types || [])),
+          ...new Set(shopData.flatMap((item) => item.types || [])),
         ]);
-        filterAndSortProducts(offersData);
+        filterAndSortProducts(shopData);
         setLoading(false);
       }
     }
@@ -452,12 +447,9 @@ const useProductListingData = ({ pageType, category }) => {
     // try to trigger a reload of the data
     if (pageType === "offers" && displayedProducts.length === 0) {
       if (all_product && all_product.length > 0) {
-        const offersData = all_product.filter(
-          (product) =>
-            product.new_price > 0 && product.new_price < product.old_price
-        );
-        setAllProducts(offersData);
-        filterAndSortProducts(offersData);
+        const shopData = all_product;
+        setAllProducts(shopData);
+        filterAndSortProducts(shopData);
       } else if (!contextLoading && isInitialized) {
         // If context is loaded but we have no products, try fetching again
         fetchGlobalProducts();

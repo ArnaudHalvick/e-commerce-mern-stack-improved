@@ -1,20 +1,20 @@
 // Path: frontend/src/pages/shop/Shop.jsx
 import Hero from "../../components/hero/Hero";
 import Popular from "../../components/popular/Popular";
-import Offers from "../../components/offers/Offers";
+import Shop from "../../components/shop/Shop";
 import NewCollection from "../../components/newCollections/NewCollections";
 import Newsletter from "../../components/newsLetter/NewsLetter";
 
-const Shop = () => {
+const ShopPage = () => {
   return (
     <div>
       <Hero />
       <Popular />
-      <Offers />
+      <Shop />
       <NewCollection />
       <Newsletter />
     </div>
   );
 };
 
-export default Shop;
+export default ShopPage;

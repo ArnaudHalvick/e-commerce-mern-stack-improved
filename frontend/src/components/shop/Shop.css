@@ -1,5 +1,5 @@
-/* Path: frontend/src/components/offers/Offers.css */
-.offers-container {
+/* Path: frontend/src/components/shop/Shop.css */
+.shop-container {
   background: linear-gradient(180deg, #fce6ff 0%, #e1ffea22 60%);
   display: flex;
   min-height: 60vh;
@@ -11,26 +11,26 @@
   border-radius: 1.25rem;
 }
 
-.offers-left {
+.shop-left {
   flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
-.offers-title {
+.shop-title {
   color: #171717;
   font-size: 5em;
   font-weight: 600;
 }
 
-.offers-subtitle {
+.shop-subtitle {
   color: #171717;
   font-size: 1.4em;
   font-weight: 600;
 }
 
-.offers-cta-button {
+.shop-cta-button {
   width: 20rem;
   height: 4.5rem;
   border-radius: 4.7rem;
@@ -43,7 +43,7 @@
   cursor: pointer;
 }
 
-.offers-right {
+.shop-right {
   flex: 1;
   display: flex;
   align-items: center;
@@ -51,18 +51,18 @@
   padding-top: 50px;
 }
 
-.offers-image {
+.shop-image {
   max-width: 100%;
   height: auto;
 }
 
 /* Media Queries */
 @media (max-width: 1199.98px) {
-  .offers-title {
+  .shop-title {
     font-size: 4em;
   }
 
-  .offers-cta-button {
+  .shop-cta-button {
     width: 16rem;
     height: 3.5rem;
     font-size: 1.2em;
@@ -70,15 +70,15 @@
 }
 
 @media (max-width: 991.98px) {
-  .offers-title {
+  .shop-title {
     font-size: 3em;
   }
 
-  .offers-subtitle {
+  .shop-subtitle {
     font-size: 1.2em;
   }
 
-  .offers-cta-button {
+  .shop-cta-button {
     width: 14rem;
     height: 3rem;
     font-size: 1em;
@@ -86,41 +86,41 @@
 }
 
 @media (max-width: 767.98px) {
-  .offers {
+  .shop {
     flex-direction: column;
     padding: 2rem;
     width: 85%;
   }
 
-  .offers-left {
+  .shop-left {
     align-items: center;
     text-align: center;
   }
 
-  .offers-title {
+  .shop-title {
     font-size: 2.5em;
   }
 
-  .offers-right {
+  .shop-right {
     justify-content: center;
     margin-top: 2rem;
   }
 }
 
 @media (max-width: 575.98px) {
-  .offers {
+  .shop {
     width: 90%;
   }
 
-  .offers-title {
+  .shop-title {
     font-size: 2em;
   }
 
-  .offers-subtitle {
+  .shop-subtitle {
     font-size: 1em;
   }
 
-  .offers-cta-button {
+  .shop-cta-button {
     width: 12rem;
     height: 2.5rem;
   }

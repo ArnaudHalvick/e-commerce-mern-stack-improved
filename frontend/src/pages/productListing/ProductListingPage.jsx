@@ -14,9 +14,9 @@ import { useProductListingData } from "./hooks";
 import "./ProductListingPage.css";
 
 /**
- * Unified Product Listing component that handles both Offers and Category pages
+ * Unified Product Listing component that handles both Shop and Category pages
  * @param {Object} props Component props
- * @param {string} props.pageType Type of page ('offers' or 'category')
+ * @param {string} props.pageType Type of page ('shop' or 'category')
  * @param {string} props.category Category name (for category pages)
  * @param {string} props.banner Banner image URL (for category pages)
  */
@@ -115,17 +115,41 @@ const ProductListingPage = ({
     }
   }, [isCategoryPage, category]);
 
-  // Check for URL parameters and set filters accordingly (for offers page)
+  // Check for URL parameters and set filters accordingly (for shop page)
   useEffect(() => {
     if (!isCategoryPage) {
       const params = new URLSearchParams(location.search);
       const discountParam = params.get("discount");
 
+      // Only update filter if URL has discount=true and filter is not already set
       if (discountParam === "true" && !filters.discount) {
         handleFilterChange("discount", true);
       }
+      // If URL doesn't have discount=true but filter is set, clear it
+      else if (discountParam !== "true" && filters.discount) {
+        handleFilterChange("discount", false);
+      }
     }
   }, [location.search, filters.discount, handleFilterChange, isCategoryPage]);
+
+  // Update URL when discount filter changes
+  useEffect(() => {
+    if (!isCategoryPage) {
+      const params = new URLSearchParams(location.search);
+
+      if (filters.discount) {
+        params.set("discount", "true");
+      } else {
+        params.delete("discount");
+      }
+
+      // Replace the current URL without reloading the page
+      const newUrl = `${location.pathname}${
+        params.toString() ? `?${params.toString()}` : ""
+      }`;
+      window.history.replaceState({}, "", newUrl);
+    }
+  }, [filters.discount, isCategoryPage, location.pathname, location.search]);
 
   // Show loading state
   if (showLoading) {

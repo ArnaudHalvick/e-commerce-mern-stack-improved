@@ -56,7 +56,7 @@ const Product = () => {
             },
             {
               label: "Check Offers",
-              to: "/offers",
+              to: "/shop",
               type: "secondary",
             },
           ]}

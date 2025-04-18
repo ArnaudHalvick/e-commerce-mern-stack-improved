@@ -16,7 +16,7 @@ const Hero = () => {
           <p>collection</p>
           <p>for everyone</p>
         </div>
-        <Link to="/offers" className="hero-button-latest">
+        <Link to="/shop" className="hero-button-latest">
           <div>Latest Collection</div>
           <img src={arrow_icon} alt="" />
         </Link>

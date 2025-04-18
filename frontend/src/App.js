@@ -151,7 +151,7 @@ function App() {
 
           {/* Special Offer Routes - Public */}
           <Route
-            path="/offers"
+            path="/shop"
             element={<ProductListingPage pageType="offers" />}
           />
 

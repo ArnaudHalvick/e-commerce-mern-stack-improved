@@ -89,7 +89,7 @@ const CartItems = () => {
           },
           {
             label: "View Offers",
-            to: "/offers",
+            to: "/shop",
             type: "secondary",
           },
         ]}
