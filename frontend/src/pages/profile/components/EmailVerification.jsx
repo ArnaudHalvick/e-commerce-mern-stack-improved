@@ -1,5 +1,4 @@
 import React from "react";
-import "./EmailVerification.css";
 
 /**
  * EmailVerification component for handling email verification status

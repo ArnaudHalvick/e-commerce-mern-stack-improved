@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import DisableAccountModal from "./DisableAccountModal";
 import { FormSubmitButton } from "../../../components/form";
-import "./AccountManager.css";
 
 /**
  * AccountManager component for account-related actions

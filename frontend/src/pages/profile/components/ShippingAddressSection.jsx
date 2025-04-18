@@ -3,7 +3,6 @@ import { FormInputField, FormSubmitButton } from "../../../components/form";
 import { debounce } from "lodash";
 import { validateAddress } from "../../../utils/validation";
 import { COUNTRIES } from "../../../utils/validationSchemas";
-import "./ShippingAddressSection.css";
 
 /**
  * ShippingAddressSection component for displaying and editing user's shipping address

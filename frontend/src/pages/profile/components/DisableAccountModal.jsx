@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import Modal from "../../../components/ui/modal";
 import { FormSubmitButton } from "../../../components/form";
-import "./DisableAccountModal.css";
 
 /**
  * Modal component for confirming account disabling with password verification

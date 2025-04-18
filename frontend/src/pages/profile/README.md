@@ -10,7 +10,6 @@ profile/
 │   ├── AccountManager.jsx
 │   ├── BasicInfoSection.jsx
 │   ├── DisableAccountModal.jsx
-│   ├── DisableAccountModal.css
 │   ├── EmailManager.jsx
 │   ├── EmailVerification.jsx
 │   ├── PasswordManager.jsx
@@ -21,8 +20,17 @@ profile/
 │   ├── usePasswordForm.js
 │   ├── useProfileForm.js
 │   └── index.js
+├── styles/                # Centralized styles
+│   ├── AccountManager.css
+│   ├── BasicInfoSection.css
+│   ├── DisableAccountModal.css
+│   ├── EmailManager.css
+│   ├── EmailVerification.css
+│   ├── PasswordManager.css
+│   ├── Profile.css
+│   ├── ShippingAddressSection.css
+│   └── index.css          # Main CSS entry point that imports all styles
 ├── index.jsx              # Main Profile container component
-├── Profile.css            # Styles
 └── README.md              # Documentation
 ```
 
@@ -43,9 +51,15 @@ The refactoring follows these principles:
    - Components are more focused and maintainable
 
 3. **Container Component**: The main Profile component acts as a container
+
    - Coordinates state and hooks
    - Passes data down to child components
    - Handles page-level effects and redirects
+
+4. **Centralized Styles**: CSS files are organized in a dedicated folder
+   - All styles are imported through a single entry point (index.css)
+   - Components no longer need to import their CSS files directly
+   - Easier to maintain and update styles across the application
 
 ## Benefits
 
@@ -54,6 +68,7 @@ The refactoring follows these principles:
 - **Reusability**: Hooks can be reused across different components
 - **Maintainability**: Smaller files that are easier to understand and update
 - **Performance**: More optimized re-renders due to better state management
+- **Simplified CSS Management**: Single point of entry for all styles
 
 ## Usage
 

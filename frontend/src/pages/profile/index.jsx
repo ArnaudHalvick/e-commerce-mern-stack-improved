@@ -19,7 +19,7 @@ import {
 import Spinner from "../../components/ui/spinner";
 
 // CSS
-import "./Profile.css";
+import "./styles/index.css";
 
 const Profile = () => {
   const navigate = useNavigate();

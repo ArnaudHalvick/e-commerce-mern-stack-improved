@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { requestEmailChange } from "../../../redux/slices/userSlice";
 import { validateEmail } from "../../../utils/validation";
 import { FormSubmitButton } from "../../../components/form";
-import "./EmailManager.css";
+import { debounce } from "lodash";
 
 const EmailManager = ({
   user,

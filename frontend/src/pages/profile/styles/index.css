@@ -1,0 +1,13 @@
+/* Import all CSS files for the profile page */
+
+/* Main profile styles */
+@import "./Profile.css";
+
+/* Component styles */
+@import "./BasicInfoSection.css";
+@import "./ShippingAddressSection.css";
+@import "./PasswordManager.css";
+@import "./AccountManager.css";
+@import "./DisableAccountModal.css";
+@import "./EmailManager.css";
+@import "./EmailVerification.css";
