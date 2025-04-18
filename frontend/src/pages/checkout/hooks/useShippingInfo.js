@@ -78,18 +78,36 @@ const useShippingInfo = () => {
   };
 
   // Format shipping info for API
-  const getFormattedShippingInfo = () => ({
-    shippingAddress: {
-      street: shippingInfo.address,
-      city: shippingInfo.city,
-      state: shippingInfo.state,
-      zip: shippingInfo.postalCode,
-      country: shippingInfo.country,
-    },
-    shippingMethod: "standard",
-    name: shippingInfo.name,
-    phoneNumber: shippingInfo.phoneNumber,
-  });
+  const getFormattedShippingInfo = () => {
+    // Format the shipping info in a way the backend can handle
+    // This supports both the flat and nested formats our backend now accepts
+
+    // Ensure all fields have at least empty strings to avoid undefined errors
+    const safeShippingInfo = {
+      name: shippingInfo.name || "",
+      address: shippingInfo.address || "",
+      city: shippingInfo.city || "",
+      state: shippingInfo.state || "",
+      country: shippingInfo.country || "US",
+      postalCode: shippingInfo.postalCode || "",
+      phoneNumber: shippingInfo.phoneNumber || "",
+    };
+
+    // Return in the old shippingAddress nested format for backward compatibility with any code
+    // that might still be expecting this structure
+    return {
+      shippingAddress: {
+        street: safeShippingInfo.address,
+        city: safeShippingInfo.city,
+        state: safeShippingInfo.state,
+        zip: safeShippingInfo.postalCode,
+        country: safeShippingInfo.country,
+      },
+      name: safeShippingInfo.name,
+      phoneNumber: safeShippingInfo.phoneNumber,
+      shippingMethod: "standard",
+    };
+  };
 
   return {
     shippingInfo,

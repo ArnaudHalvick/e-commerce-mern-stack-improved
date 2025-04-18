@@ -53,40 +53,91 @@ const calculateTaxAndShipping = (subtotal) => {
 };
 
 /**
+ * Normalize shipping information to a consistent structure
+ * Handles both nested and flat structures
+ * @param {Object} shippingInfo - Raw shipping information object
+ * @returns {Object} - Normalized shipping info
+ */
+const normalizeShippingInfo = (shippingInfo) => {
+  if (!shippingInfo) return null;
+
+  // Already in the normalized format
+  if (
+    shippingInfo.address &&
+    shippingInfo.city &&
+    shippingInfo.state &&
+    typeof shippingInfo.address === "string"
+  ) {
+    return shippingInfo;
+  }
+
+  // Handle nested structure (shippingInfo.shippingAddress)
+  if (shippingInfo.shippingAddress) {
+    const { street, city, state, zip, postalCode, country } =
+      shippingInfo.shippingAddress;
+    return {
+      address: street || "",
+      city: city || "",
+      state: state || "",
+      country: country || "",
+      postalCode: zip || postalCode || "",
+      phoneNumber: shippingInfo.phoneNumber || "",
+      name: shippingInfo.name || "",
+    };
+  }
+
+  // For backward compatibility with old client formats
+  return {
+    address: shippingInfo.address || shippingInfo.street || "",
+    city: shippingInfo.city || "",
+    state: shippingInfo.state || "",
+    country: shippingInfo.country || "",
+    postalCode: shippingInfo.postalCode || shippingInfo.zip || "",
+    phoneNumber: shippingInfo.phoneNumber || shippingInfo.phone || "",
+    name: shippingInfo.name || "",
+  };
+};
+
+/**
  * Validate shipping information
- * @param {Object} shippingInfo - Shipping information object
+ * @param {Object} rawShippingInfo - Shipping information object (can be in any format)
  * @returns {Object} - Validation result with success flag and error message
  */
-const validateShippingInfo = (shippingInfo) => {
-  if (!shippingInfo) {
+const validateShippingInfo = (rawShippingInfo) => {
+  if (!rawShippingInfo) {
     return { success: false, message: "Shipping information is required" };
   }
 
-  if (!shippingInfo.shippingAddress) {
-    return { success: false, message: "Shipping address is required" };
-  }
+  // Normalize the shipping info to a consistent structure
+  const shippingInfo = normalizeShippingInfo(rawShippingInfo);
 
-  const { street, city, state, zip, country } = shippingInfo.shippingAddress;
+  // Log normalized shipping info for debugging
+  logger.debug("Normalized shipping info", { shippingInfo });
 
-  if (!street || !city || !state || !zip) {
+  if (
+    !shippingInfo.address ||
+    !shippingInfo.city ||
+    !shippingInfo.state ||
+    !shippingInfo.postalCode
+  ) {
     return {
       success: false,
       message: "All shipping address fields are required",
     };
   }
 
-  if (!country) {
+  if (!shippingInfo.country) {
     return { success: false, message: "Country is required" };
   }
 
-  if (!VALID_COUNTRY_CODES.includes(country)) {
+  if (!VALID_COUNTRY_CODES.includes(shippingInfo.country)) {
     return {
       success: false,
-      message: "Invalid country code. Please select a valid country.",
+      message: `Invalid country code: ${shippingInfo.country}. Please select a valid country.`,
     };
   }
 
-  return { success: true };
+  return { success: true, normalizedData: shippingInfo };
 };
 
 /**
@@ -127,6 +178,9 @@ const createPaymentIntent = catchAsync(async (req, res, next) => {
   // Calculate total amount in cents (Stripe requires amount in smallest currency unit)
   const totalAmount = Math.round((subtotal + taxAmount + shippingAmount) * 100);
 
+  // Use normalized shipping info for metadata
+  const normalizedShippingInfo = shippingValidation.normalizedData;
+
   // Create a payment intent
   const paymentIntent = await stripe.paymentIntents.create({
     amount: totalAmount,
@@ -135,7 +189,7 @@ const createPaymentIntent = catchAsync(async (req, res, next) => {
       userId: req.user.id.toString(),
       cartId: cart._id.toString(),
       integration_check: "accept_a_payment",
-      shippingInfo: JSON.stringify(shippingInfo),
+      shippingInfo: JSON.stringify(normalizedShippingInfo),
     },
     receipt_email: req.user.email,
     automatic_payment_methods: {
@@ -206,41 +260,58 @@ const createOrderFromPaymentIntent = async (
     const totalAmount = subtotal + taxAmount + shippingAmount;
 
     // Determine shipping information
-    // If we have shipping info from the request, use it
-    // Otherwise try to get it from the payment intent metadata
-    const finalShippingInfo =
-      shippingInfo ||
-      (paymentIntent.metadata.shippingInfo
-        ? JSON.parse(paymentIntent.metadata.shippingInfo)
-        : null);
+    // First use provided shipping info, then try to get it from payment intent metadata
+    let rawShippingInfo = shippingInfo;
 
-    if (!finalShippingInfo) {
+    if (!rawShippingInfo && paymentIntent.metadata.shippingInfo) {
+      try {
+        rawShippingInfo = JSON.parse(paymentIntent.metadata.shippingInfo);
+      } catch (error) {
+        logger.error("Error parsing shipping info from payment intent", {
+          error: error.message,
+          shippingInfo: paymentIntent.metadata.shippingInfo,
+        });
+        throw new AppError("Invalid shipping information format", 400);
+      }
+    }
+
+    if (!rawShippingInfo) {
       throw new AppError("Shipping information is required", 400);
     }
 
-    // Validate shipping information
-    const shippingValidation = validateShippingInfo(finalShippingInfo);
+    // Validate and normalize shipping information
+    const shippingValidation = validateShippingInfo(rawShippingInfo);
     if (!shippingValidation.success) {
       throw new AppError(shippingValidation.message, 400);
     }
 
-    // Create new order
+    // Use the normalized shipping info for the order
+    const normalizedShippingInfo = shippingValidation.normalizedData;
+
+    // Create an order
     const order = await Order.create(
       [
         {
           user: userId,
-          items: cart.items,
+          items: cart.items.map((item) => ({
+            productId: item.productId,
+            name: item.name,
+            quantity: item.quantity,
+            price: item.price,
+            size: item.size,
+            image: item.image,
+          })),
           shippingInfo: {
-            address: finalShippingInfo.shippingAddress.street,
-            city: finalShippingInfo.shippingAddress.city,
-            state: finalShippingInfo.shippingAddress.state,
-            country: finalShippingInfo.shippingAddress.country,
-            postalCode: finalShippingInfo.shippingAddress.zip,
-            phoneNumber: finalShippingInfo.phoneNumber,
+            address: normalizedShippingInfo.address,
+            city: normalizedShippingInfo.city,
+            state: normalizedShippingInfo.state,
+            country: normalizedShippingInfo.country,
+            postalCode: normalizedShippingInfo.postalCode,
+            phoneNumber: normalizedShippingInfo.phoneNumber || "",
           },
           paymentInfo: {
             id: paymentIntentId,
-            status: "succeeded",
+            status: paymentIntent.status,
             paymentMethod: "stripe",
           },
           taxAmount,
@@ -254,30 +325,18 @@ const createOrderFromPaymentIntent = async (
     );
 
     // Clear the cart after order is created
-    cart.items = [];
-    cart.totalItems = 0;
-    cart.totalPrice = 0;
-    await cart.save({ session });
+    await Cart.findOneAndDelete({ user: userId }).session(session);
 
     // Commit the transaction
     await session.commitTransaction();
-    logger.info(
-      `Order ${order[0]._id} created for user ${userId} via ${
-        shippingInfo ? "direct confirmation" : "webhook"
-      }`
-    );
+    session.endSession();
 
     return order[0];
   } catch (error) {
-    // If an error occurs, abort the transaction
+    // Abort transaction if any error occurs
     await session.abortTransaction();
-    logger.error(
-      `Error creating order for payment ${paymentIntentId}: ${error.message}`
-    );
-    throw error;
-  } finally {
-    // End the session
     session.endSession();
+    throw error;
   }
 };
 
@@ -301,87 +360,42 @@ const confirmOrder = catchAsync(async (req, res, next) => {
     return next(new AppError("Payment intent ID is required", 400));
   }
 
-  // Validate shipping information if provided
-  if (shippingInfo) {
-    const shippingValidation = validateShippingInfo(shippingInfo);
-    if (!shippingValidation.success) {
-      return next(new AppError(shippingValidation.message, 400));
-    }
-  } else {
-    return next(new AppError("Shipping information is required", 400));
-  }
-
-  // For testing purposes ONLY: Force succeed the payment if testing flag is provided
-  if (req.query.test_mode === "true") {
-    logger.info(`TEST MODE: Simulating payment success for ${paymentIntentId}`);
-
-    // Get cart data for the current user
-    const cart = await Cart.findOne({ user: req.user.id });
-
-    if (!cart || cart.items.length === 0) {
-      return next(new AppError("Your cart is empty", 400));
-    }
-
-    // Calculate subtotal, tax, and shipping
-    const subtotal = cart.totalPrice;
-    const { taxAmount, shippingAmount } = calculateTaxAndShipping(subtotal);
-    const totalAmount = subtotal + taxAmount + shippingAmount;
-
-    // Create new order
-    const order = await Order.create({
-      user: req.user.id,
-      items: cart.items,
-      shippingInfo: {
-        address: shippingInfo.shippingAddress.street,
-        city: shippingInfo.shippingAddress.city,
-        state: shippingInfo.shippingAddress.state,
-        country: shippingInfo.shippingAddress.country,
-        postalCode: shippingInfo.shippingAddress.zip,
-        phoneNumber: shippingInfo.phoneNumber,
-      },
-      paymentInfo: {
-        id: paymentIntentId,
-        status: "succeeded",
-        paymentMethod: "stripe",
-      },
-      taxAmount,
-      shippingAmount,
-      totalAmount,
-      itemsPrice: subtotal,
-      paidAt: new Date(),
-    });
-
-    // Clear the cart after order is confirmed
-    cart.items = [];
-    cart.totalItems = 0;
-    cart.totalPrice = 0;
-    await cart.save();
-
-    logger.info(
-      `TEST MODE: Order ${order._id} created for user ${req.user.id}`
-    );
-
-    res.status(201).json({
-      success: true,
-      order,
-    });
-    return;
-  }
-
   try {
-    // Use the common function to create the order
+    // Create order with the order helper function
+    // This will validate the shipping info and normalize it
     const order = await createOrderFromPaymentIntent(
       paymentIntentId,
       req.user.id,
       shippingInfo
     );
 
+    logger.info(`Order ${order._id} confirmed by user ${req.user.id}`);
+
     res.status(201).json({
       success: true,
+      message: "Order placed successfully",
       order,
     });
   } catch (error) {
-    return next(error);
+    logger.error(`Error confirming order: ${error.message}`, {
+      userId: req.user.id,
+      paymentIntentId,
+      error: error.stack,
+    });
+
+    // Provide a helpful error message based on the type of error
+    let errorMessage = "Failed to create order. Please contact support.";
+    let statusCode = 500;
+
+    if (error.message.includes("shipping")) {
+      errorMessage = `Shipping information problem: ${error.message}`;
+      statusCode = 400;
+    } else if (error.message.includes("Payment")) {
+      errorMessage = `Payment issue: ${error.message}`;
+      statusCode = 400;
+    }
+
+    return next(new AppError(errorMessage, statusCode));
   }
 });
 

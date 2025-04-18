@@ -30,23 +30,44 @@ export const getCartSummary = async () => {
 export const createPaymentIntent = async (shippingData) => {
   try {
     // Ensure shipping data is properly formatted
-    if (!shippingData || !shippingData.shippingAddress) {
+    if (!shippingData) {
       throw new Error("Shipping information is required");
     }
 
-    // Format the request body according to the backend's expected format
+    // Format the shipping info - handle both formats for compatibility
     const requestBody = {
-      shippingInfo: {
-        address: shippingData.shippingAddress.street,
-        city: shippingData.shippingAddress.city,
-        state: shippingData.shippingAddress.state,
-        country: shippingData.shippingAddress.country,
-        postalCode: shippingData.shippingAddress.zip,
-        phoneNumber: shippingData.phoneNumber,
-        name: shippingData.name,
-      },
-      shippingMethod: shippingData.shippingMethod,
+      shippingInfo: shippingData.shippingAddress
+        ? {
+            // If using the nested format with shippingAddress object
+            shippingAddress: {
+              street: shippingData.shippingAddress.street || "",
+              city: shippingData.shippingAddress.city || "",
+              state: shippingData.shippingAddress.state || "",
+              country: shippingData.shippingAddress.country || "US",
+              zip:
+                shippingData.shippingAddress.zip ||
+                shippingData.shippingAddress.postalCode ||
+                "",
+            },
+            phoneNumber: shippingData.phoneNumber || "",
+            name: shippingData.name || "",
+            shippingMethod: shippingData.shippingMethod || "standard",
+          }
+        : {
+            // If using flat format
+            address: shippingData.address || "",
+            city: shippingData.city || "",
+            state: shippingData.state || "",
+            country: shippingData.country || "US",
+            postalCode: shippingData.postalCode || "",
+            phoneNumber: shippingData.phoneNumber || "",
+            name: shippingData.name || "",
+            shippingMethod: shippingData.shippingMethod || "standard",
+          },
     };
+
+    // Log the formatted request for debugging
+    console.debug("Formatted shipping request:", requestBody);
 
     const response = await apiClient.post(
       "/api/payment/create-payment-intent",
@@ -54,6 +75,7 @@ export const createPaymentIntent = async (shippingData) => {
     );
     return response.data;
   } catch (error) {
+    console.error("Payment intent creation failed:", error);
     throw error;
   }
 };
