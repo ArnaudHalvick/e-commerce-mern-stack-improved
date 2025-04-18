@@ -18,9 +18,8 @@ const calculateTaxAndShipping = (subtotal) => {
   const taxRate = 0.07; // 7% tax rate
   const taxAmount = Math.round(subtotal * taxRate * 100) / 100;
 
-  // Simple shipping calculation
-  // Free shipping for orders over $100, otherwise $10
-  const shippingAmount = subtotal > 100 ? 0 : 10;
+  // Shipping is free. shippingAmount may be updated in the future.
+  const shippingAmount = 0;
 
   return { taxAmount, shippingAmount };
 };
