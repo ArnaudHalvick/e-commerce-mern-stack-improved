@@ -260,24 +260,26 @@ const PasswordManager = ({
           </div>
 
           <div className="profile-form-actions">
-            <FormSubmitButton
-              type="submit"
-              text={isSubmittingPassword ? "Updating..." : "Update Password"}
-              isLoading={isSubmittingPassword}
-              disabled={!isFormValid || isSubmittingPassword}
-              variant="primary"
-              size="small"
-              aria-label="Update password"
-            />
-            <FormSubmitButton
-              type="button"
-              text="Cancel"
-              variant="secondary"
-              size="small"
-              onClick={togglePasswordChange}
-              disabled={isSubmittingPassword}
-              aria-label="Cancel password change"
-            />
+            <div className="profile-button-group">
+              <FormSubmitButton
+                type="submit"
+                text={isSubmittingPassword ? "Updating..." : "Update Password"}
+                isLoading={isSubmittingPassword}
+                disabled={!isFormValid || isSubmittingPassword}
+                variant="primary"
+                size="small"
+                aria-label="Update password"
+              />
+              <FormSubmitButton
+                type="button"
+                text="Cancel"
+                variant="secondary"
+                size="small"
+                onClick={togglePasswordChange}
+                disabled={isSubmittingPassword}
+                aria-label="Cancel password change"
+              />
+            </div>
           </div>
         </form>
       )}

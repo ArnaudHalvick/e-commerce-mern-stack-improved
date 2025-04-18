@@ -243,22 +243,24 @@ const BasicInfoSection = ({
           />
 
           <div className="profile-form-actions">
-            <FormSubmitButton
-              size="small"
-              type="submit"
-              text={isSubmitting ? "Saving..." : "Save Changes"}
-              disabled={!isBasicInfoValid || isSubmitting}
-              aria-label="Save basic information changes"
-            />
-            <FormSubmitButton
-              size="small"
-              type="button"
-              variant="secondary"
-              text="Cancel"
-              onClick={handleCancel}
-              disabled={isSubmitting}
-              aria-label="Cancel basic information editing"
-            />
+            <div className="profile-button-group">
+              <FormSubmitButton
+                size="small"
+                type="submit"
+                text={isSubmitting ? "Saving..." : "Save Changes"}
+                disabled={!isBasicInfoValid || isSubmitting}
+                aria-label="Save basic information changes"
+              />
+              <FormSubmitButton
+                size="small"
+                type="button"
+                variant="secondary"
+                text="Cancel"
+                onClick={handleCancel}
+                disabled={isSubmitting}
+                aria-label="Cancel basic information editing"
+              />
+            </div>
           </div>
         </form>
       ) : (

@@ -70,28 +70,21 @@ const ShippingForm = ({
             required
           />
 
-          <div className="shipping-form-group">
-            <label htmlFor="country" className="form-field__label">
-              Country
-              <span className="form-field__required">*</span>
-            </label>
-            <div className="form-field__input-container">
-              <select
-                id="country"
-                name="country"
-                value={shippingInfo.country}
-                onChange={handleShippingInfoChange}
-                className="shipping-form-select"
-                required
-              >
-                {countries.map((country) => (
-                  <option key={country.code} value={country.code}>
-                    {country.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
+          <FormInputField
+            type="select"
+            id="country"
+            name="country"
+            value={shippingInfo.country}
+            onChange={handleShippingInfoChange}
+            label="Country"
+            containerClassName="shipping-form-group"
+            className="shipping-form-select"
+            options={countries.map((country) => ({
+              value: country.code,
+              label: country.name,
+            }))}
+            required
+          />
         </div>
 
         <FormInputField

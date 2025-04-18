@@ -188,27 +188,29 @@ const EmailManager = ({
           </div>
 
           <div className="profile-form-actions">
-            <FormSubmitButton
-              type="submit"
-              text={
-                isLoading ? "Sending Verification..." : "Request Email Change"
-              }
-              isLoading={isLoading}
-              disabled={!isFormValid || isLoading}
-              variant="primary"
-              size="small"
-              aria-label="Submit email change request"
-            />
+            <div className="profile-button-group">
+              <FormSubmitButton
+                type="submit"
+                text={
+                  isLoading ? "Sending Verification..." : "Request Email Change"
+                }
+                isLoading={isLoading}
+                disabled={!isFormValid || isLoading}
+                variant="primary"
+                size="small"
+                aria-label="Submit email change request"
+              />
 
-            <FormSubmitButton
-              type="button"
-              text="Cancel"
-              variant="secondary"
-              size="small"
-              onClick={handleCancel}
-              disabled={isLoading}
-              aria-label="Cancel email edit"
-            />
+              <FormSubmitButton
+                type="button"
+                text="Cancel"
+                variant="secondary"
+                size="small"
+                onClick={handleCancel}
+                disabled={isLoading}
+                aria-label="Cancel email edit"
+              />
+            </div>
           </div>
         </form>
       )}

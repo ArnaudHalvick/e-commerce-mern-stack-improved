@@ -18,6 +18,22 @@
   grid-gap: var(--spacing-3);
 }
 
+/* Button group for form actions */
+.profile-form-actions {
+  margin-top: var(--spacing-6);
+}
+
+.profile-button-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-3);
+}
+
+.profile-button-group button {
+  flex: 0 0 auto;
+  min-width: 120px;
+}
+
 /* Large devices (≥992px) - Default is 3 columns */
 
 /* Medium devices (< 992px) */
@@ -31,6 +47,15 @@
 @media (max-width: 575.98px) {
   .profile-compact-row {
     grid-template-columns: 1fr;
+  }
+
+  /* Ensure buttons stack nicely on small screens */
+  .profile-button-group {
+    flex-direction: column;
+  }
+
+  .profile-button-group button {
+    width: 100%;
   }
 }
 

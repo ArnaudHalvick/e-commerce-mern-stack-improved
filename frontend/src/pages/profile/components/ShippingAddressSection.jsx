@@ -31,17 +31,45 @@ const ShippingAddressSection = ({
     address: {},
   });
 
+  // Helper function to handle legacy country data
+  const normalizeCountryCode = useCallback((countryValue) => {
+    if (!countryValue) return "";
+
+    // If it's already a valid country code, return it
+    if (COUNTRIES.some((country) => country.code === countryValue)) {
+      return countryValue;
+    }
+
+    // If it's a country name, try to find its code
+    const matchedCountry = COUNTRIES.find(
+      (country) => country.name.toLowerCase() === countryValue.toLowerCase()
+    );
+
+    if (matchedCountry) {
+      return matchedCountry.code;
+    }
+
+    // Default to empty string if no match found
+    return "";
+  }, []);
+
   // Set initial form data and errors when editing is toggled
   useEffect(() => {
     if (!isEditingAddress) {
+      // Handle legacy country data before setting form data
+      const normalizedAddress = {
+        ...formData.address,
+        country: normalizeCountryCode(formData.address.country),
+      };
+
       setLocalFormData({
-        address: { ...formData.address },
+        address: { ...normalizedAddress },
       });
       setInitialFormData({
-        address: { ...formData.address },
+        address: { ...normalizedAddress },
       });
     }
-  }, [formData, isEditingAddress]);
+  }, [formData, isEditingAddress, normalizeCountryCode]);
 
   // Validate address form when data or errors change
   useEffect(() => {
@@ -296,8 +324,20 @@ const ShippingAddressSection = ({
   // Get country name from code for display
   const getCountryNameByCode = (code) => {
     if (!code) return "";
+
+    // First, check if it's a valid country code
     const country = COUNTRIES.find((c) => c.code === code);
-    return country ? country.name : code;
+    if (country) return country.name;
+
+    // If not a valid code, it might be a country name itself (legacy data)
+    const normalizedCode = normalizeCountryCode(code);
+    if (normalizedCode) {
+      const country = COUNTRIES.find((c) => c.code === normalizedCode);
+      if (country) return country.name;
+    }
+
+    // If all else fails, just return the code/name as is
+    return code;
   };
 
   // Clean up debounce on unmount
@@ -409,7 +449,7 @@ const ShippingAddressSection = ({
             <FormInputField
               type="select"
               name="address.country"
-              value={localFormData.address.country}
+              value={localFormData.address.country || ""}
               onChange={handleLocalInputChange}
               label="Country"
               required
@@ -422,28 +462,33 @@ const ShippingAddressSection = ({
                   ? "profile-form-input error"
                   : "profile-form-input"
               }
-              options={COUNTRIES}
+              options={COUNTRIES.map((country) => ({
+                value: country.code,
+                label: country.name,
+              }))}
               placeholder="Select a country"
             />
           </div>
 
           <div className="profile-form-actions">
-            <FormSubmitButton
-              size="small"
-              type="submit"
-              text={isSubmitting ? "Saving..." : "Save Changes"}
-              disabled={!isAddressValid || isSubmitting}
-              aria-label="Save address changes"
-            />
-            <FormSubmitButton
-              size="small"
-              type="button"
-              variant="secondary"
-              text="Cancel"
-              onClick={handleCancel}
-              disabled={isSubmitting}
-              aria-label="Cancel address editing"
-            />
+            <div className="profile-button-group">
+              <FormSubmitButton
+                size="small"
+                type="submit"
+                text={isSubmitting ? "Saving..." : "Save Changes"}
+                disabled={!isAddressValid || isSubmitting}
+                aria-label="Save address changes"
+              />
+              <FormSubmitButton
+                size="small"
+                type="button"
+                variant="secondary"
+                text="Cancel"
+                onClick={handleCancel}
+                disabled={isSubmitting}
+                aria-label="Cancel address editing"
+              />
+            </div>
           </div>
         </form>
       ) : (
