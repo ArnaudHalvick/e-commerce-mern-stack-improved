@@ -198,6 +198,20 @@ const useProductListingData = ({ pageType, category }) => {
     prevCategoryRef.current = category;
     prevPageTypeRef.current = pageType;
 
+    // Reset filters when category or page type changes (but not on initial render)
+    if ((categoryChanged || pageTypeChanged) && !initialRender) {
+      setFilters({
+        category: [],
+        price: { min: 0, max: 1000 },
+        discount: false,
+        rating: 0,
+        tags: [],
+        types: [],
+      });
+      setSortBy("newest");
+      setCurrentPage(1);
+    }
+
     // Exit if already fetching or if no need to fetch
     if (isRequestInProgress.current) {
       return;
