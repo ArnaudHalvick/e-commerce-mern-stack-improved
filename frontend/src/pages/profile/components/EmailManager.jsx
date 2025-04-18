@@ -1,9 +1,8 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { requestEmailChange } from "../../../redux/slices/userSlice";
 import { validateEmail } from "../../../utils/validation";
 import { FormSubmitButton } from "../../../components/form";
-import { debounce } from "lodash";
 
 const EmailManager = ({
   user,
@@ -97,7 +96,7 @@ const EmailManager = ({
   return (
     <section className="profile-section">
       <div className="profile-section-header">
-        <h2 className="profile-section-title">Email Management</h2>
+        <h2 className="profile-section-title">Email</h2>
         {!isEditing && (
           <FormSubmitButton
             type="button"
