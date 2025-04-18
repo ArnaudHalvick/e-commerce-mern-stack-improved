@@ -43,11 +43,11 @@
 }
 
 .filter-sidebar-checkbox .filter-sidebar-checkmark:after {
-  left: var(--spacing-2);
-  top: var(--spacing-1);
+  left: 60%;
+  top: 50%;
   width: var(--spacing-1);
   height: var(--spacing-2);
   border: solid var(--color-background);
   border-width: 0 var(--border-width-medium) var(--border-width-medium) 0;
-  transform: rotate(45deg);
+  transform: translate(-75%, -50%) rotate(45deg);
 }
