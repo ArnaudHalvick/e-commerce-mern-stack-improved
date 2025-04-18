@@ -63,7 +63,7 @@ const useAccountManagement = (
     }
 
     try {
-      await dispatch(requestEmailVerificationAction()).unwrap();
+      await dispatch(requestEmailVerificationAction(user.email)).unwrap();
       showSuccess(`Verification email sent to ${user.email}`);
     } catch (error) {
       showError(error.message || "Failed to send verification email");

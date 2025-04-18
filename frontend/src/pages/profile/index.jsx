@@ -111,13 +111,26 @@ const Profile = () => {
 
       <div className="profile-container">
         <div className="profile-sections">
+          {/* Email Manager */}
+          <EmailManager
+            user={user}
+            handleResendVerification={handleResendVerification}
+            isVerificationSending={loadingStates?.sendingVerification}
+          />
+
+          {/* Email Verification Status */}
+          <EmailVerification
+            user={user}
+            verificationRequested={verificationRequested}
+          />
+
           {/* Basic Information Section */}
           <BasicInfoSection
             formData={formData}
             fieldErrors={fieldErrors}
             handleInputChange={handleInputChange}
             handleSubmit={handleSubmit}
-            isSubmitting={isSubmitting || loadingStates?.updateProfile}
+            isSubmitting={isSubmitting || loadingStates?.updatingProfile}
           />
 
           {/* Shipping Address Section */}
@@ -126,20 +139,7 @@ const Profile = () => {
             fieldErrors={fieldErrors}
             handleInputChange={handleInputChange}
             handleSubmit={handleSubmit}
-            isSubmitting={isSubmitting || loadingStates?.updateProfile}
-          />
-
-          {/* Email Manager */}
-          <EmailManager
-            user={user}
-            handleResendVerification={handleResendVerification}
-            isVerificationSending={loadingStates?.requestEmailVerification}
-          />
-
-          {/* Email Verification Status */}
-          <EmailVerification
-            user={user}
-            verificationRequested={verificationRequested}
+            isSubmitting={isSubmitting || loadingStates?.updatingProfile}
           />
 
           {/* Password Manager */}
