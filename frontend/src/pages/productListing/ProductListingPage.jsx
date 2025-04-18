@@ -11,7 +11,7 @@ import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
 import { useProductListingData } from "./hooks";
 
 // Styles
-import "./ProductListingPage.css";
+import "./styles/index.css";
 
 /**
  * Unified Product Listing component that handles both Shop and Category pages
