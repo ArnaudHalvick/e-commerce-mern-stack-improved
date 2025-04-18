@@ -18,7 +18,7 @@ const Cart = ({ inTransition }) => (
     >
       <img className="navbar-cart-icon" src={cart_icon} alt="Shopping cart" />
     </Link>
-    <CartCount />
+    <CartCount inTransition={inTransition} />
   </>
 );
 
