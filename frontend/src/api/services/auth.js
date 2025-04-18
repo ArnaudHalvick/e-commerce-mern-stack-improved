@@ -83,9 +83,11 @@ export const updateProfile = async (userData) => {
  */
 export const changePassword = async (passwordData) => {
   try {
-    const response = await apiClient.post(
+    const headers = getAuthHeaders();
+    const response = await apiClient.put(
       "/api/users/change-password",
-      passwordData
+      passwordData,
+      { headers }
     );
     return response.data;
   } catch (error) {

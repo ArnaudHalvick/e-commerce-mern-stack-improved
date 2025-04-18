@@ -22,19 +22,32 @@ const usePasswordForm = (passwordChanged, showSuccess, showError) => {
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [passwordErrors, setPasswordErrors] = useState({});
   const [isSubmittingPassword, setIsSubmittingPassword] = useState(false);
+  const [hasHandledSuccess, setHasHandledSuccess] = useState(false);
 
-  // Reset form when password is changed successfully
+  // Reset form when password is changed successfully (with safeguard against infinite loops)
   useEffect(() => {
-    if (passwordChanged) {
+    if (passwordChanged && !hasHandledSuccess) {
+      setHasHandledSuccess(true);
       setPasswordData({
         currentPassword: "",
         newPassword: "",
         confirmPassword: "",
       });
       setIsChangingPassword(false);
+      setPasswordErrors({});
       showSuccess("Password changed successfully!");
+    } else if (!passwordChanged && hasHandledSuccess) {
+      // Reset the flag when passwordChanged becomes false again
+      setHasHandledSuccess(false);
     }
-  }, [passwordChanged, showSuccess]);
+  }, [passwordChanged, showSuccess, hasHandledSuccess]);
+
+  // Clear errors when form is dismissed
+  useEffect(() => {
+    if (!isChangingPassword) {
+      setPasswordErrors({});
+    }
+  }, [isChangingPassword]);
 
   // Password input change handler
   const handlePasswordInputChange = (e) => {
@@ -45,7 +58,7 @@ const usePasswordForm = (passwordChanged, showSuccess, showError) => {
       [name]: value,
     }));
 
-    // Clear errors for this field
+    // Clear errors for this field when value changes
     if (passwordErrors[name]) {
       setPasswordErrors((prev) => {
         const newErrors = { ...prev };
@@ -124,10 +137,42 @@ const usePasswordForm = (passwordChanged, showSuccess, showError) => {
         changePasswordAction({
           currentPassword: passwordData.currentPassword,
           newPassword: passwordData.newPassword,
+          confirmPassword: passwordData.confirmPassword,
         })
       ).unwrap();
+      // Success is handled by the useEffect that watches passwordChanged
     } catch (error) {
-      showError(error.message || "Failed to change password");
+      // Handle specific validation errors
+      if (error.validationErrors) {
+        // Keep all form data, just show the errors
+        setPasswordErrors(error.validationErrors);
+
+        // Only clear the current password field if that specific field has an error
+        if (error.validationErrors.currentPassword) {
+          setPasswordData((prev) => ({
+            ...prev,
+            currentPassword: "",
+          }));
+          // Show a field-specific error message
+          showError("Current password is incorrect");
+        }
+        // Show specific error for same password reuse
+        else if (
+          error.validationErrors.newPassword &&
+          error.message?.includes("different from your current password")
+        ) {
+          showError(
+            "New password must be different from your current password"
+          );
+        }
+        // Generic error for other validation issues
+        else {
+          showError(error.message || "Please correct the errors in the form");
+        }
+      } else {
+        // For non-validation errors, show the error message
+        showError(error.message || "Failed to change password");
+      }
     } finally {
       setIsSubmittingPassword(false);
     }

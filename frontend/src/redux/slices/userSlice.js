@@ -175,23 +175,21 @@ export const changePassword = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const token = localStorage.getItem("auth-token");
-      const response = await axios.put(
-        config.getApiUrl("users/change-password"),
-        {
-          currentPassword,
-          newPassword,
-          newPasswordConfirm: confirmPassword,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "auth-token": token,
-          },
-        }
-      );
-      return { ...response.data, passwordChanged: true };
+      const response = await authService.changePassword({
+        currentPassword,
+        newPassword,
+        newPasswordConfirm: confirmPassword,
+      });
+
+      if (response.success) {
+        return { ...response, passwordChanged: true };
+      } else {
+        return rejectWithValue({
+          message: response.message || "Failed to change password",
+        });
+      }
     } catch (error) {
+      // Handle validation errors from the server
       if (error.response?.data?.errors) {
         const validationErrors = {};
         error.response.data.errors.forEach((err) => {
@@ -227,8 +225,9 @@ export const changePassword = createAsyncThunk(
         });
       }
 
+      // Handle general API errors
       return rejectWithValue({
-        message: errorMessage || "Failed to change password",
+        message: errorMessage || error.message || "Failed to change password",
       });
     }
   }
@@ -513,12 +512,16 @@ const userSlice = createSlice({
         state.loadingStates.changingPassword = false;
         state.passwordChanged = true;
         state.passwordChangePending = false;
+        state.error = null;
       })
       .addCase(changePassword.rejected, (state, action) => {
         state.loading = false;
         state.loadingStates.changingPassword = false;
-        state.error = action.payload;
+        state.error = action.payload || {
+          message: "An error occurred while changing password",
+        };
         state.passwordChangePending = false;
+        state.passwordChanged = false;
       })
 
       // disableAccount
