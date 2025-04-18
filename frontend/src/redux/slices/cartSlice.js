@@ -195,6 +195,10 @@ const cartSlice = createSlice({
       const key = `${itemId}-${size}-${operation}`;
       delete state.pendingOperations[key];
     },
+    // Clear any cart-related errors without affecting the cart state
+    clearError: (state) => {
+      state.error = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -388,6 +392,10 @@ const cartSlice = createSlice({
   },
 });
 
-export const { resetCart, markOperationPending, markOperationCompleted } =
-  cartSlice.actions;
+export const {
+  resetCart,
+  markOperationPending,
+  markOperationCompleted,
+  clearError,
+} = cartSlice.actions;
 export default cartSlice.reducer;

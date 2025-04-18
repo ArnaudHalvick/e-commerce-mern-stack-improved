@@ -68,9 +68,18 @@ const useCheckoutSubmit = () => {
 
             // If we got a successful order response with an order ID, use that
             if (orderResponse && orderResponse.success && orderResponse.order) {
-              // Payment and order successful - clear the cart and navigate to confirmation
-              dispatch(clearCart());
-              navigate(`/order-confirmation/${orderResponse.order._id}`);
+              try {
+                // Clear cart and wait for the operation to complete before navigating
+                await dispatch(clearCart()).unwrap();
+                console.log("Cart cleared successfully");
+                // Now navigate to order confirmation
+                navigate(`/order-confirmation/${orderResponse.order._id}`);
+              } catch (clearCartError) {
+                console.error("Failed to clear cart:", clearCartError);
+                // Continue with navigation even if cart clearing failed
+                // The cart will be empty on the server side at least
+                navigate(`/order-confirmation/${orderResponse.order._id}`);
+              }
               return;
             }
           } catch (confirmError) {
@@ -81,7 +90,17 @@ const useCheckoutSubmit = () => {
           // Fallback - payment succeeded but order confirmation failed
           // We'll use the payment intent ID and let the order confirmation page
           // find the order by payment intent ID
-          dispatch(clearCart());
+          try {
+            // Clear cart and wait for the operation to complete
+            await dispatch(clearCart()).unwrap();
+            console.log("Cart cleared successfully (fallback path)");
+          } catch (clearCartError) {
+            console.error(
+              "Failed to clear cart (fallback path):",
+              clearCartError
+            );
+            // Continue with navigation even if cart clearing failed
+          }
           navigate(`/order-confirmation/${result.paymentIntent.id}`);
         }
       } catch (error) {

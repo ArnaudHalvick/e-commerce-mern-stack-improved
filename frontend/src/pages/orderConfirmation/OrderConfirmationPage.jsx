@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useLocation, Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import Spinner from "../../components/ui/spinner";
 import { FormSubmitButton } from "../../components/form";
 import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
 import { EmptyState } from "../../components/errorHandling";
 import { useOrderDetails } from "./hooks";
+import { clearError } from "../../redux/slices/cartSlice";
 import {
   OrderHeader,
   OrderSummary,
@@ -87,11 +89,25 @@ const DebugInfo = ({ orderId, order, error }) => {
 const OrderConfirmationPage = () => {
   const { orderId } = useParams();
   const location = useLocation();
+  const dispatch = useDispatch();
   const initialOrderDetails = location.state?.orderDetails || null;
   const { order, loading, error } = useOrderDetails(
     orderId,
     initialOrderDetails
   );
+
+  // When this component mounts, reset any cart-related errors in Redux
+  // This ensures that even if clearCart failed, we don't show errors on order confirmation page
+  useEffect(() => {
+    // Check if the URL contains a cart error query parameter
+    // If it does, we can clear it by updating the history
+    if (location.search.includes("cartError")) {
+      window.history.replaceState({}, "", location.pathname);
+    }
+
+    // Clear any cart-related errors without affecting the cart state
+    dispatch(clearError());
+  }, [dispatch, location]);
 
   if (loading) {
     return (

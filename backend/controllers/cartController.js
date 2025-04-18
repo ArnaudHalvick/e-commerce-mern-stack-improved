@@ -157,24 +157,44 @@ const removeFromCart = catchAsync(async (req, res, next) => {
 
 // Clear cart
 const clearCart = catchAsync(async (req, res, next) => {
-  // Find cart
-  const cart = await Cart.findOne({ user: req.user.id });
-  if (!cart) {
-    return next(new AppError("Cart not found", 404));
+  try {
+    // Find cart
+    const cart = await Cart.findOne({ user: req.user.id });
+
+    // If cart doesn't exist, create an empty one
+    if (!cart) {
+      const newCart = new Cart({
+        user: req.user.id,
+        items: [],
+        totalItems: 0,
+        totalPrice: 0,
+      });
+
+      await newCart.save();
+
+      return res.status(200).json({
+        success: true,
+        cart: newCart,
+        message: "Cart created and is already empty",
+      });
+    }
+
+    // Clear all items
+    cart.items = [];
+    cart.totalItems = 0;
+    cart.totalPrice = 0;
+
+    await cart.save();
+
+    return res.status(200).json({
+      success: true,
+      cart,
+      message: "Cart cleared successfully",
+    });
+  } catch (error) {
+    console.error("Error clearing cart:", error);
+    return next(new AppError("Failed to clear cart: " + error.message, 500));
   }
-
-  // Clear all items
-  cart.items = [];
-  cart.totalItems = 0;
-  cart.totalPrice = 0;
-
-  await cart.save();
-
-  res.status(200).json({
-    success: true,
-    cart,
-    message: "Cart cleared successfully",
-  });
 });
 
 // Update cart item
