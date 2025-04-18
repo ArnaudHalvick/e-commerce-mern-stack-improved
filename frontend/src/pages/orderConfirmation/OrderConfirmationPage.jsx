@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useParams, useLocation, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import Spinner from "../../components/ui/spinner";
@@ -17,75 +17,6 @@ import {
 } from "./components";
 import "./styles/index.css";
 
-// Debug component to show order data
-const DebugInfo = ({ orderId, order, error }) => {
-  const [showDebug, setShowDebug] = useState(false);
-
-  if (!showDebug) {
-    return (
-      <button
-        onClick={() => setShowDebug(true)}
-        style={{
-          background: "none",
-          border: "none",
-          color: "#999",
-          fontSize: "12px",
-          padding: "5px",
-          cursor: "pointer",
-          marginTop: "10px",
-        }}
-      >
-        Show diagnostic info
-      </button>
-    );
-  }
-
-  return (
-    <div
-      style={{
-        padding: "10px",
-        margin: "10px 0",
-        background: "#f5f5f5",
-        borderRadius: "4px",
-        fontSize: "12px",
-        fontFamily: "monospace",
-      }}
-    >
-      <div>
-        <strong>Order ID parameter:</strong> {orderId}
-      </div>
-      <div>
-        <strong>Is Payment Intent:</strong>{" "}
-        {orderId?.startsWith("pi_") ? "Yes" : "No"}
-      </div>
-      <div>
-        <strong>Error:</strong> {error || "None"}
-      </div>
-      <div>
-        <strong>Order loaded:</strong> {order ? "Yes" : "No"}
-      </div>
-      {order && (
-        <pre style={{ maxHeight: "200px", overflow: "auto" }}>
-          {JSON.stringify(order, null, 2)}
-        </pre>
-      )}
-      <button
-        onClick={() => setShowDebug(false)}
-        style={{
-          background: "#ddd",
-          border: "none",
-          borderRadius: "4px",
-          padding: "5px 10px",
-          marginTop: "10px",
-          cursor: "pointer",
-        }}
-      >
-        Hide diagnostic info
-      </button>
-    </div>
-  );
-};
-
 const OrderConfirmationPage = () => {
   const { orderId } = useParams();
   const location = useLocation();
@@ -96,16 +27,11 @@ const OrderConfirmationPage = () => {
     initialOrderDetails
   );
 
-  // When this component mounts, reset any cart-related errors in Redux
-  // This ensures that even if clearCart failed, we don't show errors on order confirmation page
   useEffect(() => {
-    // Check if the URL contains a cart error query parameter
-    // If it does, we can clear it by updating the history
     if (location.search.includes("cartError")) {
       window.history.replaceState({}, "", location.pathname);
     }
 
-    // Clear any cart-related errors without affecting the cart state
     dispatch(clearError());
   }, [dispatch, location]);
 
@@ -135,7 +61,6 @@ const OrderConfirmationPage = () => {
             },
           ]}
         />
-        <DebugInfo orderId={orderId} error={error} />
       </div>
     );
   }
@@ -156,7 +81,6 @@ const OrderConfirmationPage = () => {
             },
           ]}
         />
-        <DebugInfo orderId={orderId} />
       </div>
     );
   }
@@ -200,8 +124,6 @@ const OrderConfirmationPage = () => {
             />
           </Link>
         </div>
-
-        <DebugInfo orderId={orderId} order={order} />
       </div>
     </>
   );
