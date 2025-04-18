@@ -83,7 +83,7 @@ export const createPaymentIntent = async (shippingData) => {
 /**
  * Confirm order after payment
  * @param {string} paymentIntentId - Stripe payment intent ID
- * @param {string} paymentMethodId - Stripe payment method ID
+ * @param {string|null} paymentMethodId - Stripe payment method ID (optional)
  * @param {Object} shippingInfo - Shipping information for the order
  * @returns {Promise} Promise with order confirmation data
  */
@@ -93,13 +93,23 @@ export const confirmOrder = async (
   shippingInfo
 ) => {
   try {
-    const response = await apiClient.post("/api/payment/confirm-order", {
+    const requestBody = {
       paymentIntentId,
-      paymentMethodId,
-      shippingInfo: shippingInfo,
-    });
+      shippingInfo,
+    };
+
+    // Only include payment method ID if provided
+    if (paymentMethodId) {
+      requestBody.paymentMethodId = paymentMethodId;
+    }
+
+    const response = await apiClient.post(
+      "/api/payment/confirm-order",
+      requestBody
+    );
     return response.data;
   } catch (error) {
+    console.error("Order confirmation failed:", error);
     throw error;
   }
 };
@@ -176,6 +186,23 @@ export const getOrderDetails = async (orderId) => {
   }
 };
 
+/**
+ * Get order by payment intent ID
+ * @param {string} paymentIntentId - Stripe payment intent ID
+ * @returns {Promise} Promise with order details
+ */
+export const getOrderByPaymentIntent = async (paymentIntentId) => {
+  try {
+    const response = await apiClient.get(
+      `/api/payment/order-by-payment/${paymentIntentId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching order by payment intent:", error);
+    throw error;
+  }
+};
+
 // Export all functions as payments service
 const paymentsService = {
   getCartSummary,
@@ -186,6 +213,7 @@ const paymentsService = {
   deletePaymentMethod,
   getMyOrders,
   getOrderDetails,
+  getOrderByPaymentIntent,
 };
 
 export default paymentsService;

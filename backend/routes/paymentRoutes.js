@@ -29,6 +29,13 @@ router.get("/my-orders", isAuthenticated, paymentController.getMyOrders);
 
 router.get("/order/:id", isAuthenticated, paymentController.getOrderById);
 
+// Get order by payment intent ID
+router.get(
+  "/order-by-payment/:paymentIntentId",
+  isAuthenticated,
+  paymentController.getOrderByPaymentIntent
+);
+
 // Webhook route - no auth required, comes from Stripe
 // This should be exempted from CSRF protection
 router.post("/webhook", paymentController.processWebhook);

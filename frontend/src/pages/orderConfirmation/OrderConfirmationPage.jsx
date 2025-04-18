@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useParams, useLocation, Link } from "react-router-dom";
 import Spinner from "../../components/ui/spinner";
 import { FormSubmitButton } from "../../components/form";
@@ -14,6 +14,75 @@ import {
   OrderStatus,
 } from "./components";
 import "./styles/index.css";
+
+// Debug component to show order data
+const DebugInfo = ({ orderId, order, error }) => {
+  const [showDebug, setShowDebug] = useState(false);
+
+  if (!showDebug) {
+    return (
+      <button
+        onClick={() => setShowDebug(true)}
+        style={{
+          background: "none",
+          border: "none",
+          color: "#999",
+          fontSize: "12px",
+          padding: "5px",
+          cursor: "pointer",
+          marginTop: "10px",
+        }}
+      >
+        Show diagnostic info
+      </button>
+    );
+  }
+
+  return (
+    <div
+      style={{
+        padding: "10px",
+        margin: "10px 0",
+        background: "#f5f5f5",
+        borderRadius: "4px",
+        fontSize: "12px",
+        fontFamily: "monospace",
+      }}
+    >
+      <div>
+        <strong>Order ID parameter:</strong> {orderId}
+      </div>
+      <div>
+        <strong>Is Payment Intent:</strong>{" "}
+        {orderId?.startsWith("pi_") ? "Yes" : "No"}
+      </div>
+      <div>
+        <strong>Error:</strong> {error || "None"}
+      </div>
+      <div>
+        <strong>Order loaded:</strong> {order ? "Yes" : "No"}
+      </div>
+      {order && (
+        <pre style={{ maxHeight: "200px", overflow: "auto" }}>
+          {JSON.stringify(order, null, 2)}
+        </pre>
+      )}
+      <button
+        onClick={() => setShowDebug(false)}
+        style={{
+          background: "#ddd",
+          border: "none",
+          borderRadius: "4px",
+          padding: "5px 10px",
+          marginTop: "10px",
+          cursor: "pointer",
+        }}
+      >
+        Hide diagnostic info
+      </button>
+    </div>
+  );
+};
 
 const OrderConfirmationPage = () => {
   const { orderId } = useParams();
@@ -36,37 +105,43 @@ const OrderConfirmationPage = () => {
 
   if (error) {
     return (
-      <EmptyState
-        title="Error"
-        message={error}
-        icon="⚠️"
-        className="order-confirmation-page"
-        actions={[
-          {
-            label: "View All Orders",
-            to: "/account/orders",
-            type: "secondary",
-          },
-        ]}
-      />
+      <div className="order-confirmation-page">
+        <EmptyState
+          title="Error"
+          message={error}
+          icon="⚠️"
+          className="order-confirmation-error"
+          actions={[
+            {
+              label: "View All Orders",
+              to: "/account/orders",
+              type: "secondary",
+            },
+          ]}
+        />
+        <DebugInfo orderId={orderId} error={error} />
+      </div>
     );
   }
 
   if (!order) {
     return (
-      <EmptyState
-        title="Order Not Found"
-        message="The order you're looking for could not be found."
-        icon="🔍"
-        className="order-confirmation-page"
-        actions={[
-          {
-            label: "View All Orders",
-            to: "/account/orders",
-            type: "secondary",
-          },
-        ]}
-      />
+      <div className="order-confirmation-page">
+        <EmptyState
+          title="Order Not Found"
+          message="The order you're looking for could not be found."
+          icon="🔍"
+          className="order-confirmation-not-found"
+          actions={[
+            {
+              label: "View All Orders",
+              to: "/account/orders",
+              type: "secondary",
+            },
+          ]}
+        />
+        <DebugInfo orderId={orderId} />
+      </div>
     );
   }
 
@@ -109,6 +184,8 @@ const OrderConfirmationPage = () => {
             />
           </Link>
         </div>
+
+        <DebugInfo orderId={orderId} order={order} />
       </div>
     </>
   );

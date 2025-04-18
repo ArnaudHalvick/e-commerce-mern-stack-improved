@@ -57,7 +57,30 @@ const useCheckoutSubmit = () => {
         }
 
         if (result.paymentIntent.status === "succeeded") {
-          // Payment successful - clear the cart and navigate to confirmation
+          // Step 3: Tell our server that payment succeeded
+          try {
+            // Confirm order on server side to create order record
+            const orderResponse = await paymentsService.confirmOrder(
+              result.paymentIntent.id,
+              null, // Payment method ID not needed as we already confirmed with Stripe
+              formattedShippingInfo
+            );
+
+            // If we got a successful order response with an order ID, use that
+            if (orderResponse && orderResponse.success && orderResponse.order) {
+              // Payment and order successful - clear the cart and navigate to confirmation
+              dispatch(clearCart());
+              navigate(`/order-confirmation/${orderResponse.order._id}`);
+              return;
+            }
+          } catch (confirmError) {
+            console.error("Order confirmation error:", confirmError);
+            // If confirming order failed, we'll fall back to showing the payment intent ID
+          }
+
+          // Fallback - payment succeeded but order confirmation failed
+          // We'll use the payment intent ID and let the order confirmation page
+          // find the order by payment intent ID
           dispatch(clearCart());
           navigate(`/order-confirmation/${result.paymentIntent.id}`);
         }

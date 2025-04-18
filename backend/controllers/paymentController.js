@@ -438,6 +438,33 @@ const getOrderById = catchAsync(async (req, res, next) => {
 });
 
 /**
+ * Get a specific order by payment intent ID
+ */
+const getOrderByPaymentIntent = catchAsync(async (req, res, next) => {
+  const { paymentIntentId } = req.params;
+
+  const order = await Order.findOne({
+    "paymentInfo.id": paymentIntentId,
+  });
+
+  if (!order) {
+    return next(new AppError("Order not found for this payment", 404));
+  }
+
+  // Ensure user can only access their own orders unless they're an admin
+  if (order.user.toString() !== req.user.id && req.user.role !== "admin") {
+    return next(
+      new AppError("You are not authorized to access this order", 403)
+    );
+  }
+
+  res.status(200).json({
+    success: true,
+    order,
+  });
+});
+
+/**
  * Process Stripe webhook events
  */
 const processWebhook = catchAsync(async (req, res, next) => {
@@ -614,6 +641,7 @@ module.exports = {
   confirmOrder,
   getMyOrders,
   getOrderById,
+  getOrderByPaymentIntent,
   processWebhook,
   getCartSummary,
 };
