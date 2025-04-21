@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import Modal from "../../../components/ui/modal";
-import { FormSubmitButton } from "../../../components/form";
+import { FormSubmitButton, FormInputField } from "../../../components/form";
 
 /**
  * Modal component for confirming account disabling with password verification
@@ -32,6 +32,11 @@ const DisableAccountModal = ({
     onConfirm(password);
   };
 
+  const handleChange = (e) => {
+    setPassword(e.target.value);
+    setPasswordError("");
+  };
+
   return (
     <Modal
       isOpen={isOpen}
@@ -51,32 +56,18 @@ const DisableAccountModal = ({
 
       <form onSubmit={handleSubmit} className="disable-account-modal__form">
         <div className="disable-account-modal__form-group">
-          <label
-            htmlFor="disable-account-password"
-            className="disable-account-modal__label"
-          >
-            Please enter your password to confirm:
-          </label>
-          <input
+          <FormInputField
             type="password"
-            id="disable-account-password"
+            name="password"
+            label="Please enter your password to confirm:"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className={`disable-account-modal__input ${
-              passwordError ? "disable-account-modal__input--error" : ""
-            }`}
+            onChange={handleChange}
+            error={passwordError || error}
+            className="disable-account-modal__input"
             disabled={isProcessing}
             aria-label="Password for account disabling"
-            tabIndex="0"
+            required={true}
           />
-          {passwordError && (
-            <div className="disable-account-modal__error-message">
-              {passwordError}
-            </div>
-          )}
-          {error && (
-            <div className="disable-account-modal__error-message">{error}</div>
-          )}
         </div>
 
         <div className="disable-account-modal__actions">
@@ -90,10 +81,11 @@ const DisableAccountModal = ({
           />
           <FormSubmitButton
             type="submit"
-            text={isProcessing ? "Processing..." : "Disable Account"}
+            text="Disable Account"
+            loadingText="Processing..."
+            isLoading={isProcessing}
             variant="danger"
             size="small"
-            isLoading={isProcessing}
             disabled={isProcessing}
           />
         </div>

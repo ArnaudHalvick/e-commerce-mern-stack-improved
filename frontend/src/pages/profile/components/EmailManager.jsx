@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { requestEmailChange } from "../../../redux/slices/userSlice";
 import { validateEmail } from "../../../utils/validation";
-import { FormSubmitButton } from "../../../components/form";
+import { FormSubmitButton, FormInputField } from "../../../components/form";
 
 const EmailManager = ({
   user,
@@ -84,9 +84,6 @@ const EmailManager = ({
     }
   };
 
-  const getInputClass = () =>
-    fieldError ? "profile-form-input error" : "profile-form-input";
-
   const handleCancel = () => {
     setEmailData({ email: user?.email || "" });
     setFieldError(null);
@@ -134,6 +131,7 @@ const EmailManager = ({
                     ? "Sending..."
                     : "Resend Verification Email"
                 }
+                isLoading={isVerificationSending}
                 onClick={handleResendVerification}
                 disabled={isVerificationSending}
                 aria-label="Resend email verification"
@@ -156,30 +154,18 @@ const EmailManager = ({
           noValidate
         >
           <div className="profile-form-group">
-            <label htmlFor="email" className="profile-form-label">
-              Email Address <span className="profile-required">*</span>
-            </label>
-            <input
+            <FormInputField
               type="email"
-              id="email"
               name="email"
+              label="Email Address"
               value={emailData.email}
               onChange={handleEmailChange}
               required={true}
-              className={getInputClass()}
-              aria-invalid={fieldError ? "true" : "false"}
-              aria-describedby={fieldError ? "email-error" : undefined}
+              className="profile-form-input"
+              error={fieldError}
               disabled={isLoading}
+              placeholder="Enter new email address"
             />
-            {fieldError && (
-              <div
-                className="profile-field-error"
-                id="email-error"
-                role="alert"
-              >
-                {fieldError}
-              </div>
-            )}
             <p className="profile-form-note">
               A verification link will be sent to the new email address. The
               change will not take effect until you verify the new email.
@@ -190,9 +176,8 @@ const EmailManager = ({
             <div className="profile-button-group">
               <FormSubmitButton
                 type="submit"
-                text={
-                  isLoading ? "Sending Verification..." : "Request Email Change"
-                }
+                text="Request Email Change"
+                loadingText="Sending Verification..."
                 isLoading={isLoading}
                 disabled={!isFormValid || isLoading}
                 variant="primary"

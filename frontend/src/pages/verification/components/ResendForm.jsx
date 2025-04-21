@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
+import { FormInputField, FormSubmitButton } from "../../../components/form";
 
 /**
  * ResendForm component for requesting a new verification email
@@ -26,10 +27,8 @@ const ResendForm = ({
     onResend(email);
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      handleSubmit(e);
-    }
+  const handleChange = (e) => {
+    setEmail(e.target.value);
   };
 
   // Early return for success state
@@ -55,39 +54,31 @@ const ResendForm = ({
       className="verification-form"
       aria-label="Email verification resend form"
     >
-      <div className="form-group">
-        <label htmlFor="email">Email Address</label>
-        <input
-          type="email"
-          id="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="Enter your email"
-          aria-required="true"
-          aria-describedby={error ? "email-error" : undefined}
-          disabled={loading}
-          required
-        />
-        {error && (
-          <p id="email-error" className="error-text">
-            {error}
-          </p>
-        )}
-      </div>
+      <FormInputField
+        type="email"
+        name="email"
+        value={email}
+        onChange={handleChange}
+        label="Email Address"
+        placeholder="Enter your email"
+        error={error}
+        required={true}
+        disabled={loading}
+      />
 
-      <button
+      <FormSubmitButton
         type="submit"
         disabled={loading || !email}
-        className="btn-primary"
+        text="Request New Verification Email"
+        loadingText="Sending..."
+        isLoading={loading}
+        variant="primary"
         aria-label={
           loading
             ? "Sending verification email"
             : "Request new verification email"
         }
-      >
-        {loading ? "Sending..." : "Request New Verification Email"}
-      </button>
+      />
     </form>
   );
 };

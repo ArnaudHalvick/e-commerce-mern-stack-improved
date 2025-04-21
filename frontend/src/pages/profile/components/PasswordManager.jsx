@@ -90,13 +90,6 @@ const PasswordManager = ({
     handlePasswordSubmit(e);
   };
 
-  // Determine input class based on validation state
-  const getInputClass = (fieldName) => {
-    return passwordErrors?.[fieldName]
-      ? "profile-form-input error"
-      : "profile-form-input";
-  };
-
   return (
     <section className="profile-section">
       <div className="profile-section-header">
@@ -121,65 +114,32 @@ const PasswordManager = ({
           className="profile-password-form"
         >
           <div className="profile-form-group">
-            <label htmlFor="currentPassword" className="profile-form-label">
-              Current Password
-            </label>
-            <input
+            <FormInputField
               type="password"
-              id="currentPassword"
               name="currentPassword"
+              label="Current Password"
               value={passwordData.currentPassword}
               onChange={handlePasswordInputChange}
-              required
-              className={getInputClass("currentPassword")}
-              aria-invalid={passwordErrors?.currentPassword ? "true" : "false"}
-              aria-describedby={
-                passwordErrors?.currentPassword
-                  ? "currentPassword-error"
-                  : undefined
-              }
+              required={true}
+              className="profile-form-input"
+              error={passwordErrors?.currentPassword}
               disabled={isSubmittingPassword}
             />
-            {passwordErrors?.currentPassword && (
-              <p
-                className="profile-field-error"
-                id="currentPassword-error"
-                role="alert"
-              >
-                {passwordErrors.currentPassword}
-              </p>
-            )}
           </div>
 
           <div className="profile-form-group">
-            <label htmlFor="newPassword" className="profile-form-label">
-              New Password
-            </label>
-            <input
+            <FormInputField
               type="password"
-              id="newPassword"
               name="newPassword"
+              label="New Password"
               value={passwordData.newPassword}
               onChange={handlePasswordInputChange}
-              required
-              className={getInputClass("newPassword")}
-              aria-invalid={passwordErrors?.newPassword ? "true" : "false"}
-              aria-describedby={
-                passwordErrors?.newPassword
-                  ? "newPassword-error"
-                  : "newPassword-requirements"
-              }
+              required={true}
+              className="profile-form-input"
+              error={passwordErrors?.newPassword}
               disabled={isSubmittingPassword}
+              aria-describedby="newPassword-requirements"
             />
-            {passwordErrors?.newPassword && (
-              <p
-                className="profile-field-error"
-                id="newPassword-error"
-                role="alert"
-              >
-                {passwordErrors.newPassword}
-              </p>
-            )}
 
             <div
               id="newPassword-requirements"
@@ -214,34 +174,18 @@ const PasswordManager = ({
           </div>
 
           <div className="profile-form-group">
-            <label htmlFor="confirmPassword" className="profile-form-label">
-              Confirm New Password
-            </label>
-            <input
+            <FormInputField
               type="password"
-              id="confirmPassword"
               name="confirmPassword"
+              label="Confirm New Password"
               value={passwordData.confirmPassword}
               onChange={handlePasswordInputChange}
-              required
-              className={getInputClass("confirmPassword")}
-              aria-invalid={passwordErrors?.confirmPassword ? "true" : "false"}
-              aria-describedby={
-                passwordErrors?.confirmPassword
-                  ? "confirmPassword-error"
-                  : undefined
-              }
+              required={true}
+              className="profile-form-input"
+              error={passwordErrors?.confirmPassword}
               disabled={isSubmittingPassword}
             />
-            {passwordErrors?.confirmPassword && (
-              <p
-                className="profile-field-error"
-                id="confirmPassword-error"
-                role="alert"
-              >
-                {passwordErrors.confirmPassword}
-              </p>
-            )}
+
             {passwordData.confirmPassword &&
               !passwordErrors?.confirmPassword && (
                 <p
@@ -262,7 +206,8 @@ const PasswordManager = ({
             <div className="profile-button-group">
               <FormSubmitButton
                 type="submit"
-                text={isSubmittingPassword ? "Updating..." : "Update Password"}
+                text="Update Password"
+                loadingText="Updating..."
                 isLoading={isSubmittingPassword}
                 disabled={!isFormValid || isSubmittingPassword}
                 variant="primary"
