@@ -8,4 +8,3 @@ export { default as EmptyState } from "./emptyState/EmptyState";
 export { default as Toast } from "./toast/Toast";
 export { default as ToastContainer } from "./toast/ToastContainer";
 export { default as ErrorDemo } from "./demo/ErrorDemo";
-export { default as withErrorHandling } from "./hoc/withErrorHandling";
