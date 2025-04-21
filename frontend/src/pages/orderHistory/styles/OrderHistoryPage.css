@@ -1,8 +1,30 @@
 /* Order History Page Specific Styles */
-.order-history-page {
+.order-history-page-container {
+  margin: var(--spacing-8) auto;
   max-width: var(--container-xl);
-  margin: 0 auto;
-  padding: 0 var(--spacing-5);
+  padding: 0 var(--spacing-6);
+}
+
+/* Responsive breakpoints for order-history-page-container */
+@media screen and (max-width: 992px) {
+  .order-history-page-container {
+    margin: var(--spacing-6) auto;
+    padding: 0 var(--spacing-5);
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .order-history-page-container {
+    margin: var(--spacing-5) auto;
+    padding: 0 var(--spacing-4);
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .order-history-page-container {
+    margin: var(--spacing-4) auto;
+    padding: 0 var(--spacing-3);
+  }
 }
 
 .order-history-page-title {

@@ -7,6 +7,28 @@
   padding: 0 var(--spacing-6);
 }
 
+/* Responsive breakpoints for profile-page-container */
+@media screen and (max-width: 992px) {
+  .profile-page-container {
+    margin: var(--spacing-6) auto;
+    padding: 0 var(--spacing-5);
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .profile-page-container {
+    margin: var(--spacing-5) auto;
+    padding: 0 var(--spacing-4);
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .profile-page-container {
+    margin: var(--spacing-4) auto;
+    padding: 0 var(--spacing-3);
+  }
+}
+
 /* Profile Title - Consistent with product-listing-title */
 .profile-title {
   font-size: var(--font-size-4xl);
