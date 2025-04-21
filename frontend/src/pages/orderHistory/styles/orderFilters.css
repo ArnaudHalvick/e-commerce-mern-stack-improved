@@ -91,14 +91,15 @@
 /* Date range filter */
 .order-filter-date-group {
   flex: 1;
-  max-width: 400px;
+  max-width: 500px; /* Increased to accommodate all elements on one line */
 }
 
 .order-filter-date-inputs {
   display: flex;
   align-items: center;
   gap: var(--spacing-2);
-  flex-wrap: wrap;
+  flex-wrap: nowrap; /* Prevent wrapping to keep all items on one line */
+  width: 100%;
 }
 
 .order-filter-date {
@@ -109,7 +110,9 @@
   font-size: var(--font-size-base);
   color: var(--color-text-secondary);
   cursor: pointer;
-  min-width: 130px;
+  width: calc(50% - var(--spacing-2)); /* Make inputs take up equal space */
+  min-width: 120px; /* Minimum width for usability */
+  max-width: 180px; /* Maximum width to prevent oversizing */
 }
 
 .order-filter-date:focus {
@@ -121,6 +124,7 @@
 .order-filter-date-separator {
   font-size: var(--font-size-base);
   color: var(--color-text-tertiary);
+  white-space: nowrap;
 }
 
 .order-filter-date-clear {
@@ -133,6 +137,8 @@
   text-decoration: underline;
   transition: color var(--transition-duration-fast)
     var(--transition-timing-ease);
+  white-space: nowrap;
+  margin-left: auto; /* Push clear button to the right */
 }
 
 .order-filter-date-clear:hover {
