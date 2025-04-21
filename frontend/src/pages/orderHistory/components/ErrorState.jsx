@@ -1,5 +1,4 @@
 import React from "react";
-import { EmptyState } from "../../../components/errorHandling";
 
 /**
  * Component to display an error state when order fetching fails
@@ -10,27 +9,20 @@ import { EmptyState } from "../../../components/errorHandling";
  */
 const ErrorState = ({ errorMessage, retryHandler }) => {
   return (
-    <EmptyState
-      title="Error Loading Orders"
-      message={
-        errorMessage ||
-        "We're having trouble loading your orders. Please try again."
-      }
-      icon="⚠️"
-      className="order-history-error-message"
-      actions={[
-        {
-          label: "Try Again",
-          onClick: retryHandler,
-          type: "primary",
-        },
-        {
-          label: "Return to Home",
-          to: "/",
-          type: "secondary",
-        },
-      ]}
-    />
+    <div className="order-error-state">
+      <div className="order-error-icon">⚠️</div>
+      <p className="order-error-message">
+        {errorMessage ||
+          "We're having trouble loading your orders. Please try again."}
+      </p>
+      <button
+        className="order-error-retry-btn"
+        onClick={retryHandler}
+        aria-label="Try loading orders again"
+      >
+        Try Again
+      </button>
+    </div>
   );
 };
 

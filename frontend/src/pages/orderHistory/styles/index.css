@@ -1,3 +1,8 @@
 @import "./OrderHistoryPage.css";
 @import "./OrderCard.css";
 @import "./OrderStatusBadge.css";
+@import "./LoadingState.css";
+@import "./ErrorState.css";
+@import "./NoOrders.css";
+@import "./orderFilters.css";
+@import "./orderPagination.css";

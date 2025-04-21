@@ -9,8 +9,13 @@ import Spinner from "../../../components/ui/spinner";
  */
 const LoadingState = ({ message = "Loading your orders..." }) => {
   return (
-    <div className="order-history-loading-spinner">
-      <Spinner message={message} size="large" />
+    <div className="order-loading-wrapper">
+      <Spinner
+        message={message}
+        size="large"
+        showAnimation={true}
+        showMessage={true}
+      />
     </div>
   );
 };

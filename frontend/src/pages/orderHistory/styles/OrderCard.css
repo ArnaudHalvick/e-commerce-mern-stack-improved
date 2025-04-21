@@ -6,16 +6,13 @@
 }
 
 .order-history-card {
-  background-color: var(--color-background);
+  background-color: var(--color-background-dark);
+  margin-bottom: var(--spacing-6);
   border-radius: var(--border-radius-xl);
   box-shadow: var(--shadow-lg);
   padding: var(--spacing-6);
   transition: transform var(--transition-duration-fast)
     var(--transition-timing-ease);
-}
-
-.order-history-card:hover {
-  transform: translateY(-2px);
 }
 
 .order-history-card:focus-visible {
@@ -130,4 +127,25 @@
   .order-history-total {
     margin-bottom: var(--spacing-2);
   }
+}
+
+.order-history-view-btn {
+  display: inline-block;
+  padding: var(--spacing-2) var(--spacing-5);
+  background-color: var(--color-primary);
+  color: var(--color-background);
+  border: none;
+  border-radius: var(--border-radius-full);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all var(--transition-duration-normal)
+    var(--transition-timing-ease);
+  text-align: center;
+}
+
+.order-history-view-btn:hover {
+  background-color: var(--color-primary-dark);
+  transform: translateY(calc(var(--spacing-1) * -0.25));
 }

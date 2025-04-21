@@ -1,0 +1,45 @@
+/* ErrorState component styles */
+
+.order-error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-8);
+  width: 100%;
+  background-color: var(--color-background-light);
+  border-radius: var(--border-radius-md);
+  border: var(--border-width-thin) solid var(--color-error-lighter);
+  margin: var(--spacing-6) 0;
+}
+
+.order-error-icon {
+  font-size: 48px;
+  color: var(--color-error);
+  margin-bottom: var(--spacing-4);
+}
+
+.order-error-message {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-md);
+  text-align: center;
+  margin-bottom: var(--spacing-6);
+  max-width: 600px;
+}
+
+.order-error-retry-btn {
+  padding: var(--spacing-2) var(--spacing-6);
+  background-color: var(--color-primary);
+  color: var(--color-background);
+  border: none;
+  border-radius: var(--border-radius-full);
+  font-size: var(--font-size-base);
+  cursor: pointer;
+  transition: all var(--transition-duration-normal)
+    var(--transition-timing-ease);
+}
+
+.order-error-retry-btn:hover {
+  background-color: var(--color-primary-dark);
+  transform: translateY(calc(var(--spacing-1) * -0.25));
+}

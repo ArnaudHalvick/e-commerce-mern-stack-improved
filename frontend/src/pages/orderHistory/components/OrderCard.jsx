@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { FormSubmitButton } from "../../../components/form";
 import { getImageUrl } from "../../../utils/imageUtils";
 import OrderStatusBadge from "./OrderStatusBadge";
 import { useOrderFormatting } from "../hooks";
@@ -70,14 +69,12 @@ const OrderCard = ({ order }) => {
             ${order.totalAmount.toFixed(2)}
           </span>
         </div>
-        <Link to={`/order-confirmation/${order._id}`}>
-          <FormSubmitButton
-            text="View Details"
-            type="button"
-            onClick={() => {}}
-            variant="primary"
-            size="small"
-          />
+        <Link
+          to={`/order-confirmation/${order._id}`}
+          className="order-history-view-btn"
+          aria-label={`View details for order ${order._id}`}
+        >
+          View Details
         </Link>
       </div>
     </div>

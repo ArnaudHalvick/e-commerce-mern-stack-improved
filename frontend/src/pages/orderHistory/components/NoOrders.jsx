@@ -1,24 +1,24 @@
 import React from "react";
-import { EmptyState } from "../../../components/errorHandling";
+import { Link } from "react-router-dom";
 
 /**
  * Component to display when user has no orders
  */
 const NoOrders = () => {
   return (
-    <EmptyState
-      title="No Orders Yet"
-      message="You haven't placed any orders yet. Start shopping to see your order history here."
-      icon="🛍️"
-      className="order-history-no-orders"
-      actions={[
-        {
-          label: "Start Shopping",
-          to: "/shop",
-          type: "primary",
-        },
-      ]}
-    />
+    <div className="order-no-orders">
+      <div className="order-no-orders-icon">🛍️</div>
+      <h3 className="order-no-orders-title">No Orders Yet</h3>
+      <p className="order-no-orders-text">
+        You haven't placed any orders yet. Start shopping to see your order
+        history here.
+      </p>
+      <Link to="/shop">
+        <button className="order-no-orders-btn" aria-label="Browse products">
+          Start Shopping
+        </button>
+      </Link>
+    </div>
   );
 };
 

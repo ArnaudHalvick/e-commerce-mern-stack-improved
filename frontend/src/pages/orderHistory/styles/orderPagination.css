@@ -1,0 +1,179 @@
+/* Order Pagination component styles */
+
+.order-pagination {
+  margin-top: var(--spacing-8);
+  width: 100%;
+}
+
+.order-pagination-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-5);
+}
+
+/* Items per page selector */
+.order-items-per-page {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.order-select-label {
+  font-size: var(--font-size-base);
+  color: var(--color-text-tertiary);
+}
+
+.order-select {
+  padding: var(--spacing-2);
+  border: var(--border-width-thin) solid var(--color-border);
+  border-radius: var(--border-radius-sm);
+  background-color: var(--color-background);
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+/* Page navigation */
+.order-page-navigation {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  margin-left: auto;
+}
+
+.order-page-btn {
+  padding: var(--spacing-2) var(--spacing-5);
+  border: var(--border-width-thin) solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  background: var(--color-background);
+  cursor: pointer;
+  transition: all var(--transition-duration-fast) var(--transition-timing-ease);
+  font-weight: var(--font-weight-medium);
+  min-width: var(--spacing-20);
+  text-align: center;
+}
+
+.order-page-btn:hover:not(.order-disabled) {
+  border-color: var(--color-primary-light);
+  background: var(--color-background-light);
+  color: var(--color-primary);
+  transform: translateY(calc(var(--spacing-1) * -0.25));
+}
+
+.order-page-btn.order-disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  background-color: var(--color-background-light);
+}
+
+.order-page-numbers {
+  display: flex;
+  gap: var(--spacing-8);
+}
+
+.order-page-number {
+  min-width: var(--spacing-10);
+  height: var(--spacing-10);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-background);
+  padding: 0 var(--spacing-2);
+  border: var(--border-width-thin) solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: all var(--transition-duration-fast) var(--transition-timing-ease);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+}
+
+.order-page-number:hover:not(.order-active) {
+  background: var(--color-background-light);
+  border-color: var(--color-primary-light);
+  color: var(--color-primary);
+  transform: translateY(calc(var(--spacing-1) * -0.25));
+}
+
+.order-page-number.order-active {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-background);
+  font-weight: var(--font-weight-semibold);
+}
+
+.order-ellipsis {
+  min-width: var(--spacing-10);
+  height: var(--spacing-10);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-base);
+  color: var(--color-text-tertiary);
+  font-weight: var(--font-weight-medium);
+}
+
+/* Responsive styles */
+@media screen and (max-width: 992px) {
+  .order-pagination-controls {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .order-page-navigation {
+    margin-left: 0;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .order-select-label,
+  .order-select,
+  .order-page-btn,
+  .order-page-number,
+  .order-ellipsis {
+    font-size: var(--font-size-sm);
+  }
+
+  .order-page-navigation {
+    gap: var(--spacing-6);
+  }
+
+  .order-page-numbers {
+    gap: var(--spacing-6);
+  }
+
+  .order-page-number,
+  .order-ellipsis {
+    min-width: var(--spacing-8);
+    height: var(--spacing-8);
+  }
+
+  .order-page-btn {
+    min-width: var(--spacing-16);
+    padding: var(--spacing-2) var(--spacing-4);
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .order-select-label,
+  .order-select,
+  .order-page-btn,
+  .order-page-number,
+  .order-ellipsis {
+    font-size: var(--font-size-xs);
+  }
+
+  .order-page-navigation {
+    gap: var(--spacing-5);
+  }
+
+  .order-page-numbers {
+    gap: var(--spacing-5);
+  }
+
+  .order-page-btn {
+    min-width: var(--spacing-12);
+    padding: var(--spacing-1) var(--spacing-3);
+  }
+}

@@ -1,0 +1,50 @@
+/* NoOrders component styles */
+
+.order-no-orders {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-12);
+  width: 100%;
+  background-color: var(--color-background-light);
+  border-radius: var(--border-radius-md);
+  text-align: center;
+}
+
+.order-no-orders-icon {
+  font-size: 48px;
+  color: var(--color-text-tertiary);
+  margin-bottom: var(--spacing-4);
+}
+
+.order-no-orders-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-3);
+}
+
+.order-no-orders-text {
+  color: var(--color-text-tertiary);
+  font-size: var(--font-size-md);
+  margin-bottom: var(--spacing-6);
+  max-width: 500px;
+}
+
+.order-no-orders-btn {
+  padding: var(--spacing-3) var(--spacing-6);
+  background-color: var(--color-primary);
+  color: var(--color-background);
+  border: none;
+  border-radius: var(--border-radius-full);
+  font-size: var(--font-size-base);
+  cursor: pointer;
+  transition: all var(--transition-duration-normal)
+    var(--transition-timing-ease);
+}
+
+.order-no-orders-btn:hover {
+  background-color: var(--color-primary-dark);
+  transform: translateY(calc(var(--spacing-1) * -0.25));
+}

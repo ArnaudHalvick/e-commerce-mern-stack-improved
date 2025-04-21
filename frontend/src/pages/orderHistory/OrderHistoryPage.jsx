@@ -6,10 +6,35 @@ import "./styles/index.css";
 
 /**
  * Order History Page Component
- * Shows the user's past orders and their status
+ * Shows the user's past orders and their status with filtering, sorting, and pagination
  */
 const OrderHistoryPage = () => {
-  const { orders, loading, error, refreshOrders } = useOrderHistory();
+  const {
+    orders,
+    allOrders,
+    filteredOrdersCount,
+    loading,
+    error,
+    refreshOrders,
+
+    // Sorting
+    sortBy,
+    handleSortChange,
+
+    // Filters
+    statusFilter,
+    dateRangeFilter,
+    handleStatusFilterChange,
+    handleDateRangeFilterChange,
+    clearAllFilters,
+
+    // Pagination
+    currentPage,
+    totalPages,
+    itemsPerPage,
+    handlePageChange,
+    handleItemsPerPageChange,
+  } = useOrderHistory();
 
   return (
     <>
@@ -24,7 +49,26 @@ const OrderHistoryPage = () => {
         ) : error ? (
           <ErrorState errorMessage={error} retryHandler={refreshOrders} />
         ) : (
-          <OrderList orders={orders} />
+          <OrderList
+            orders={orders}
+            filteredOrdersCount={filteredOrdersCount}
+            totalOrdersCount={allOrders.length}
+            // Sorting
+            sortBy={sortBy}
+            handleSortChange={handleSortChange}
+            // Filters
+            statusFilter={statusFilter}
+            dateRangeFilter={dateRangeFilter}
+            handleStatusFilterChange={handleStatusFilterChange}
+            handleDateRangeFilterChange={handleDateRangeFilterChange}
+            clearAllFilters={clearAllFilters}
+            // Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            itemsPerPage={itemsPerPage}
+            handlePageChange={handlePageChange}
+            handleItemsPerPageChange={handleItemsPerPageChange}
+          />
         )}
       </div>
     </>
