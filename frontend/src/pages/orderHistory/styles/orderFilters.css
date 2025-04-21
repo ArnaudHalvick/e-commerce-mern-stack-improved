@@ -44,7 +44,8 @@
 }
 
 .order-filter-clear-btn:hover {
-  background-color: var(--color-primary-lighter);
+  background-color: var(--color-primary-light);
+  color: var(--color-background);
   transform: translateY(calc(var(--spacing-1) * -0.25));
 }
 
@@ -81,6 +82,12 @@
   min-width: 120px;
 }
 
+.order-filter-select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.25);
+}
+
 /* Date range filter */
 .order-filter-date-group {
   flex: 1;
@@ -105,6 +112,12 @@
   min-width: 130px;
 }
 
+.order-filter-date:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.25);
+}
+
 .order-filter-date-separator {
   font-size: var(--font-size-base);
   color: var(--color-text-tertiary);
@@ -113,7 +126,7 @@
 .order-filter-date-clear {
   padding: var(--spacing-1) var(--spacing-2);
   background-color: transparent;
-  color: var(--color-tertiary);
+  color: var(--color-primary);
   border: none;
   cursor: pointer;
   font-size: var(--font-size-xs);
@@ -123,7 +136,7 @@
 }
 
 .order-filter-date-clear:hover {
-  color: var(--color-tertiary-dark);
+  color: var(--color-primary-dark);
 }
 
 /* Sort dropdown */
@@ -221,59 +234,4 @@
   transform: translateY(calc(var(--spacing-1) * -0.25));
 }
 
-/* Responsive styles */
-@media screen and (max-width: 992px) {
-  .order-filter-controls {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--spacing-4);
-  }
-
-  .order-filter-sort {
-    margin-left: 0;
-    width: 100%;
-  }
-
-  .order-filter-sort-dropdown {
-    width: 100%;
-  }
-
-  .order-filter-date-group {
-    max-width: 100%;
-    width: 100%;
-  }
-}
-
-@media screen and (max-width: 768px) {
-  .order-filter-text,
-  .order-filter-highlight,
-  .order-filter-label,
-  .order-filter-select,
-  .order-filter-date,
-  .order-filter-sort-dropdown,
-  .order-filter-sort-option {
-    font-size: var(--font-size-sm);
-  }
-
-  .order-filter-group {
-    width: 100%;
-  }
-
-  .order-filter-select,
-  .order-filter-date {
-    flex: 1;
-  }
-}
-
-@media screen and (max-width: 576px) {
-  .order-filter-info {
-    flex-direction: column;
-    align-items: center;
-    gap: var(--spacing-3);
-  }
-
-  .order-filter-text,
-  .order-filter-highlight {
-    text-align: center;
-  }
-}
+/* Media queries moved to Responsive.css */

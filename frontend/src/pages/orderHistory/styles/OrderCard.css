@@ -6,13 +6,21 @@
 }
 
 .order-history-card {
-  background-color: var(--color-background-dark);
+  background-color: var(--color-background);
   margin-bottom: var(--spacing-6);
   border-radius: var(--border-radius-xl);
   box-shadow: var(--shadow-lg);
   padding: var(--spacing-6);
   transition: transform var(--transition-duration-fast)
-    var(--transition-timing-ease);
+      var(--transition-timing-ease),
+    box-shadow var(--transition-duration-fast) var(--transition-timing-ease);
+  border: var(--border-width-thin) solid var(--color-border-light);
+  overflow: hidden;
+}
+
+.order-history-card:hover {
+  transform: translateY(calc(var(--spacing-1) * -0.5));
+  box-shadow: var(--shadow-xl);
 }
 
 .order-history-card:focus-visible {
@@ -27,6 +35,15 @@
   padding-bottom: var(--spacing-4);
   border-bottom: var(--border-width-thin) solid var(--color-border-light);
   margin-bottom: var(--spacing-4);
+  width: 100%;
+}
+
+.order-history-header-left {
+  flex: 1;
+}
+
+.order-history-header-right {
+  flex-shrink: 0;
 }
 
 .order-history-header h2 {
@@ -58,6 +75,7 @@
   height: 50px;
   border-radius: var(--border-radius-sm);
   overflow: hidden;
+  border: var(--border-width-thin) solid var(--color-border-light);
 }
 
 .order-history-item-image img {
@@ -88,6 +106,7 @@
   font-size: var(--font-size-xs);
   color: var(--color-text-tertiary);
   align-self: center;
+  border: var(--border-width-thin) solid var(--color-border);
 }
 
 .order-history-footer {
@@ -110,25 +129,6 @@
   color: var(--color-text-secondary);
 }
 
-@media (max-width: 768px) {
-  .order-history-header {
-    flex-direction: column;
-  }
-
-  .order-history-header-right {
-    margin-top: var(--spacing-3);
-  }
-
-  .order-history-footer {
-    flex-direction: column;
-    gap: var(--spacing-4);
-  }
-
-  .order-history-total {
-    margin-bottom: var(--spacing-2);
-  }
-}
-
 .order-history-view-btn {
   display: inline-block;
   padding: var(--spacing-2) var(--spacing-5);
@@ -149,3 +149,5 @@
   background-color: var(--color-primary-dark);
   transform: translateY(calc(var(--spacing-1) * -0.25));
 }
+
+/* Media queries moved to Responsive.css */

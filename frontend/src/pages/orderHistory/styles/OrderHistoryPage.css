@@ -2,15 +2,17 @@
 .order-history-page {
   max-width: var(--container-xl);
   margin: 0 auto;
+  padding: 0 var(--spacing-5);
 }
 
 .order-history-page-title {
   font-size: var(--font-size-4xl);
   font-weight: var(--font-weight-semibold);
-  margin-bottom: var(--spacing-2);
+  margin-bottom: var(--spacing-6);
   color: var(--color-text-primary);
   line-height: var(--line-height-tight);
   text-align: center;
+  padding-top: var(--spacing-4);
 }
 
 .order-history-loading-spinner,
@@ -22,22 +24,10 @@
   align-items: center;
   justify-content: center;
   text-align: center;
+  padding: var(--spacing-8) var(--spacing-4);
+  background-color: var(--color-background-light);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-sm);
 }
 
-@media (max-width: 992px) {
-  .order-history-page-title {
-    font-size: var(--font-size-3xl);
-  }
-}
-
-@media (max-width: 768px) {
-  .order-history-page-title {
-    margin-bottom: var(--spacing-1);
-  }
-}
-
-@media (max-width: 576px) {
-  .order-history-page-title {
-    font-size: var(--font-size-2xl);
-  }
-}
+/* Media queries moved to Responsive.css */

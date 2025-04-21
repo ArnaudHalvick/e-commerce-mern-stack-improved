@@ -3,6 +3,8 @@
 .order-pagination {
   margin-top: var(--spacing-8);
   width: 100%;
+  border-top: var(--border-width-thin) solid var(--color-border-light);
+  padding-top: var(--spacing-6);
 }
 
 .order-pagination-controls {
@@ -33,6 +35,18 @@
   font-size: var(--font-size-base);
   color: var(--color-text-secondary);
   cursor: pointer;
+  transition: border-color var(--transition-duration-fast)
+    var(--transition-timing-ease);
+}
+
+.order-select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.25);
+}
+
+.order-select:hover {
+  border-color: var(--color-border-dark);
 }
 
 /* Page navigation */
@@ -53,6 +67,7 @@
   font-weight: var(--font-weight-medium);
   min-width: var(--spacing-20);
   text-align: center;
+  color: var(--color-text-secondary);
 }
 
 .order-page-btn:hover:not(.order-disabled) {
@@ -66,6 +81,7 @@
   opacity: 0.4;
   cursor: not-allowed;
   background-color: var(--color-background-light);
+  color: var(--color-text-light);
 }
 
 .order-page-numbers {
@@ -87,6 +103,7 @@
   transition: all var(--transition-duration-fast) var(--transition-timing-ease);
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
 }
 
 .order-page-number:hover:not(.order-active) {
@@ -114,66 +131,4 @@
   font-weight: var(--font-weight-medium);
 }
 
-/* Responsive styles */
-@media screen and (max-width: 992px) {
-  .order-pagination-controls {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .order-page-navigation {
-    margin-left: 0;
-  }
-}
-
-@media screen and (max-width: 768px) {
-  .order-select-label,
-  .order-select,
-  .order-page-btn,
-  .order-page-number,
-  .order-ellipsis {
-    font-size: var(--font-size-sm);
-  }
-
-  .order-page-navigation {
-    gap: var(--spacing-6);
-  }
-
-  .order-page-numbers {
-    gap: var(--spacing-6);
-  }
-
-  .order-page-number,
-  .order-ellipsis {
-    min-width: var(--spacing-8);
-    height: var(--spacing-8);
-  }
-
-  .order-page-btn {
-    min-width: var(--spacing-16);
-    padding: var(--spacing-2) var(--spacing-4);
-  }
-}
-
-@media screen and (max-width: 576px) {
-  .order-select-label,
-  .order-select,
-  .order-page-btn,
-  .order-page-number,
-  .order-ellipsis {
-    font-size: var(--font-size-xs);
-  }
-
-  .order-page-navigation {
-    gap: var(--spacing-5);
-  }
-
-  .order-page-numbers {
-    gap: var(--spacing-5);
-  }
-
-  .order-page-btn {
-    min-width: var(--spacing-12);
-    padding: var(--spacing-1) var(--spacing-3);
-  }
-}
+/* Media queries moved to Responsive.css */
