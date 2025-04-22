@@ -165,7 +165,7 @@ const OrderFilters = ({
             aria-expanded={showSortOptions}
             aria-label="Sort orders"
           >
-            {getSortLabel()}
+            <span className="order-filter-sort-label">{getSortLabel()}</span>
             <img
               src={dropdown_icon}
               alt=""
@@ -247,7 +247,6 @@ OrderFilters.propTypes = {
   handleSortChange: PropTypes.func.isRequired,
   clearAllFilters: PropTypes.func.isRequired,
   filteredOrdersCount: PropTypes.number.isRequired,
-  totalOrdersCount: PropTypes.number.isRequired,
   currentPage: PropTypes.number.isRequired,
   itemsPerPage: PropTypes.number.isRequired,
 };

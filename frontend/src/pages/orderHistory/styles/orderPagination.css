@@ -74,7 +74,6 @@
   border-color: var(--color-primary-light);
   background: var(--color-background-light);
   color: var(--color-primary);
-  transform: translateY(calc(var(--spacing-1) * -0.25));
 }
 
 .order-page-btn.order-disabled {
@@ -110,7 +109,6 @@
   background: var(--color-background-light);
   border-color: var(--color-primary-light);
   color: var(--color-primary);
-  transform: translateY(calc(var(--spacing-1) * -0.25));
 }
 
 .order-page-number.order-active {

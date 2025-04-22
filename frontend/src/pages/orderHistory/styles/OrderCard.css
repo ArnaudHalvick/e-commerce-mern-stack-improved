@@ -11,15 +11,13 @@
   border-radius: var(--border-radius-xl);
   box-shadow: var(--shadow-lg);
   padding: var(--spacing-6);
-  transition: transform var(--transition-duration-fast)
-      var(--transition-timing-ease),
-    box-shadow var(--transition-duration-fast) var(--transition-timing-ease);
+  transition: box-shadow var(--transition-duration-fast)
+    var(--transition-timing-ease);
   border: var(--border-width-thin) solid var(--color-border-light);
   overflow: hidden;
 }
 
 .order-history-card:hover {
-  transform: translateY(calc(var(--spacing-1) * -0.5));
   box-shadow: var(--shadow-xl);
 }
 
@@ -131,7 +129,7 @@
 
 .order-history-view-btn {
   display: inline-block;
-  padding: var(--spacing-2) var(--spacing-5);
+  padding: var(--spacing-2) var(--spacing-4);
   background-color: var(--color-primary);
   color: var(--color-background);
   border: none;
@@ -140,14 +138,14 @@
   font-weight: var(--font-weight-medium);
   text-decoration: none;
   cursor: pointer;
-  transition: all var(--transition-duration-normal)
+  transition: background-color var(--transition-duration-normal)
     var(--transition-timing-ease);
   text-align: center;
+  min-width: 120px;
 }
 
 .order-history-view-btn:hover {
   background-color: var(--color-primary-dark);
-  transform: translateY(calc(var(--spacing-1) * -0.25));
 }
 
 /* Responsive styles for OrderCard */
@@ -217,68 +215,77 @@
 
 @media screen and (max-width: 767.98px) {
   .order-history-card {
-    padding: var(--spacing-3);
+    padding: var(--spacing-4);
     margin-bottom: var(--spacing-4);
     border-radius: var(--border-radius-md);
-    box-shadow: var(--shadow-sm);
   }
 
   .order-history-header {
-    padding-bottom: var(--spacing-2);
-    margin-bottom: var(--spacing-2);
-    flex-direction: column;
-    gap: var(--spacing-2);
+    flex-direction: row;
+    align-items: center;
+    padding-bottom: var(--spacing-3);
+    margin-bottom: var(--spacing-3);
+  }
+
+  .order-history-header-left {
+    flex: 1;
   }
 
   .order-history-header-right {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    margin-left: var(--spacing-2);
+  }
+
+  .order-history-header h2 {
+    font-size: var(--font-size-md);
+    margin-bottom: var(--spacing-1);
+  }
+
+  .order-history-date {
+    font-size: var(--font-size-sm);
   }
 
   .order-history-items-preview {
-    gap: var(--spacing-2);
-    padding: var(--spacing-2) 0;
-    /* Limit to 2 items on mobile with horizontal scrolling for more */
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    padding-bottom: var(--spacing-3);
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .order-history-items-preview::-webkit-scrollbar {
-    height: var(--spacing-1);
-  }
-
-  .order-history-items-preview::-webkit-scrollbar-track {
-    background: var(--color-border-light);
-    border-radius: var(--border-radius-full);
-  }
-
-  .order-history-items-preview::-webkit-scrollbar-thumb {
-    background: var(--color-border);
-    border-radius: var(--border-radius-full);
-  }
-
-  .order-history-items-preview::-webkit-scrollbar-thumb:hover {
-    background: var(--color-border-dark);
+    gap: var(--spacing-3);
+    padding: var(--spacing-3) 0;
+    flex-direction: column;
+    max-height: none;
+    overflow-x: visible;
   }
 
   .order-history-item-preview {
-    flex-shrink: 0;
-    width: 140px;
+    width: 100%;
+    min-width: 0;
+    margin-right: 0;
+  }
+
+  .order-history-item-image {
+    width: 60px;
+    height: 60px;
+  }
+
+  .order-history-item-name {
+    font-size: var(--font-size-base);
+    margin-bottom: var(--spacing-1);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .order-history-item-details {
+    font-size: var(--font-size-sm);
   }
 
   .order-history-footer {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--spacing-3);
-    padding-top: var(--spacing-2);
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: var(--spacing-3);
   }
 
   .order-history-view-btn {
-    width: 100%;
+    width: auto;
+    min-width: 110px;
+    max-width: 140px;
+    padding: var(--spacing-2) var(--spacing-3);
+    margin-top: 0;
   }
 }
 
