@@ -36,6 +36,11 @@ const SchemaPasswordValidation = ({
   // Use the custom schema if provided, otherwise use the default password schema
   const schema = customValidationSchema || passwordSchema;
 
+  // If schema has no validators (like loginPasswordSchema), don't show any validation UI
+  if (!schema.validators || schema.validators.length === 0) {
+    return null;
+  }
+
   // Build requirements based on the schema
   const requirements = [
     {

@@ -54,41 +54,50 @@ const useAuthForm = (formType = "login") => {
   /**
    * Validate a single field
    */
-  const validateField = useCallback((name, value, currentPassword) => {
-    let errorMessage = "";
+  const validateField = useCallback(
+    (name, value, currentPassword) => {
+      let errorMessage = "";
 
-    switch (name) {
-      case "username": {
-        // Make sure username is properly validated
-        if (!value || value.trim() === "") {
-          errorMessage = "Name is required";
-        } else {
-          const result = validateName(value);
-          if (!result.isValid) errorMessage = result.message;
+      switch (name) {
+        case "username": {
+          // Make sure username is properly validated
+          if (!value || value.trim() === "") {
+            errorMessage = "Name is required";
+          } else {
+            const result = validateName(value);
+            if (!result.isValid) errorMessage = result.message;
+          }
+          break;
         }
-        break;
-      }
-      case "email": {
-        const result = validateEmail(value);
-        if (!result.isValid) errorMessage = result.message;
-        break;
-      }
-      case "password": {
-        const result = validatePassword(value);
-        if (!result.isValid) errorMessage = result.message;
-        break;
-      }
-      case "confirmPassword": {
-        const result = validatePasswordMatch(currentPassword, value);
-        if (!result.isValid) errorMessage = result.message;
-        break;
-      }
-      default:
-        break;
-    }
+        case "email": {
+          const result = validateEmail(value);
+          if (!result.isValid) errorMessage = result.message;
+          break;
+        }
+        case "password": {
+          // Use the appropriate schema based on form type
+          const passwordValidationSchema =
+            formType === "login"
+              ? loginFormSchema.password
+              : registrationFormSchema.password;
 
-    return errorMessage;
-  }, []);
+          const result = validatePassword(value, passwordValidationSchema);
+          if (!result.isValid) errorMessage = result.message;
+          break;
+        }
+        case "confirmPassword": {
+          const result = validatePasswordMatch(currentPassword, value);
+          if (!result.isValid) errorMessage = result.message;
+          break;
+        }
+        default:
+          break;
+      }
+
+      return errorMessage;
+    },
+    [formType]
+  );
 
   // Create a temporary state for field errors to avoid the circular dependency
   const [tempFieldErrors, setTempFieldErrors] = useState({});

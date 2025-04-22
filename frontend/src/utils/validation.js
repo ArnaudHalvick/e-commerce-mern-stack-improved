@@ -64,27 +64,36 @@ export const validateName = (name) => {
 /**
  * Validates a password based on schema.
  */
-export const validatePassword = (password) => {
+export const validatePassword = (password, schema = passwordSchema) => {
   const details = {
-    length: password && password.length >= passwordSchema.minLength,
-    uppercase: password && passwordSchema.validators[0].pattern.test(password),
-    number: password && passwordSchema.validators[1].pattern.test(password),
-    special: password && passwordSchema.validators[2].pattern.test(password),
+    length: password && password.length >= schema.minLength,
+    uppercase: password && schema.validators?.[0]?.pattern?.test(password),
+    number: password && schema.validators?.[1]?.pattern?.test(password),
+    special: password && schema.validators?.[2]?.pattern?.test(password),
   };
 
   const trimmedPassword = password?.trim() || "";
-  if (!trimmedPassword && passwordSchema.required) {
+  if (!trimmedPassword && schema.required) {
     return { isValid: false, message: "Password is required", details };
   }
-  if (trimmedPassword.length < passwordSchema.minLength) {
+
+  // Check if we're using a schema with no validators (like loginPasswordSchema)
+  if (!schema.validators || schema.validators.length === 0) {
+    // Only check if password exists for login
+    return trimmedPassword
+      ? { isValid: true, message: "", details }
+      : { isValid: false, message: "Password is required", details };
+  }
+
+  if (trimmedPassword.length < schema.minLength) {
     return {
       isValid: false,
-      message: `Password should be at least ${passwordSchema.minLength} characters long`,
+      message: `Password should be at least ${schema.minLength} characters long`,
       details,
     };
   }
 
-  for (const validator of passwordSchema.validators) {
+  for (const validator of schema.validators) {
     if (!validator.pattern.test(trimmedPassword)) {
       return {
         isValid: false,

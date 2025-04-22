@@ -103,6 +103,16 @@ export const passwordSchema = {
 };
 
 /**
+ * Login password schema - only checks if a password is provided
+ */
+export const loginPasswordSchema = {
+  required: true,
+  minLength: 1,
+  validators: [],
+  message: "Password is required",
+};
+
+/**
  * Phone number validation schema
  * Based on User.phone in backend/models/User.js
  */
@@ -186,7 +196,7 @@ export const userSchema = {
  */
 export const loginFormSchema = {
   email: emailSchema,
-  password: passwordSchema,
+  password: loginPasswordSchema,
 };
 
 /**
