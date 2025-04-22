@@ -164,6 +164,7 @@ const OrderFilters = ({
             aria-haspopup="listbox"
             aria-expanded={showSortOptions}
             aria-label="Sort orders"
+            data-testid="sort-dropdown"
           >
             <span className="order-filter-sort-label">{getSortLabel()}</span>
             <img

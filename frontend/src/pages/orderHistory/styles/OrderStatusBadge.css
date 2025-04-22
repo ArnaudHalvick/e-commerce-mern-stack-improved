@@ -8,10 +8,6 @@
   transition: all var(--transition-duration-fast) var(--transition-timing-ease);
 }
 
-.order-history-status-badge:hover {
-  transform: scale(1.05);
-}
-
 .order-history-status-badge:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
@@ -35,4 +31,18 @@
 .order-history-status-cancelled {
   background-color: var(--color-danger-light);
   color: var(--color-danger-dark);
+}
+
+@media screen and (max-width: 575.98px) {
+  .order-history-status-badge {
+    padding: calc(var(--spacing-1) * 0.75) var(--spacing-2);
+    font-size: var(--font-size-xs);
+  }
+}
+
+@media screen and (max-width: 399.98px) {
+  .order-history-status-badge {
+    padding: calc(var(--spacing-1) * 0.5) var(--spacing-1);
+    font-size: var(--font-size-xs);
+  }
 }
