@@ -14,7 +14,6 @@ const OrderFilters = ({
   handleSortChange,
   clearAllFilters,
   filteredOrdersCount,
-  totalOrdersCount,
   currentPage,
   itemsPerPage,
 }) => {
@@ -65,12 +64,6 @@ const OrderFilters = ({
     }
   };
 
-  // Calculate if any filters are active
-  const hasActiveFilters =
-    statusFilter !== "all" ||
-    dateRangeFilter.startDate ||
-    dateRangeFilter.endDate;
-
   // Handler for clearing date inputs
   const handleClearDates = () => {
     handleDateRangeFilterChange(null, null);
@@ -89,15 +82,13 @@ const OrderFilters = ({
           orders
         </div>
 
-        {hasActiveFilters && (
-          <button
-            className="order-filter-clear-btn"
-            onClick={clearAllFilters}
-            aria-label="Clear all filters"
-          >
-            Clear Filters
-          </button>
-        )}
+        <button
+          className="order-filter-clear-btn"
+          onClick={clearAllFilters}
+          aria-label="Clear all filters"
+        >
+          Clear Filters
+        </button>
       </div>
 
       <div className="order-filter-controls">
@@ -114,7 +105,6 @@ const OrderFilters = ({
             aria-label="Filter orders by status"
           >
             <option value="all">All</option>
-            <option value="pending">Pending</option>
             <option value="processing">Processing</option>
             <option value="shipped">Shipped</option>
             <option value="delivered">Delivered</option>
@@ -153,15 +143,13 @@ const OrderFilters = ({
               aria-label="Filter orders to date"
               placeholder="To"
             />
-            {(dateRangeFilter.startDate || dateRangeFilter.endDate) && (
-              <button
-                className="order-filter-date-clear"
-                onClick={handleClearDates}
-                aria-label="Clear date filters"
-              >
-                Clear
-              </button>
-            )}
+            <button
+              className="order-filter-date-clear"
+              onClick={handleClearDates}
+              aria-label="Clear date filters"
+            >
+              Clear
+            </button>
           </div>
         </div>
 

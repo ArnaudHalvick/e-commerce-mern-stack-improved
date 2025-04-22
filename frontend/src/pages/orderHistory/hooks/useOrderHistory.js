@@ -56,33 +56,44 @@ const useOrderHistory = () => {
 
     // Apply status filter
     if (statusFilter !== "all") {
-      result = result.filter((order) => order.status === statusFilter);
+      result = result.filter(
+        (order) =>
+          order &&
+          order.orderStatus &&
+          order.orderStatus.toLowerCase() === statusFilter.toLowerCase()
+      );
     }
 
     // Apply date range filter
     if (dateRangeFilter.startDate) {
       const startDate = new Date(dateRangeFilter.startDate);
-      result = result.filter((order) => new Date(order.createdAt) >= startDate);
+      result = result.filter(
+        (order) =>
+          order && order.createdAt && new Date(order.createdAt) >= startDate
+      );
     }
 
     if (dateRangeFilter.endDate) {
       const endDate = new Date(dateRangeFilter.endDate);
-      result = result.filter((order) => new Date(order.createdAt) <= endDate);
+      result = result.filter(
+        (order) =>
+          order && order.createdAt && new Date(order.createdAt) <= endDate
+      );
     }
 
     // Apply sorting
     result.sort((a, b) => {
       switch (sortBy) {
         case "newest":
-          return new Date(b.createdAt) - new Date(a.createdAt);
+          return new Date(b?.createdAt || 0) - new Date(a?.createdAt || 0);
         case "oldest":
-          return new Date(a.createdAt) - new Date(b.createdAt);
+          return new Date(a?.createdAt || 0) - new Date(b?.createdAt || 0);
         case "price-high":
-          return b.totalAmount - a.totalAmount;
+          return (b?.totalAmount || 0) - (a?.totalAmount || 0);
         case "price-low":
-          return a.totalAmount - b.totalAmount;
+          return (a?.totalAmount || 0) - (b?.totalAmount || 0);
         default:
-          return new Date(b.createdAt) - new Date(a.createdAt);
+          return new Date(b?.createdAt || 0) - new Date(a?.createdAt || 0);
       }
     });
 
