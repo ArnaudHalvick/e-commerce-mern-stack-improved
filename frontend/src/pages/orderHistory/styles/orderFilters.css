@@ -398,7 +398,7 @@
 
   .order-filter-label,
   .order-filter-date-separator {
-    font-size: var(--font-size-xs);
+    font-size: var(--font-size-xxs);
     margin-right: var(--spacing-1);
   }
 
@@ -426,11 +426,12 @@
   }
 
   .order-filter-sort-dropdown {
-    font-size: var(--font-size-xs);
+    font-size: var(--font-size-xxs);
+    padding: var(--spacing-1);
   }
 
   .order-filter-sort-label {
-    font-size: var(--font-size-xs);
+    font-size: var(--font-size-xxs);
   }
 
   .order-filter-sort-options {
@@ -438,8 +439,25 @@
   }
 
   .order-filter-sort-option {
-    font-size: var(--font-size-xs);
+    font-size: var(--font-size-xxs);
     padding: var(--spacing-1) var(--spacing-2);
+  }
+
+  .order-filter-select {
+    font-size: var(--font-size-xxs);
+    padding: var(--spacing-1);
+    min-width: 90px;
+  }
+
+  .order-filter-date {
+    font-size: var(--font-size-xxs);
+    padding: var(--spacing-1);
+    min-width: 90px;
+    max-width: 140px;
+  }
+
+  .order-filter-date-separator {
+    font-size: var(--font-size-xxs);
   }
 }
 
