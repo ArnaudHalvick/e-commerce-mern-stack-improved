@@ -150,4 +150,209 @@
   transform: translateY(calc(var(--spacing-1) * -0.25));
 }
 
-/* Media queries moved to Responsive.css */
+/* Responsive styles for OrderCard */
+@media screen and (max-width: 1199.98px) {
+  .order-history-card {
+    padding: var(--spacing-5);
+  }
+}
+
+@media screen and (max-width: 991.98px) {
+  .order-history-card {
+    padding: var(--spacing-4);
+    margin-bottom: var(--spacing-5);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+  }
+
+  .order-history-header {
+    padding-bottom: var(--spacing-3);
+    margin-bottom: var(--spacing-3);
+  }
+
+  .order-history-header h2 {
+    font-size: var(--font-size-base);
+    margin-bottom: var(--spacing-1);
+  }
+
+  .order-history-date {
+    font-size: var(--font-size-xs);
+  }
+
+  .order-history-items-preview {
+    gap: var(--spacing-3);
+    padding: var(--spacing-3) 0;
+  }
+
+  .order-history-item-preview {
+    gap: var(--spacing-2);
+  }
+
+  .order-history-item-image {
+    width: 45px;
+    height: 45px;
+  }
+
+  .order-history-item-info {
+    font-size: var(--font-size-xs);
+  }
+
+  .order-history-item-name {
+    margin-bottom: calc(var(--spacing-1) / 2);
+  }
+
+  .order-history-more-items {
+    padding: calc(var(--spacing-1) / 2) var(--spacing-2);
+  }
+
+  .order-history-footer {
+    padding-top: var(--spacing-3);
+  }
+
+  .order-history-view-btn {
+    padding: var(--spacing-1) var(--spacing-4);
+    font-size: var(--font-size-xs);
+  }
+}
+
+@media screen and (max-width: 767.98px) {
+  .order-history-card {
+    padding: var(--spacing-3);
+    margin-bottom: var(--spacing-4);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .order-history-header {
+    padding-bottom: var(--spacing-2);
+    margin-bottom: var(--spacing-2);
+    flex-direction: column;
+    gap: var(--spacing-2);
+  }
+
+  .order-history-header-right {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .order-history-items-preview {
+    gap: var(--spacing-2);
+    padding: var(--spacing-2) 0;
+    /* Limit to 2 items on mobile with horizontal scrolling for more */
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: var(--spacing-3);
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .order-history-items-preview::-webkit-scrollbar {
+    height: var(--spacing-1);
+  }
+
+  .order-history-items-preview::-webkit-scrollbar-track {
+    background: var(--color-border-light);
+    border-radius: var(--border-radius-full);
+  }
+
+  .order-history-items-preview::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: var(--border-radius-full);
+  }
+
+  .order-history-items-preview::-webkit-scrollbar-thumb:hover {
+    background: var(--color-border-dark);
+  }
+
+  .order-history-item-preview {
+    flex-shrink: 0;
+    width: 140px;
+  }
+
+  .order-history-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-3);
+    padding-top: var(--spacing-2);
+  }
+
+  .order-history-view-btn {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 575.98px) {
+  .order-history-card {
+    padding: var(--spacing-2);
+    margin-bottom: var(--spacing-3);
+  }
+
+  .order-history-header {
+    padding-bottom: var(--spacing-2);
+  }
+
+  .order-history-header h2 {
+    font-size: var(--font-size-sm);
+  }
+
+  .order-history-date {
+    font-size: var(--font-size-xs);
+  }
+
+  .order-history-items-preview {
+    gap: var(--spacing-1);
+    padding: var(--spacing-1) 0;
+  }
+
+  .order-history-item-preview {
+    width: 120px;
+  }
+
+  .order-history-item-image {
+    width: 40px;
+    height: 40px;
+  }
+
+  .order-history-item-info {
+    font-size: var(--font-size-xs);
+  }
+
+  .order-history-more-items {
+    padding: calc(var(--spacing-1) / 2) var(--spacing-1);
+  }
+
+  .order-history-footer {
+    gap: var(--spacing-2);
+  }
+
+  .order-history-total {
+    font-size: var(--font-size-xs);
+    gap: var(--spacing-1);
+  }
+
+  .order-history-view-btn {
+    padding: var(--spacing-1) var(--spacing-3);
+  }
+}
+
+@media screen and (max-width: 399.98px) {
+  .order-history-header h2 {
+    font-size: var(--font-size-xs);
+  }
+
+  .order-history-item-preview {
+    width: 100px;
+  }
+
+  .order-history-item-image {
+    width: 35px;
+    height: 35px;
+  }
+
+  .order-history-header-right {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-1);
+  }
+}
