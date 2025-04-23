@@ -72,25 +72,30 @@ const OrderFilters = ({
   };
 
   return (
-    <div className="order-filter-bar">
-      <div className="order-filter-info">
-        <div className="order-filter-text">
+    <div className="order-history-filter-bar">
+      <div className="order-history-filter-info">
+        <div className="order-history-filter-text">
           Showing{" "}
-          <span className="order-filter-highlight">
+          <span className="order-history-filter-highlight">
             {calculateDisplayRange()}
           </span>{" "}
           of{" "}
-          <span className="order-filter-highlight">{filteredOrdersCount}</span>{" "}
+          <span className="order-history-filter-highlight">
+            {filteredOrdersCount}
+          </span>{" "}
           orders
         </div>
 
-        <div className="order-items-per-page">
-          <label htmlFor="order-items-per-page" className="order-select-label">
+        <div className="order-history-items-per-page">
+          <label
+            htmlFor="order-items-per-page"
+            className="order-history-select-label"
+          >
             Show:
           </label>
           <select
             id="order-items-per-page"
-            className="order-select"
+            className="order-history-select"
             value={itemsPerPage}
             onChange={(e) => handleItemsPerPageChange(e.target.value)}
             aria-label="Orders per page"
@@ -103,7 +108,7 @@ const OrderFilters = ({
         </div>
 
         <button
-          className="order-filter-clear-btn"
+          className="order-history-filter-clear-btn"
           onClick={clearAllFilters}
           aria-label="Clear all filters"
         >
@@ -111,15 +116,15 @@ const OrderFilters = ({
         </button>
       </div>
 
-      <div className="order-filter-controls">
+      <div className="order-history-filter-controls">
         {/* Status filter */}
-        <div className="order-filter-group">
-          <label htmlFor="status-filter" className="order-filter-label">
+        <div className="order-history-filter-group">
+          <label htmlFor="status-filter" className="order-history-filter-label">
             Status:
           </label>
           <select
             id="status-filter"
-            className="order-filter-select"
+            className="order-history-filter-select"
             value={statusFilter}
             onChange={(e) => handleStatusFilterChange(e.target.value)}
             aria-label="Filter orders by status"
@@ -133,12 +138,12 @@ const OrderFilters = ({
         </div>
 
         {/* Date range filter */}
-        <div className="order-filter-group order-filter-date-group">
-          <label className="order-filter-label">Date Range:</label>
-          <div className="order-filter-date-inputs">
+        <div className="order-history-filter-group order-history-filter-date-group">
+          <label className="order-history-filter-label">Date Range:</label>
+          <div className="order-history-filter-date-inputs">
             <input
               type="date"
-              className="order-filter-date"
+              className="order-history-filter-date"
               value={dateRangeFilter.startDate || ""}
               onChange={(e) =>
                 handleDateRangeFilterChange(
@@ -149,10 +154,10 @@ const OrderFilters = ({
               aria-label="Filter orders from date"
               placeholder="From"
             />
-            <span className="order-filter-date-separator">to</span>
+            <span className="order-history-filter-date-separator">to</span>
             <input
               type="date"
-              className="order-filter-date"
+              className="order-history-filter-date"
               value={dateRangeFilter.endDate || ""}
               onChange={(e) =>
                 handleDateRangeFilterChange(
@@ -164,7 +169,7 @@ const OrderFilters = ({
               placeholder="To"
             />
             <button
-              className="order-filter-date-clear"
+              className="order-history-filter-date-clear"
               onClick={handleClearDates}
               aria-label="Clear date filters"
             >
@@ -174,9 +179,9 @@ const OrderFilters = ({
         </div>
 
         {/* Sort dropdown */}
-        <div className="order-filter-sort">
+        <div className="order-history-filter-sort">
           <div
-            className="order-filter-sort-dropdown"
+            className="order-history-filter-sort-dropdown"
             onClick={() => setShowSortOptions(!showSortOptions)}
             onKeyDown={handleSortKeyDown}
             tabIndex="0"
@@ -186,18 +191,20 @@ const OrderFilters = ({
             aria-label="Sort orders"
             data-testid="sort-dropdown"
           >
-            <span className="order-filter-sort-label">{getSortLabel()}</span>
+            <span className="order-history-filter-sort-label">
+              {getSortLabel()}
+            </span>
             <img
               src={dropdown_icon}
               alt=""
-              className="order-filter-sort-icon"
+              className="order-history-filter-sort-icon"
             />
           </div>
 
           {showSortOptions && (
-            <div className="order-filter-sort-options" role="listbox">
+            <div className="order-history-filter-sort-options" role="listbox">
               <div
-                className="order-filter-sort-option"
+                className="order-history-filter-sort-option"
                 onClick={() => {
                   handleSortChange("newest");
                   setShowSortOptions(false);
@@ -210,7 +217,7 @@ const OrderFilters = ({
                 Newest First
               </div>
               <div
-                className="order-filter-sort-option"
+                className="order-history-filter-sort-option"
                 onClick={() => {
                   handleSortChange("oldest");
                   setShowSortOptions(false);
@@ -223,7 +230,7 @@ const OrderFilters = ({
                 Oldest First
               </div>
               <div
-                className="order-filter-sort-option"
+                className="order-history-filter-sort-option"
                 onClick={() => {
                   handleSortChange("price-high");
                   setShowSortOptions(false);
@@ -236,7 +243,7 @@ const OrderFilters = ({
                 Price: High to Low
               </div>
               <div
-                className="order-filter-sort-option"
+                className="order-history-filter-sort-option"
                 onClick={() => {
                   handleSortChange("price-low");
                   setShowSortOptions(false);

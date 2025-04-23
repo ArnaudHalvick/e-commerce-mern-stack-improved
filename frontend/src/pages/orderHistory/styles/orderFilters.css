@@ -1,7 +1,7 @@
 /* Order Filters component styles */
 
 /* Filter bar */
-.order-filter-bar {
+.order-history-filter-bar {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-5);
@@ -11,7 +11,7 @@
   width: 100%;
 }
 
-.order-filter-info {
+.order-history-filter-info {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -20,31 +20,31 @@
   gap: var(--spacing-4);
 }
 
-.order-filter-text {
+.order-history-filter-text {
   font-size: var(--font-size-base);
   color: var(--color-text-tertiary);
 }
 
-.order-filter-highlight {
+.order-history-filter-highlight {
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-semibold);
   color: var(--color-text-secondary);
 }
 
 /* Items per page selector moved from pagination to filter */
-.order-items-per-page {
+.order-history-items-per-page {
   display: flex;
   align-items: center;
   gap: var(--spacing-2);
   margin-left: var(--spacing-4);
 }
 
-.order-select-label {
+.order-history-select-label {
   font-size: var(--font-size-base);
   color: var(--color-text-tertiary);
 }
 
-.order-select {
+.order-history-select {
   padding: var(--spacing-1);
   border: var(--border-width-thin) solid var(--color-border);
   border-radius: var(--border-radius-sm);
@@ -56,17 +56,17 @@
     var(--transition-timing-ease);
 }
 
-.order-select:focus {
+.order-history-select:focus {
   outline: none;
   border-color: var(--color-primary);
   box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.25);
 }
 
-.order-select:hover {
+.order-history-select:hover {
   border-color: var(--color-border-dark);
 }
 
-.order-filter-clear-btn {
+.order-history-filter-clear-btn {
   padding: var(--spacing-1) var(--spacing-3);
   background-color: var(--color-primary);
   color: var(--color-background);
@@ -80,12 +80,12 @@
   margin-left: auto;
 }
 
-.order-filter-clear-btn:hover {
+.order-history-filter-clear-btn:hover {
   background-color: var(--color-primary-dark);
 }
 
 /* Controls container */
-.order-filter-controls {
+.order-history-filter-controls {
   display: flex;
   flex-wrap: wrap;
   gap: var(--spacing-5);
@@ -94,19 +94,19 @@
 }
 
 /* Filter group */
-.order-filter-group {
+.order-history-filter-group {
   display: flex;
   align-items: center;
   gap: var(--spacing-2);
 }
 
-.order-filter-label {
+.order-history-filter-label {
   font-size: var(--font-size-base);
   color: var(--color-text-tertiary);
   white-space: nowrap;
 }
 
-.order-filter-select {
+.order-history-filter-select {
   padding: var(--spacing-2);
   border: var(--border-width-thin) solid var(--color-border);
   border-radius: var(--border-radius-sm);
@@ -117,19 +117,19 @@
   min-width: 120px;
 }
 
-.order-filter-select:focus {
+.order-history-filter-select:focus {
   outline: none;
   border-color: var(--color-primary);
   box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.25);
 }
 
 /* Date range filter */
-.order-filter-date-group {
+.order-history-filter-date-group {
   flex: 1;
   max-width: 500px; /* Increased to accommodate all elements on one line */
 }
 
-.order-filter-date-inputs {
+.order-history-filter-date-inputs {
   display: flex;
   align-items: center;
   gap: var(--spacing-2);
@@ -137,7 +137,7 @@
   width: 100%;
 }
 
-.order-filter-date {
+.order-history-filter-date {
   padding: var(--spacing-2);
   border: var(--border-width-thin) solid var(--color-border);
   border-radius: var(--border-radius-sm);
@@ -150,19 +150,19 @@
   max-width: 180px; /* Maximum width to prevent oversizing */
 }
 
-.order-filter-date:focus {
+.order-history-filter-date:focus {
   outline: none;
   border-color: var(--color-primary);
   box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.25);
 }
 
-.order-filter-date-separator {
+.order-history-filter-date-separator {
   font-size: var(--font-size-base);
   color: var(--color-text-tertiary);
   white-space: nowrap;
 }
 
-.order-filter-date-clear {
+.order-history-filter-date-clear {
   padding: var(--spacing-1) var(--spacing-2);
   background-color: var(--color-primary);
   color: var(--color-background);
@@ -177,17 +177,17 @@
   font-weight: var(--font-weight-medium);
 }
 
-.order-filter-date-clear:hover {
+.order-history-filter-date-clear:hover {
   background-color: var(--color-primary-dark);
 }
 
 /* Sort dropdown */
-.order-filter-sort {
+.order-history-filter-sort {
   position: relative;
   margin-left: auto;
 }
 
-.order-filter-sort-dropdown {
+.order-history-filter-sort-dropdown {
   cursor: pointer;
   padding: var(--spacing-2) var(--spacing-3);
   border: var(--border-width-thin) solid var(--color-border);
@@ -204,15 +204,15 @@
   min-width: 140px;
 }
 
-.order-filter-sort-dropdown:hover {
+.order-history-filter-sort-dropdown:hover {
   border-color: var(--color-border-dark);
 }
 
-.order-filter-sort-dropdown:hover .order-filter-sort-icon {
+.order-history-filter-sort-dropdown:hover .order-history-filter-sort-icon {
   opacity: 0.8;
 }
 
-.order-filter-sort-options {
+.order-history-filter-sort-options {
   position: absolute;
   top: 100%;
   right: 0;
@@ -225,7 +225,7 @@
   box-shadow: var(--shadow-md);
 }
 
-.order-filter-sort-option {
+.order-history-filter-sort-option {
   padding: var(--spacing-2) var(--spacing-3);
   transition: background var(--transition-duration-fast)
     var(--transition-timing-ease);
@@ -234,19 +234,19 @@
   line-height: var(--line-height-snug);
 }
 
-.order-filter-sort-option:hover {
+.order-history-filter-sort-option:hover {
   background: var(--color-background-light);
 }
 
-.order-filter-sort-option:first-child {
+.order-history-filter-sort-option:first-child {
   border-radius: var(--border-radius-sm) var(--border-radius-sm) 0 0;
 }
 
-.order-filter-sort-option:last-child {
+.order-history-filter-sort-option:last-child {
   border-radius: 0 0 var(--border-radius-sm) var(--border-radius-sm);
 }
 
-.order-filter-sort-label {
+.order-history-filter-sort-label {
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
@@ -288,106 +288,106 @@
 
 /* Responsive styles for orderFilters */
 @media screen and (max-width: 1199.98px) {
-  .order-filter-controls {
+  .order-history-filter-controls {
     gap: var(--spacing-4);
   }
 }
 
 @media screen and (max-width: 991.98px) {
-  .order-filter-controls {
+  .order-history-filter-controls {
     gap: var(--spacing-4);
   }
 
-  .order-filter-sort {
+  .order-history-filter-sort {
     margin-left: 0;
   }
 
-  .order-filter-sort-dropdown {
+  .order-history-filter-sort-dropdown {
     min-width: 120px;
   }
 
-  .order-filter-date-group {
+  .order-history-filter-date-group {
     max-width: 100%;
   }
 
   /* Added for responsive behavior of filter-info and items-per-page */
-  .order-filter-info {
+  .order-history-filter-info {
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-between;
     gap: var(--spacing-3);
   }
 
-  .order-items-per-page {
+  .order-history-items-per-page {
     margin-left: 0;
     order: 2;
   }
 
-  .order-filter-clear-btn {
+  .order-history-filter-clear-btn {
     order: 3;
   }
 }
 
 @media screen and (max-width: 767.98px) {
-  .order-filter-bar {
+  .order-history-filter-bar {
     gap: var(--spacing-3);
     padding: var(--spacing-3) 0;
     margin-bottom: var(--spacing-4);
   }
 
-  .order-filter-info {
+  .order-history-filter-info {
     gap: var(--spacing-2);
   }
 
-  .order-filter-text,
-  .order-filter-highlight {
+  .order-history-filter-text,
+  .order-history-filter-highlight {
     font-size: var(--font-size-sm);
   }
 
-  .order-filter-clear-btn {
+  .order-history-filter-clear-btn {
     padding: var(--spacing-1) var(--spacing-2);
     font-size: var(--font-size-xs);
   }
 
-  .order-filter-controls {
+  .order-history-filter-controls {
     gap: var(--spacing-3);
   }
 
-  .order-filter-group {
+  .order-history-filter-group {
     margin-bottom: var(--spacing-2);
     width: 100%;
   }
 
-  .order-filter-label {
+  .order-history-filter-label {
     font-size: var(--font-size-sm);
     min-width: 50px;
     margin-right: var(--spacing-2);
   }
 
-  .order-filter-select,
-  .order-filter-date {
+  .order-history-filter-select,
+  .order-history-filter-date {
     font-size: var(--font-size-sm);
   }
 
-  .order-filter-sort {
+  .order-history-filter-sort {
     width: 100%;
     margin-left: 0;
   }
 
-  .order-filter-sort-dropdown {
+  .order-history-filter-sort-dropdown {
     width: 100%;
     font-size: var(--font-size-sm);
     justify-content: space-between;
   }
 
-  .order-filter-sort-options {
+  .order-history-filter-sort-options {
     width: 100%;
     right: 0;
     left: 0;
     max-width: 100%;
   }
 
-  .order-filter-sort-option {
+  .order-history-filter-sort-option {
     font-size: var(--font-size-sm);
     padding: var(--spacing-2) var(--spacing-2);
   }
@@ -397,50 +397,49 @@
     font-size: var(--font-size-xs);
   }
 
-  .order-filter-date-clear {
+  .order-history-filter-date-clear {
     font-size: var(--font-size-xs);
     padding: var(--spacing-1) var(--spacing-2);
   }
 
-  .order-filter-sort-label {
+  .order-history-filter-sort-label {
     font-size: var(--font-size-sm);
   }
 }
 
 @media screen and (max-width: 575.98px) {
-  .order-filter-bar {
+  .order-history-filter-bar {
     gap: var(--spacing-3);
     padding: var(--spacing-3) 0;
     margin-bottom: var(--spacing-4);
   }
 
-  .order-filter-info {
+  .order-history-filter-info {
     gap: var(--spacing-2);
     padding: 0;
     align-items: center;
     width: 100%;
   }
 
-  .order-filter-text,
-  .order-filter-highlight {
+  .order-history-filter-text,
+  .order-history-filter-highlight {
     font-size: var(--font-size-xs);
   }
 
-  .order-items-per-page {
+  .order-history-items-per-page {
     margin-left: 0;
     margin-top: var(--spacing-2);
   }
 
-  .order-select-label,
-  .order-select {
+  .order-history-select-label,
+  .order-history-select {
     font-size: var(--font-size-xs);
   }
 
-  .order-filter-clear-btn {
+  .order-history-filter-clear-btn {
     margin-left: 0;
     margin-top: var(--spacing-2);
     font-size: var(--font-size-xs);
-    padding: var(--spacing-2) var(--spacing-3);
   }
 
   .order-history-no-results {
@@ -457,71 +456,75 @@
     font-size: var(--font-size-xs);
   }
 
-  .order-filter-sort-dropdown {
-    font-size: var(--font-size-xxs);
+  .order-history-filter-sort-dropdown {
+    font-size: var(--font-size-xs);
     padding: var(--spacing-1);
   }
 
-  .order-filter-sort-label {
-    font-size: var(--font-size-sm);
+  .order-history-filter-sort-label {
+    font-size: var(--font-size-xs);
   }
 
-  .order-filter-sort-options {
+  .order-history-filter-sort-options {
     width: 100%;
   }
 
-  .order-filter-sort-option {
-    font-size: var(--font-size-xxs);
+  .order-history-filter-sort-option {
+    font-size: var(--font-size-xs);
     padding: var(--spacing-1) var(--spacing-2);
   }
 
-  .order-filter-select {
-    font-size: var(--font-size-xxs);
+  .order-history-filter-select {
+    font-size: var(--font-size-xs);
     padding: var(--spacing-1);
     min-width: 90px;
   }
 
-  .order-filter-date {
-    font-size: var(--font-size-xxs);
+  .order-history-filter-date {
+    font-size: var(--font-size-xs);
     padding: var(--spacing-1);
     min-width: 90px;
     max-width: 140px;
   }
 
-  .order-filter-date-separator {
-    font-size: var(--font-size-xxs);
+  .order-history-filter-date-separator {
+    font-size: var(--font-size-xs);
+  }
+
+  .order-history-filter-label {
+    font-size: var(--font-size-xs);
   }
 }
 
 @media screen and (max-width: 399.98px) {
-  .order-filter-controls {
+  .order-history-filter-controls {
     gap: var(--spacing-2);
   }
 
-  .order-filter-date-inputs {
+  .order-history-filter-date-inputs {
     flex-direction: column;
     align-items: flex-start;
     gap: var(--spacing-2);
   }
 
-  .order-filter-date {
+  .order-history-filter-date {
     width: 100%;
     max-width: 100%;
   }
 
-  .order-filter-date-separator {
+  .order-history-filter-date-separator {
     margin: calc(var(--spacing-1) * -0.5) 0;
   }
 
-  .order-filter-sort-dropdown {
+  .order-history-filter-sort-dropdown {
     padding: var(--spacing-1) var(--spacing-2);
   }
 
-  .order-filter-sort-option {
+  .order-history-filter-sort-option {
     padding: var(--spacing-1) var(--spacing-2);
   }
 
-  .order-filter-label {
+  .order-history-filter-label {
     min-width: 45px;
   }
 }
