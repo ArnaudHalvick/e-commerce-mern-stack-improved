@@ -14,8 +14,10 @@ const OrderFilters = ({
   handleSortChange,
   clearAllFilters,
   filteredOrdersCount,
+  totalOrdersCount,
   currentPage,
   itemsPerPage,
+  handleItemsPerPageChange,
 }) => {
   const [showSortOptions, setShowSortOptions] = useState(false);
 
@@ -80,6 +82,24 @@ const OrderFilters = ({
           of{" "}
           <span className="order-filter-highlight">{filteredOrdersCount}</span>{" "}
           orders
+        </div>
+
+        <div className="order-items-per-page">
+          <label htmlFor="order-items-per-page" className="order-select-label">
+            Show:
+          </label>
+          <select
+            id="order-items-per-page"
+            className="order-select"
+            value={itemsPerPage}
+            onChange={(e) => handleItemsPerPageChange(e.target.value)}
+            aria-label="Orders per page"
+          >
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="15">15</option>
+            <option value="20">20</option>
+          </select>
         </div>
 
         <button
@@ -248,8 +268,10 @@ OrderFilters.propTypes = {
   handleSortChange: PropTypes.func.isRequired,
   clearAllFilters: PropTypes.func.isRequired,
   filteredOrdersCount: PropTypes.number.isRequired,
+  totalOrdersCount: PropTypes.number.isRequired,
   currentPage: PropTypes.number.isRequired,
   itemsPerPage: PropTypes.number.isRequired,
+  handleItemsPerPageChange: PropTypes.func.isRequired,
 };
 
 export default OrderFilters;

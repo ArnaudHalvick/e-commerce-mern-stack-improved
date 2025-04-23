@@ -62,6 +62,7 @@ const OrderList = ({
         totalOrdersCount={totalOrdersCount}
         currentPage={currentPage}
         itemsPerPage={itemsPerPage}
+        handleItemsPerPageChange={handleItemsPerPageChange}
       />
 
       {/* Show orders or empty state message */}
@@ -90,8 +91,6 @@ const OrderList = ({
         currentPage={currentPage}
         totalPages={totalPages}
         handlePageChange={handlePageChange}
-        itemsPerPage={itemsPerPage}
-        handleItemsPerPageChange={handleItemsPerPageChange}
       />
     </div>
   );

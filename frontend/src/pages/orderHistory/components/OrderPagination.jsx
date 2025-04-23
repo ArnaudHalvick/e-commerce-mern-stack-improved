@@ -5,13 +5,7 @@ import PropTypes from "prop-types";
  * Pagination component for OrderHistoryPage
  * Based on ProductsContent pagination
  */
-const OrderPagination = ({
-  currentPage,
-  totalPages,
-  handlePageChange,
-  itemsPerPage,
-  handleItemsPerPageChange,
-}) => {
+const OrderPagination = ({ currentPage, totalPages, handlePageChange }) => {
   // Generate pagination numbers with ellipsis for large number of pages
   const generatePaginationNumbers = () => {
     const pageNumbers = [];
@@ -61,26 +55,7 @@ const OrderPagination = ({
   return (
     <div className="order-pagination">
       <div className="order-pagination-controls">
-        {/* Items per page selector */}
-        <div className="order-items-per-page">
-          <label htmlFor="order-items-per-page" className="order-select-label">
-            Show:
-          </label>
-          <select
-            id="order-items-per-page"
-            className="order-select"
-            value={itemsPerPage}
-            onChange={(e) => handleItemsPerPageChange(e.target.value)}
-            aria-label="Orders per page"
-          >
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="15">15</option>
-            <option value="20">20</option>
-          </select>
-        </div>
-
-        {/* Pagination buttons */}
+        {/* Pagination buttons - now centered */}
         <div className="order-page-navigation">
           <button
             className={`order-page-btn ${
@@ -135,8 +110,6 @@ OrderPagination.propTypes = {
   currentPage: PropTypes.number.isRequired,
   totalPages: PropTypes.number.isRequired,
   handlePageChange: PropTypes.func.isRequired,
-  itemsPerPage: PropTypes.number.isRequired,
-  handleItemsPerPageChange: PropTypes.func.isRequired,
 };
 
 export default OrderPagination;

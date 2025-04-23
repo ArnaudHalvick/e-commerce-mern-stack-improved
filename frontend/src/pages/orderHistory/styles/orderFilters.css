@@ -31,6 +31,41 @@
   color: var(--color-text-secondary);
 }
 
+/* Items per page selector moved from pagination to filter */
+.order-items-per-page {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  margin-left: var(--spacing-4);
+}
+
+.order-select-label {
+  font-size: var(--font-size-base);
+  color: var(--color-text-tertiary);
+}
+
+.order-select {
+  padding: var(--spacing-2);
+  border: var(--border-width-thin) solid var(--color-border);
+  border-radius: var(--border-radius-sm);
+  background-color: var(--color-background);
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: border-color var(--transition-duration-fast)
+    var(--transition-timing-ease);
+}
+
+.order-select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.25);
+}
+
+.order-select:hover {
+  border-color: var(--color-border-dark);
+}
+
 .order-filter-clear-btn {
   padding: var(--spacing-1) var(--spacing-3);
   background-color: var(--color-primary);
@@ -42,6 +77,7 @@
   transition: background-color var(--transition-duration-normal)
     var(--transition-timing-ease);
   font-weight: var(--font-weight-medium);
+  margin-left: auto;
 }
 
 .order-filter-clear-btn:hover {
@@ -259,43 +295,36 @@
 
 @media screen and (max-width: 991.98px) {
   .order-filter-controls {
-    flex-direction: column;
-    align-items: flex-start;
     gap: var(--spacing-4);
   }
 
   .order-filter-sort {
     margin-left: 0;
-    width: 100%;
   }
 
   .order-filter-sort-dropdown {
-    width: 100%;
+    min-width: 120px;
   }
 
   .order-filter-date-group {
     max-width: 100%;
-    width: 100%;
   }
 
-  .order-history-no-results {
-    padding: var(--spacing-8);
-    margin-bottom: var(--spacing-4);
+  /* Added for responsive behavior of filter-info and items-per-page */
+  .order-filter-info {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--spacing-3);
   }
 
-  .order-history-no-results-text {
-    font-size: var(--font-size-base);
-    margin-bottom: var(--spacing-3);
-  }
-
-  .order-history-clear-filters-btn {
-    padding: var(--spacing-1) var(--spacing-3);
-    font-size: var(--font-size-xs);
+  .order-items-per-page {
+    margin-left: 0;
+    order: 2;
   }
 
   .order-filter-clear-btn {
-    padding: var(--spacing-1) var(--spacing-3);
-    font-size: var(--font-size-xs);
+    order: 3;
   }
 }
 
@@ -380,35 +409,40 @@
 
 @media screen and (max-width: 575.98px) {
   .order-filter-bar {
-    gap: var(--spacing-2);
-    padding: var(--spacing-2) 0;
-    margin-bottom: var(--spacing-2);
+    gap: var(--spacing-3);
+    padding: var(--spacing-3) 0;
+    margin-bottom: var(--spacing-4);
   }
 
   .order-filter-info {
+    gap: var(--spacing-2);
+    padding: 0;
     flex-direction: column;
     align-items: flex-start;
-    gap: var(--spacing-2);
+    width: 100%;
   }
 
   .order-filter-text,
   .order-filter-highlight {
-    font-size: var(--font-size-xs);
+    font-size: var(--font-size-sm);
   }
 
-  .order-filter-label,
-  .order-filter-date-separator {
-    font-size: var(--font-size-xxs);
-    margin-right: var(--spacing-1);
+  .order-items-per-page {
+    margin-left: 0;
+    margin-top: var(--spacing-2);
+  }
+
+  .order-select-label,
+  .order-select {
+    font-size: var(--font-size-sm);
   }
 
   .order-filter-clear-btn {
     margin-left: 0;
-    margin-top: var(--spacing-1);
-    margin-bottom: var(--spacing-1);
+    margin-top: var(--spacing-2);
     width: 100%;
-    padding: var(--spacing-1) var(--spacing-2);
     font-size: var(--font-size-xs);
+    padding: var(--spacing-2) var(--spacing-3);
   }
 
   .order-history-no-results {
@@ -431,7 +465,7 @@
   }
 
   .order-filter-sort-label {
-    font-size: var(--font-size-xxs);
+    font-size: var(--font-size-sm);
   }
 
   .order-filter-sort-options {

@@ -41,7 +41,7 @@ const ProductListingPage = ({
       });
     } else if (pageType === "offers") {
       routes.push({
-        label: "Special Offers",
+        label: "Shop",
         isCurrent: true,
       });
     }
