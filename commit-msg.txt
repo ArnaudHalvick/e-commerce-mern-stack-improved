@@ -1,2 +1,0 @@
-refactor(profile): implement separation of concerns with custom hooks
-This comprehensive refactoring of the Profile component improves maintainability by extracting business logic into custom hooks (useProfileForm, usePasswordForm, useAccountManagement), refactoring UI components to follow single responsibility principle, improving component architecture, enhancing accessibility, and adding documentation.
