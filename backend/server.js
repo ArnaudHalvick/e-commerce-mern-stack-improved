@@ -149,28 +149,64 @@ if (process.env.NODE_ENV !== "development") {
 // Connect to database
 connectDB();
 
-// Serve static files
+// Create uploads directory if it doesn't exist
+const uploadDir = path.join(__dirname, "upload/images");
+const placeholdersDir = path.join(__dirname, "upload/images/placeholders");
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+  console.log("Created upload/images directory");
+}
+if (!fs.existsSync(placeholdersDir)) {
+  fs.mkdirSync(placeholdersDir, { recursive: true });
+  console.log("Created upload/images/placeholders directory");
+}
+
+// Serve static files - improved image handling
 app.use(
   "/images",
   (req, res, next) => {
-    // Set appropriate CORS headers for images
-    const origin = req.headers.origin;
-    if (
-      process.env.NODE_ENV === "development" ||
-      !origin ||
-      allowedOrigins.includes(origin)
-    ) {
-      res.header("Access-Control-Allow-Origin", origin || "*");
-      res.header("Access-Control-Allow-Credentials", "true");
-    }
-    res.header("Access-Control-Allow-Methods", "GET");
+    // Allow CORS for images from any origin
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "GET, OPTIONS");
     res.header("Access-Control-Allow-Headers", "Content-Type");
-    // Add Cross-Origin Resource Policy header
+
+    // Add Cross-Origin Resource Policy header to allow loading from different origins
     res.header("Cross-Origin-Resource-Policy", "cross-origin");
+
+    // Add cache control headers
+    res.header("Cache-Control", "public, max-age=604800"); // 7 days
+    res.header("Expires", new Date(Date.now() + 604800000).toUTCString());
+
+    // Handle OPTIONS request for CORS preflight
+    if (req.method === "OPTIONS") {
+      res.status(204).end();
+      return;
+    }
+
     next();
   },
-  express.static(path.join(__dirname, "upload/images"))
+  express.static(path.join(__dirname, "upload/images"), {
+    maxAge: "7d",
+    etag: true,
+    lastModified: true,
+    fallthrough: true,
+  })
 );
+
+// Handle 404 for image requests by serving a placeholder
+app.use("/images/*", (req, res) => {
+  const placeholderPath = path.join(
+    __dirname,
+    "upload/images/placeholders/product-placeholder-medium.png"
+  );
+
+  // If placeholder exists, serve it, otherwise return 404
+  if (fs.existsSync(placeholderPath)) {
+    res.sendFile(placeholderPath);
+  } else {
+    res.status(404).send("Image not found and no placeholder available");
+  }
+});
 
 // Health check route
 app.get("/api/health", (req, res) => {

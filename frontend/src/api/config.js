@@ -8,12 +8,20 @@ export const API_BASE_URL =
   process.env.REACT_APP_API_URL || "http://localhost:4000";
 
 /**
- * Gets the base URL without the trailing "/api" suffix.
- * Uses a regex to remove the "/api" at the end if it exists.
+ * Gets the base URL without the trailing "/api" suffix and without the port for images.
  * @returns {string} The base URL for assets.
  */
 export const getBaseUrl = () => {
-  return API_BASE_URL.replace(/\/api$/, "");
+  // Remove any "/api" suffix
+  let baseUrl = API_BASE_URL.replace(/\/api$/, "");
+
+  // For images in production, we want to use the main domain without the port
+  if (process.env.NODE_ENV === "production") {
+    // Replace the HTTPS port (e.g., :4443) with nothing for images
+    baseUrl = baseUrl.replace(/:\d+$/, "");
+  }
+
+  return baseUrl;
 };
 
 /**
