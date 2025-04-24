@@ -1,6 +1,15 @@
 name: e-commerce-mern
 
 services:
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - app-network
+
   api:
     build:
       context: ./backend
@@ -9,6 +18,10 @@ services:
     env_file: ./backend/.env
     ports:
       - "4000:4000"
+    depends_on:
+      - mongo
+    networks:
+      - app-network
     develop:
       watch:
         - action: sync
@@ -18,3 +31,31 @@ services:
             - node_modules/
         - action: rebuild
           path: ./backend/package.json
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+    networks:
+      - app-network
+    develop:
+      watch:
+        - action: sync
+          path: ./frontend/src
+          target: /app/src
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: ./frontend/package.json
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mongo_data:
