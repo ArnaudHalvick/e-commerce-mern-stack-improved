@@ -36,6 +36,9 @@ const allowedOrigins = [
   "http://159.65.230.12:8080",
   "http://localhost:3000",
   "http://localhost",
+  "http://localhost:8080",
+  "http://127.0.0.1:3000",
+  "http://127.0.0.1:8080",
   process.env.FRONTEND_URL || "http://localhost:3000",
 ];
 
@@ -43,22 +46,38 @@ const allowedOrigins = [
 const morganFormat = process.env.NODE_ENV === "production" ? "combined" : "dev";
 app.use(morgan(morganFormat, { stream: logger.stream }));
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      // Allow requests with no origin (like mobile apps or curl requests)
-      if (!origin) return callback(null, true);
+// CORS configuration
+if (process.env.NODE_ENV === "development") {
+  // More permissive CORS in development mode
+  app.use(
+    cors({
+      origin: true, // Allow any origin in development
+      credentials: true,
+      exposedHeaders: ["set-cookie"],
+    })
+  );
+  console.log("Running in development mode with permissive CORS");
+} else {
+  // Stricter CORS in production
+  app.use(
+    cors({
+      origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
 
-      if (allowedOrigins.indexOf(origin) === -1) {
-        const msg =
-          "The CORS policy for this site does not allow access from the specified Origin.";
-        return callback(new Error(msg), false);
-      }
-      return callback(null, true);
-    },
-    credentials: true,
-  })
-);
+        if (allowedOrigins.indexOf(origin) === -1) {
+          const msg =
+            "The CORS policy for this site does not allow access from the specified Origin.";
+          return callback(new Error(msg), false);
+        }
+        return callback(null, true);
+      },
+      credentials: true,
+      exposedHeaders: ["set-cookie"],
+    })
+  );
+  console.log("Running in production mode with restricted CORS");
+}
 
 // Special handling for Stripe webhook (must be raw)
 app.use((req, res, next) => {
@@ -85,29 +104,37 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // Security middleware
-// Configure Helmet with proper CSP settings for images
-app.use(
-  helmet({
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-        imgSrc: ["'self'", "data:", "blob:", ...allowedOrigins],
-        connectSrc: ["'self'", ...allowedOrigins],
-        // Add other directives as needed
-      },
+const helmetConfig = {
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      imgSrc: ["'self'", "data:", "blob:", ...allowedOrigins, "*"],
+      connectSrc: ["'self'", ...allowedOrigins, "*"],
+      // Add other directives as needed
     },
-    crossOriginResourcePolicy: { policy: "cross-origin" },
-    crossOriginEmbedderPolicy: false,
-  })
-); // Set security HTTP headers
+  },
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  crossOriginEmbedderPolicy: false,
+};
+
+// In development, make security headers more permissive
+if (process.env.NODE_ENV === "development") {
+  app.use(helmet(helmetConfig));
+  console.log("Using relaxed security headers in development");
+} else {
+  app.use(helmet(helmetConfig));
+}
+
 app.use(mongoSanitize()); // Sanitize data against NoSQL injection
 app.use(xssClean()); // Sanitize data against XSS attacks
 
 // Apply global request sanitization
 app.use(sanitizeParams); // Sanitize URL parameters for all routes
 
-// Apply a global rate limiter to all requests
-app.use("/api/", apiLimiter);
+// Apply a global rate limiter to all requests - but be more permissive in development
+if (process.env.NODE_ENV !== "development") {
+  app.use("/api/", apiLimiter);
+}
 
 // Connect to database
 connectDB();
@@ -118,8 +145,12 @@ app.use(
   (req, res, next) => {
     // Set appropriate CORS headers for images
     const origin = req.headers.origin;
-    if (origin && allowedOrigins.includes(origin)) {
-      res.header("Access-Control-Allow-Origin", origin);
+    if (
+      process.env.NODE_ENV === "development" ||
+      !origin ||
+      allowedOrigins.includes(origin)
+    ) {
+      res.header("Access-Control-Allow-Origin", origin || "*");
       res.header("Access-Control-Allow-Credentials", "true");
     }
     res.header("Access-Control-Allow-Methods", "GET");
@@ -133,7 +164,7 @@ app.use(
 
 // Health check route
 app.get("/api/health", (req, res) => {
-  res.status(200).json({ status: "ok" });
+  res.status(200).json({ status: "ok", environment: process.env.NODE_ENV });
 });
 
 // Routes
@@ -159,7 +190,7 @@ const server = app.listen(port, (error) => {
     console.error("Error starting server:", error);
     process.exit(1);
   }
-  logger.info(`Server running on port ${port}`);
+  logger.info(`Server running on port ${port} in ${process.env.NODE_ENV} mode`);
 });
 
 // Handling Uncaught Exceptions

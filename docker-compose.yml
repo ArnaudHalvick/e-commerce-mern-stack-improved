@@ -14,8 +14,13 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      args:
+        - NODE_ENV=${NODE_ENV:-production}
     restart: unless-stopped
-    env_file: ./backend/.env
+    env_file:
+      - ./backend/${ENV_FILE:-'.env'}
+    environment:
+      - NODE_ENV=${NODE_ENV:-production}
     ports:
       - "4000:4000"
     depends_on:
@@ -36,6 +41,8 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        - REACT_APP_ENV=${REACT_APP_ENV:-production}
     restart: unless-stopped
     ports:
       - "80:80"

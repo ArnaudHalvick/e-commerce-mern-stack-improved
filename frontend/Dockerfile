@@ -6,8 +6,16 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 
-# Copy source code
+# Copy source code (this should include .env but it might be excluded from the build context)
 COPY . .
+
+# Use ARG to set environment at build time
+ARG REACT_APP_ENV=production
+ENV REACT_APP_ENV=${REACT_APP_ENV}
+
+# Set environment variables directly without depending on .env file
+ENV REACT_APP_API_URL=http://159.65.230.12
+ENV REACT_APP_STRIPE_PUBLISHABLE_KEY=pk_test_51POLLYP4vWrJMwjYSab2mjfjTHapAaoMKrHderrbS8aOyuykkduvF0sPdBB6VpulZCmMxGfRd3NpmGHFE3D9RAEK0038a5wjiI
 
 # Build the app
 RUN npm run build

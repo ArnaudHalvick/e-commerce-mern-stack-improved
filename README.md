@@ -20,18 +20,37 @@ This application is fully containerized using Docker and Docker Compose, making 
    cd e-commerce-mern-stack-improved
    ```
 
-2. Create a `.env` file in the `backend` directory with the necessary environment variables (see `README-ENVIRONMENTS.md` for details)
+2. Ensure you have the following environment files in place:
 
-3. Start the application
+   - Production:
+     - `backend/.env` - Backend production environment variables
+     - `frontend/.env` - Frontend production environment variables
+   - Development:
+     - `backend/.env.dev` - Backend development environment variables
+     - `frontend/.env.dev` - Frontend development environment variables
+
+   See `README-ENVIRONMENTS.md` for details on required variables.
+
+3. Start the application in production mode (default):
 
    ```
    ./start.sh
    ```
 
-   Or manually with:
+   Or start in development mode:
 
    ```
-   docker compose up -d
+   ./start.sh development
+   ```
+
+   You can also manually start with specific environment variables:
+
+   ```
+   # Production
+   NODE_ENV=production REACT_APP_ENV=production ENV_FILE=.env docker compose up -d
+
+   # Development
+   NODE_ENV=development REACT_APP_ENV=development ENV_FILE=.env.dev docker compose up -d
    ```
 
 4. Access the application:
@@ -46,6 +65,21 @@ The application consists of three main services:
 1. **MongoDB** - Database service
 2. **Backend API** - Node.js Express API
 3. **Frontend** - React application served through Nginx
+
+### Environment Configuration
+
+The application supports both development and production environments:
+
+- **Production Environment**:
+
+  - Backend uses `.env` file
+  - Frontend uses `.env` for build variables
+  - Optimized for performance and security
+
+- **Development Environment**:
+  - Backend uses `.env.dev` file
+  - Frontend uses `.env.dev` for build variables
+  - Better debugging and development experience
 
 ### Development with Docker
 
