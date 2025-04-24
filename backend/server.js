@@ -10,6 +10,8 @@ const morgan = require("morgan");
 const helmet = require("helmet");
 const mongoSanitize = require("express-mongo-sanitize");
 const xssClean = require("xss-clean");
+const https = require("https");
+const fs = require("fs");
 const connectDB = require("./config/db");
 const AppError = require("./utils/errors/AppError");
 const globalErrorHandler = require("./utils/errors/errorHandler");
@@ -29,16 +31,24 @@ const paymentRoutes = require("./routes/paymentRoutes");
 // Initialize express app
 const app = express();
 const port = process.env.PORT || 4000;
+const httpsPort = process.env.HTTPS_PORT || 4443;
 
 // Middleware
 const allowedOrigins = [
   "http://159.65.230.12",
+  "https://159.65.230.12",
   "http://159.65.230.12:8080",
+  "https://159.65.230.12:8080",
   "http://localhost:3000",
+  "https://localhost:3000",
   "http://localhost",
+  "https://localhost",
   "http://localhost:8080",
+  "https://localhost:8080",
   "http://127.0.0.1:3000",
+  "https://127.0.0.1:3000",
   "http://127.0.0.1:8080",
+  "https://127.0.0.1:8080",
   process.env.FRONTEND_URL || "http://localhost:3000",
 ];
 
@@ -185,13 +195,55 @@ app.all("*", (req, res, next) => {
 app.use(globalErrorHandler);
 
 // Start server
-const server = app.listen(port, (error) => {
-  if (error) {
-    console.error("Error starting server:", error);
-    process.exit(1);
+let server;
+
+// Check if HTTPS is enabled
+if (process.env.USE_HTTPS === "true") {
+  try {
+    // Read SSL certificate files
+    const privateKey = fs.readFileSync(process.env.SSL_KEY_PATH, "utf8");
+    const certificate = fs.readFileSync(process.env.SSL_CERT_PATH, "utf8");
+    const credentials = { key: privateKey, cert: certificate };
+
+    // Create HTTPS server
+    server = https.createServer(credentials, app);
+
+    // Start HTTPS server
+    server.listen(httpsPort, () => {
+      logger.info(
+        `HTTPS Server running on port ${httpsPort} in ${process.env.NODE_ENV} mode`
+      );
+    });
+
+    // Also start HTTP server for redirection if needed
+    app.listen(port, () => {
+      logger.info(
+        `HTTP Server running on port ${port} in ${process.env.NODE_ENV} mode (consider redirecting to HTTPS)`
+      );
+    });
+  } catch (error) {
+    logger.error(`Failed to start HTTPS server: ${error.message}`);
+    logger.info("Falling back to HTTP server");
+
+    // Start HTTP server if HTTPS fails
+    server = app.listen(port, () => {
+      logger.info(
+        `Server running on port ${port} in ${process.env.NODE_ENV} mode`
+      );
+    });
   }
-  logger.info(`Server running on port ${port} in ${process.env.NODE_ENV} mode`);
-});
+} else {
+  // Start HTTP server
+  server = app.listen(port, (error) => {
+    if (error) {
+      console.error("Error starting server:", error);
+      process.exit(1);
+    }
+    logger.info(
+      `Server running on port ${port} in ${process.env.NODE_ENV} mode`
+    );
+  });
+}
 
 // Handling Uncaught Exceptions
 process.on("uncaughtException", (err) => {
