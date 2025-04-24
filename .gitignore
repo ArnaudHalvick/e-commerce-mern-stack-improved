@@ -7,3 +7,4 @@ local-dev.sh
 deploy.sh
 local-dev.sh
 docker-compose.dev.yml
+docker-compose.yml
