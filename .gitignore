@@ -5,4 +5,5 @@ node_modules/
 server.js.bak
 local-dev.sh
 deploy.sh
-docker-compose.dev.yml  
+local-dev.sh
+docker-compose.dev.yml
