@@ -87,7 +87,6 @@ const UnauthenticatedRoute = ({ children }) => {
  * Main App component that defines the application structure and routes
  */
 function App() {
-  const { fetchUserProfile, isInitialLoad } = useAuth();
   const authInitialized = useRef(false);
 
   useEffect(() => {
