@@ -22,6 +22,11 @@ import { authService } from "../../api";
 import { cancelPendingRequests } from "../../api/client";
 import useErrorRedux from "../../hooks/useErrorRedux";
 
+// Constants for local storage keys
+const CACHED_USER_KEY = "cached-user-data";
+const CACHED_USER_TIMESTAMP = "cached-user-timestamp";
+const USER_CACHE_TTL = 30 * 60 * 1000; // 30 minutes in milliseconds
+
 /**
  * Custom hook for authentication and user management
  * Provides an interface for all auth-related operations and state
@@ -44,6 +49,7 @@ const useAuth = () => {
     userState.isInitialized
   );
   const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [quietLoading, setQuietLoading] = useState(false);
 
   // Add refs at the top level of the hook
   const hasInitialized = useRef(false);
@@ -56,6 +62,51 @@ const useAuth = () => {
   );
 
   /**
+   * Store user data in local storage cache
+   * @param {Object} userData - User data to cache
+   */
+  const cacheUserData = useCallback((userData) => {
+    if (!userData) return;
+
+    try {
+      localStorage.setItem(CACHED_USER_KEY, JSON.stringify(userData));
+      localStorage.setItem(CACHED_USER_TIMESTAMP, Date.now().toString());
+    } catch (error) {
+      // Silent error - caching is a performance optimization, not critical
+    }
+  }, []);
+
+  /**
+   * Get cached user data if it's still valid
+   * @returns {Object|null} Cached user data or null if invalid/expired
+   */
+  const getCachedUserData = useCallback(() => {
+    try {
+      const cachedData = localStorage.getItem(CACHED_USER_KEY);
+      const timestamp = parseInt(
+        localStorage.getItem(CACHED_USER_TIMESTAMP) || "0",
+        10
+      );
+
+      if (!cachedData) return null;
+
+      // Check if cache is still valid (not expired)
+      if (Date.now() - timestamp > USER_CACHE_TTL) {
+        localStorage.removeItem(CACHED_USER_KEY);
+        localStorage.removeItem(CACHED_USER_TIMESTAMP);
+        return null;
+      }
+
+      return JSON.parse(cachedData);
+    } catch (error) {
+      // If any error occurs, clear the cache and return null
+      localStorage.removeItem(CACHED_USER_KEY);
+      localStorage.removeItem(CACHED_USER_TIMESTAMP);
+      return null;
+    }
+  }, []);
+
+  /**
    * Handle user logout
    */
   const handleLogout = useCallback(() => {
@@ -64,6 +115,10 @@ const useAuth = () => {
 
     // Cancel all pending requests before logging out
     cancelPendingRequests("User logged out");
+
+    // Clear user cache
+    localStorage.removeItem(CACHED_USER_KEY);
+    localStorage.removeItem(CACHED_USER_TIMESTAMP);
 
     // Add a small delay to ensure the loading indicator is visible during logout
     setTimeout(() => {
@@ -116,6 +171,8 @@ const useAuth = () => {
         // Only dispatch if user data has actually changed
         if (JSON.stringify(normalizedUser) !== JSON.stringify(userState.user)) {
           dispatch(setUser(normalizedUser));
+          // Cache the user data for faster page refreshes
+          cacheUserData(normalizedUser);
         }
         setLastVerificationCheck(now);
         return normalizedUser;
@@ -132,18 +189,32 @@ const useAuth = () => {
       if (err.status === 401) {
         localStorage.removeItem("auth-token");
         localStorage.setItem("user-logged-out", "true");
+        localStorage.removeItem(CACHED_USER_KEY);
+        localStorage.removeItem(CACHED_USER_TIMESTAMP);
         dispatch(clearUser());
       }
 
       return null;
     }
-  }, [dispatch, showError, userState.user]);
+  }, [dispatch, showError, userState.user, cacheUserData]);
 
   // Initialize auth state on mount
   useEffect(() => {
     if (!userState.isInitialized && !hasInitialized.current) {
       hasInitialized.current = true;
-      checkAuthStatus();
+
+      // Try to use cached data immediately to make the UI render faster
+      const cachedUser = getCachedUserData();
+      if (cachedUser && localStorage.getItem("auth-token")) {
+        // Set user from cache immediately to prevent UI flicker
+        dispatch(setUser(cachedUser));
+        // Still verify the token in the background, but don't block the UI
+        setQuietLoading(true);
+        checkAuthStatus(true);
+      } else {
+        // No cached data, perform normal auth check
+        checkAuthStatus(false);
+      }
     } else {
       setInitialLoadComplete(true);
       // If already initialized, mark initial load as complete
@@ -194,6 +265,7 @@ const useAuth = () => {
 
       if (isCartOrCheckout && requiresRefresh && pathnameChanged) {
         // Refresh the user profile to check verification status
+        setQuietLoading(true); // Use quiet loading for better UX
         fetchUserProfile();
         setLastVerificationCheck(Date.now());
       }
@@ -299,62 +371,92 @@ const useAuth = () => {
 
   /**
    * Check authentication status
+   * @param {boolean} quietMode - Whether to use quiet loading (no full screen overlay)
    * @returns {Promise<void>}
    */
-  const checkAuthStatus = useCallback(async () => {
-    const token = localStorage.getItem("auth-token");
+  const checkAuthStatus = useCallback(
+    async (quietMode = false) => {
+      const token = localStorage.getItem("auth-token");
 
-    if (!token) {
-      dispatch(clearUser());
-      dispatch(setInitialized(true));
-      setInitialLoadComplete(true);
-      return;
-    }
+      if (!token) {
+        dispatch(clearUser());
+        dispatch(setInitialized(true));
+        setInitialLoadComplete(true);
+        return;
+      }
 
-    // Reset logged-out flag if token exists
-    localStorage.removeItem("user-logged-out");
-    setIsUserLoggedOut(false);
+      // Reset logged-out flag if token exists
+      localStorage.removeItem("user-logged-out");
+      setIsUserLoggedOut(false);
 
-    try {
-      setInTransition(true);
+      try {
+        // Only show the transition overlay if not in quiet mode
+        if (!quietMode) {
+          setInTransition(true);
+        }
 
-      // Dispatch the verifyToken action
-      const resultAction = await dispatch(verifyToken());
+        // Dispatch the verifyToken action
+        const resultAction = await dispatch(verifyToken());
 
-      if (verifyToken.fulfilled.match(resultAction)) {
-        // Token is valid, user is authenticated
-        // The user data is already loaded via the verifyToken action
-        // but we'll fetch the full profile just to be safe
-        await fetchUserProfile();
-      } else {
-        // Token verification failed, attempt to refresh
-        try {
-          const newToken = await refreshAccessToken();
-          if (newToken) {
-            // If we got a new token, try to get the user data again
+        if (verifyToken.fulfilled.match(resultAction)) {
+          // Token is valid, user is authenticated
+          // The user data is already loaded via the verifyToken action
+          const userData = resultAction.payload;
+
+          // Cache the user data for faster future loads
+          cacheUserData(userData);
+
+          // In quiet mode, we don't need to fetch the full profile again
+          // This prevents double-loading and improves performance
+          if (!quietMode) {
             await fetchUserProfile();
-          } else {
-            // If refresh failed too, log the user out
-            showError("Your session has expired. Please log in again.");
+          }
+        } else {
+          // Token verification failed, attempt to refresh
+          try {
+            const newToken = await refreshAccessToken();
+            if (newToken) {
+              // If we got a new token, try to get the user data again
+              const userData = await fetchUserProfile();
+              if (userData) {
+                cacheUserData(userData);
+              }
+            } else {
+              // If refresh failed too, log the user out
+              if (!quietMode) {
+                showError("Your session has expired. Please log in again.");
+              }
+              handleLogout();
+            }
+          } catch (refreshError) {
+            // Silent handling for refresh errors
             handleLogout();
           }
-        } catch (refreshError) {
-          // Silent handling for refresh errors
-          handleLogout();
         }
+      } catch (error) {
+        // Use error handling through Redux
+        if (!quietMode) {
+          showError("Authentication error. Please log in again.");
+        }
+        handleLogout();
+      } finally {
+        setInTransition(false);
+        setQuietLoading(false);
+        dispatch(setInitialized(true));
+        setInitialLoadComplete(true);
+        // After initial check, set isInitialLoad to false
+        setIsInitialLoad(false);
       }
-    } catch (error) {
-      // Use error handling through Redux
-      showError("Authentication error. Please log in again.");
-      handleLogout();
-    } finally {
-      setInTransition(false);
-      dispatch(setInitialized(true));
-      setInitialLoadComplete(true);
-      // After initial check, set isInitialLoad to false
-      setIsInitialLoad(false);
-    }
-  }, [dispatch, fetchUserProfile, handleLogout, refreshAccessToken, showError]);
+    },
+    [
+      dispatch,
+      fetchUserProfile,
+      handleLogout,
+      refreshAccessToken,
+      showError,
+      cacheUserData,
+    ]
+  );
 
   /**
    * Login user with email and password
@@ -373,7 +475,11 @@ const useAuth = () => {
         localStorage.removeItem("user-logged-out");
         setIsUserLoggedOut(false);
 
-        await fetchUserProfile();
+        const userData = await fetchUserProfile();
+        if (userData) {
+          cacheUserData(userData);
+        }
+
         return { success: true, user: resultAction.payload };
       } else {
         // Login failed
@@ -411,6 +517,7 @@ const useAuth = () => {
           const userProfile = await fetchUserProfile();
 
           if (userProfile) {
+            cacheUserData(userProfile);
             return {
               success: true,
               user: userProfile,
@@ -422,9 +529,12 @@ const useAuth = () => {
         }
 
         // Registration successful
+        const user = resultAction.payload.user;
+        cacheUserData(user);
+
         return {
           success: true,
-          user: resultAction.payload.user,
+          user: user,
           requiresVerification: resultAction.payload.needsVerification,
         };
       } else {
@@ -451,6 +561,10 @@ const useAuth = () => {
   const logout = useCallback(() => {
     setInTransition(true);
     setIsInitialLoad(false);
+
+    // Clear user cache
+    localStorage.removeItem(CACHED_USER_KEY);
+    localStorage.removeItem(CACHED_USER_TIMESTAMP);
 
     authService
       .logout()
@@ -484,6 +598,7 @@ const useAuth = () => {
     inTransition,
     isUserLoggedOut,
     isInitialLoad,
+    quietLoading,
 
     // Auth status indicators
     verificationRequested: userState.verificationRequested,

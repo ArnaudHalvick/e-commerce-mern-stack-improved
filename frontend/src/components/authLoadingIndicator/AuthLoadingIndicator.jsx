@@ -7,7 +7,7 @@ import "./authLoadingIndicator.css";
  * Displays at the top of the page when auth-related operations are in progress
  */
 const AuthLoadingIndicator = () => {
-  const { loading, inTransition, isInitialLoad } = useAuth();
+  const { loading, inTransition, isInitialLoad, quietLoading } = useAuth();
 
   // During login/logout transitions, block the entire UI with a more prominent indicator
   if (inTransition) {
@@ -16,6 +16,15 @@ const AuthLoadingIndicator = () => {
         <div className="auth-transition-content">
           <InlineSpinner size="large" message="Please wait..." />
         </div>
+      </div>
+    );
+  }
+
+  // For background token verification or quiet loading, use a subtle indicator that doesn't block the UI
+  if (quietLoading) {
+    return (
+      <div className="auth-quiet-indicator">
+        <div className="auth-quiet-animation"></div>
       </div>
     );
   }

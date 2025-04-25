@@ -1,41 +1,56 @@
 import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../hooks/state";
-import LoadingScreen from "../loadingScreen/LoadingScreen";
+import React from "react";
 
 /**
- * Prevents access to protected routes if user's email is not verified
+ * EmailVerificationGuard component that protects routes that require verified email
+ * Enhanced to support cached user data for faster initial rendering
  */
 const EmailVerificationGuard = ({ children }) => {
-  const { user, isAuthenticated, loading } = useAuth();
+  const { isAuthenticated, user, loading, quietLoading, initialLoadComplete } =
+    useAuth();
   const location = useLocation();
 
-  // Show loading indicator while auth state is loading
-  if (loading) {
-    return <LoadingScreen message="Checking verification status..." />;
+  // If auth is still being determined and not in quiet loading mode, render placeholder
+  if ((loading && !quietLoading) || !initialLoadComplete) {
+    return (
+      <div style={{ opacity: 0.5, padding: "20px", textAlign: "center" }}>
+        {/* Empty div to hold the space while verification is checked */}
+      </div>
+    );
   }
 
-  // Check if user is authenticated but email is not verified
-  if (isAuthenticated && user && !user.isEmailVerified) {
-    // Dispatch an event to notify the user
-    const event = new CustomEvent("auth:emailVerificationRequired", {
+  // Not authenticated - shouldn't reach here, but just in case
+  if (!isAuthenticated || !user) {
+    return <Navigate to="/login" state={{ from: location.pathname }} replace />;
+  }
+
+  // Check if email is verified
+  const isVerified = user?.status === "active" || user?.emailVerified === true;
+
+  // If email is not verified, redirect to verification page
+  if (!isVerified) {
+    // Dispatch a custom event that the auth system can listen for
+    const customEvent = new CustomEvent("auth:emailVerificationRequired", {
       detail: {
-        message: "Email verification is required to access this feature.",
-        from: location.pathname,
+        message: "Email verification is required for this action.",
       },
     });
-    window.dispatchEvent(event);
+    window.dispatchEvent(customEvent);
 
-    // Redirect to verification page
     return (
       <Navigate
         to="/verify-pending"
-        state={{ from: location.pathname }}
+        state={{
+          from: location.pathname,
+          requiresVerification: true,
+        }}
         replace
       />
     );
   }
 
-  // User is authenticated and email is verified, render children
+  // Email is verified, render children
   return children;
 };
 

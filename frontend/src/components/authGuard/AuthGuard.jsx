@@ -1,25 +1,40 @@
+import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../hooks/state";
-import LoadingScreen from "../loadingScreen/LoadingScreen";
+import React from "react";
 
 /**
- * AuthGuard component that can be used to show loading state during authentication
- * or protect routes that require authentication
- *
- * @param {Object} props - Component props
- * @param {React.ReactNode} props.children - Child components to render
- * @param {boolean} props.requireAuth - Whether auth is required (for protected routes)
- * @param {React.ReactNode} props.fallback - Component to show during loading
- * @returns {JSX.Element} - Protected content or loading state
+ * AuthGuard component that protects routes based on authentication status
+ * Enhanced to support cached user data for faster initial rendering
  */
-const AuthGuard = ({ children, requireAuth = false, fallback = null }) => {
-  const { loading, inTransition } = useAuth();
+const AuthGuard = ({ children, requireAuth = false }) => {
+  const { isAuthenticated, loading, initialLoadComplete, quietLoading } =
+    useAuth();
+  const location = useLocation();
 
-  // Show loading state if auth is still being determined or during transitions
-  if (loading || inTransition) {
-    return <LoadingScreen message="Loading authentication..." />;
+  // If authentication status is still being determined and not in quiet loading mode
+  // Note: During quiet loading, we can still render the protected content
+  if ((loading && !quietLoading) || !initialLoadComplete) {
+    // Return a minimal loading indicator instead of null
+    // This prevents route flickering
+    return (
+      <div style={{ opacity: 0.5, padding: "20px", textAlign: "center" }}>
+        {/* Empty div to hold the space while auth is being verified */}
+      </div>
+    );
   }
 
-  // Auth state is determined, render children
+  // For protected routes, redirect to login if not authenticated
+  if (requireAuth && !isAuthenticated) {
+    // Save the location the user was trying to access
+    return <Navigate to="/login" state={{ from: location.pathname }} replace />;
+  }
+
+  // For login/signup routes, redirect to home if already authenticated
+  if (!requireAuth && isAuthenticated) {
+    return <Navigate to="/" replace />;
+  }
+
+  // Otherwise, render the children
   return children;
 };
 

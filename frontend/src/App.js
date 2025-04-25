@@ -41,39 +41,42 @@ import { useAuth } from "./hooks/state";
 
 /**
  * Protected route component that requires authentication
+ * Uses cached user data for immediate rendering when available
  */
 const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated, loading } = useAuth();
+  const { isAuthenticated, loading, initialLoadComplete } = useAuth();
   const location = useLocation();
 
+  // If authenticated (which might be from cached data), allow rendering the route
+  // This avoids the loading indicator for already authenticated users
+  if (isAuthenticated && initialLoadComplete) {
+    return children;
+  }
+
   // If still loading auth state, show the children with AuthGuard handling the loading state
-  if (loading) {
+  if (loading || !initialLoadComplete) {
     return <AuthGuard requireAuth>{children}</AuthGuard>;
   }
 
   // If not authenticated, redirect to login
-  if (!isAuthenticated) {
-    return <Navigate to="/login" state={{ from: location.pathname }} replace />;
-  }
-
-  // If authenticated, show the children
-  return children;
+  return <Navigate to="/login" state={{ from: location.pathname }} replace />;
 };
 
 /**
  * Route that's only accessible when NOT authenticated
+ * Uses cached user data for immediate decisions
  */
 const UnauthenticatedRoute = ({ children }) => {
   const { isAuthenticated, loading, initialLoadComplete } = useAuth();
 
+  // If authenticated (which might be from cached data), redirect immediately
+  if (isAuthenticated && initialLoadComplete) {
+    return <Navigate to="/" replace />;
+  }
+
   // Wait for initial authentication check to complete
   if (loading || !initialLoadComplete) {
     return <AuthGuard>{children}</AuthGuard>;
-  }
-
-  // If authenticated, redirect to home
-  if (isAuthenticated) {
-    return <Navigate to="/" replace />;
   }
 
   // If not authenticated, show the children
@@ -88,22 +91,13 @@ function App() {
   const authInitialized = useRef(false);
 
   useEffect(() => {
+    // Background refresh of user profile, but don't block rendering
+    // This ensures the UI is responsive even while verifying auth
     if (!authInitialized.current) {
       authInitialized.current = true;
-      const checkAuth = async () => {
-        try {
-          // Only fetch profile if not in initial load state to avoid duplicate loading
-          if (!isInitialLoad) {
-            await fetchUserProfile();
-          }
-        } catch (error) {
-          console.error("Error initializing auth state:", error);
-        }
-      };
-
-      checkAuth();
+      // No need to use checkAuth anymore - this is handled in useAuth's init
     }
-  }, [fetchUserProfile, isInitialLoad]);
+  }, []);
 
   return (
     <ErrorBoundary>
