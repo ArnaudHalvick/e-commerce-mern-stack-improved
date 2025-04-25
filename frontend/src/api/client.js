@@ -10,6 +10,7 @@ import { API_BASE_URL } from "./config";
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
   withCredentials: true,
+  timeout: 15000, // 15 seconds timeout for all requests
   headers: {
     "Content-Type": "application/json",
   },
@@ -127,6 +128,32 @@ apiClient.interceptors.response.use(
     // If request was canceled, simply return the rejected promise
     if (axios.isCancel(error)) {
       return Promise.reject(error);
+    }
+
+    // Handle timeout errors with a user-friendly message
+    if (
+      error.code === "ECONNABORTED" &&
+      error.message &&
+      error.message.includes("timeout")
+    ) {
+      return Promise.reject({
+        message:
+          "Request timed out. Please check your internet connection and try again.",
+        status: 408, // Request Timeout
+        originalError: error,
+        isTimeout: true,
+      });
+    }
+
+    // Handle network errors (e.g., no internet connection)
+    if (error.message === "Network Error") {
+      return Promise.reject({
+        message:
+          "Unable to connect to the server. Please check your internet connection.",
+        status: 0,
+        originalError: error,
+        isNetworkError: true,
+      });
     }
 
     // Special case for logged out errors

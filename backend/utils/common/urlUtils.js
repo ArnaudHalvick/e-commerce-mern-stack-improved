@@ -6,12 +6,20 @@
  * This module provides utilities for working with URLs across different environments
  */
 
+const logger = require("./logger");
+
 /**
  * Get the frontend URL with a fallback to a default value
  * @returns {string} The frontend URL with proper protocol
  */
 const getFrontendUrl = () => {
-  const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
+  const env = process.env.NODE_ENV || "development";
+  const frontendUrl =
+    process.env.FRONTEND_URL ||
+    (env === "development" ? "http://localhost:3000" : "https://159.65.230.12");
+
+  // Log the frontend URL for debugging
+  logger.debug(`[urlUtils] Using frontend URL: ${frontendUrl} (env: ${env})`);
 
   // Ensure the URL has a protocol
   if (
@@ -62,7 +70,12 @@ const createVerificationUrl = (token, options = {}) => {
     url += `&isEmailChange=true`;
   }
 
-  return joinUrl(frontendUrl, url);
+  const finalUrl = joinUrl(frontendUrl, url);
+
+  // Log the created URL for debugging
+  logger.debug(`[urlUtils] Created verification URL: ${finalUrl}`);
+
+  return finalUrl;
 };
 
 /**
@@ -72,7 +85,12 @@ const createVerificationUrl = (token, options = {}) => {
  */
 const createPasswordResetUrl = (token) => {
   const frontendUrl = getFrontendUrl();
-  return joinUrl(frontendUrl, `reset-password/${token}`);
+  const finalUrl = joinUrl(frontendUrl, `reset-password/${token}`);
+
+  // Log the created URL for debugging
+  logger.debug(`[urlUtils] Created password reset URL: ${finalUrl}`);
+
+  return finalUrl;
 };
 
 module.exports = {
