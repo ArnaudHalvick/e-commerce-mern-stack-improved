@@ -308,9 +308,9 @@ const sendPasswordChangeNotification = async (user) => {
  */
 const handleFailedLogin = async (user) => {
   // Maximum failed attempts before locking
-  const MAX_ATTEMPTS = 5;
-  // Lock duration in milliseconds (15 minutes)
-  const LOCK_TIME = 15 * 60 * 1000;
+  const MAX_ATTEMPTS = 10;
+  // Lock duration in milliseconds (5 minutes instead of 15)
+  const LOCK_TIME = 5 * 60 * 1000;
 
   // Increment login attempts
   user.loginAttempts += 1;

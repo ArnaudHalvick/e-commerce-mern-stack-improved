@@ -54,9 +54,9 @@ const loginLimiter = createRateLimiter(
  * Limits to 3 account creations per hour from the same IP
  */
 const accountCreationLimiter = createRateLimiter(
-  3, // 3 accounts
-  60 * 60 * 1000, // 1 hour
-  "Too many accounts created. Please try again after an hour."
+  20, // Increased from 3 to 20 accounts
+  15 * 60 * 1000, // Reduced from 1 hour to 15 minutes
+  "Too many accounts created. Please try again after 15 minutes."
 );
 
 /**
