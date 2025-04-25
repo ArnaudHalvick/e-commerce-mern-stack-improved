@@ -9,6 +9,29 @@ import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import store from "./redux/store";
 
+// Force localhost in development mode to prevent IP address issues
+if (
+  process.env.NODE_ENV === "development" ||
+  process.env.REACT_APP_ENV === "development"
+) {
+  // Only change window.location if we're not already on localhost
+  if (
+    window.location.hostname !== "localhost" &&
+    window.location.hostname.match(/^(\d{1,3}\.){3}\d{1,3}$/)
+  ) {
+    // Don't redirect if we're already on localhost or not on an IP address
+    const port = window.location.port ? `:${window.location.port}` : "";
+    const path =
+      window.location.pathname + window.location.search + window.location.hash;
+    window.location.replace(`http://localhost${port}${path}`);
+  }
+}
+
+// Log the environment for debugging
+console.log(`Environment: ${process.env.NODE_ENV}`);
+console.log(`REACT_APP_ENV: ${process.env.REACT_APP_ENV}`);
+console.log(`Hostname: ${window.location.hostname}`);
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>

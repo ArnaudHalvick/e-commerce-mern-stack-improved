@@ -3,9 +3,32 @@
  * This file contains all API-related configuration and URL manipulation utilities
  */
 
-// Get the base API URL from environment variables or fallback to localhost.
-export const API_BASE_URL =
-  process.env.REACT_APP_API_URL || "http://localhost:4000";
+// Get the environment
+const isDevEnvironment =
+  process.env.NODE_ENV === "development" ||
+  process.env.REACT_APP_ENV === "development";
+
+// Log the environment for debugging
+console.log(
+  `Running in ${isDevEnvironment ? "development" : "production"} mode`
+);
+console.log(`API URL: ${process.env.REACT_APP_API_URL || "not set"}`);
+
+// Get the base API URL from environment variables with environment-specific fallbacks
+export const API_BASE_URL = (() => {
+  // If explicitly set in environment variables, use that
+  if (process.env.REACT_APP_API_URL) {
+    return process.env.REACT_APP_API_URL;
+  }
+
+  // For development, always default to localhost:4000
+  if (isDevEnvironment) {
+    return "http://localhost:4000";
+  }
+
+  // Production fallback
+  return "https://api.your-domain.com";
+})();
 
 /**
  * Gets the base URL without the trailing "/api" suffix and without the port for images.

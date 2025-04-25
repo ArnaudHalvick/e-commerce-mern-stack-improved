@@ -5,6 +5,14 @@ node_modules/
 server.js.bak
 local-dev.sh
 deploy.sh
-local-dev.sh
+local-dev*
 docker-compose.dev.yml
 docker-compose.yml
+*.log
+*.pid
+*.pem
+*.pfx
+*.crt
+*.key
+*.csr
+*.cnf
