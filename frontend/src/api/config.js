@@ -19,7 +19,13 @@ const isDockerEnvironment = window.location.hostname === "localhost";
 
 // Get the base API URL from environment variables with environment-specific fallbacks
 export const API_BASE_URL = (() => {
-  // If explicitly set in environment variables, use that
+  // For development, ALWAYS use localhost:4000
+  if (isDevEnvironment) {
+    console.log("Development mode: Using localhost:4000 API URL");
+    return "http://localhost:4000";
+  }
+
+  // If explicitly set in environment variables and not in development, use that
   if (process.env.REACT_APP_API_URL) {
     // When in Docker, make sure we use the actual 'localhost'
     if (
@@ -30,11 +36,6 @@ export const API_BASE_URL = (() => {
       return process.env.REACT_APP_API_URL;
     }
     return process.env.REACT_APP_API_URL;
-  }
-
-  // For development, always default to localhost:4000
-  if (isDevEnvironment) {
-    return "http://localhost:4000";
   }
 
   // Production fallback
