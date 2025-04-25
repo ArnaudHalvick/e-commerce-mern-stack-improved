@@ -46,6 +46,8 @@ const allowedOrigins = [
   "https://159.65.230.12",
   "http://159.65.230.12:8080",
   "https://159.65.230.12:8080",
+  "http://159.65.230.12:3000",
+  "https://159.65.230.12:3000",
   "http://localhost:3000",
   "https://localhost:3000",
   "http://localhost",
@@ -75,25 +77,17 @@ if (process.env.NODE_ENV === "development") {
   );
   console.log("Running in development mode with permissive CORS");
 } else {
-  // Stricter CORS in production
+  // Modified CORS in production - temporarily more permissive for debugging
   app.use(
     cors({
-      origin: function (origin, callback) {
-        // Allow requests with no origin (like mobile apps or curl requests)
-        if (!origin) return callback(null, true);
-
-        if (allowedOrigins.indexOf(origin) === -1) {
-          const msg =
-            "The CORS policy for this site does not allow access from the specified Origin.";
-          return callback(new Error(msg), false);
-        }
-        return callback(null, true);
-      },
+      origin: true, // Allow any origin temporarily to debug the issue
       credentials: true,
       exposedHeaders: ["set-cookie"],
     })
   );
-  console.log("Running in production mode with restricted CORS");
+  console.log(
+    "Running in production mode with temporarily permissive CORS for debugging"
+  );
 }
 
 // Special handling for Stripe webhook (must be raw)
