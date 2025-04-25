@@ -60,12 +60,9 @@ const useProductDisplay = (product) => {
       )
         .unwrap()
         .then(() => {
-          // Show success message or update UI
-          console.log("Product added to cart successfully");
+          // Success handled by cart UI update
         })
         .catch((err) => {
-          console.error("Error adding product to cart:", err);
-
           // Show appropriate error message
           if (typeof err === "string") {
             if (

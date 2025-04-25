@@ -71,11 +71,9 @@ const useCheckoutSubmit = () => {
               try {
                 // Clear cart and wait for the operation to complete before navigating
                 await dispatch(clearCart()).unwrap();
-                console.log("Cart cleared successfully");
                 // Now navigate to order confirmation
                 navigate(`/order-confirmation/${orderResponse.order._id}`);
               } catch (clearCartError) {
-                console.error("Failed to clear cart:", clearCartError);
                 // Continue with navigation even if cart clearing failed
                 // The cart will be empty on the server side at least
                 navigate(`/order-confirmation/${orderResponse.order._id}`);
@@ -83,7 +81,6 @@ const useCheckoutSubmit = () => {
               return;
             }
           } catch (confirmError) {
-            console.error("Order confirmation error:", confirmError);
             // If confirming order failed, we'll fall back to showing the payment intent ID
           }
 
@@ -93,18 +90,12 @@ const useCheckoutSubmit = () => {
           try {
             // Clear cart and wait for the operation to complete
             await dispatch(clearCart()).unwrap();
-            console.log("Cart cleared successfully (fallback path)");
           } catch (clearCartError) {
-            console.error(
-              "Failed to clear cart (fallback path):",
-              clearCartError
-            );
             // Continue with navigation even if cart clearing failed
           }
           navigate(`/order-confirmation/${result.paymentIntent.id}`);
         }
       } catch (error) {
-        console.error("Payment error:", error);
         showError(
           error.message || "An error occurred during payment. Please try again."
         );

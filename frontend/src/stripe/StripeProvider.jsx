@@ -10,18 +10,10 @@ const initializeStripe = () => {
     const key = process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY;
 
     if (!key) {
-      console.error(
-        "Stripe publishable key is missing in environment variables. Make sure it's defined with the REACT_APP_ prefix."
-      );
       return null;
     }
-    console.log(
-      "Initializing Stripe with key prefix:",
-      key.substring(0, 7) + "..."
-    );
     return loadStripe(key);
   } catch (error) {
-    console.error("Error initializing Stripe:", error);
     return null;
   }
 };

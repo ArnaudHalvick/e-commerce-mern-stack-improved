@@ -20,7 +20,6 @@ const NewCollection = () => {
         if (Array.isArray(response)) {
           setNewCollection(response);
         } else {
-          console.error("Invalid response format:", response);
           setError("Invalid data format from server");
         }
 
@@ -28,9 +27,8 @@ const NewCollection = () => {
       } catch (error) {
         // Don't show errors for canceled requests
         if (axios.isCancel(error)) {
-          console.log("Request canceled:", error.message);
+          // Request was canceled, no need to do anything
         } else {
-          console.error("Error fetching new arrivals:", error);
           setError("Failed to load new arrivals");
           setLoading(false);
         }
