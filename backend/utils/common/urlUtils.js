@@ -14,12 +14,25 @@ const logger = require("./logger");
  */
 const getFrontendUrl = () => {
   const env = process.env.NODE_ENV || "development";
+
+  // Log all relevant environment variables for debugging
+  logger.debug(`[urlUtils] Environment details:
+    NODE_ENV: ${env}
+    FRONTEND_URL from env: ${process.env.FRONTEND_URL || "not set"}
+    Current working directory: ${process.cwd()}
+  `);
+
   const frontendUrl =
     process.env.FRONTEND_URL ||
     (env === "development" ? "http://localhost:3000" : "https://159.65.230.12");
 
   // Log the frontend URL for debugging
   logger.debug(`[urlUtils] Using frontend URL: ${frontendUrl} (env: ${env})`);
+
+  // Also log to console for immediate visibility during development
+  if (env === "development") {
+    console.log(`[urlUtils] Using frontend URL: ${frontendUrl} (env: ${env})`);
+  }
 
   // Ensure the URL has a protocol
   if (
@@ -75,6 +88,11 @@ const createVerificationUrl = (token, options = {}) => {
   // Log the created URL for debugging
   logger.debug(`[urlUtils] Created verification URL: ${finalUrl}`);
 
+  // Also log to console for immediate visibility during development
+  if (process.env.NODE_ENV === "development") {
+    console.log(`[urlUtils] Created verification URL: ${finalUrl}`);
+  }
+
   return finalUrl;
 };
 
@@ -89,6 +107,11 @@ const createPasswordResetUrl = (token) => {
 
   // Log the created URL for debugging
   logger.debug(`[urlUtils] Created password reset URL: ${finalUrl}`);
+
+  // Also log to console for immediate visibility during development
+  if (process.env.NODE_ENV === "development") {
+    console.log(`[urlUtils] Created password reset URL: ${finalUrl}`);
+  }
 
   return finalUrl;
 };

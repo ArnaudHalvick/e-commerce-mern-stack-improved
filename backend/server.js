@@ -1,6 +1,13 @@
 // backend/server.js
 
-require("dotenv").config(); // Load environment variables from .env file
+// Load environment variables from the appropriate .env file
+if (process.env.NODE_ENV === "development") {
+  console.log("Loading development environment variables from .env.dev");
+  require("dotenv").config({ path: "./.env.dev" });
+} else {
+  console.log("Loading production environment variables from .env");
+  require("dotenv").config();
+}
 
 const express = require("express");
 const path = require("path");
