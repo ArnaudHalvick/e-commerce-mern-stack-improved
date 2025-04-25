@@ -1,10 +1,10 @@
 // backend/utils/emails/sendEmail.js
 
-const nodemailer = require("nodemailer");
+const https = require("https");
 const logger = require("../common/logger");
 
 /**
- * Send an email using Resend SMTP
+ * Send an email using Resend REST API
  * @param {Object} options - Email options
  * @param {string} options.email - Recipient email
  * @param {string} options.subject - Email subject
@@ -37,13 +37,22 @@ const sendEmail = async (options) => {
         );
     }
 
-    // Send email with Resend SMTP
-    return await sendWithSMTP(
+    // Set a timeout for email sending to prevent hanging indefinitely
+    const emailPromise = sendWithRestAPI(
       options.email,
       options.subject,
       htmlContent,
       textContent
     );
+
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => {
+        reject(new Error("Email request timed out after 10 seconds"));
+      }, 10000); // 10 seconds timeout
+    });
+
+    // Return the result of whichever promise resolves/rejects first
+    return await Promise.race([emailPromise, timeoutPromise]);
   } catch (error) {
     logger.error("Error sending email:", error);
     throw error;
@@ -51,14 +60,14 @@ const sendEmail = async (options) => {
 };
 
 /**
- * Send an email using Resend SMTP
+ * Send an email using Resend REST API
  * @param {string} to - Recipient email
  * @param {string} subject - Email subject
  * @param {string} htmlContent - HTML content of the email
  * @param {string} textContent - Plain text content of the email
  * @returns {Promise} - Promise that resolves when email is sent
  */
-const sendWithSMTP = async (to, subject, htmlContent, textContent) => {
+const sendWithRestAPI = async (to, subject, htmlContent, textContent) => {
   // Check if Resend API key is set
   if (!process.env.RESEND_API_KEY) {
     logger.error(
@@ -67,54 +76,86 @@ const sendWithSMTP = async (to, subject, htmlContent, textContent) => {
     throw new Error("Resend API key is not configured");
   }
 
+  // Log email configuration for troubleshooting
+  logger.info("Email REST API Configuration:", {
+    apiKeyPresent: !!process.env.RESEND_API_KEY,
+    fromEmail: process.env.FROM_EMAIL || "onboarding@resend.dev",
+  });
+
   // Define from email address
   const fromEmail = process.env.FROM_EMAIL || "onboarding@resend.dev";
 
-  // SMTP port (default to 465 for SSL)
-  const smtpPort = process.env.RESEND_SMTP_PORT || 465;
+  return new Promise((resolve, reject) => {
+    // Prepare the request data
+    const data = JSON.stringify({
+      from: `E-Commerce Store <${fromEmail}>`,
+      to: [to],
+      subject: subject,
+      html: htmlContent,
+      text: textContent,
+    });
 
-  // Create a transporter for Resend SMTP
-  const transporter = nodemailer.createTransport({
-    host: "smtp.resend.com",
-    port: parseInt(smtpPort),
-    secure: smtpPort === "465" || smtpPort === "2465", // true for 465, false for other ports
-    auth: {
-      user: "resend",
-      pass: process.env.RESEND_API_KEY,
-    },
-    tls: {
-      // Do not fail on invalid certs
-      rejectUnauthorized: false,
-    },
-  });
-
-  // Define email options
-  const mailOptions = {
-    from: `E-Commerce Store <${fromEmail}>`,
-    to: to,
-    subject: subject,
-  };
-
-  // Add content to mail options
-  if (textContent) mailOptions.text = textContent;
-  if (htmlContent) mailOptions.html = htmlContent;
-
-  try {
-    // Verify connection configuration
-    await transporter.verify();
-
-    // Send email
-    const info = await transporter.sendMail(mailOptions);
-    logger.info(`Email sent to ${to} with Resend SMTP: ${info.messageId}`);
-
-    return {
-      id: info.messageId,
-      smtp: true,
+    // Configure the request options
+    const options = {
+      hostname: "api.resend.com",
+      port: 443,
+      path: "/emails",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+        "Content-Length": data.length,
+      },
+      timeout: 10000, // 10 second timeout
     };
-  } catch (error) {
-    logger.error("Resend SMTP error:", error);
-    throw error;
-  }
+
+    // Send the request
+    const req = https.request(options, (res) => {
+      let responseData = "";
+
+      res.on("data", (chunk) => {
+        responseData += chunk;
+      });
+
+      res.on("end", () => {
+        try {
+          if (res.statusCode >= 200 && res.statusCode < 300) {
+            const parsedData = JSON.parse(responseData);
+            logger.info(
+              `Email sent to ${to} with Resend REST API: ${parsedData.id}`
+            );
+            resolve({
+              id: parsedData.id,
+              rest: true,
+            });
+          } else {
+            logger.error(
+              `Resend REST API error (${res.statusCode}): ${responseData}`
+            );
+            reject(new Error(`Resend API error: ${responseData}`));
+          }
+        } catch (error) {
+          logger.error("Error parsing Resend API response:", error);
+          reject(error);
+        }
+      });
+    });
+
+    req.on("error", (error) => {
+      logger.error("Resend REST API request error:", error);
+      reject(error);
+    });
+
+    req.on("timeout", () => {
+      req.destroy();
+      logger.error("Resend REST API request timed out");
+      reject(new Error("REST API request timed out"));
+    });
+
+    // Write data to request body
+    req.write(data);
+    req.end();
+  });
 };
 
 module.exports = sendEmail;
