@@ -43,6 +43,7 @@ const useAuth = () => {
   const [initialLoadComplete, setInitialLoadComplete] = useState(
     userState.isInitialized
   );
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   // Add refs at the top level of the hook
   const hasInitialized = useRef(false);
@@ -59,16 +60,19 @@ const useAuth = () => {
    */
   const handleLogout = useCallback(() => {
     setInTransition(true);
+    setIsInitialLoad(false);
 
     // Cancel all pending requests before logging out
     cancelPendingRequests("User logged out");
 
-    // Use the redux action to properly update the state and persist logout
-    dispatch(logoutUser());
-    dispatch(resetCart());
-    setIsUserLoggedOut(true);
-
-    setInTransition(false);
+    // Add a small delay to ensure the loading indicator is visible during logout
+    setTimeout(() => {
+      // Use the redux action to properly update the state and persist logout
+      dispatch(logoutUser());
+      dispatch(resetCart());
+      setIsUserLoggedOut(true);
+      setInTransition(false);
+    }, 800); // Short delay to show the loading indicator
   }, [dispatch]);
 
   /**
@@ -142,9 +146,18 @@ const useAuth = () => {
       checkAuthStatus();
     } else {
       setInitialLoadComplete(true);
+      // If already initialized, mark initial load as complete
+      setIsInitialLoad(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Effect to clear isInitialLoad when initialization is complete
+  useEffect(() => {
+    if (userState.isInitialized && isInitialLoad) {
+      setIsInitialLoad(false);
+    }
+  }, [userState.isInitialized, isInitialLoad]);
 
   // Check localStorage logged out state and sync with Redux
   useEffect(() => {
@@ -338,6 +351,8 @@ const useAuth = () => {
       setInTransition(false);
       dispatch(setInitialized(true));
       setInitialLoadComplete(true);
+      // After initial check, set isInitialLoad to false
+      setIsInitialLoad(false);
     }
   }, [dispatch, fetchUserProfile, handleLogout, refreshAccessToken, showError]);
 
@@ -350,6 +365,7 @@ const useAuth = () => {
   const login = async (email, password) => {
     try {
       setInTransition(true);
+      setIsInitialLoad(false);
       const resultAction = await dispatch(loginUser({ email, password }));
 
       if (loginUser.fulfilled.match(resultAction)) {
@@ -434,6 +450,7 @@ const useAuth = () => {
    */
   const logout = useCallback(() => {
     setInTransition(true);
+    setIsInitialLoad(false);
 
     authService
       .logout()
@@ -466,6 +483,7 @@ const useAuth = () => {
     initialLoadComplete,
     inTransition,
     isUserLoggedOut,
+    isInitialLoad,
 
     // Auth status indicators
     verificationRequested: userState.verificationRequested,

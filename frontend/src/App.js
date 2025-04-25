@@ -84,7 +84,7 @@ const UnauthenticatedRoute = ({ children }) => {
  * Main App component that defines the application structure and routes
  */
 function App() {
-  const { fetchUserProfile } = useAuth();
+  const { fetchUserProfile, isInitialLoad } = useAuth();
   const authInitialized = useRef(false);
 
   useEffect(() => {
@@ -92,8 +92,10 @@ function App() {
       authInitialized.current = true;
       const checkAuth = async () => {
         try {
-          // Verify token and load user profile
-          await fetchUserProfile();
+          // Only fetch profile if not in initial load state to avoid duplicate loading
+          if (!isInitialLoad) {
+            await fetchUserProfile();
+          }
         } catch (error) {
           console.error("Error initializing auth state:", error);
         }
@@ -101,7 +103,7 @@ function App() {
 
       checkAuth();
     }
-  }, [fetchUserProfile]);
+  }, [fetchUserProfile, isInitialLoad]);
 
   return (
     <ErrorBoundary>
