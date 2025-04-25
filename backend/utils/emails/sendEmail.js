@@ -1,10 +1,10 @@
 // backend/utils/emails/sendEmail.js
 
-const nodemailer = require("nodemailer");
+const { Resend } = require("resend");
 const logger = require("../common/logger");
 
 /**
- * Send an email using Gmail SMTP
+ * Send an email using Resend API
  * @param {Object} options - Email options
  * @param {string} options.email - Recipient email
  * @param {string} options.subject - Email subject
@@ -14,30 +14,6 @@ const logger = require("../common/logger");
  */
 const sendEmail = async (options) => {
   try {
-    // Check if Gmail credentials are set
-    if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
-      logger.error(
-        "Gmail credentials are not configured. Please set GMAIL_USER and GMAIL_APP_PASSWORD in .env file."
-      );
-      throw new Error("Gmail credentials are not configured");
-    }
-
-    // Create a transporter for Gmail
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      host: "smtp.gmail.com",
-      port: 465,
-      secure: true, // Use SSL
-      auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_APP_PASSWORD, // App Password, not regular Gmail password
-      },
-      debug: process.env.NODE_ENV !== "production", // Only enable debug in non-production environments
-    });
-
-    // Verify connection configuration
-    await transporter.verify();
-
     // Determine content of email - prioritize HTML if provided
     let htmlContent = options.html || null;
     let textContent = options.message || null;
@@ -61,26 +37,56 @@ const sendEmail = async (options) => {
         );
     }
 
-    // Define email options
-    const mailOptions = {
-      from: `"E-Commerce Store" <${
-        process.env.GMAIL_USER || "noreply@ecommerce.com"
-      }>`,
-      to: options.email,
-      subject: options.subject,
-    };
-
-    // Add content to mail options
-    if (textContent) mailOptions.text = textContent;
-    if (htmlContent) mailOptions.html = htmlContent;
-
-    // Send email
-    const info = await transporter.sendMail(mailOptions);
-    logger.info(`Email sent to ${options.email}: ${info.messageId}`);
-
-    return info;
+    // Send email with Resend
+    return await sendWithResend(
+      options.email,
+      options.subject,
+      htmlContent,
+      textContent
+    );
   } catch (error) {
     logger.error("Error sending email:", error);
+    throw error;
+  }
+};
+
+/**
+ * Send an email using Resend
+ * @param {string} to - Recipient email
+ * @param {string} subject - Email subject
+ * @param {string} htmlContent - HTML content of the email
+ * @param {string} textContent - Plain text content of the email
+ * @returns {Promise} - Promise that resolves when email is sent
+ */
+const sendWithResend = async (to, subject, htmlContent, textContent) => {
+  // Check if Resend API key is set
+  if (!process.env.RESEND_API_KEY) {
+    logger.error(
+      "Resend API key is not configured. Please set RESEND_API_KEY in .env file."
+    );
+    throw new Error("Resend API key is not configured");
+  }
+
+  // Initialize Resend client
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
+  // Define from email address
+  const fromEmail = process.env.FROM_EMAIL || "onboarding@resend.dev";
+
+  try {
+    // Send email with Resend
+    const data = await resend.emails.send({
+      from: `E-Commerce Store <${fromEmail}>`,
+      to: [to],
+      subject: subject,
+      html: htmlContent,
+      text: textContent,
+    });
+
+    logger.info(`Email sent to ${to} with Resend ID: ${data.id}`);
+    return data;
+  } catch (error) {
+    logger.error("Resend error:", error);
     throw error;
   }
 };

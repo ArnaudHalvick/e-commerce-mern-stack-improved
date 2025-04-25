@@ -4,7 +4,7 @@ This directory contains utilities for email functionality in the application, in
 
 ## Components
 
-- **sendEmail.js** - Core utility for sending emails using Nodemailer with Gmail SMTP
+- **sendEmail.js** - Core utility for sending emails using Resend API
 - **emailNormalizer.js** - Utility for normalizing and validating email addresses
 - **templates/** - Directory containing email templates for various user actions
 
@@ -35,8 +35,8 @@ const normalizedEmail = normalizeEmail("User.Name+TAG@Gmail.com");
 
 Email functionality requires the following environment variables:
 
-- `GMAIL_USER` - Gmail email address to use as sender
-- `GMAIL_APP_PASSWORD` - App-specific password for Gmail
+- `RESEND_API_KEY` - Your Resend API key
+- `FROM_EMAIL` - Email address to use as sender (defaults to "onboarding@resend.dev")
 
 ## Best Practices
 
