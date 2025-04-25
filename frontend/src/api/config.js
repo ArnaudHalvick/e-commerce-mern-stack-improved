@@ -12,12 +12,23 @@ const isDevEnvironment =
 console.log(
   `Running in ${isDevEnvironment ? "development" : "production"} mode`
 );
-console.log(`API URL: ${process.env.REACT_APP_API_URL || "not set"}`);
+console.log(`API URL from env: ${process.env.REACT_APP_API_URL || "not set"}`);
+
+// Determine if we're running in Docker by checking hostname
+const isDockerEnvironment = window.location.hostname === "localhost";
 
 // Get the base API URL from environment variables with environment-specific fallbacks
 export const API_BASE_URL = (() => {
   // If explicitly set in environment variables, use that
   if (process.env.REACT_APP_API_URL) {
+    // When in Docker, make sure we use the actual 'localhost'
+    if (
+      isDockerEnvironment &&
+      process.env.REACT_APP_API_URL.includes("localhost")
+    ) {
+      console.log("Using localhost API URL for Docker");
+      return process.env.REACT_APP_API_URL;
+    }
     return process.env.REACT_APP_API_URL;
   }
 
@@ -29,6 +40,8 @@ export const API_BASE_URL = (() => {
   // Production fallback
   return "https://api.your-domain.com";
 })();
+
+console.log(`Final API Base URL: ${API_BASE_URL}`);
 
 /**
  * Gets the base URL without the trailing "/api" suffix and without the port for images.

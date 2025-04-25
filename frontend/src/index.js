@@ -17,12 +17,18 @@ if (
   // Only change window.location if we're not already on localhost
   if (
     window.location.hostname !== "localhost" &&
+    window.location.hostname !== "127.0.0.1" &&
+    !window.location.hostname.includes("host.docker.internal") &&
     window.location.hostname.match(/^(\d{1,3}\.){3}\d{1,3}$/)
   ) {
     // Don't redirect if we're already on localhost or not on an IP address
     const port = window.location.port ? `:${window.location.port}` : "";
     const path =
       window.location.pathname + window.location.search + window.location.hash;
+
+    console.log(
+      `Redirecting from ${window.location.hostname} to localhost${port}`
+    );
     window.location.replace(`http://localhost${port}${path}`);
   }
 }
@@ -31,6 +37,7 @@ if (
 console.log(`Environment: ${process.env.NODE_ENV}`);
 console.log(`REACT_APP_ENV: ${process.env.REACT_APP_ENV}`);
 console.log(`Hostname: ${window.location.hostname}`);
+console.log(`API URL: ${process.env.REACT_APP_API_URL}`);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

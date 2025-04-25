@@ -1,0 +1,12 @@
+node_modules
+dist
+*.env*
+.cursorrules
+*.log
+*.pid
+*.pem
+*.pfx
+*.crt
+*.key
+*.csr
+*.cnf
