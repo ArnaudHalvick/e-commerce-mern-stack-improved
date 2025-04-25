@@ -1,92 +1,66 @@
-# Breadcrumb Component
+# Breadcrumb Navigation Component
 
-A reusable, responsive breadcrumb navigation component for the e-commerce application.
+This directory contains a reusable breadcrumb navigation component for displaying the user's current location within the application.
 
-## Features
+## Components
 
-- Dynamic breadcrumb trail based on navigation path
-- Clickable links for navigation to previous levels
-- Highlighted current page
-- Fully responsive design with mobile breakpoints
-- Custom styling with hover effects
-- Automatic fallback to home if no routes provided
+### `Breadcrumb`
 
-## Props
+A flexible breadcrumb component that shows the hierarchical navigation path.
 
-| Prop     | Type  | Default                        | Description                                          |
-| -------- | ----- | ------------------------------ | ---------------------------------------------------- |
-| `routes` | Array | `[{label: "Home", path: "/"}]` | Array of route objects defining the breadcrumb trail |
+#### Features
 
-### Route Object Properties
+- Visual indication of the current page in the navigation hierarchy
+- Clickable links for navigation to parent/ancestor pages
+- Automatic styling for the current (active) page
+- Consistent styling across the application
+- Support for both legacy and modern prop formats
 
-Each route in the `routes` array should be an object with these properties:
-
-| Property    | Type    | Required                   | Description                                              |
-| ----------- | ------- | -------------------------- | -------------------------------------------------------- |
-| `label`     | string  | Yes                        | Display text for the breadcrumb item                     |
-| `path`      | string  | Yes (except for last item) | URL path for navigation                                  |
-| `isCurrent` | boolean | No                         | Whether this is the current page (defaults to last item) |
-
-## Usage Examples
-
-### Basic Usage
+#### Usage
 
 ```jsx
-import Breadcrumb from "../components/breadcrumbs/Breadcrumb";
+import Breadcrumb from '../components/breadcrumbs/Breadcrumb';
 
-// Example for a product page
-const ProductPageBreadcrumbs = () => {
-  const routes = [
-    { label: "Home", path: "/" },
-    { label: "Products", path: "/products" },
-    { label: "Product Name" }, // Last item doesn't need a path
-  ];
+// Basic usage
+<Breadcrumb
+  routes={[
+    { label: 'Home', path: '/' },
+    { label: 'Shop', path: '/shop' },
+    { label: 'Product Name' } // Current page (no path needed)
+  ]}
+/>
 
-  return <Breadcrumb routes={routes} />;
-};
+// With explicit current page marker
+<Breadcrumb
+  routes={[
+    { label: 'Home', path: '/' },
+    { label: 'Shop', path: '/shop' },
+    { label: 'Category', path: '/shop/category' },
+    { label: 'Product Name', isCurrent: true }
+  ]}
+/>
 ```
 
-### Dynamic Routes from URL
+#### Props
 
-```jsx
-import Breadcrumb from "../components/breadcrumbs/Breadcrumb";
-import { useParams } from "react-router-dom";
-
-const CategoryPage = () => {
-  const { categoryId } = useParams();
-
-  // This could also come from an API or state
-  const categoryName = getCategoryName(categoryId);
-
-  const routes = [
-    { label: "Home", path: "/" },
-    { label: "Categories", path: "/categories" },
-    { label: categoryName },
-  ];
-
-  return (
-    <>
-      <Breadcrumb routes={routes} />
-      {/* Rest of your page */}
-    </>
-  );
-};
-```
+- `routes`: Array of route objects with:
+  - `label` (string): Display text for the breadcrumb
+  - `path` (string, optional): URL path for navigation (not required for current page)
+  - `isCurrent` (boolean, optional): Whether this is the current page
+- `links`: Legacy prop name for routes (for backward compatibility)
 
 ## Styling
 
-The component includes its own CSS file (`Breadcrumb.css`) with:
+The component includes its own CSS stylesheet (`Breadcrumb.css`) with:
 
-- Basic layout and spacing
-- Color scheme matching the application theme
-- Hover effects for links
-- Responsive design with media queries for different screen sizes
+- Responsive design for all screen sizes
+- Hover effects for interactive elements
+- Visual separation between breadcrumb items
+- Distinct styling for the current page
+- Custom arrow icon between navigation levels
 
-You can customize the appearance by modifying the CSS file.
+## Implementation Notes
 
-## Dependencies
-
-- React
-- React Router DOM for the `Link` component
-- Arrow icon from `../assets/breadcrum_arrow.png`
-- CSS styles from `./Breadcrumb.css`
+- Last item in the routes array is automatically treated as the current page if `isCurrent` is not specified
+- If no routes are provided, a default "Home" breadcrumb is displayed
+- Component automatically inserts arrow icons between breadcrumb items
