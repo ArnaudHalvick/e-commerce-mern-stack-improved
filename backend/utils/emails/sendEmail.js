@@ -1,10 +1,10 @@
 // backend/utils/emails/sendEmail.js
 
-const { Resend } = require("resend");
+const nodemailer = require("nodemailer");
 const logger = require("../common/logger");
 
 /**
- * Send an email using Resend API
+ * Send an email using Resend SMTP
  * @param {Object} options - Email options
  * @param {string} options.email - Recipient email
  * @param {string} options.subject - Email subject
@@ -37,8 +37,8 @@ const sendEmail = async (options) => {
         );
     }
 
-    // Send email with Resend
-    return await sendWithResend(
+    // Send email with Resend SMTP
+    return await sendWithSMTP(
       options.email,
       options.subject,
       htmlContent,
@@ -51,14 +51,14 @@ const sendEmail = async (options) => {
 };
 
 /**
- * Send an email using Resend
+ * Send an email using Resend SMTP
  * @param {string} to - Recipient email
  * @param {string} subject - Email subject
  * @param {string} htmlContent - HTML content of the email
  * @param {string} textContent - Plain text content of the email
  * @returns {Promise} - Promise that resolves when email is sent
  */
-const sendWithResend = async (to, subject, htmlContent, textContent) => {
+const sendWithSMTP = async (to, subject, htmlContent, textContent) => {
   // Check if Resend API key is set
   if (!process.env.RESEND_API_KEY) {
     logger.error(
@@ -67,26 +67,52 @@ const sendWithResend = async (to, subject, htmlContent, textContent) => {
     throw new Error("Resend API key is not configured");
   }
 
-  // Initialize Resend client
-  const resend = new Resend(process.env.RESEND_API_KEY);
-
   // Define from email address
   const fromEmail = process.env.FROM_EMAIL || "onboarding@resend.dev";
 
-  try {
-    // Send email with Resend
-    const data = await resend.emails.send({
-      from: `E-Commerce Store <${fromEmail}>`,
-      to: [to],
-      subject: subject,
-      html: htmlContent,
-      text: textContent,
-    });
+  // SMTP port (default to 465 for SSL)
+  const smtpPort = process.env.RESEND_SMTP_PORT || 465;
 
-    logger.info(`Email sent to ${to} with Resend ID: ${data.id}`);
-    return data;
+  // Create a transporter for Resend SMTP
+  const transporter = nodemailer.createTransport({
+    host: "smtp.resend.com",
+    port: parseInt(smtpPort),
+    secure: smtpPort === "465" || smtpPort === "2465", // true for 465, false for other ports
+    auth: {
+      user: "resend",
+      pass: process.env.RESEND_API_KEY,
+    },
+    tls: {
+      // Do not fail on invalid certs
+      rejectUnauthorized: false,
+    },
+  });
+
+  // Define email options
+  const mailOptions = {
+    from: `E-Commerce Store <${fromEmail}>`,
+    to: to,
+    subject: subject,
+  };
+
+  // Add content to mail options
+  if (textContent) mailOptions.text = textContent;
+  if (htmlContent) mailOptions.html = htmlContent;
+
+  try {
+    // Verify connection configuration
+    await transporter.verify();
+
+    // Send email
+    const info = await transporter.sendMail(mailOptions);
+    logger.info(`Email sent to ${to} with Resend SMTP: ${info.messageId}`);
+
+    return {
+      id: info.messageId,
+      smtp: true,
+    };
   } catch (error) {
-    logger.error("Resend error:", error);
+    logger.error("Resend SMTP error:", error);
     throw error;
   }
 };

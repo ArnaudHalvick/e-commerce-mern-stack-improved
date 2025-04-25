@@ -4,7 +4,7 @@ This directory contains utilities for email functionality in the application, in
 
 ## Components
 
-- **sendEmail.js** - Core utility for sending emails using Resend API
+- **sendEmail.js** - Core utility for sending emails using Resend SMTP
 - **emailNormalizer.js** - Utility for normalizing and validating email addresses
 - **templates/** - Directory containing email templates for various user actions
 
@@ -37,6 +37,7 @@ Email functionality requires the following environment variables:
 
 - `RESEND_API_KEY` - Your Resend API key
 - `FROM_EMAIL` - Email address to use as sender (defaults to "onboarding@resend.dev")
+- `RESEND_SMTP_PORT` - SMTP port (default: 465, other options: 2465, 587, 2587)
 
 ## Best Practices
 
