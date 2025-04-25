@@ -128,7 +128,6 @@ const usePasswordRecovery = (
     loading,
     setLoading,
     fieldErrors,
-    setFieldErrors,
     formErrors,
     clearFormError,
     setFormError,
