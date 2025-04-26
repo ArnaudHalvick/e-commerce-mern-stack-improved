@@ -122,8 +122,29 @@ const useProfileForm = (user, showSuccess, showError) => {
     async (e, customFormData = null) => {
       e?.preventDefault();
 
-      const dataToSubmit = customFormData || formData;
-      const validationErrors = validateFormData();
+      // If customFormData is provided (for section updates), merge it with existing data
+      // to ensure we don't lose data from other sections when updating partially
+      const dataToSubmit = customFormData
+        ? {
+            // Start with the current full form data
+            ...formData,
+            // Then overlay with the section-specific changes
+            ...customFormData,
+            // For address, we need to merge separately to avoid overwriting the entire address object
+            address: customFormData.address
+              ? {
+                  ...formData.address,
+                  ...customFormData.address,
+                }
+              : formData.address,
+          }
+        : formData;
+
+      // Validate the form data that will be submitted
+      const validationErrors = validateForm(dataToSubmit, {
+        ...profileBasicInfoSchema,
+        address: profileAddressSchema.address,
+      });
 
       if (Object.keys(validationErrors).length > 0) {
         showError("Please fix the errors in the form before submitting.");
@@ -134,7 +155,23 @@ const useProfileForm = (user, showSuccess, showError) => {
 
       try {
         const result = await dispatch(updateUserProfile(dataToSubmit)).unwrap();
-        setUpdatedUserData(result);
+
+        // Update the form data with the server response to keep everything in sync
+        if (result) {
+          setFormData({
+            name: result.name || "",
+            phone: result.phone || "",
+            address: {
+              street: result.address?.street || "",
+              city: result.address?.city || "",
+              state: result.address?.state || "",
+              zipCode: result.address?.zipCode || "",
+              country: result.address?.country || "",
+            },
+          });
+          setUpdatedUserData(result);
+        }
+
         showSuccess("Profile updated successfully!");
       } catch (error) {
         showError(error.message || "Failed to update profile");

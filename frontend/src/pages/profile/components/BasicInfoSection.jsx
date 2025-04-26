@@ -150,10 +150,12 @@ const BasicInfoSection = ({
       return;
     }
 
-    // Only submit name and phone, don't include address
+    // Submit basic info along with the current address data to preserve it
     const basicInfoData = {
       name: localFormData.name,
       phone: localFormData.phone || "",
+      // Include the current address to preserve it
+      address: formData.address || {},
     };
 
     handleSubmit(e, basicInfoData);

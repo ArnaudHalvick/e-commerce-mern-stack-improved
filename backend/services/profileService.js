@@ -66,7 +66,7 @@ const updateUserProfile = async (userId, userData) => {
   // Update user data
   user.name = name;
 
-  // Update phone if provided
+  // Update phone if provided (even empty string is considered provided)
   if (phone !== undefined) {
     user.phone = phone;
   }
@@ -79,11 +79,16 @@ const updateUserProfile = async (userId, userData) => {
         user.address = {};
       }
 
-      user.address.street = address.street || "";
-      user.address.city = address.city || "";
-      user.address.state = address.state || "";
-      user.address.zipCode = address.zipCode || "";
-      user.address.country = address.country || "";
+      // Only update fields that were explicitly provided in the request
+      // This prevents partial update issues where undefined fields overwrite existing data
+      if (address.street !== undefined)
+        user.address.street = address.street || "";
+      if (address.city !== undefined) user.address.city = address.city || "";
+      if (address.state !== undefined) user.address.state = address.state || "";
+      if (address.zipCode !== undefined)
+        user.address.zipCode = address.zipCode || "";
+      if (address.country !== undefined)
+        user.address.country = address.country || "";
 
       // Mark the address field as modified to ensure it's saved
       user.markModified("address");

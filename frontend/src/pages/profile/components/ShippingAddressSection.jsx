@@ -257,10 +257,11 @@ const ShippingAddressSection = ({
         localFormData.address[field].trim() !== ""
     );
 
-    // If address is empty, don't validate and submit as empty
+    // If we're clearing the address, send complete form data but with empty address fields
     if (!hasAnyAddressField) {
-      const emptyAddress = {
+      const dataWithEmptyAddress = {
         name: formData.name,
+        phone: formData.phone, // Include the phone to maintain it
         address: {
           street: "",
           city: "",
@@ -269,10 +270,10 @@ const ShippingAddressSection = ({
           country: "",
         },
       };
-      handleSubmit(e, emptyAddress);
+      handleSubmit(e, dataWithEmptyAddress);
       setIsEditingAddress(false);
       setInitialFormData({
-        address: { ...emptyAddress.address },
+        address: { ...dataWithEmptyAddress.address },
       });
       return;
     }
@@ -285,9 +286,11 @@ const ShippingAddressSection = ({
       return;
     }
 
-    // Submit address data along with the required name field
+    // Submit address data along with the other required fields
+    // Make sure to include phone to prevent it from being lost
     handleSubmit(e, {
       name: formData.name,
+      phone: formData.phone, // Important: include phone to maintain it
       address: localFormData.address,
     });
     setIsEditingAddress(false);

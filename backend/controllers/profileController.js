@@ -38,6 +38,14 @@ const getUserProfile = catchAsync(async (req, res, next) => {
 const updateProfile = catchAsync(async (req, res, next) => {
   const { name, phone, address, profileImage } = req.body;
 
+  // Log the incoming profile update request for debugging
+  logger.info(`Profile update request for user ${req.user.id}`, {
+    hasName: !!name,
+    hasPhone: phone !== undefined,
+    hasAddress: !!address,
+    addressFields: address ? Object.keys(address) : [],
+  });
+
   const result = await updateUserProfile(req.user.id, {
     name,
     phone,
@@ -48,6 +56,9 @@ const updateProfile = catchAsync(async (req, res, next) => {
   if (!result.success) {
     return next(result.error);
   }
+
+  // Log the successful update
+  logger.info(`Profile updated successfully for user ${req.user.id}`);
 
   res.status(200).json({
     success: true,
