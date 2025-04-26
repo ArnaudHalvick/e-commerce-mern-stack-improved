@@ -6,16 +6,39 @@ import { config } from "../../api";
 import { authService } from "../../api";
 import { cancelPendingRequests } from "../../api/client";
 
+// New async thunk for fetching the full user profile
+export const fetchUserProfile = createAsyncThunk(
+  "user/fetchProfile",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await authService.getCurrentUser();
+      if (response.success) {
+        return response.user;
+      } else {
+        return rejectWithValue(response.message || "Failed to fetch profile");
+      }
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch profile"
+      );
+    }
+  }
+);
+
 // Async thunk for login
 export const loginUser = createAsyncThunk(
   "user/login",
-  async ({ email, password }, { rejectWithValue }) => {
+  async ({ email, password }, { rejectWithValue, dispatch }) => {
     try {
       const response = await authService.login(email, password);
 
       if (response.success) {
-        localStorage.setItem("auth-token", response.token);
+        localStorage.setItem("auth-token", response.accessToken);
         localStorage.removeItem("user-logged-out");
+
+        // After login, fetch the complete profile
+        dispatch(fetchUserProfile());
+
         return response.user;
       } else {
         return rejectWithValue(response.message || "Login failed");
@@ -34,7 +57,7 @@ export const registerUser = createAsyncThunk(
       const response = await authService.register(userData);
 
       if (response.success) {
-        localStorage.setItem("auth-token", response.token);
+        localStorage.setItem("auth-token", response.accessToken);
         localStorage.removeItem("user-logged-out");
         return {
           user: response.user,
@@ -51,74 +74,54 @@ export const registerUser = createAsyncThunk(
   }
 );
 
-// Async thunk for verifying authentication token
+// Simplified token verification - just check if the token is valid
 export const verifyToken = createAsyncThunk(
   "user/verifyToken",
-  async (_, { rejectWithValue }) => {
+  async (_, { rejectWithValue, dispatch }) => {
     try {
       const token = localStorage.getItem("auth-token");
       if (!token) {
         return rejectWithValue("No authentication token found");
       }
 
-      // Check if user is marked as logged out
       if (localStorage.getItem("user-logged-out") === "true") {
         localStorage.removeItem("auth-token");
         return rejectWithValue("User is logged out");
       }
 
+      // Just verify the token validity
       const response = await authService.verifyToken();
 
       if (response.success) {
-        // Make sure we clear the logged-out flag
         localStorage.removeItem("user-logged-out");
+
+        // After token verification, dispatch an action to fetch the full profile
+        dispatch(fetchUserProfile());
+
         return response.user;
       } else {
-        // If verification fails, attempt to refresh the token
         try {
           const refreshResponse = await authService.refreshToken();
           if (refreshResponse && refreshResponse.success) {
             localStorage.setItem("auth-token", refreshResponse.accessToken);
             localStorage.removeItem("user-logged-out");
 
-            // Get user data with new token
-            const userResponse = await authService.getCurrentUser();
-            if (userResponse.success) {
-              return userResponse.user;
-            }
+            dispatch(fetchUserProfile());
+            return response.user;
           }
         } catch (refreshError) {
           console.error("Token refresh failed:", refreshError);
         }
 
-        // If refresh failed or user data couldn't be retrieved, clear token
         localStorage.removeItem("auth-token");
         localStorage.setItem("user-logged-out", "true");
         return rejectWithValue(response.message || "Token verification failed");
       }
-    } catch (err) {
-      // Try to refresh the token if verification fails
-      try {
-        const refreshResponse = await authService.refreshToken();
-        if (refreshResponse && refreshResponse.success) {
-          localStorage.setItem("auth-token", refreshResponse.accessToken);
-          localStorage.removeItem("user-logged-out");
-
-          // Get user data with new token
-          const userResponse = await authService.getCurrentUser();
-          if (userResponse.success) {
-            return userResponse.user;
-          }
-        }
-      } catch (refreshError) {
-        console.error("Token refresh failed:", refreshError);
-      }
-
-      // Clear token on error if refresh failed
+    } catch (error) {
       localStorage.removeItem("auth-token");
       localStorage.setItem("user-logged-out", "true");
       return rejectWithValue(
-        err.message || "Token verification failed. Please try again."
+        error.message || "Token verification failed. Please try again."
       );
     }
   }
@@ -129,26 +132,13 @@ export const updateUserProfile = createAsyncThunk(
   "user/updateProfile",
   async (userData, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem("auth-token");
-      const response = await axios.put(
-        config.getApiUrl("users/profile"),
-        userData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "auth-token": token,
-          },
-        }
-      );
+      const response = await authService.updateProfile(userData);
 
-      if (!response.data.success) {
-        return rejectWithValue(
-          response.data.message || "Profile update failed"
-        );
+      if (!response.success) {
+        return rejectWithValue(response.message || "Profile update failed");
       }
-      return response.data.user;
+      return response.user;
     } catch (error) {
-      console.error("Profile update error:", error.response || error);
       if (error.response?.data?.errors) {
         const validationErrors = {};
         error.response.data.errors.forEach((err) => {
@@ -367,9 +357,8 @@ export const logoutUser = createAsyncThunk(
   }
 );
 
-// Define the initial state as a separate constant for easier maintenance
+// Define the initial state
 const initialState = {
-  profile: null,
   user: null,
   isAuthenticated: false,
   isEmailVerified: false,
@@ -388,6 +377,7 @@ const initialState = {
     login: false,
     register: false,
     verifyingToken: false,
+    fetchingProfile: false,
   },
   error: null,
   passwordChanged: false,
@@ -415,6 +405,19 @@ const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // Fetch profile cases
+      .addCase(fetchUserProfile.pending, (state) => {
+        state.loadingStates.fetchingProfile = true;
+      })
+      .addCase(fetchUserProfile.fulfilled, (state, action) => {
+        state.user = action.payload; // Set full profile data
+        state.loadingStates.fetchingProfile = false;
+      })
+      .addCase(fetchUserProfile.rejected, (state, action) => {
+        state.loadingStates.fetchingProfile = false;
+        state.error = action.payload;
+      })
+
       // Login cases
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
@@ -422,7 +425,11 @@ const userSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.isAuthenticated = true;
-        state.user = action.payload;
+        // Basic user data - will be enhanced by fetchUserProfile
+        state.user = {
+          ...state.user,
+          ...action.payload,
+        };
         state.loading = false;
         state.error = null;
         state.isInitialized = true;
@@ -459,7 +466,14 @@ const userSlice = createSlice({
       })
       .addCase(verifyToken.fulfilled, (state, action) => {
         state.isAuthenticated = true;
-        state.user = action.payload;
+        // Preserve existing user data, only update authentication-related fields
+        state.user = {
+          ...state.user,
+          id: action.payload.id,
+          name: action.payload.name,
+          email: action.payload.email,
+          isEmailVerified: action.payload.isEmailVerified,
+        };
         state.loading = false;
         state.error = null;
         state.isInitialized = true;
@@ -488,7 +502,6 @@ const userSlice = createSlice({
         state.error = null;
       })
       .addCase(updateUserProfile.fulfilled, (state, action) => {
-        state.profile = action.payload;
         state.user = action.payload;
         state.loading = false;
         state.loadingStates.updatingProfile = false;

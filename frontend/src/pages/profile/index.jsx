@@ -1,7 +1,10 @@
-import React, { useEffect, useMemo } from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import useErrorRedux from "../../hooks/useErrorRedux";
+
+// Redux actions
+import { fetchUserProfile } from "../../redux/slices/userSlice";
 
 // Hooks
 import { useProfileForm, usePasswordForm, useAccountManagement } from "./hooks";
@@ -23,32 +26,10 @@ import "./styles/index.css";
 
 const Profile = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { showError, showSuccess } = useErrorRedux();
 
-  // Memoize selector to prevent unnecessary re-renders
-  const userState = useSelector(
-    (state) => ({
-      user: state.user.user,
-      loading: state.user.loading,
-      isAuthenticated: state.user.isAuthenticated,
-      verificationRequested: state.user.verificationRequested,
-      passwordChanged: state.user.passwordChanged,
-      loadingStates: state.user.loadingStates,
-    }),
-    // Custom equality function to prevent unnecessary updates
-    (prev, next) => {
-      return (
-        prev.user?.id === next.user?.id &&
-        prev.loading === next.loading &&
-        prev.isAuthenticated === next.isAuthenticated &&
-        prev.verificationRequested === next.verificationRequested &&
-        prev.passwordChanged === next.passwordChanged &&
-        JSON.stringify(prev.loadingStates) ===
-          JSON.stringify(next.loadingStates)
-      );
-    }
-  );
-
+  // Simplified selector with just what we need
   const {
     user,
     loading,
@@ -56,9 +37,23 @@ const Profile = () => {
     verificationRequested,
     passwordChanged,
     loadingStates,
-  } = userState;
+  } = useSelector((state) => ({
+    user: state.user.user,
+    loading: state.user.loading || state.user.loadingStates.fetchingProfile,
+    isAuthenticated: state.user.isAuthenticated,
+    verificationRequested: state.user.verificationRequested,
+    passwordChanged: state.user.passwordChanged,
+    loadingStates: state.user.loadingStates,
+  }));
 
-  // Custom hooks for profile functionality - memoize initial data
+  // Fetch the full profile when the component mounts
+  useEffect(() => {
+    if (isAuthenticated) {
+      dispatch(fetchUserProfile());
+    }
+  }, [dispatch, isAuthenticated]);
+
+  // Custom hooks for profile functionality
   const {
     formData,
     fieldErrors,
@@ -80,18 +75,15 @@ const Profile = () => {
   const { isDisablingAccount, handleDisableAccount, handleResendVerification } =
     useAccountManagement(user, verificationRequested, showSuccess, showError);
 
-  // Memoize navigation effect
+  // Redirect to login if not authenticated
   useEffect(() => {
     if (!loading && !isAuthenticated) {
       navigate("/login");
     }
   }, [loading, isAuthenticated, navigate]);
 
-  // Memoize breadcrumb links
-  const breadcrumbRoutes = useMemo(
-    () => [{ label: "Home", path: "/" }, { label: "Profile" }],
-    []
-  );
+  // Simple breadcrumb definition
+  const breadcrumbRoutes = [{ label: "Home", path: "/" }, { label: "Profile" }];
 
   if (loading) {
     return (
@@ -168,4 +160,4 @@ const Profile = () => {
   );
 };
 
-export default React.memo(Profile);
+export default Profile;
