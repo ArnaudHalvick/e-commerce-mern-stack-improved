@@ -45,32 +45,35 @@ const useProfileForm = (user, showSuccess, showError) => {
   }, [user]);
 
   // Validate the form data
-  const validateFormData = useCallback((dataToValidate = formData) => {
-    // Validate basic info (name and phone)
-    const basicInfoErrors = validateForm(
-      dataToValidate,
-      profileBasicInfoSchema
-    );
-
-    // If address has any data, validate it
-    const hasAddressData = Object.values(dataToValidate.address || {}).some(
-      (val) => val && val.trim() !== ""
-    );
-
-    if (hasAddressData) {
-      const addressErrors = validateForm(
-        { address: dataToValidate.address },
-        profileAddressSchema
+  const validateFormData = useCallback(
+    (dataToValidate = formData) => {
+      // Validate basic info (name and phone)
+      const basicInfoErrors = validateForm(
+        dataToValidate,
+        profileBasicInfoSchema
       );
 
-      const newErrors = { ...basicInfoErrors, ...addressErrors };
-      setFieldErrors(newErrors);
-      return newErrors;
-    } else {
-      setFieldErrors(basicInfoErrors);
-      return basicInfoErrors;
-    }
-  }, []);
+      // If address has any data, validate it
+      const hasAddressData = Object.values(dataToValidate.address || {}).some(
+        (val) => val && val.trim() !== ""
+      );
+
+      if (hasAddressData) {
+        const addressErrors = validateForm(
+          { address: dataToValidate.address },
+          profileAddressSchema
+        );
+
+        const newErrors = { ...basicInfoErrors, ...addressErrors };
+        setFieldErrors(newErrors);
+        return newErrors;
+      } else {
+        setFieldErrors(basicInfoErrors);
+        return basicInfoErrors;
+      }
+    },
+    [formData]
+  );
 
   // Handle form input changes
   const handleInputChange = useCallback((e) => {
