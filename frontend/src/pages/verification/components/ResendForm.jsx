@@ -36,13 +36,13 @@ const ResendForm = ({
     return (
       <div className="verification-resend-success" aria-live="polite">
         <p>Verification email sent! Please check your inbox.</p>
-        <Link
-          to="/login"
-          className="verification-btn-secondary verification-mt-3"
-          tabIndex="0"
-          aria-label="Return to Login"
-        >
-          Return to Login
+        <Link to="/login">
+          <FormSubmitButton
+            text="Return to Login"
+            variant="secondary"
+            type="button"
+            className="verification-mt-3"
+          />
         </Link>
       </div>
     );

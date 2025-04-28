@@ -7,6 +7,7 @@ import { useAuth } from "../../hooks/state";
 // Components
 import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
 import StatusIcon from "./components/StatusIcon";
+import { FormSubmitButton } from "../../components/form";
 
 // Styles
 import "./styles/Verification.css";
@@ -61,12 +62,6 @@ const VerifyPending = () => {
     }
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter" || e.key === " ") {
-      handleResendVerification();
-    }
-  };
-
   return (
     <>
       <Breadcrumb
@@ -113,34 +108,26 @@ const VerifyPending = () => {
             ) : null}
 
             <div className="verification-actions-container">
-              <button
+              <FormSubmitButton
                 onClick={handleResendVerification}
-                onKeyDown={handleKeyDown}
                 disabled={resendStatus.loading || resendStatus.success}
-                className="verification-btn-secondary"
-                tabIndex="0"
-                aria-label={
-                  resendStatus.loading
-                    ? "Sending verification email"
-                    : resendStatus.success
-                    ? "Email has been sent"
-                    : "Resend verification email"
+                text={
+                  resendStatus.success
+                    ? "Email Sent!"
+                    : "Resend Verification Email"
                 }
-              >
-                {resendStatus.loading
-                  ? "Sending..."
-                  : resendStatus.success
-                  ? "Email Sent!"
-                  : "Resend Verification Email"}
-              </button>
+                loadingText="Sending..."
+                isLoading={resendStatus.loading}
+                variant="secondary"
+                type="button"
+              />
 
-              <Link
-                to="/login"
-                className="verification-btn-primary"
-                tabIndex="0"
-                aria-label="Return to login page"
-              >
-                Return to Login
+              <Link to="/login">
+                <FormSubmitButton
+                  text="Return to Login"
+                  variant="primary"
+                  type="button"
+                />
               </Link>
             </div>
 

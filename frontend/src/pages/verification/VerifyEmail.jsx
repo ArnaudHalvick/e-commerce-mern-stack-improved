@@ -7,6 +7,7 @@ import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
 import Spinner from "../../components/ui/spinner";
 import StatusMessage from "./components/StatusMessage";
 import ResendForm from "./components/ResendForm";
+import { FormSubmitButton } from "../../components/form";
 
 // Hooks
 import useEmailVerification from "./hooks/useEmailVerification";
@@ -65,31 +66,28 @@ const VerifyEmail = () => {
             <div className="verification-success-actions">
               <p>You can now enjoy all features of our platform.</p>
               {isAuthenticated ? (
-                <Link
-                  to="/profile"
-                  className="verification-btn-primary"
-                  tabIndex="0"
-                  aria-label="Go to your profile"
-                >
-                  Go to Your Profile
+                <Link to="/profile">
+                  <FormSubmitButton
+                    text="Go to Your Profile"
+                    variant="primary"
+                    type="button"
+                  />
                 </Link>
               ) : (
-                <Link
-                  to="/login"
-                  className="verification-btn-primary"
-                  tabIndex="0"
-                  aria-label="Login now"
-                >
-                  Login Now
+                <Link to="/login">
+                  <FormSubmitButton
+                    text="Login Now"
+                    variant="primary"
+                    type="button"
+                  />
                 </Link>
               )}
-              <Link
-                to="/"
-                className="verification-btn-secondary"
-                tabIndex="0"
-                aria-label="Continue shopping"
-              >
-                Continue Shopping
+              <Link to="/">
+                <FormSubmitButton
+                  text="Continue Shopping"
+                  variant="secondary"
+                  type="button"
+                />
               </Link>
             </div>
           ) : (
@@ -97,13 +95,13 @@ const VerifyEmail = () => {
               {resendForm.success ? (
                 <div className="verification-resend-success">
                   <p>Verification email sent! Please check your inbox.</p>
-                  <Link
-                    to="/login"
-                    className="verification-btn-secondary verification-mt-3"
-                    tabIndex="0"
-                    aria-label="Return to login"
-                  >
-                    Return to Login
+                  <Link to="/login">
+                    <FormSubmitButton
+                      text="Return to Login"
+                      variant="secondary"
+                      type="button"
+                      className="verification-mt-3"
+                    />
                   </Link>
                 </div>
               ) : (
