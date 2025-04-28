@@ -66,7 +66,7 @@ const VerifyEmail = () => {
             <div className="verification-success-actions">
               <p>You can now enjoy all features of our platform.</p>
               {isAuthenticated ? (
-                <Link to="/profile">
+                <Link to="/profile" className="verification-action-link">
                   <FormSubmitButton
                     text="Go to Your Profile"
                     variant="primary"
@@ -74,7 +74,7 @@ const VerifyEmail = () => {
                   />
                 </Link>
               ) : (
-                <Link to="/login">
+                <Link to="/login" className="verification-action-link">
                   <FormSubmitButton
                     text="Login Now"
                     variant="primary"
@@ -82,7 +82,7 @@ const VerifyEmail = () => {
                   />
                 </Link>
               )}
-              <Link to="/">
+              <Link to="/" className="verification-action-link">
                 <FormSubmitButton
                   text="Continue Shopping"
                   variant="secondary"
