@@ -41,7 +41,7 @@ const VerifyEmail = () => {
           <Spinner
             message="Verifying your email..."
             size="medium"
-            className="verify-email-spinner"
+            className="verification-email-spinner"
           />
         </div>
       </div>
@@ -62,12 +62,12 @@ const VerifyEmail = () => {
           success={verificationStatus.success}
         >
           {verificationStatus.success ? (
-            <div className="success-actions">
+            <div className="verification-success-actions">
               <p>You can now enjoy all features of our platform.</p>
               {isAuthenticated ? (
                 <Link
                   to="/profile"
-                  className="btn-primary"
+                  className="verification-btn-primary"
                   tabIndex="0"
                   aria-label="Go to your profile"
                 >
@@ -76,7 +76,7 @@ const VerifyEmail = () => {
               ) : (
                 <Link
                   to="/login"
-                  className="btn-primary"
+                  className="verification-btn-primary"
                   tabIndex="0"
                   aria-label="Login now"
                 >
@@ -85,7 +85,7 @@ const VerifyEmail = () => {
               )}
               <Link
                 to="/"
-                className="btn-secondary"
+                className="verification-btn-secondary"
                 tabIndex="0"
                 aria-label="Continue shopping"
               >
@@ -93,13 +93,13 @@ const VerifyEmail = () => {
               </Link>
             </div>
           ) : (
-            <div className="error-actions">
+            <div className="verification-error-actions">
               {resendForm.success ? (
-                <div className="resend-success">
+                <div className="verification-resend-success">
                   <p>Verification email sent! Please check your inbox.</p>
                   <Link
                     to="/login"
-                    className="btn-secondary mt-3"
+                    className="verification-btn-secondary verification-mt-3"
                     tabIndex="0"
                     aria-label="Return to login"
                   >

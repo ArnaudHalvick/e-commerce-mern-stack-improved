@@ -11,7 +11,7 @@ import Spinner from "../../../components/ui/spinner";
 const StatusIcon = ({ status }) => {
   return (
     <div
-      className={`status-icon ${status}`}
+      className={`verification-status-icon ${status}`}
       role="img"
       aria-label={
         status === "loading"

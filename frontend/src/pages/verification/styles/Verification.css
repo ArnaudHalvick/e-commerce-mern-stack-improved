@@ -82,8 +82,8 @@
   margin-bottom: var(--spacing-6);
 }
 
-.btn-primary,
-.btn-secondary {
+.verification-btn-primary,
+.verification-btn-secondary {
   padding: var(--spacing-3) var(--spacing-8);
   border-radius: var(--border-radius-full);
   font-weight: var(--font-weight-semibold);
@@ -99,34 +99,34 @@
   box-shadow: var(--shadow-sm);
 }
 
-.btn-primary {
+.verification-btn-primary {
   background-color: var(--color-accent);
   color: white;
   border: none;
   box-shadow: 0 5px 15px rgba(248, 86, 6, 0.25);
 }
 
-.btn-primary:hover,
-.btn-primary:focus {
+.verification-btn-primary:hover,
+.verification-btn-primary:focus {
   background-color: var(--color-accent-dark);
   box-shadow: 0 8px 20px rgba(248, 86, 6, 0.35);
   transform: translateY(-3px);
   outline: none;
 }
 
-.btn-primary:active {
+.verification-btn-primary:active {
   transform: translateY(-1px);
   box-shadow: 0 5px 15px rgba(248, 86, 6, 0.2);
 }
 
-.btn-secondary {
+.verification-btn-secondary {
   background-color: var(--color-background);
   color: var(--color-text-secondary);
   border: var(--border-width-medium) solid var(--color-border);
 }
 
-.btn-secondary:hover,
-.btn-secondary:focus {
+.verification-btn-secondary:hover,
+.verification-btn-secondary:focus {
   background-color: var(--color-background-light);
   border-color: var(--color-border-dark);
   transform: translateY(-3px);
@@ -134,19 +134,19 @@
   outline: none;
 }
 
-.btn-secondary:active {
+.verification-btn-secondary:active {
   transform: translateY(-1px);
   box-shadow: var(--shadow-sm);
 }
 
-.btn-secondary:disabled {
+.verification-btn-secondary:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
 }
 
-.mt-3 {
+.verification-mt-3 {
   margin-top: var(--spacing-3);
 }
 
@@ -157,12 +157,12 @@
   padding: var(--spacing-6) 0;
 }
 
-.form-group {
+.verification-form-group {
   margin-bottom: var(--spacing-6);
   text-align: left;
 }
 
-.form-group label {
+.verification-form-group label {
   display: block;
   margin-bottom: var(--spacing-2);
   font-weight: var(--font-weight-medium);
@@ -170,7 +170,7 @@
   font-size: var(--font-size-sm);
 }
 
-.form-group input {
+.verification-form-group input {
   width: 100%;
   padding: var(--spacing-3) var(--spacing-4);
   font-size: var(--font-size-md);
@@ -180,26 +180,26 @@
   transition: border-color var(--transition-duration-normal) ease;
 }
 
-.form-group input:focus {
+.verification-form-group input:focus {
   outline: none;
   border-color: var(--color-accent);
   box-shadow: 0 0 0 2px rgba(248, 86, 6, 0.15);
 }
 
-.error-text {
+.verification-error-text {
   color: var(--color-danger);
   font-size: var(--font-size-sm);
   margin-top: var(--spacing-2);
 }
 
-.success-text {
+.verification-success-text {
   color: var(--color-success);
   font-size: var(--font-size-sm);
   margin-top: var(--spacing-2);
 }
 
 /* Status components */
-.status-icon {
+.verification-status-icon {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -210,19 +210,39 @@
   font-size: var(--font-size-3xl);
 }
 
-.status-icon.success {
+.verification-status-icon.success {
   background-color: rgba(40, 167, 69, 0.1);
   color: var(--color-success);
 }
 
-.status-icon.error {
+.verification-status-icon.error {
   background-color: rgba(220, 53, 69, 0.1);
   color: var(--color-danger);
 }
 
-.status-icon.loading {
+.verification-status-icon.loading {
   background-color: rgba(13, 110, 253, 0.1);
   color: var(--color-primary);
+}
+
+.verification-success-actions {
+  margin-top: var(--spacing-6);
+}
+
+.verification-error-actions {
+  margin-top: var(--spacing-6);
+}
+
+.verification-resend-success {
+  margin-top: var(--spacing-6);
+  padding: var(--spacing-4);
+  background-color: rgba(40, 167, 69, 0.05);
+  border-radius: var(--border-radius-md);
+}
+
+.verification-resend-error {
+  color: var(--color-danger);
+  margin: var(--spacing-4) 0;
 }
 
 /* Responsive adjustments */
@@ -239,14 +259,14 @@
     padding: var(--spacing-8) var(--spacing-6);
   }
 
-  .btn-primary,
-  .btn-secondary {
+  .verification-btn-primary,
+  .verification-btn-secondary {
     padding: var(--spacing-3) var(--spacing-6);
     font-size: var(--font-size-sm);
     margin: 0 var(--spacing-2) var(--spacing-3);
   }
 
-  .status-icon {
+  .verification-status-icon {
     width: 60px;
     height: 60px;
     font-size: var(--font-size-2xl);
@@ -255,12 +275,12 @@
 
 @media (max-width: 480px) {
   .verification-container {
+    padding: 0 var(--spacing-3);
     margin: var(--spacing-8) auto;
-    padding: 0 var(--spacing-4);
   }
 
   .verification-content {
-    padding: var(--spacing-8) var(--spacing-5);
+    padding: var(--spacing-8) var(--spacing-4);
   }
 
   .verification-title {

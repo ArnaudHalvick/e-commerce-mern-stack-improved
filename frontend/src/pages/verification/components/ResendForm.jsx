@@ -34,11 +34,11 @@ const ResendForm = ({
   // Early return for success state
   if (success) {
     return (
-      <div className="resend-success" aria-live="polite">
+      <div className="verification-resend-success" aria-live="polite">
         <p>Verification email sent! Please check your inbox.</p>
         <Link
           to="/login"
-          className="btn-secondary mt-3"
+          className="verification-btn-secondary verification-mt-3"
           tabIndex="0"
           aria-label="Return to Login"
         >

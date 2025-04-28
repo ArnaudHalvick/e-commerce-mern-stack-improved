@@ -87,7 +87,7 @@ const VerifyPending = () => {
             registration.
           </p>
 
-          <div className="info-box" role="alert">
+          <div className="verification-info-box" role="alert">
             <p>
               <i className="fas fa-info-circle" aria-hidden="true"></i>
               If you don't see the email, please check your spam or junk folder.
@@ -95,23 +95,27 @@ const VerifyPending = () => {
           </div>
 
           {resendStatus.success ? (
-            <div className="resend-success" role="status" aria-live="polite">
+            <div
+              className="verification-resend-success"
+              role="status"
+              aria-live="polite"
+            >
               <p>
                 A new verification email has been sent! Please check your inbox.
               </p>
             </div>
           ) : resendStatus.error ? (
-            <div className="resend-error" role="alert">
+            <div className="verification-resend-error" role="alert">
               <p>{resendStatus.error}</p>
             </div>
           ) : null}
 
-          <div className="actions-container">
+          <div className="verification-actions-container">
             <button
               onClick={handleResendVerification}
               onKeyDown={handleKeyDown}
               disabled={resendStatus.loading || resendStatus.success}
-              className="btn-secondary"
+              className="verification-btn-secondary"
               tabIndex="0"
               aria-label={
                 resendStatus.loading
@@ -130,7 +134,7 @@ const VerifyPending = () => {
 
             <Link
               to="/login"
-              className="btn-primary"
+              className="verification-btn-primary"
               tabIndex="0"
               aria-label="Return to login page"
             >
@@ -138,7 +142,7 @@ const VerifyPending = () => {
             </Link>
           </div>
 
-          <div className="help-text">
+          <div className="verification-help-text">
             <p>
               After verifying your email, you'll be able to log in and enjoy all
               the features of our store.
