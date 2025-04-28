@@ -234,9 +234,7 @@ function App() {
             path="/order-confirmation/:orderId"
             element={
               <ProtectedRoute>
-                <EmailVerificationGuard>
-                  <OrderConfirmationPage />
-                </EmailVerificationGuard>
+                <OrderConfirmationPage />
               </ProtectedRoute>
             }
           />
