@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { requestEmailVerification } from "../../redux/slices/userSlice";
+import { useAuth } from "../../hooks/state";
 
 // Components
 import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
@@ -17,7 +18,10 @@ import "./styles/VerifyPending.css";
 const VerifyPending = () => {
   const location = useLocation();
   const dispatch = useDispatch();
-  const email = location.state?.email || "";
+  const { user } = useAuth();
+
+  // Get email from location state first (for registration flow) or fallback to user email from Redux (for redirect from protected routes)
+  const email = location.state?.email || (user ? user.email : "");
 
   const [resendStatus, setResendStatus] = useState({
     loading: false,

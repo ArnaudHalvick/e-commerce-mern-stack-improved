@@ -26,7 +26,10 @@ const EmailVerificationGuard = ({ children }) => {
   }
 
   // Check if email is verified
-  const isVerified = user?.status === "active" || user?.emailVerified === true;
+  const isVerified =
+    user?.isEmailVerified ||
+    user?.status === "active" ||
+    user?.emailVerified === true;
 
   // If email is not verified, redirect to verification page
   if (!isVerified) {
@@ -44,6 +47,7 @@ const EmailVerificationGuard = ({ children }) => {
         state={{
           from: location.pathname,
           requiresVerification: true,
+          email: user.email, // Include the user's email in the state
         }}
         replace
       />
