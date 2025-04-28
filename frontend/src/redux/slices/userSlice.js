@@ -269,11 +269,17 @@ export const requestEmailVerification = createAsyncThunk(
 // Async thunk for verifying email
 export const verifyEmail = createAsyncThunk(
   "user/verifyEmail",
-  async (token, { rejectWithValue }) => {
+  async (token, { rejectWithValue, dispatch }) => {
     try {
       const response = await axios.get(
         config.getApiUrl(`users/verify-email?token=${token}`)
       );
+
+      // If verification was successful, update the user profile to get the latest verification status
+      if (response.data.success) {
+        dispatch(fetchUserProfile());
+      }
+
       return response.data;
     } catch (error) {
       return rejectWithValue(
@@ -329,7 +335,7 @@ export const logoutUser = createAsyncThunk(
 const initialState = {
   user: null,
   isAuthenticated: false,
-  isEmailVerified: false,
+  needsVerification: false,
   verificationRequested: false,
   emailChangeRequested: false,
   loading: false,
@@ -547,9 +553,10 @@ const userSlice = createSlice({
         state.error = null;
       })
       .addCase(verifyEmail.fulfilled, (state) => {
-        state.isEmailVerified = true;
+        // We don't set isEmailVerified directly here - let the fetchUserProfile handle it
         state.loading = false;
         state.loadingStates.verifyingEmail = false;
+        state.needsVerification = false;
       })
       .addCase(verifyEmail.rejected, (state, action) => {
         state.loading = false;

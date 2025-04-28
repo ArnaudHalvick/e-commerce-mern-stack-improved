@@ -1,6 +1,6 @@
 import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../hooks/state";
-import React from "react";
+import React, { useEffect } from "react";
 
 /**
  * EmailVerificationGuard component that protects routes that require verified email
@@ -10,6 +10,24 @@ const EmailVerificationGuard = ({ children }) => {
   const { isAuthenticated, user, loading, quietLoading, initialLoadComplete } =
     useAuth();
   const location = useLocation();
+
+  // Check if email is verified - do this early for cleaner code
+  const isVerified =
+    user?.isEmailVerified ||
+    user?.status === "active" ||
+    user?.emailVerified === true;
+
+  // Dispatch event when needed but outside conditional rendering
+  useEffect(() => {
+    if (isAuthenticated && user && !isVerified) {
+      const customEvent = new CustomEvent("auth:emailVerificationRequired", {
+        detail: {
+          message: "Email verification is required for this action.",
+        },
+      });
+      window.dispatchEvent(customEvent);
+    }
+  }, [isAuthenticated, user, isVerified]);
 
   // If auth is still being determined and not in quiet loading mode, render placeholder
   if ((loading && !quietLoading) || !initialLoadComplete) {
@@ -25,22 +43,9 @@ const EmailVerificationGuard = ({ children }) => {
     return <Navigate to="/login" state={{ from: location.pathname }} replace />;
   }
 
-  // Check if email is verified
-  const isVerified =
-    user?.isEmailVerified ||
-    user?.status === "active" ||
-    user?.emailVerified === true;
-
   // If email is not verified, redirect to verification page
   if (!isVerified) {
-    // Dispatch a custom event that the auth system can listen for
-    const customEvent = new CustomEvent("auth:emailVerificationRequired", {
-      detail: {
-        message: "Email verification is required for this action.",
-      },
-    });
-    window.dispatchEvent(customEvent);
-
+    // Immediately redirect without rendering any content from children
     return (
       <Navigate
         to="/verify-pending"
