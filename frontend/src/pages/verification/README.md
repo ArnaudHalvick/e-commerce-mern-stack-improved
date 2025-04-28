@@ -1,6 +1,6 @@
 # Verification Module
 
-This module handles all the email and password verification processes in the e-commerce application. It follows a modular architecture with reusable components, custom hooks, and separated styling for better maintainability and code reuse.
+This module handles all the email verification processes in the e-commerce application. It follows a modular architecture with reusable components, custom hooks, and separated styling for better maintainability and code reuse.
 
 ## Directory Structure
 
@@ -11,14 +11,12 @@ verification/
 │   ├── StatusMessage.jsx   # Display status messages with appropriate styling
 │   └── ResendForm.jsx      # Form for resending verification emails
 ├── hooks/                  # Custom React hooks
-│   ├── useEmailVerification.js    # Logic for email verification
-│   └── usePasswordVerification.js # Logic for password change verification
+│   └── useEmailVerification.js    # Logic for email verification
 ├── styles/                 # CSS styles
 │   ├── Verification.css    # Base styles for all verification pages
 │   └── VerifyPending.css   # Specific styles for the pending verification page
 ├── VerifyEmail.jsx         # Email verification page component
 ├── VerifyPending.jsx       # Pending verification page component
-├── VerifyPasswordChange.jsx # Password change verification page component
 ├── index.js                # Exports all components and hooks
 └── README.md               # This documentation file
 ```
@@ -45,17 +43,6 @@ Displayed after a user registers and needs to verify their email address.
 - Shows instructions for completing the verification process
 - Allows resending verification emails if needed
 - Provides clear guidance for checking spam folders
-
-### 3. VerifyPasswordChange
-
-Handles the verification of password change requests. This page is accessed when a user clicks on the password change confirmation link sent to their email.
-
-**Features:**
-
-- Validates password change tokens
-- Displays appropriate success or error messages
-- Handles expired tokens with clear instructions
-- Provides relevant navigation based on verification status
 
 ## Reusable Components
 
@@ -86,14 +73,6 @@ Handles all logic related to email verification:
 - Handling token expiration
 - Resending verification emails
 
-### 2. usePasswordVerification
-
-Handles all logic related to password change verification:
-
-- Verifying password change tokens
-- Managing verification states
-- Detecting expired tokens
-
 ## Styling
 
 The module uses a modular CSS approach with:
@@ -121,7 +100,6 @@ To use these components in other parts of the application:
 import {
   VerifyEmail,
   VerifyPending,
-  VerifyPasswordChange,
   StatusMessage,
   StatusIcon,
   ResendForm,

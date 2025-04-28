@@ -13,7 +13,6 @@ import {
   registerUser,
   verifyToken,
   setInitialized,
-  verifyPasswordChange,
   requestEmailChange,
   logoutUser,
 } from "../../redux/slices/userSlice";
@@ -622,7 +621,6 @@ const useAuth = () => {
     requestEmailVerification: (email) =>
       dispatch(requestEmailVerification(email)),
     verifyEmail: (token) => dispatch(verifyEmail(token)),
-    verifyPasswordChange: (token) => dispatch(verifyPasswordChange(token)),
     requestEmailChange: (email) => dispatch(requestEmailChange(email)),
   };
 };

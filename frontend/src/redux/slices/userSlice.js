@@ -283,38 +283,6 @@ export const verifyEmail = createAsyncThunk(
   }
 );
 
-// Async thunk for verifying password change
-export const verifyPasswordChange = createAsyncThunk(
-  "user/verifyPasswordChange",
-  async (token, { rejectWithValue }) => {
-    try {
-      const url = config.getApiUrl(
-        `users/verify-password-change?token=${token}`
-      );
-      const response = await axios.get(url);
-      return response.data;
-    } catch (error) {
-      if (error.response && error.response.data) {
-        const errorData = error.response.data;
-        if (errorData.tokenExpired) {
-          return rejectWithValue({
-            message:
-              errorData.message ||
-              "Token has expired. Please request a new password change.",
-            tokenExpired: true,
-          });
-        }
-        return rejectWithValue({
-          message: errorData.message || "Failed to verify password change",
-        });
-      }
-      return rejectWithValue({
-        message: "Failed to verify password change. Please try again later.",
-      });
-    }
-  }
-);
-
 // Async thunk for requesting email change
 export const requestEmailChange = createAsyncThunk(
   "user/requestEmailChange",
@@ -586,24 +554,6 @@ const userSlice = createSlice({
       .addCase(verifyEmail.rejected, (state, action) => {
         state.loading = false;
         state.loadingStates.verifyingEmail = false;
-        state.error = action.payload;
-      })
-
-      // verifyPasswordChange
-      .addCase(verifyPasswordChange.pending, (state) => {
-        state.loading = true;
-        state.loadingStates.changingPassword = true;
-        state.error = null;
-      })
-      .addCase(verifyPasswordChange.fulfilled, (state) => {
-        state.loading = false;
-        state.loadingStates.changingPassword = false;
-        state.passwordChanged = true;
-        state.passwordChangePending = false;
-      })
-      .addCase(verifyPasswordChange.rejected, (state, action) => {
-        state.loading = false;
-        state.loadingStates.changingPassword = false;
         state.error = action.payload;
       })
 

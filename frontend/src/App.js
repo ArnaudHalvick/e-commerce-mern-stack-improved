@@ -24,11 +24,7 @@ import ForgotPassword from "./pages/auth/ForgotPassword";
 import ResetPassword from "./pages/auth/ResetPassword";
 import NotFound from "./pages/notFound";
 import ErrorDemoPage from "./pages/errorDemo/errorDemo";
-import {
-  VerifyEmail,
-  VerifyPending,
-  VerifyPasswordChange,
-} from "./pages/verification";
+import { VerifyEmail, VerifyPending } from "./pages/verification";
 import Profile from "./pages/profile/index.jsx";
 
 // Assets
@@ -208,10 +204,6 @@ function App() {
           {/* Verification Routes - Public */}
           <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="/verify-pending" element={<VerifyPending />} />
-          <Route
-            path="/verify-password-change"
-            element={<VerifyPasswordChange />}
-          />
 
           {/* Demo Routes - Public */}
           <Route path="/error-demo" element={<ErrorDemoPage />} />
