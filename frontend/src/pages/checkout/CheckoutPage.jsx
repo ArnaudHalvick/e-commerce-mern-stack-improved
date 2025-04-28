@@ -24,6 +24,7 @@ const CheckoutPage = () => {
     handleShippingInfoChange,
     isShippingInfoValid,
     getFormattedShippingInfo,
+    isLoading: isLoadingShippingInfo,
     COUNTRIES,
   } = useShippingInfo();
 
@@ -79,6 +80,7 @@ const CheckoutPage = () => {
           shippingInfo={shippingInfo}
           handleShippingInfoChange={handleShippingInfoChange}
           countries={COUNTRIES}
+          isLoading={isLoadingShippingInfo}
         />
 
         {/* Payment Information Section */}

@@ -12,6 +12,7 @@ const useShippingInfo = () => {
     postalCode: "",
     phoneNumber: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   // Load user profile data once on component mount
   useEffect(() => {
@@ -22,6 +23,7 @@ const useShippingInfo = () => {
         return; // Exit if not logged in
       }
 
+      setIsLoading(true);
       try {
         // Get user data
         const response = await authService.getCurrentUser();
@@ -49,6 +51,8 @@ const useShippingInfo = () => {
       } catch (err) {
         // Silently fail - form will remain empty
         console.error("Error loading user profile:", err);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -114,6 +118,7 @@ const useShippingInfo = () => {
     handleShippingInfoChange,
     isShippingInfoValid,
     getFormattedShippingInfo,
+    isLoading,
     COUNTRIES,
   };
 };

@@ -120,3 +120,21 @@
     height: 42px;
   }
 }
+
+/* Shipping form loader styles */
+.shipping-form-loader {
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .shipping-form-row {
+    flex-direction: column;
+  }
+
+  .shipping-form-row .shipping-form-group {
+    width: 100%;
+  }
+}
