@@ -22,9 +22,7 @@ const getFrontendUrl = () => {
     Current working directory: ${process.cwd()}
   `);
 
-  const frontendUrl =
-    process.env.FRONTEND_URL ||
-    (env === "development" ? "http://localhost:3000" : "https://159.65.230.12");
+  const frontendUrl = process.env.FRONTEND_URL;
 
   // Log the frontend URL for debugging
   logger.debug(`[urlUtils] Using frontend URL: ${frontendUrl} (env: ${env})`);
