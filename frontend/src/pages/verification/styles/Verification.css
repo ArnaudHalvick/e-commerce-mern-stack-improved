@@ -10,7 +10,7 @@
 }
 
 .verification-container {
-  margin: var(--spacing-12) auto;
+  margin: 0 auto;
   max-width: 900px;
   padding: 0 var(--spacing-6);
 }
@@ -276,7 +276,7 @@
 @media (max-width: 480px) {
   .verification-container {
     padding: 0 var(--spacing-3);
-    margin: var(--spacing-8) auto;
+    margin: 0 auto;
   }
 
   .verification-content {
