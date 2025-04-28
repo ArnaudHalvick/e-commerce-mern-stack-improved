@@ -90,7 +90,7 @@ const VerifyPending = () => {
               </p>
             </div>
 
-            {resendStatus.success ? (
+            {resendStatus.success && (
               <div
                 className="verification-resend-success"
                 role="status"
@@ -101,11 +101,13 @@ const VerifyPending = () => {
                   inbox.
                 </p>
               </div>
-            ) : resendStatus.error ? (
+            )}
+
+            {resendStatus.error && (
               <div className="verification-resend-error" role="alert">
                 <p>{resendStatus.error}</p>
               </div>
-            ) : null}
+            )}
 
             <div className="verification-actions-container">
               <FormSubmitButton
