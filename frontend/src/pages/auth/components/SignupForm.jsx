@@ -114,6 +114,7 @@ const SignupForm = ({
           className="auth-form__input"
           title="Please enter your name"
           autoComplete="name"
+          disabled={loading}
         />
 
         <FormInputField
@@ -129,6 +130,7 @@ const SignupForm = ({
           className="auth-form__input"
           title="Please enter a valid email address"
           autoComplete="email"
+          disabled={loading}
         />
 
         <FormInputField
@@ -149,6 +151,7 @@ const SignupForm = ({
           aria-describedby="password-validation"
           autoComplete="new-password"
           title="Please create a strong password"
+          disabled={loading}
         />
 
         <FormInputField
@@ -171,6 +174,7 @@ const SignupForm = ({
           aria-describedby="password-validation"
           autoComplete="new-password"
           title="Please confirm your password"
+          disabled={loading}
         />
 
         <SchemaPasswordValidation

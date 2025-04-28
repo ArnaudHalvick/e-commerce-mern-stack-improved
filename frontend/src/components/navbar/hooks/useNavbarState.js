@@ -74,7 +74,10 @@ const useNavbarState = () => {
     // Early return if in transition
     if (inTransition) return;
 
-    setIsUserMenuOpen(false); // Close user menu
+    // Close user menu
+    setIsUserMenuOpen(false);
+
+    // Call logout (which now sets inTransition internally)
     logout();
   }, [logout, inTransition]);
 

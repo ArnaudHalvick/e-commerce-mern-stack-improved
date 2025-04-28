@@ -30,13 +30,16 @@ const Auth = ({ initialState }) => {
   const formType = initialState === "Signup" ? "register" : "login";
   const {
     formData,
-    loading,
+    loading: formLoading,
     fieldErrors,
     handleChange,
     handleSubmit,
     handleBlur,
     formErrors,
   } = useAuthForm(formType);
+
+  // Determine if we're in a loading state (either form submission or auth transitions)
+  const isLoading = formLoading || inTransition;
 
   // Show success message if redirected from password reset
   useEffect(() => {
@@ -110,7 +113,7 @@ const Auth = ({ initialState }) => {
         <LoginForm
           formData={formData}
           handleChange={handleChange}
-          loading={loading || inTransition}
+          loading={isLoading}
           errors={fieldErrors}
           handleSubmit={handleSubmit}
           handleBlur={handleBlur}
@@ -119,7 +122,7 @@ const Auth = ({ initialState }) => {
         <SignupForm
           formData={formData}
           handleChange={handleChange}
-          loading={loading || inTransition}
+          loading={isLoading}
           errors={fieldErrors}
           handleSubmit={handleSubmit}
           handleBlur={handleBlur}
@@ -133,6 +136,7 @@ const Auth = ({ initialState }) => {
         <Link
           className="auth-page__switch-link"
           to={authMode === "Signup" ? "/login" : "/signup"}
+          onClick={(e) => isLoading && e.preventDefault()}
         >
           {authMode === "Signup" ? "Sign in" : "Sign up"}
         </Link>

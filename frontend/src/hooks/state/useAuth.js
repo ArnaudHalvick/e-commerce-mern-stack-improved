@@ -467,6 +467,10 @@ const useAuth = () => {
     try {
       setInTransition(true);
       setIsInitialLoad(false);
+
+      // Add a small delay to ensure the loading spinner is visible
+      await new Promise((resolve) => setTimeout(resolve, 300));
+
       const resultAction = await dispatch(loginUser({ email, password }));
 
       if (loginUser.fulfilled.match(resultAction)) {
@@ -493,7 +497,10 @@ const useAuth = () => {
         message: err.message || "Login failed. Please try again.",
       };
     } finally {
-      setInTransition(false);
+      // Add a slight delay before removing loading state to ensure smooth transition
+      setTimeout(() => {
+        setInTransition(false);
+      }, 300);
     }
   };
 
@@ -558,12 +565,24 @@ const useAuth = () => {
    * Log out the current user
    */
   const logout = useCallback(() => {
+    // First immediately dispatch clear user to remove display name
+    dispatch(clearUser());
+    dispatch(resetCart());
+
+    // Then set the transition state for the loading spinner
     setInTransition(true);
     setIsInitialLoad(false);
 
     // Clear user cache
     localStorage.removeItem(CACHED_USER_KEY);
     localStorage.removeItem(CACHED_USER_TIMESTAMP);
+    localStorage.removeItem("auth-token");
+    localStorage.setItem("user-logged-out", "true");
+    setIsUserLoggedOut(true);
+
+    // Add a minimum loading time to ensure the spinner is visible
+    const startTime = Date.now();
+    const minLoadingTime = 800; // ms
 
     authService
       .logout()
@@ -571,11 +590,18 @@ const useAuth = () => {
         // Silent catch - we're logging out anyway
       })
       .finally(() => {
-        handleLogout();
-        setInTransition(false);
-        navigate("/");
+        // Calculate remaining time to ensure minimum loading duration
+        const elapsedTime = Date.now() - startTime;
+        const remainingTime = Math.max(0, minLoadingTime - elapsedTime);
+
+        // Add a delay if needed to meet minimum loading time
+        setTimeout(() => {
+          // Don't call handleLogout since we already did the clear user steps
+          setInTransition(false);
+          navigate("/");
+        }, remainingTime);
       });
-  }, [handleLogout, navigate]);
+  }, [navigate, dispatch]);
 
   /**
    * Update user profile

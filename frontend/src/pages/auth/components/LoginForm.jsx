@@ -44,6 +44,7 @@ const LoginForm = ({
           className="auth-form__input"
           title="Please enter a valid email address"
           autoComplete="username email"
+          disabled={loading}
         />
 
         <FormInputField
@@ -59,6 +60,7 @@ const LoginForm = ({
           className="auth-form__input"
           autoComplete="current-password"
           title="Please enter your password"
+          disabled={loading}
         />
 
         <div className="auth-form__forgot-password">

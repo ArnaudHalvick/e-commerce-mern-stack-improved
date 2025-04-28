@@ -10,6 +10,9 @@ import {
   Cart,
 } from "./components";
 
+// Spinner component
+import { InlineSpinner } from "../ui/spinner";
+
 // Internal Hooks
 import { useNavbarState } from "./hooks";
 
@@ -49,7 +52,13 @@ const Navbar = () => {
       />
 
       <div className="navbar-login-cart">
-        {isAuthenticated ? (
+        {/* When in transition during logout, show the loading state without the username */}
+        {inTransition ? (
+          <div className="navbar-loading-state">
+            <InlineSpinner size="small" />
+            <span className="navbar-loading-text">Loading...</span>
+          </div>
+        ) : isAuthenticated ? (
           <AuthenticatedUser
             displayName={displayName}
             isUserMenuOpen={isUserMenuOpen}

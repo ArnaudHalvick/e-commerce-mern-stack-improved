@@ -176,6 +176,9 @@ const useAuthForm = (formType = "login") => {
       setLoading(true);
 
       try {
+        // Add a small delay to ensure loading state is visible
+        await new Promise((resolve) => setTimeout(resolve, 300));
+
         if (formType === "login") {
           // Call the auth API to get the token
           const result = await authService.login(
@@ -219,7 +222,10 @@ const useAuthForm = (formType = "login") => {
         // Use the error redux instead of console.error in production
         setFormError(error);
       } finally {
-        setLoading(false);
+        // Add a small delay before removing loading state to ensure a smooth user experience
+        setTimeout(() => {
+          setLoading(false);
+        }, 300);
       }
 
       return { success: false };

@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { InlineSpinner } from "../../../components/ui/spinner";
 
 /**
  * UserDropdown Component
@@ -34,7 +35,7 @@ const UserDropdown = ({ isOpen, onClose, handleLogout, inTransition }) => {
         disabled={inTransition}
         aria-label="Logout from account"
       >
-        Logout
+        {inTransition ? <InlineSpinner size="small" /> : "Logout"}
       </button>
     </div>
   );

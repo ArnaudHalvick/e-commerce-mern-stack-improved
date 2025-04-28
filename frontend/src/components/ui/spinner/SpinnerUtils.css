@@ -12,8 +12,19 @@
 /* Inline Spinner */
 .inline-spinner {
   display: inline-flex;
-  margin-left: var(--spacing-2);
+  margin-right: var(--spacing-2);
   height: auto !important;
+}
+
+/* Make spinner more visible in navbar */
+.navbar-loading-state .inline-spinner {
+  margin-right: var(--spacing-2);
+}
+
+.navbar-loading-state .spinner-small {
+  width: 1.2rem;
+  height: 1.2rem;
+  border-width: 2px;
 }
 
 .inline-spinner .spinner {

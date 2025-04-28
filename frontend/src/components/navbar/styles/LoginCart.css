@@ -50,6 +50,25 @@
 .navbar-auth-buttons {
   display: flex;
   gap: var(--spacing-2);
+  min-width: 12.5rem; /* Ensure consistent width when showing loading state */
+  height: 2.5rem; /* Ensure consistent height */
+  align-items: center;
+  justify-content: center;
+}
+
+/* Loading state */
+.navbar-loading-state {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  min-width: 12.5rem;
+  justify-content: center;
+}
+
+.navbar-loading-text {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
 }
 
 /* Login button */

@@ -1,6 +1,7 @@
 /* User account */
 .navbar-user-account {
   position: relative;
+  min-width: 12rem; /* Ensure consistent width when showing loading state */
 }
 
 .navbar-user-trigger {
@@ -20,6 +21,14 @@
   width: 1.5rem;
   height: 1.5rem;
   border-radius: var(--border-radius-full);
+}
+
+/* Loading state for user account */
+.navbar-user-account .navbar-loading-state {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  min-width: 12rem;
 }
 
 .navbar-user-dropdown {
