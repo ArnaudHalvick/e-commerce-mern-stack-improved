@@ -10,6 +10,7 @@ import "./FormInputField.css";
  * @param {string} props.name - Input name (supports nested fields like "address.street")
  * @param {string} props.value - Input value
  * @param {Function} props.onChange - Change handler
+ * @param {Function} props.onBlur - Blur handler (optional)
  * @param {string} props.label - Input label
  * @param {string} props.placeholder - Input placeholder
  * @param {string|Object} props.error - Error message or object for nested fields
@@ -25,12 +26,14 @@ import "./FormInputField.css";
  * @param {boolean} props.disabled - Whether the field is disabled
  * @param {boolean} props.showErrorsImmediately - Whether to show errors immediately without waiting for field blur
  * @param {Array} props.options - Options for select inputs (array of {value, label} objects)
+ * @param {string} props.autoComplete - HTML autocomplete attribute value
  */
 const FormInputField = ({
   type = "text",
   name,
   value,
   onChange,
+  onBlur,
   label,
   placeholder,
   error,
@@ -46,6 +49,7 @@ const FormInputField = ({
   disabled = false,
   showErrorsImmediately = true, // Default to showing errors immediately
   options = [], // Options for select inputs
+  autoComplete,
 }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [isTouched, setIsTouched] = useState(false);
@@ -55,8 +59,12 @@ const FormInputField = ({
     setIsTouched(true); // Mark as touched when focused
   };
 
-  const handleBlur = () => {
+  const handleBlur = (e) => {
     setIsFocused(false);
+    // Call the parent's onBlur if provided
+    if (onBlur) {
+      onBlur(e);
+    }
   };
 
   // Check if we're dealing with a nested field (e.g., address.street)
@@ -191,6 +199,7 @@ const FormInputField = ({
             aria-describedby={errorMessage ? errorId : undefined}
             style={style}
             disabled={disabled}
+            autoComplete={autoComplete}
             {...combinedValidation}
           />
         )}
@@ -210,6 +219,7 @@ FormInputField.propTypes = {
   name: PropTypes.string.isRequired,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   onChange: PropTypes.func.isRequired,
+  onBlur: PropTypes.func,
   label: PropTypes.string,
   placeholder: PropTypes.string,
   error: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
@@ -230,6 +240,7 @@ FormInputField.propTypes = {
       label: PropTypes.string.isRequired,
     })
   ),
+  autoComplete: PropTypes.string,
 };
 
 export default FormInputField;
