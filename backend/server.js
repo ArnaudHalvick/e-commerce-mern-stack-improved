@@ -43,7 +43,9 @@ const httpsPort = process.env.HTTPS_PORT || 4443;
 // Middleware
 const allowedOrigins = [
   // Production URLs - read from environment variables
-  process.env.FRONTEND_URL || "https://www.mernappshopper.xyz",
+  process.env.FRONTEND_URL || "https://mernappshopper.xyz",
+  "https://www.mernappshopper.xyz",
+  "https://mernappshopper.xyz",
   // Only use HTTPS for remote hosts
   "https://159.65.230.12",
   "https://159.65.230.12:8080",
@@ -70,30 +72,48 @@ const allowedOrigins = [
 const morganFormat = process.env.NODE_ENV === "production" ? "combined" : "dev";
 app.use(morgan(morganFormat, { stream: logger.stream }));
 
-// CORS configuration
-if (process.env.NODE_ENV === "development") {
-  // More permissive CORS in development mode
-  app.use(
-    cors({
-      origin: true, // Allow any origin in development
-      credentials: true,
-      exposedHeaders: ["set-cookie"],
-    })
-  );
-  console.log("Running in development mode with permissive CORS");
-} else {
-  // Modified CORS in production - temporarily more permissive for debugging
-  app.use(
-    cors({
-      origin: true, // Allow any origin temporarily to debug the issue
-      credentials: true,
-      exposedHeaders: ["set-cookie"],
-    })
-  );
-  console.log(
-    "Running in production mode with temporarily permissive CORS for debugging"
-  );
-}
+// CORS configuration - custom handling to ensure proper headers
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+
+  // Log the request origin for debugging
+  logger.info(`Request from origin: ${origin}`);
+
+  // Only set CORS headers if the origin is present (not for same-origin requests)
+  if (origin) {
+    // Check if the origin is allowed
+    if (
+      allowedOrigins.includes(origin) ||
+      allowedOrigins.some((allowed) => origin.startsWith(allowed))
+    ) {
+      // Set the exact origin that made the request as the allowed origin
+      res.setHeader("Access-Control-Allow-Origin", origin);
+    } else {
+      // In production, log but still allow temporarily for debugging
+      logger.warn(`CORS: Allowing non-whitelisted origin: ${origin}`);
+      res.setHeader("Access-Control-Allow-Origin", origin);
+    }
+
+    // Set other CORS headers
+    res.setHeader(
+      "Access-Control-Allow-Methods",
+      "GET, POST, PUT, PATCH, DELETE, OPTIONS"
+    );
+    res.setHeader(
+      "Access-Control-Allow-Headers",
+      "Content-Type, Authorization, X-Requested-With"
+    );
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+
+    // Handle preflight requests
+    if (req.method === "OPTIONS") {
+      res.setHeader("Access-Control-Max-Age", "86400"); // 24 hours
+      return res.status(204).end();
+    }
+  }
+
+  next();
+});
 
 // Special handling for Stripe webhook (must be raw)
 app.use((req, res, next) => {
