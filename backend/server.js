@@ -42,12 +42,11 @@ const httpsPort = process.env.HTTPS_PORT || 4443;
 
 // Middleware
 const allowedOrigins = [
-  "http://159.65.230.12",
+  // Only use HTTPS for remote hosts
   "https://159.65.230.12",
-  "http://159.65.230.12:8080",
   "https://159.65.230.12:8080",
-  "http://159.65.230.12:3000",
   "https://159.65.230.12:3000",
+  // Keep both HTTP and HTTPS for localhost development
   "http://localhost:3000",
   "https://localhost:3000",
   "http://localhost",
@@ -58,6 +57,7 @@ const allowedOrigins = [
   "https://127.0.0.1:3000",
   "http://127.0.0.1:8080",
   "https://127.0.0.1:8080",
+  // Use the FRONTEND_URL from env
   process.env.FRONTEND_URL || "http://localhost:3000",
 ];
 
