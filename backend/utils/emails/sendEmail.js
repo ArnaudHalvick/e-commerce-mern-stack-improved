@@ -14,6 +14,13 @@ const logger = require("../common/logger");
  */
 const sendEmail = async (options) => {
   try {
+    // Log email attempt for debugging
+    logger.info(`Attempting to send email to: ${options.email}`, {
+      subject: options.subject,
+      hasHtml: !!options.html,
+      hasText: !!options.message,
+    });
+
     // Determine content of email - prioritize HTML if provided
     let htmlContent = options.html || null;
     let textContent = options.message || null;
@@ -47,14 +54,25 @@ const sendEmail = async (options) => {
 
     const timeoutPromise = new Promise((_, reject) => {
       setTimeout(() => {
-        reject(new Error("Email request timed out after 10 seconds"));
+        const timeoutError = new Error(
+          "Email request timed out after 10 seconds"
+        );
+        logger.error(`Email to ${options.email} timed out`, {
+          subject: options.subject,
+          error: timeoutError.message,
+        });
+        reject(timeoutError);
       }, 10000); // 10 seconds timeout
     });
 
     // Return the result of whichever promise resolves/rejects first
     return await Promise.race([emailPromise, timeoutPromise]);
   } catch (error) {
-    logger.error("Error sending email:", error);
+    logger.error(`Error sending email to ${options.email}:`, {
+      subject: options.subject,
+      error: error.message,
+      stack: error.stack,
+    });
     throw error;
   }
 };
@@ -79,20 +97,46 @@ const sendWithRestAPI = async (to, subject, htmlContent, textContent) => {
   // Log email configuration for troubleshooting
   logger.info("Email REST API Configuration:", {
     apiKeyPresent: !!process.env.RESEND_API_KEY,
+    apiKeyLength: process.env.RESEND_API_KEY
+      ? process.env.RESEND_API_KEY.length
+      : 0,
     fromEmail: process.env.FROM_EMAIL || "onboarding@resend.dev",
   });
 
   // Define from email address
   const fromEmail = process.env.FROM_EMAIL || "onboarding@resend.dev";
 
+  // Prepare the sender with a friendly name
+  const sender = `E-Commerce Store <${fromEmail}>`;
+
   return new Promise((resolve, reject) => {
     // Prepare the request data
-    const data = JSON.stringify({
-      from: `E-Commerce Store <${fromEmail}>`,
-      to: [to],
+    const payload = {
+      from: sender,
+      to: Array.isArray(to) ? to : [to], // Ensure 'to' is always an array
       subject: subject,
       html: htmlContent,
       text: textContent,
+    };
+
+    const data = JSON.stringify(payload);
+
+    // Log the complete request payload for debugging
+    logger.info(`Sending email to ${to} via Resend REST API`, {
+      from: sender,
+      to: payload.to,
+      subject: subject,
+      dataSize: data.length,
+      // Include sanitized payload without HTML content to avoid huge logs
+      payload: {
+        ...payload,
+        html: payload.html
+          ? `[HTML content: ${payload.html.length} chars]`
+          : null,
+        text: payload.text
+          ? `[Text content: ${payload.text.length} chars]`
+          : null,
+      },
     });
 
     // Configure the request options
@@ -135,20 +179,31 @@ const sendWithRestAPI = async (to, subject, htmlContent, textContent) => {
             reject(new Error(`Resend API error: ${responseData}`));
           }
         } catch (error) {
-          logger.error("Error parsing Resend API response:", error);
+          logger.error("Error parsing Resend API response:", {
+            error: error.message,
+            responseData,
+            statusCode: res.statusCode,
+          });
           reject(error);
         }
       });
     });
 
     req.on("error", (error) => {
-      logger.error("Resend REST API request error:", error);
+      logger.error("Resend REST API request error:", {
+        error: error.message,
+        to: to,
+        subject: subject,
+      });
       reject(error);
     });
 
     req.on("timeout", () => {
       req.destroy();
-      logger.error("Resend REST API request timed out");
+      logger.error("Resend REST API request timed out", {
+        to: to,
+        subject: subject,
+      });
       reject(new Error("REST API request timed out"));
     });
 

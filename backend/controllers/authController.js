@@ -57,18 +57,44 @@ const registerUser = catchAsync(async (req, res, next) => {
     password,
   });
 
-  // Send verification email
-  const verificationResult = await sendVerificationEmail(user);
+  // Attempt to send verification email, but don't block registration
+  let emailSent = false;
+  let emailError = null;
 
-  if (!verificationResult.success) {
-    return next(verificationResult.error);
+  try {
+    // Send verification email
+    const verificationResult = await sendVerificationEmail(user);
+    emailSent = verificationResult.success;
+
+    if (!verificationResult.success) {
+      emailError = verificationResult.error;
+      logger.error("Failed to send verification email during registration", {
+        userId: user._id,
+        email: user.email,
+        error: verificationResult.error,
+      });
+    }
+  } catch (error) {
+    emailError = error;
+    logger.error(
+      "Exception when sending verification email during registration",
+      {
+        userId: user._id,
+        email: user.email,
+        error: error.message,
+        stack: error.stack,
+      }
+    );
   }
 
-  // Send response with token and requiresVerification flag
+  // Send response with token and verification status
   sendTokens(user, 201, res, {
-    message: "Registration successful. Please verify your email.",
+    message: emailSent
+      ? "Registration successful. Please verify your email."
+      : "Registration successful but we couldn't send a verification email. You can request verification later from your profile.",
     requiresVerification: true,
     email: user.email,
+    emailSent: emailSent,
   });
 });
 

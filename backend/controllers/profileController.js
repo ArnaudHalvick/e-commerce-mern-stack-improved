@@ -132,21 +132,46 @@ const requestEmailChange = catchAsync(async (req, res, next) => {
     return next(result.error);
   }
 
-  // Send verification email to the new address
-  const verificationResult = await sendVerificationEmail(
-    result.user,
-    true,
-    result.newEmail
-  );
+  // Attempt to send verification email but don't let errors block the process
+  let emailSent = false;
+  let emailError = null;
 
-  if (!verificationResult.success) {
-    return next(verificationResult.error);
+  try {
+    // Send verification email to the new address
+    const verificationResult = await sendVerificationEmail(
+      result.user,
+      true,
+      result.newEmail
+    );
+
+    if (verificationResult.success) {
+      emailSent = true;
+    } else {
+      emailError = verificationResult.error;
+      logger.error("Failed to send verification email for email change", {
+        userId: req.user.id,
+        newEmail: result.newEmail,
+        error: verificationResult.error,
+      });
+    }
+  } catch (error) {
+    emailError = error;
+    logger.error("Exception when sending verification email for email change", {
+      userId: req.user.id,
+      newEmail: result.newEmail,
+      error: error.message,
+      stack: error.stack,
+    });
   }
 
+  // Continue with the email change process regardless of email sending status
   res.status(200).json({
     success: true,
-    message:
-      "Verification email sent to your new address. Please verify to complete the email change.",
+    message: emailSent
+      ? "Verification email sent to your new address. Please verify to complete the email change."
+      : "Email change initiated, but we couldn't send a verification email. Please try requesting verification again later.",
+    emailSent: emailSent,
+    pendingEmail: result.newEmail,
   });
 });
 
