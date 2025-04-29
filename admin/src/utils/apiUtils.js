@@ -2,9 +2,15 @@
  * Utility functions for API URLs in the admin panel
  */
 
-// Get the base API URL from environment variables or fallback to localhost
+// Get the default protocol from environment variable or use HTTPS as fallback
+const defaultProtocol = import.meta.env.VITE_DEFAULT_PROTOCOL || "https";
+
+// Get the base API URL from environment variables or construct fallback with default protocol
 export const API_BASE_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:4000/";
+  import.meta.env.VITE_API_URL || `${defaultProtocol}://localhost:4000/`;
+
+console.log(`Admin panel using API URL: ${API_BASE_URL}`);
+console.log(`Default protocol: ${defaultProtocol}`);
 
 /**
  * Gets the base URL without the /api suffix

@@ -29,7 +29,12 @@ if (
     console.log(
       `Redirecting from ${window.location.hostname} to localhost${port}`
     );
-    window.location.replace(`http://localhost${port}${path}`);
+    // Use configured protocol or fall back to appropriate default based on environment
+    const protocol =
+      process.env.REACT_APP_DEFAULT_PROTOCOL ||
+      (process.env.NODE_ENV === "production" ? "https" : "http");
+
+    window.location.replace(`${protocol}://localhost${port}${path}`);
   }
 }
 

@@ -42,23 +42,28 @@ const httpsPort = process.env.HTTPS_PORT || 4443;
 
 // Middleware
 const allowedOrigins = [
+  // Production URLs - read from environment variables
+  process.env.FRONTEND_URL || "https://www.mernappshopper.xyz",
   // Only use HTTPS for remote hosts
   "https://159.65.230.12",
   "https://159.65.230.12:8080",
   "https://159.65.230.12:3000",
-  // Keep both HTTP and HTTPS for localhost development
-  "http://localhost:3000",
+  // For local development, support both HTTP and HTTPS
+  ...(process.env.NODE_ENV === "development"
+    ? [
+        "http://localhost:3000",
+        "http://localhost",
+        "http://localhost:8080",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:8080",
+      ]
+    : []),
+  // Always include HTTPS versions for localhost
   "https://localhost:3000",
-  "http://localhost",
   "https://localhost",
-  "http://localhost:8080",
   "https://localhost:8080",
-  "http://127.0.0.1:3000",
   "https://127.0.0.1:3000",
-  "http://127.0.0.1:8080",
   "https://127.0.0.1:8080",
-  // Use the FRONTEND_URL from env
-  process.env.FRONTEND_URL || "http://localhost:3000",
 ];
 
 // Configure Morgan for HTTP request logging

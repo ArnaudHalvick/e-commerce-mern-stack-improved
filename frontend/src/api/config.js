@@ -8,25 +8,26 @@ const isDevEnvironment =
   process.env.NODE_ENV === "development" ||
   process.env.REACT_APP_ENV === "development";
 
+// Get default protocol from environment variable or fall back to environment-specific default
+const defaultProtocol =
+  process.env.REACT_APP_DEFAULT_PROTOCOL ||
+  (isDevEnvironment ? "http" : "https");
+
 // Log the environment for debugging
 console.log(
   `Running in ${isDevEnvironment ? "development" : "production"} mode`
 );
 console.log(`API URL from env: ${process.env.REACT_APP_API_URL || "not set"}`);
+console.log(`Using default protocol: ${defaultProtocol}`);
 
 // Determine if we're running in Docker by checking hostname
 const isDockerEnvironment = window.location.hostname === "localhost";
 
 // Get the base API URL from environment variables with environment-specific fallbacks
 export const API_BASE_URL = (() => {
-  // For development, ALWAYS use localhost:4000
-  if (isDevEnvironment) {
-    console.log("Development mode: Using localhost:4000 API URL");
-    return "http://localhost:4000";
-  }
-
-  // If explicitly set in environment variables and not in development, use that
+  // If explicitly set in environment variables, use that regardless of environment
   if (process.env.REACT_APP_API_URL) {
+    console.log(`Using configured API URL: ${process.env.REACT_APP_API_URL}`);
     // When in Docker, make sure we use the actual 'localhost'
     if (
       isDockerEnvironment &&
@@ -38,8 +39,17 @@ export const API_BASE_URL = (() => {
     return process.env.REACT_APP_API_URL;
   }
 
-  // Production fallback
-  return "https://api.your-domain.com";
+  // As a fallback for development
+  if (isDevEnvironment) {
+    console.log("Development mode: Using localhost:4000 API URL");
+    return `${defaultProtocol}://localhost:4000`;
+  }
+
+  // Production fallback - should not reach here if properly configured
+  console.warn(
+    "No API URL configured, using fallback. This is not recommended for production."
+  );
+  return `${defaultProtocol}://api.your-domain.com`;
 })();
 
 console.log(`Final API Base URL: ${API_BASE_URL}`);

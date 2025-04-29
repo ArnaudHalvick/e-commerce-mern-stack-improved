@@ -19,6 +19,7 @@ const getFrontendUrl = () => {
   logger.debug(`[urlUtils] Environment details:
     NODE_ENV: ${env}
     FRONTEND_URL from env: ${process.env.FRONTEND_URL || "not set"}
+    DEFAULT_PROTOCOL: ${process.env.DEFAULT_PROTOCOL || "https"}
     Current working directory: ${process.cwd()}
   `);
 
@@ -32,12 +33,16 @@ const getFrontendUrl = () => {
     console.log(`[urlUtils] Using frontend URL: ${frontendUrl} (env: ${env})`);
   }
 
+  // Get the default protocol from environment variable or use HTTPS as fallback
+  const defaultProtocol = process.env.DEFAULT_PROTOCOL || "https";
+
   // Ensure the URL has a protocol
   if (
     !frontendUrl.startsWith("http://") &&
     !frontendUrl.startsWith("https://")
   ) {
-    return `http://${frontendUrl}`;
+    // Use the configured default protocol
+    return `${defaultProtocol}://${frontendUrl}`;
   }
 
   return frontendUrl;
