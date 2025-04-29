@@ -101,7 +101,7 @@ app.use((req, res, next) => {
     );
     res.setHeader(
       "Access-Control-Allow-Headers",
-      "Content-Type, Authorization, X-Requested-With"
+      "Content-Type, Authorization, X-Requested-With, auth-token"
     );
     res.setHeader("Access-Control-Allow-Credentials", "true");
 
@@ -194,7 +194,7 @@ app.use(
     // Allow CORS for images from any origin
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Methods", "GET, OPTIONS");
-    res.header("Access-Control-Allow-Headers", "Content-Type");
+    res.header("Access-Control-Allow-Headers", "Content-Type, auth-token");
 
     // Add Cross-Origin Resource Policy header to allow loading from different origins
     res.header("Cross-Origin-Resource-Policy", "cross-origin");
