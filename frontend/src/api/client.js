@@ -14,11 +14,6 @@ const apiClient = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  // Disable SSL certificate verification in production environment using axios defaults
-  // This is needed for self-signed certificates
-  ...(process.env.NODE_ENV === "production"
-    ? { httpsAgent: { rejectUnauthorized: false } }
-    : {}),
 });
 
 // Flag to prevent multiple refresh requests
