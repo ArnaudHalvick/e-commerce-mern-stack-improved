@@ -26,9 +26,6 @@ if (
     const path =
       window.location.pathname + window.location.search + window.location.hash;
 
-    console.log(
-      `Redirecting from ${window.location.hostname} to localhost${port}`
-    );
     // Use configured protocol or fall back to appropriate default based on environment
     const protocol =
       process.env.REACT_APP_DEFAULT_PROTOCOL ||
@@ -37,12 +34,6 @@ if (
     window.location.replace(`${protocol}://localhost${port}${path}`);
   }
 }
-
-// Log the environment for debugging
-console.log(`Environment: ${process.env.NODE_ENV}`);
-console.log(`REACT_APP_ENV: ${process.env.REACT_APP_ENV}`);
-console.log(`Hostname: ${window.location.hostname}`);
-console.log(`API URL: ${process.env.REACT_APP_API_URL}`);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

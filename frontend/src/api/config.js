@@ -13,13 +13,6 @@ const defaultProtocol =
   process.env.REACT_APP_DEFAULT_PROTOCOL ||
   (isDevEnvironment ? "http" : "https");
 
-// Log the environment for debugging
-console.log(
-  `Running in ${isDevEnvironment ? "development" : "production"} mode`
-);
-console.log(`API URL from env: ${process.env.REACT_APP_API_URL || "not set"}`);
-console.log(`Using default protocol: ${defaultProtocol}`);
-
 // Determine if we're running in Docker by checking hostname
 const isDockerEnvironment = window.location.hostname === "localhost";
 
@@ -27,13 +20,11 @@ const isDockerEnvironment = window.location.hostname === "localhost";
 export const API_BASE_URL = (() => {
   // If explicitly set in environment variables, use that regardless of environment
   if (process.env.REACT_APP_API_URL) {
-    console.log(`Using configured API URL: ${process.env.REACT_APP_API_URL}`);
     // When in Docker, make sure we use the actual 'localhost'
     if (
       isDockerEnvironment &&
       process.env.REACT_APP_API_URL.includes("localhost")
     ) {
-      console.log("Using localhost API URL for Docker");
       return process.env.REACT_APP_API_URL;
     }
     return process.env.REACT_APP_API_URL;
@@ -41,18 +32,12 @@ export const API_BASE_URL = (() => {
 
   // As a fallback for development
   if (isDevEnvironment) {
-    console.log("Development mode: Using localhost:4000 API URL");
     return `${defaultProtocol}://localhost:4000`;
   }
 
   // Production fallback - should not reach here if properly configured
-  console.warn(
-    "No API URL configured, using fallback. This is not recommended for production."
-  );
   return `${defaultProtocol}://api.your-domain.com`;
 })();
-
-console.log(`Final API Base URL: ${API_BASE_URL}`);
 
 /**
  * Gets the base URL without the trailing "/api" suffix and without the port for images.
@@ -155,7 +140,6 @@ export const getRelativeImagePath = (imageUrl) => {
     // Return the pathname directly.
     return url.pathname;
   } catch (error) {
-    console.error("Error extracting relative image path:", error);
     return imageUrl; // Return as is if parsing fails.
   }
 };
