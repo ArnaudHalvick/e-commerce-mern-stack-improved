@@ -120,4 +120,29 @@
     width: var(--spacing-2);
     height: var(--spacing-2);
   }
+
+  .description-box-filter-rating-count {
+    font-size: var(--font-size-xxs);
+  }
+}
+
+@media screen and (max-width: 475px) {
+  .description-box-filter-rating-item {
+    padding: var(--spacing-0-5) var(--spacing-1);
+  }
+
+  .description-box-filter-star {
+    width: calc(var(--spacing-2) - 2px);
+    height: calc(var(--spacing-2) - 2px);
+  }
+
+  .description-box-filter-star-row {
+    gap: var(--spacing-0-5);
+  }
+}
+
+@media screen and (max-width: 375px) {
+  .description-box-filter-star-row {
+    gap: calc(var(--spacing-0-5) / 2);
+  }
 }

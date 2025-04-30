@@ -323,10 +323,6 @@ body.description-box-modal-open {
     height: var(--spacing-2);
   }
 
-  .description-box-filter-rating-count {
-    font-size: var(--font-size-xs);
-  }
-
   .description-box-filter-rating-item {
     padding: var(--spacing-1) var(--spacing-2);
     gap: var(--spacing-1);
