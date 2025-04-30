@@ -9,7 +9,11 @@ import { Link } from "react-router-dom";
  */
 const AuthButtons = ({ inTransition }) => (
   <div className="navbar-auth-buttons">
-    <Link to="/login" onClick={(e) => inTransition && e.preventDefault()}>
+    <Link
+      to="/login"
+      className="navbar-auth-link"
+      onClick={(e) => inTransition && e.preventDefault()}
+    >
       <button
         className="navbar-button navbar-login-btn"
         disabled={inTransition}
@@ -18,7 +22,11 @@ const AuthButtons = ({ inTransition }) => (
         Login
       </button>
     </Link>
-    <Link to="/signup" onClick={(e) => inTransition && e.preventDefault()}>
+    <Link
+      to="/signup"
+      className="navbar-auth-link"
+      onClick={(e) => inTransition && e.preventDefault()}
+    >
       <button
         className="navbar-button navbar-signup-btn"
         disabled={inTransition}

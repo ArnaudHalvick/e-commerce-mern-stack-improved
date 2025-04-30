@@ -15,7 +15,7 @@ const NavLogo = ({ inTransition }) => (
     onClick={(e) => inTransition && e.preventDefault()}
     aria-label="Shopper home page"
   >
-    <img src={logo} alt="Shopper logo" />
+    <img src={logo} alt="Shopper logo" className="navbar-logo-img" />
     <p className="navbar-logo-text">SHOPPER</p>
   </Link>
 );

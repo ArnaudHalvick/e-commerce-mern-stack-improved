@@ -89,3 +89,30 @@
     display: flex;
   }
 }
+
+/* Small devices (landscape phones, up to 576px) */
+@media (max-width: 576px) {
+  .navbar-hamburger-line {
+    height: 2.5px;
+    width: 22px;
+    margin: 3.5px 0;
+  }
+}
+
+/* Extra small devices (portrait phones, up to 475px) */
+@media (max-width: 475px) {
+  .navbar-hamburger-line {
+    height: 2px;
+    width: 20px;
+    margin: 3px 0;
+  }
+}
+
+/* Very small devices (smaller phones, up to 375px) */
+@media (max-width: 375px) {
+  .navbar-hamburger-line {
+    height: 2px;
+    width: 18px;
+    margin: 3px 0;
+  }
+}

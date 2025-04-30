@@ -15,6 +15,11 @@
   gap: var(--spacing-3);
 }
 
+.navbar-logo-img {
+  width: auto;
+  height: auto;
+}
+
 .navbar-logo-text {
   color: var(--color-text-primary);
   font-size: var(--font-size-4xl);
@@ -54,18 +59,58 @@
 
 /* Small devices (landscape phones, up to 576px) */
 @media (max-width: 576px) {
+  .navbar {
+    padding: var(--spacing-3) var(--spacing-4);
+    justify-content: space-between;
+  }
+
+  .navbar-logo {
+    gap: var(--spacing-2);
+  }
+
   .navbar-logo-text {
     font-size: var(--font-size-xl);
+  }
+
+  .navbar-logo-img {
+    width: 40px;
+    height: auto;
   }
 }
 
 /* Extra small devices (portrait phones, up to 475px) */
 @media (max-width: 475px) {
   .navbar {
-    padding: var(--spacing-3) var(--spacing-4);
+    padding: var(--spacing-2) var(--spacing-3);
+    justify-content: space-between;
+  }
+
+  .navbar-logo {
+    gap: var(--spacing-1);
   }
 
   .navbar-logo-text {
     font-size: var(--font-size-lg);
+  }
+
+  .navbar-logo-img {
+    width: 36px;
+    height: auto;
+  }
+}
+
+/* Very small devices (smaller phones, up to 375px) */
+@media (max-width: 375px) {
+  .navbar {
+    padding: var(--spacing-2) var(--spacing-2);
+  }
+
+  .navbar-logo-img {
+    width: 32px;
+    height: auto;
+  }
+
+  .navbar-logo-text {
+    font-size: var(--font-size-md);
   }
 }
