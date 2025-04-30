@@ -15,6 +15,7 @@
   border-radius: var(--border-radius-2xl);
   transition: transform var(--transition-duration-normal)
     var(--transition-timing-ease);
+  overflow: hidden;
 }
 
 .product-item-image:hover {
@@ -146,8 +147,9 @@
   .product-item-image {
     width: 100%;
     object-fit: contain;
-    padding: var(--spacing-4);
+    border-radius: var(--border-radius-2xl);
     margin-bottom: var(--spacing-4);
+    padding: 0;
   }
 
   .product-item-name {
