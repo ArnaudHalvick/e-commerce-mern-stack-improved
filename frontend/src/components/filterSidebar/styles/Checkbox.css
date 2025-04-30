@@ -93,11 +93,8 @@
   }
 
   .filter-sidebar-checkbox-label .filter-sidebar-checkmark:after {
-    left: 60%;
-    top: 50%;
     width: calc(var(--spacing-1) - 1px);
     height: var(--spacing-1);
-    transform: translate(-75%, -50%) rotate(45deg);
   }
 }
 
@@ -135,11 +132,8 @@
   }
 
   .filter-sidebar-checkbox-label .filter-sidebar-checkmark:after {
-    left: 60%;
-    top: 50%;
     width: calc(var(--spacing-1) - 2px);
     height: var(--spacing-1);
-    transform: translate(-75%, -50%) rotate(45deg);
   }
 }
 
@@ -150,11 +144,8 @@
   }
 
   .filter-sidebar-checkbox-label .filter-sidebar-checkmark:after {
-    left: 60%;
-    top: 50%;
     width: calc(var(--spacing-1) - 2px);
     height: calc(var(--spacing-1) + 1px);
-    transform: translate(-75%, -50%) rotate(45deg);
     border-width: 0 var(--border-width-thin) var(--border-width-thin) 0;
   }
 }
@@ -172,11 +163,8 @@
   }
 
   .filter-sidebar-checkbox-label .filter-sidebar-checkmark:after {
-    left: 60%;
-    top: 50%;
     width: calc(var(--spacing-1) - 3px);
     height: calc(var(--spacing-1) - 1px);
-    transform: translate(-75%, -50%) rotate(45deg);
     border-width: 0 var(--border-width-thin) var(--border-width-thin) 0;
   }
 }

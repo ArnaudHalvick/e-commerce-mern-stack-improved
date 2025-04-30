@@ -226,11 +226,6 @@
   .filter-sidebar-options {
     grid-template-columns: repeat(2, 1fr);
   }
-
-  /* Smaller font for checkbox labels at smaller screens */
-  .filter-sidebar-checkbox-label {
-    font-size: var(--font-size-xs);
-  }
 }
 
 /* Mobile L Devices (Large Phones, less than 480px) */
@@ -259,16 +254,6 @@
     grid-template-columns: repeat(2, 1fr);
     gap: var(--spacing-1);
   }
-
-  /* Smaller checkmarks for smaller screens */
-  .filter-sidebar-checkmark {
-    width: calc(var(--spacing-3) - 2px);
-    height: calc(var(--spacing-3) - 2px);
-  }
-
-  .filter-sidebar-checkbox-label {
-    font-size: var(--font-size-xs);
-  }
 }
 
 /* Mobile M Devices (Medium Phones, less than 420px) */
@@ -278,10 +263,6 @@
   }
 
   .filter-sidebar-section-subtitle {
-    font-size: var(--font-size-xxs);
-  }
-
-  .filter-sidebar-checkbox-label {
     font-size: var(--font-size-xxs);
   }
 
@@ -324,20 +305,6 @@
 
   .filter-sidebar-section:not(:first-child) .filter-sidebar-options {
     max-height: 90px;
-  }
-
-  /* Adjust all other text in the sidebar to be smaller */
-  .filter-sidebar-rating-filter {
-    gap: calc(var(--spacing-1) / 2);
-  }
-
-  .filter-sidebar-star-rating {
-    font-size: var(--font-size-xxs);
-    padding: calc(var(--spacing-1) / 2) var(--spacing-1);
-  }
-
-  .filter-sidebar-rating-up-text {
-    margin-left: calc(var(--spacing-1) / 2);
   }
 }
 

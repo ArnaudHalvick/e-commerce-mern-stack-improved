@@ -16,24 +16,6 @@
   color: var(--color-text-tertiary);
 }
 
-/* Price filter specific overrides */
-.price-filter-options {
-  display: block;
-  max-height: none;
-  overflow-y: visible;
-}
-
-/* Responsive styles */
-/* Large Devices (Desktops, less than 1200px) */
-@media screen and (max-width: 1199.98px) {
-  /* Class-based selector instead of :has() */
-  .filter-sidebar-price-section .filter-sidebar-options {
-    display: block;
-    max-height: none;
-    overflow-y: visible;
-  }
-}
-
 /* Medium Devices (Tablets, less than 992px) */
 @media screen and (max-width: 991.98px) {
   .filter-sidebar-price-field {
