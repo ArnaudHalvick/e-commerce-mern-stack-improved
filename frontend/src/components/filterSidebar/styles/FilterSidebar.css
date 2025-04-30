@@ -23,7 +23,6 @@
 .filter-sidebar-section-title {
   font-size: var(--font-size-lg);
   font-weight: var(--font-weight-semibold);
-  margin-bottom: var(--spacing-4);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -138,7 +137,6 @@
 
   .filter-sidebar-section-title {
     font-size: var(--font-size-base);
-    margin-bottom: var(--spacing-3);
   }
 
   .filter-sidebar-section-subtitle {
@@ -172,7 +170,6 @@
 
   .filter-sidebar-section-title {
     font-size: var(--font-size-sm);
-    margin-bottom: var(--spacing-2);
   }
 
   .filter-sidebar-section-subtitle {
@@ -209,7 +206,6 @@
 
   .filter-sidebar-section-title {
     font-size: var(--font-size-xs);
-    margin-bottom: var(--spacing-1);
   }
 
   .filter-sidebar-section-subtitle {
@@ -247,7 +243,6 @@
 
   .filter-sidebar-section-title {
     font-size: var(--font-size-xs);
-    margin-bottom: var(--spacing-1);
   }
 
   .filter-sidebar-clear-btn {
