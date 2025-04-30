@@ -21,11 +21,6 @@
   .description-box-review-rating {
     gap: calc(var(--spacing-1) / 2);
   }
-
-  .description-box-review-star {
-    width: var(--spacing-3);
-    height: var(--spacing-3);
-  }
 }
 
 @media screen and (max-width: 576px) {

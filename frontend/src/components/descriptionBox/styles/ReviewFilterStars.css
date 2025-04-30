@@ -92,11 +92,6 @@
     gap: calc(var(--spacing-1) / 2);
   }
 
-  .description-box-filter-star {
-    width: var(--spacing-3);
-    height: var(--spacing-3);
-  }
-
   .description-box-filter-rating-count {
     font-size: var(--font-size-xs);
   }

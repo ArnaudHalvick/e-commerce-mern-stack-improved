@@ -288,15 +288,6 @@ body.description-box-modal-open {
     gap: var(--spacing-2);
   }
 
-  .description-box-filter-star {
-    width: var(--spacing-3);
-    height: var(--spacing-3);
-  }
-
-  .description-box-filter-rating-item {
-    padding: var(--spacing-1) var(--spacing-3);
-  }
-
   .description-box-modal-rating-filters {
     width: 100%;
   }
@@ -316,16 +307,6 @@ body.description-box-modal-open {
 @media screen and (max-width: 576px) {
   .description-box-filter-ratings-row {
     gap: var(--spacing-2);
-  }
-
-  .description-box-filter-star {
-    width: var(--spacing-2);
-    height: var(--spacing-2);
-  }
-
-  .description-box-filter-rating-item {
-    padding: var(--spacing-1) var(--spacing-2);
-    gap: var(--spacing-1);
   }
 
   .description-box-modal-sort-options {
