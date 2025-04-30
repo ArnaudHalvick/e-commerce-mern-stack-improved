@@ -275,8 +275,8 @@
 
 @media screen and (max-width: 992px) {
   .product-listing-item {
-    flex: 0 0 calc((100% - var(--spacing-6)) / 2);
-    max-width: calc((100% - var(--spacing-6)) / 2);
+    flex: 0 0 calc((100% - var(--spacing-6) * 2) / 3);
+    max-width: calc((100% - var(--spacing-6) * 2) / 3);
   }
 
   .product-listing-controls {

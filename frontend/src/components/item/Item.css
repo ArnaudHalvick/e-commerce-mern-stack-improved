@@ -56,6 +56,43 @@
 
 /* --------- Responsive Styles --------- */
 
+/* Styles for 992px screens */
+@media (max-width: 992px) {
+  .product-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .product-item-image {
+    height: 280px;
+    object-fit: contain;
+  }
+
+  .product-item-name {
+    font-size: var(--font-size-sm);
+    width: 100%;
+    text-align: center;
+    margin: var(--spacing-2) 0 var(--spacing-1);
+  }
+
+  .product-item-prices {
+    justify-content: center;
+    width: 100%;
+    gap: var(--spacing-3);
+  }
+
+  .product-item-price-current,
+  .product-item-price-discounted {
+    font-size: var(--font-size-sm);
+  }
+
+  .product-item-price-previous {
+    font-size: var(--font-size-xs);
+  }
+}
+
 @media (max-width: 768px) {
   .product-item {
     display: flex;
