@@ -107,7 +107,6 @@
     width: 100%;
     object-fit: contain;
     padding: var(--spacing-1);
-    margin-bottom: var(--spacing-2);
   }
 
   .product-item-name {
@@ -148,7 +147,6 @@
     width: 100%;
     object-fit: contain;
     border-radius: var(--border-radius-2xl);
-    margin-bottom: var(--spacing-4);
     padding: 0;
   }
 
