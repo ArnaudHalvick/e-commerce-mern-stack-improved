@@ -81,11 +81,49 @@
   background: var(--color-border-dark);
 }
 
+/* Override grid layout for specific filter types */
+.filter-sidebar-section.filter-sidebar-price-section .filter-sidebar-options,
+.filter-sidebar-section.filter-sidebar-rating-section .filter-sidebar-options,
+.filter-sidebar-section.filter-sidebar-discount-section
+  .filter-sidebar-options {
+  display: block;
+  max-height: none;
+  overflow-y: visible;
+}
+
 /* Responsive styles */
 /* Large Devices (Desktops, less than 1200px) */
 @media screen and (max-width: 1199.98px) {
   .filter-sidebar {
     flex: 0 0 220px;
+  }
+
+  /* Display filter options in a more space-efficient layout */
+  .filter-sidebar-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: var(--spacing-2);
+    max-height: none;
+    overflow-y: visible;
+  }
+
+  /* Maintain column layout for sections that should always be in a single column */
+  .filter-sidebar-section.filter-sidebar-price-section .filter-sidebar-options,
+  .filter-sidebar-section.filter-sidebar-rating-section .filter-sidebar-options,
+  .filter-sidebar-section.filter-sidebar-discount-section
+    .filter-sidebar-options {
+    display: block;
+  }
+
+  /* Ensure checkbox labels properly fit */
+  .filter-sidebar-checkbox-label {
+    display: flex;
+    align-items: center;
+    margin-bottom: var(--spacing-2);
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 
@@ -109,12 +147,10 @@
   }
 
   .filter-sidebar-options {
-    max-height: 160px;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: var(--spacing-1);
-  }
-
-  .filter-sidebar-section:not(:first-child) .filter-sidebar-options {
-    max-height: 120px;
+    max-height: none;
+    overflow-y: visible;
   }
 
   .filter-sidebar-clear-btn {
@@ -154,7 +190,13 @@
   }
 
   .filter-sidebar-options {
-    max-height: 140px;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+
+  /* Ensure price filter keeps single column layout */
+  .price-filter-inputs {
+    flex-direction: column;
+    gap: var(--spacing-2);
   }
 }
 
@@ -186,11 +228,12 @@
   }
 
   .filter-sidebar-options {
-    max-height: 120px;
+    grid-template-columns: repeat(2, 1fr);
   }
 
-  .filter-sidebar-section:not(:first-child) .filter-sidebar-options {
-    max-height: 100px;
+  /* Smaller font for checkbox labels at smaller screens */
+  .filter-sidebar-checkbox-label {
+    font-size: var(--font-size-xs);
   }
 }
 
@@ -218,7 +261,18 @@
   }
 
   .filter-sidebar-options {
-    max-height: 110px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-1);
+  }
+
+  /* Smaller checkmarks for smaller screens */
+  .filter-sidebar-checkmark {
+    width: calc(var(--spacing-3) - 2px);
+    height: calc(var(--spacing-3) - 2px);
+  }
+
+  .filter-sidebar-checkbox-label {
+    font-size: var(--font-size-xs);
   }
 }
 
@@ -240,13 +294,14 @@
     padding: calc(var(--spacing-1) / 2) var(--spacing-1);
   }
 
-  .filter-sidebar-options {
-    max-height: 100px;
-    padding-right: var(--spacing-1);
+  .filter-sidebar-checkbox-label {
+    font-size: var(--font-size-xxs);
   }
 
-  .filter-sidebar-section:not(:first-child) .filter-sidebar-options {
-    max-height: 90px;
+  /* Add more spacing between sections for better readability */
+  .filter-sidebar-section {
+    margin-bottom: var(--spacing-3);
+    padding-bottom: var(--spacing-2);
   }
 }
 

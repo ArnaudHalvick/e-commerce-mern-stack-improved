@@ -16,11 +16,35 @@
   color: var(--color-text-tertiary);
 }
 
+/* Price filter specific overrides */
+.price-filter-options {
+  display: block;
+  max-height: none;
+  overflow-y: visible;
+}
+
 /* Responsive styles */
+/* Large Devices (Desktops, less than 1200px) */
+@media screen and (max-width: 1199.98px) {
+  /* Class-based selector instead of :has() */
+  .filter-sidebar-price-section .filter-sidebar-options {
+    display: block;
+    max-height: none;
+    overflow-y: visible;
+  }
+}
+
 /* Medium Devices (Tablets, less than 992px) */
 @media screen and (max-width: 991.98px) {
   .filter-sidebar-price-field {
     width: var(--spacing-16);
+  }
+
+  /* Class-based selector instead of :has() */
+  .filter-sidebar-price-section .filter-sidebar-options {
+    display: block;
+    max-height: none;
+    overflow-y: visible;
   }
 }
 
@@ -28,6 +52,12 @@
 @media screen and (max-width: 767.98px) {
   .filter-sidebar-price-field {
     width: var(--spacing-14);
+  }
+
+  .filter-sidebar-price-inputs {
+    flex-direction: row;
+    gap: var(--spacing-2);
+    width: 100%;
   }
 }
 
@@ -37,11 +67,19 @@
     width: var(--spacing-12);
     font-size: var(--font-size-xs);
   }
+
+  .filter-sidebar-price-inputs {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    width: 100%;
+  }
 }
 
 /* Very Small Devices (Small Phones, less than 400px) */
 @media screen and (max-width: 399.98px) {
   .filter-sidebar-price-inputs {
+    display: flex;
     flex-direction: column;
     gap: var(--spacing-1);
     align-items: flex-start;
@@ -53,5 +91,13 @@
 
   .filter-sidebar-price-separator {
     display: none;
+  }
+}
+
+/* Smaller screens */
+@media screen and (max-width: 475px) {
+  .filter-sidebar-price-field {
+    font-size: var(--font-size-xs);
+    padding: var(--spacing-1);
   }
 }

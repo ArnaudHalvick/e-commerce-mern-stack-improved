@@ -7,6 +7,10 @@
   color: var(--color-text-secondary);
   user-select: none;
   padding-left: var(--spacing-6);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .filter-sidebar-checkbox-input {
@@ -53,11 +57,34 @@
 }
 
 /* Responsive styles */
+/* Large Devices (Desktops, less than 1200px) */
+@media screen and (max-width: 1199.98px) {
+  .filter-sidebar-checkbox-label {
+    padding-left: var(--spacing-5);
+    margin-right: var(--spacing-2);
+    min-width: 80px;
+  }
+
+  .filter-sidebar-checkmark {
+    height: calc(var(--spacing-3) + 2px);
+    width: calc(var(--spacing-3) + 2px);
+  }
+
+  .filter-sidebar-checkbox-label .filter-sidebar-checkmark:after {
+    left: 60%;
+    top: 50%;
+    width: calc(var(--spacing-1) - 1px);
+    height: calc(var(--spacing-1) + 1px);
+    transform: translate(-75%, -50%) rotate(45deg);
+  }
+}
+
 /* Medium Devices (Tablets, less than 992px) */
 @media screen and (max-width: 991.98px) {
   .filter-sidebar-checkbox-label {
     font-size: var(--font-size-xs);
     padding-left: var(--spacing-5);
+    min-width: 0;
   }
 
   .filter-sidebar-checkmark {
@@ -66,10 +93,11 @@
   }
 
   .filter-sidebar-checkbox-label .filter-sidebar-checkmark:after {
-    left: calc(var(--spacing-1) + 1px);
-    top: calc(var(--spacing-1) - 1px);
+    left: 60%;
+    top: 50%;
     width: calc(var(--spacing-1) - 1px);
     height: var(--spacing-1);
+    transform: translate(-75%, -50%) rotate(45deg);
   }
 }
 
@@ -98,6 +126,7 @@
   .filter-sidebar-checkbox-label {
     font-size: var(--font-size-xs);
     padding-left: var(--spacing-4);
+    margin-bottom: var(--spacing-1);
   }
 
   .filter-sidebar-checkmark {
@@ -106,10 +135,33 @@
   }
 
   .filter-sidebar-checkbox-label .filter-sidebar-checkmark:after {
-    left: var(--spacing-1);
-    top: calc(var(--spacing-1) - 2px);
+    left: 60%;
+    top: 50%;
     width: calc(var(--spacing-1) - 2px);
     height: var(--spacing-1);
+    transform: translate(-75%, -50%) rotate(45deg);
+  }
+}
+
+/* Styles for screens below 475px (as requested) */
+@media screen and (max-width: 475px) {
+  .filter-sidebar-checkbox-label {
+    font-size: var(--font-size-xs);
+    padding-left: var(--spacing-5);
+  }
+
+  .filter-sidebar-checkmark {
+    height: var(--spacing-3);
+    width: var(--spacing-3);
+  }
+
+  .filter-sidebar-checkbox-label .filter-sidebar-checkmark:after {
+    left: 60%;
+    top: 50%;
+    width: calc(var(--spacing-1) - 2px);
+    height: calc(var(--spacing-1) + 1px);
+    transform: translate(-75%, -50%) rotate(45deg);
+    border-width: 0 var(--border-width-thin) var(--border-width-thin) 0;
   }
 }
 
@@ -117,18 +169,20 @@
 @media screen and (max-width: 374.98px) {
   .filter-sidebar-checkbox-label {
     font-size: var(--font-size-xxs);
-    padding-left: var(--spacing-3);
+    padding-left: var(--spacing-4);
   }
 
   .filter-sidebar-checkmark {
-    height: calc(var(--spacing-2) + 2px);
-    width: calc(var(--spacing-2) + 2px);
+    height: calc(var(--spacing-3) - 2px);
+    width: calc(var(--spacing-3) - 2px);
   }
 
   .filter-sidebar-checkbox-label .filter-sidebar-checkmark:after {
-    left: calc(var(--spacing-1) - 1px);
-    top: calc(var(--spacing-1) - 3px);
+    left: 60%;
+    top: 50%;
     width: calc(var(--spacing-1) - 3px);
     height: calc(var(--spacing-1) - 1px);
+    transform: translate(-75%, -50%) rotate(45deg);
+    border-width: 0 var(--border-width-thin) var(--border-width-thin) 0;
   }
 }

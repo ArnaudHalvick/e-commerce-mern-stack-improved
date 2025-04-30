@@ -32,7 +32,31 @@
   border-color: var(--color-secondary);
 }
 
+/* Rating filter specific overrides */
+.rating-filter-options {
+  display: block;
+  max-height: none;
+  overflow-y: visible;
+}
+
+/* Discount filter specific overrides */
+.discount-filter-options {
+  display: block;
+  max-height: none;
+  overflow-y: visible;
+}
+
 /* Responsive styles */
+/* Large Devices (Desktops, less than 1200px) */
+@media screen and (max-width: 1199.98px) {
+  .filter-sidebar-rating-section .filter-sidebar-options,
+  .filter-sidebar-discount-section .filter-sidebar-options {
+    display: block;
+    max-height: none;
+    overflow-y: visible;
+  }
+}
+
 /* Medium Devices (Tablets, less than 992px) */
 @media screen and (max-width: 991.98px) {
   .filter-sidebar-rating-filter {
@@ -63,4 +87,26 @@
   }
 }
 
-/* Very Small Devices removed - ratings always stay in a row */
+/* Smaller mobile devices */
+@media screen and (max-width: 475px) {
+  .filter-sidebar-star-rating {
+    font-size: var(--font-size-xs);
+    padding: calc(var(--spacing-1) / 2) var(--spacing-1);
+  }
+
+  .filter-sidebar-rating-up-text {
+    font-size: var(--font-size-xxs);
+  }
+}
+
+/* Very Small Devices */
+@media screen and (max-width: 374.98px) {
+  .filter-sidebar-rating-filter {
+    gap: calc(var(--spacing-1) / 2);
+  }
+
+  .filter-sidebar-star-rating {
+    font-size: var(--font-size-xxs);
+    padding: calc(var(--spacing-1) / 4) calc(var(--spacing-1) / 2);
+  }
+}
