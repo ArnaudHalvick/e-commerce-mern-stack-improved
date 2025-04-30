@@ -13,7 +13,6 @@ import {
   registerUser,
   verifyToken,
   setInitialized,
-  requestEmailChange,
   logoutUser,
 } from "../../redux/slices/userSlice";
 import { resetCart } from "../../redux/slices/cartSlice";
@@ -627,7 +626,6 @@ const useAuth = () => {
 
     // Auth status indicators
     verificationRequested: userState.verificationRequested,
-    emailChangeRequested: userState.emailChangeRequested,
     passwordChanged: userState.passwordChanged,
     passwordChangePending: userState.passwordChangePending,
 
@@ -647,7 +645,6 @@ const useAuth = () => {
     requestEmailVerification: (email) =>
       dispatch(requestEmailVerification(email)),
     verifyEmail: (token) => dispatch(verifyEmail(token)),
-    requestEmailChange: (email) => dispatch(requestEmailChange(email)),
   };
 };
 

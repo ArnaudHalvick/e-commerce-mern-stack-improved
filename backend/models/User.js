@@ -65,14 +65,6 @@ const UserSchema = new mongoose.Schema({
     lowercase: true,
     sparse: true, // Allow null/undefined values to avoid unique constraint errors
   },
-  pendingEmail: {
-    type: String,
-    lowercase: true,
-    match: [
-      /^([\w+-]+(?:\.[\w+-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,})$/i,
-      "Please enter a valid email",
-    ],
-  },
   password: {
     type: String,
     required: [true, "Please enter your password"],

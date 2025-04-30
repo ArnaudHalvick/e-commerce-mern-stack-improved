@@ -289,32 +289,6 @@ export const verifyEmail = createAsyncThunk(
   }
 );
 
-// Async thunk for requesting email change
-export const requestEmailChange = createAsyncThunk(
-  "user/requestEmailChange",
-  async (email, { rejectWithValue }) => {
-    try {
-      const token = localStorage.getItem("auth-token");
-      const response = await axios.post(
-        config.getApiUrl("users/change-email"),
-        { email },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "auth-token": token,
-          },
-        }
-      );
-      return response.data;
-    } catch (error) {
-      if (error.response?.data?.message) {
-        return rejectWithValue(error.response.data.message);
-      }
-      return rejectWithValue("Failed to send email change verification");
-    }
-  }
-);
-
 // Add a new async thunk for clean logout
 export const logoutUser = createAsyncThunk(
   "user/logout",
@@ -337,7 +311,6 @@ const initialState = {
   isAuthenticated: false,
   needsVerification: false,
   verificationRequested: false,
-  emailChangeRequested: false,
   loading: false,
   isInitialized: false,
   accountDisabled: false,
@@ -347,7 +320,6 @@ const initialState = {
     disablingAccount: false,
     changingPassword: false,
     updatingProfile: false,
-    changingEmail: false,
     login: false,
     register: false,
     verifyingToken: false,
@@ -562,24 +534,6 @@ const userSlice = createSlice({
         state.loading = false;
         state.loadingStates.verifyingEmail = false;
         state.error = action.payload;
-      })
-
-      // requestEmailChange
-      .addCase(requestEmailChange.pending, (state) => {
-        state.loading = true;
-        state.loadingStates.changingEmail = true;
-        state.error = null;
-      })
-      .addCase(requestEmailChange.fulfilled, (state) => {
-        state.loading = false;
-        state.loadingStates.changingEmail = false;
-        state.emailChangeRequested = true;
-      })
-      .addCase(requestEmailChange.rejected, (state, action) => {
-        state.loading = false;
-        state.loadingStates.changingEmail = false;
-        state.error = action.payload;
-        state.emailChangeRequested = false;
       });
   },
 });

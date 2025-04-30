@@ -37,7 +37,7 @@ Manages all authentication-related operations.
 - `sendTokens(user, statusCode, res, additionalData)`: Generates and sends JWT tokens to the client
 - `extractAndVerifyToken(req)`: Validates access tokens from request headers
 - `extractAndVerifyRefreshToken(req)`: Validates refresh tokens from cookies
-- `sendVerificationEmail(user, isEmailChange, newEmail)`: Sends email verification links
+- `sendVerificationEmail(user)`: Sends email verification links
 - `sendPasswordResetEmail(user)`: Sends password reset links
 - `sendPasswordChangeNotification(user)`: Sends notifications when passwords are changed
 - `handleFailedLogin(user)`: Manages failed login attempts and account locking
@@ -53,7 +53,6 @@ Manages user profile operations.
 - `updateUserProfile(userId, userData)`: Updates user profile details
 - `changeUserPassword(userId, {currentPassword, newPassword})`: Changes a user's password
 - `disableUserAccount(userId, {password})`: Disables a user account
-- `initiateEmailChange(userId, {email})`: Starts the email change verification process
 
 ## Error Handling
 

@@ -264,95 +264,9 @@ const disableUserAccount = async (userId, { password }) => {
   return { success: true };
 };
 
-/**
- * Initialize email change process
- */
-const initiateEmailChange = async (userId, { email }) => {
-  if (!email) {
-    logger.warn(`Email change attempt missing new email for user: ${userId}`);
-    return {
-      success: false,
-      error: AppError.createAndLogError("New email address is required", 400, {
-        userId,
-      }),
-    };
-  }
-
-  // Validate email format
-  const emailRegex =
-    /^([\w+-]+(?:\.[\w+-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,})$/;
-  if (!emailRegex.test(email)) {
-    logger.warn(
-      `Email change attempt with invalid email format (${email}) for user: ${userId}`
-    );
-    return {
-      success: false,
-      error: AppError.createAndLogError(
-        "Please enter a valid email address",
-        400,
-        { userId, email }
-      ),
-    };
-  }
-
-  // Normalize the new email
-  const normalizedNewEmail = normalizeEmail(email);
-
-  // Check if email already exists
-  const existingUser = await User.findOne({
-    normalizedEmail: normalizedNewEmail,
-  });
-
-  if (existingUser && existingUser._id.toString() !== userId) {
-    logger.warn(
-      `Email change attempt to already used email (${email}) for user: ${userId}`
-    );
-    return {
-      success: false,
-      error: AppError.createAndLogError(
-        "Email is already in use by another account",
-        400,
-        { userId, email }
-      ),
-    };
-  }
-
-  const user = await User.findById(userId);
-
-  if (!user) {
-    logger.warn(`Email change attempt for non-existent user ID: ${userId}`);
-    return {
-      success: false,
-      error: AppError.createAndLogError("User not found", 404, { userId }),
-    };
-  }
-
-  // Check if new email is different from current
-  if (normalizedNewEmail === normalizeEmail(user.email)) {
-    logger.warn(`Email change attempt with same email for user: ${userId}`);
-    return {
-      success: false,
-      error: AppError.createAndLogError(
-        "New email must be different from your current email",
-        400,
-        { userId }
-      ),
-    };
-  }
-
-  // Store the pending email change
-  user.pendingEmail = email;
-
-  logger.info(
-    `Email change initiated for user: ${userId} to new email: ${email}`
-  );
-  return { success: true, user, newEmail: email };
-};
-
 module.exports = {
   getUserById,
   updateUserProfile,
   changeUserPassword,
   disableUserAccount,
-  initiateEmailChange,
 };

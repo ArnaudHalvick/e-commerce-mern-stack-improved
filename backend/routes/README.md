@@ -125,7 +125,6 @@ Routes for user authentication and profile management:
 - `PUT /profile` - Update user profile
 - `PUT /change-password` - Change user password
 - `PUT /disable-account` - Disable user account
-- `POST /change-email` - Request email change
 
 ## Middleware Usage
 

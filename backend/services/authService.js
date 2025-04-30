@@ -146,54 +146,34 @@ const extractAndVerifyRefreshToken = async (req) => {
 /**
  * Send verification email to user
  */
-const sendVerificationEmail = async (
-  user,
-  isEmailChange = false,
-  newEmail = null
-) => {
+const sendVerificationEmail = async (user) => {
   // Generate email verification token
   const emailVerificationToken = user.generateEmailVerificationToken();
   await user.save({ validateBeforeSave: false });
 
   // Create verification URL with appropriate parameters
-  const verificationURL = isEmailChange
-    ? createVerificationUrl(emailVerificationToken, {
-        email: newEmail,
-        isEmailChange: true,
-      })
-    : createVerificationUrl(emailVerificationToken);
+  const verificationURL = createVerificationUrl(emailVerificationToken);
 
   // Generate email HTML
   const htmlEmail = generateVerificationEmail(verificationURL, {
-    isEmailChange,
     user: user.name,
-    newEmail: newEmail,
   });
 
-  const emailTarget = isEmailChange ? newEmail : user.email;
+  const emailTarget = user.email;
 
   try {
     await sendEmail({
       email: emailTarget,
-      subject: isEmailChange
-        ? "Email Change Verification"
-        : "Email Verification",
+      subject: "Email Verification",
       html: htmlEmail,
     });
 
-    logger.info(
-      `Verification email sent to: ${emailTarget}${
-        isEmailChange ? " (email change)" : ""
-      }`
-    );
+    logger.info(`Verification email sent to: ${emailTarget}`);
     return { success: true };
   } catch (error) {
     // Reset verification tokens on failure
     user.emailVerificationToken = undefined;
     user.emailVerificationExpiry = undefined;
-    if (isEmailChange) {
-      user.pendingEmail = undefined;
-    }
     await user.save({ validateBeforeSave: false });
 
     const appError = AppError.createAndLogError(
@@ -202,7 +182,6 @@ const sendVerificationEmail = async (
       {
         email: emailTarget,
         userId: user._id.toString(),
-        isEmailChange,
         error: error.message,
         errorStack: error.stack,
       }

@@ -325,7 +325,6 @@ const requestVerification = catchAsync(async (req, res, next) => {
 const verifyEmail = catchAsync(async (req, res, next) => {
   // Get token from params or query
   const token = req.params.token || req.query.token;
-  const isEmailChange = req.query.isEmailChange === "true";
 
   if (!token) {
     return next(new AppError("Verification token is required", 400));
@@ -395,47 +394,7 @@ const verifyEmail = catchAsync(async (req, res, next) => {
     return next(new AppError("Invalid or expired verification token", 400));
   }
 
-  // For email change verification
-  if (isEmailChange) {
-    // Check if we have a pending email change
-    if (!user.pendingEmail) {
-      return res.status(200).json({
-        success: true,
-        message: "No pending email change found",
-      });
-    }
-
-    // Update the email
-    const previousEmail = user.email;
-    user.email = user.pendingEmail;
-    user.normalizedEmail = normalizeEmail(user.pendingEmail);
-    user.pendingEmail = undefined;
-
-    // Keep email as verified if it was already verified
-    // Otherwise mark as verified now
-    if (!user.isEmailVerified) {
-      user.isEmailVerified = true;
-    }
-
-    user.emailVerificationToken = undefined;
-    user.emailVerificationExpiry = undefined;
-
-    await user.save({ validateBeforeSave: false });
-
-    logger.info(
-      `User ${user._id} successfully changed email from ${previousEmail} to ${user.email}`
-    );
-
-    // Send tokens with updated user info
-    sendTokens(user, 200, res, {
-      message: "Email changed successfully",
-      emailChanged: true,
-    });
-
-    return;
-  }
-
-  // Check if email is already verified for regular verification flow
+  // Check if email is already verified
   if (user.isEmailVerified) {
     return res.status(200).json({
       success: true,

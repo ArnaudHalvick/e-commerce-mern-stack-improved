@@ -128,29 +128,15 @@ const emailTemplate = (title, content) => {
  * Generate HTML for email verification email
  * @param {string} verificationURL - The verification URL to include in the email
  * @param {Object} options - Additional options for customizing the email
- * @param {boolean} options.isEmailChange - Whether this is for an email change
  * @param {string} options.user - User's name
- * @param {string} options.newEmail - The new email address for email change
  * @returns {string} - HTML content for email
  */
 const generateVerificationEmail = (verificationURL, options = {}) => {
-  const { isEmailChange, newEmail } = options;
-
-  // Dynamic content based on email type
-  const title = isEmailChange
-    ? "Verify Your Email Change"
-    : "Verify Your Email Address";
-  const mainContent = isEmailChange
-    ? `<p>You recently requested to change your email address from your current email to <strong>${newEmail}</strong>. To complete this change, please verify your new email address.</p>`
-    : `<p>Thank you for signing up! To complete your registration and access all features, please verify your email address.</p>`;
-
-  const buttonText = isEmailChange
-    ? "Confirm Email Change"
-    : "Verify Email Address";
-
-  const warningText = isEmailChange
-    ? "If you did not request this email change, please contact support immediately or change your password to secure your account."
-    : "If you did not sign up for an account, please disregard this email.";
+  const title = "Verify Your Email Address";
+  const mainContent = `<p>Thank you for signing up! To complete your registration and access all features, please verify your email address.</p>`;
+  const buttonText = "Verify Email Address";
+  const warningText =
+    "If you did not sign up for an account, please disregard this email.";
 
   const content = `
     <h1>${title}</h1>

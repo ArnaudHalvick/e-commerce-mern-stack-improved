@@ -38,7 +38,7 @@ Applied to all routes through middleware in `server.js`:
 Each endpoint that processes user input has specific validation:
 
 - **Authentication Routes**: `/signup`, `/login`, `/reset-password`, etc.
-- **Profile Management Routes**: `/profile`, `/change-password`, `/change-email`, etc.
+- **Profile Management Routes**: `/profile`, `/change-password`, etc.
 
 Example:
 

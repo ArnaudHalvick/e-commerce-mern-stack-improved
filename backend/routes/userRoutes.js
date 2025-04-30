@@ -71,11 +71,5 @@ router.put(
   isAuthenticated,
   profileController.disableAccount
 );
-router.post(
-  "/change-email",
-  sanitizeRequest,
-  isAuthenticated,
-  profileController.requestEmailChange
-);
 
 module.exports = router;
