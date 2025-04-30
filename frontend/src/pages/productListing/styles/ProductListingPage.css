@@ -70,3 +70,128 @@
     gap: 0;
   }
 }
+
+/* Mobile Styles - Small Devices */
+@media screen and (max-width: 575.98px) {
+  .product-listing-container {
+    padding: 0 var(--spacing-2);
+  }
+
+  .product-listing-content {
+    margin-bottom: var(--spacing-8);
+  }
+
+  .product-listing-loading {
+    padding: var(--spacing-6);
+    font-size: var(--font-size-base);
+  }
+
+  .product-listing-error {
+    padding: var(--spacing-6);
+  }
+
+  .product-listing-error-title {
+    font-size: var(--font-size-xl);
+    margin-bottom: var(--spacing-2);
+  }
+
+  .product-listing-error-message {
+    font-size: var(--font-size-base);
+    margin-bottom: var(--spacing-4);
+  }
+
+  .product-listing-error-button {
+    padding: var(--spacing-2) var(--spacing-4);
+    font-size: var(--font-size-sm);
+  }
+}
+
+/* Mobile L Devices (Large Phones, less than 480px) */
+@media screen and (max-width: 479.98px) {
+  .product-listing-container {
+    padding: 0 var(--spacing-2);
+  }
+
+  .product-listing-content {
+    margin-bottom: var(--spacing-6);
+  }
+
+  .product-listing-loading {
+    padding: var(--spacing-4);
+    font-size: var(--font-size-sm);
+  }
+
+  .product-listing-error {
+    padding: var(--spacing-4);
+  }
+
+  .product-listing-error-title {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--spacing-2);
+  }
+}
+
+/* Mobile M Devices (Medium Phones, less than 420px) */
+@media screen and (max-width: 419.98px) {
+  .product-listing-container {
+    padding: 0 var(--spacing-1);
+  }
+
+  .product-listing-content {
+    margin-bottom: var(--spacing-5);
+  }
+
+  .product-listing-error-button {
+    padding: var(--spacing-1) var(--spacing-3);
+    font-size: var(--font-size-xs);
+  }
+}
+
+/* Mobile S Devices (iPhone SE, less than 375px) */
+@media screen and (max-width: 374.98px) {
+  .product-listing-container {
+    padding: 0 var(--spacing-1);
+  }
+
+  .product-listing-loading {
+    padding: var(--spacing-3);
+    font-size: var(--font-size-xs);
+  }
+
+  .product-listing-error {
+    padding: var(--spacing-3);
+  }
+
+  .product-listing-error-title {
+    font-size: var(--font-size-md);
+    margin-bottom: var(--spacing-1);
+  }
+
+  .product-listing-error-message {
+    font-size: var(--font-size-xs);
+    margin-bottom: var(--spacing-3);
+  }
+}
+
+/* Very Small Devices (Very Small Phones, less than 320px) */
+@media screen and (max-width: 319.98px) {
+  .product-listing-container {
+    padding: 0 calc(var(--spacing-1) / 2);
+  }
+
+  .product-listing-content {
+    margin-bottom: var(--spacing-4);
+  }
+
+  .product-listing-loading {
+    padding: var(--spacing-2);
+  }
+
+  .product-listing-error {
+    padding: var(--spacing-2);
+  }
+
+  .product-listing-error-button {
+    padding: var(--spacing-1) var(--spacing-2);
+  }
+}

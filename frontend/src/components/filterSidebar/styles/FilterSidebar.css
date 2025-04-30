@@ -186,13 +186,101 @@
   }
 }
 
-/* Very Small Devices (Small Phones, less than 400px) */
-@media screen and (max-width: 399.98px) {
+/* Mobile L Devices (Large Phones, less than 480px) */
+@media screen and (max-width: 479.98px) {
   .filter-sidebar {
-    padding: var(--spacing-1);
+    padding: var(--spacing-2);
+    margin-bottom: var(--spacing-2);
+    border-radius: var(--border-radius-md);
+  }
+
+  .filter-sidebar-section-title {
+    font-size: var(--font-size-xs);
+    margin-bottom: var(--spacing-1);
+  }
+
+  .filter-sidebar-clear-btn {
+    font-size: var(--font-size-xxs);
+    padding: var(--spacing-1) / 2;
+  }
+
+  .filter-sidebar-section {
+    margin-bottom: var(--spacing-2);
+    padding-bottom: var(--spacing-1);
+  }
+
+  .filter-sidebar-options {
+    max-height: 110px;
+  }
+}
+
+/* Mobile M Devices (Medium Phones, less than 420px) */
+@media screen and (max-width: 419.98px) {
+  .filter-sidebar {
+    padding: var(--spacing-2) var(--spacing-1);
+  }
+
+  .filter-sidebar-section-title {
+    font-size: var(--font-size-xs);
+  }
+
+  .filter-sidebar-section-subtitle {
+    font-size: var(--font-size-xxs);
   }
 
   .filter-sidebar-options {
     max-height: 100px;
+    padding-right: var(--spacing-1);
+  }
+
+  .filter-sidebar-section:not(:first-child) .filter-sidebar-options {
+    max-height: 90px;
+  }
+}
+
+/* Mobile S Devices (iPhone SE, less than 375px) */
+@media screen and (max-width: 374.98px) {
+  .filter-sidebar {
+    padding: var(--spacing-1);
+    border-radius: var(--border-radius-sm);
+  }
+
+  .filter-sidebar-section-title {
+    font-size: var(--font-size-xxs);
+    margin-bottom: var(--spacing-1);
+  }
+
+  .filter-sidebar-clear-btn {
+    font-size: var(--font-size-xxs);
+    padding: 2px;
+  }
+
+  .filter-sidebar-options {
+    max-height: 90px;
+  }
+
+  .filter-sidebar-section:not(:first-child) .filter-sidebar-options {
+    max-height: 80px;
+  }
+}
+
+/* Very Small Devices (Very Small Phones, less than 320px) */
+@media screen and (max-width: 319.98px) {
+  .filter-sidebar {
+    padding: var(--spacing-1) calc(var(--spacing-1) / 2);
+  }
+
+  .filter-sidebar-section {
+    margin-bottom: var(--spacing-1);
+    padding-bottom: var(--spacing-1);
+  }
+
+  .filter-sidebar-options {
+    max-height: 80px;
+    gap: calc(var(--spacing-1) / 2);
+  }
+
+  .filter-sidebar-section:not(:first-child) .filter-sidebar-options {
+    max-height: 70px;
   }
 }

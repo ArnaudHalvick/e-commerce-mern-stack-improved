@@ -8,6 +8,51 @@
   box-sizing: border-box;
 }
 
+/* Mobile L devices (≥480px) */
+@media (min-width: 480px) {
+  .container {
+    max-width: 480px;
+    padding-left: var(--spacing-2);
+    padding-right: var(--spacing-2);
+  }
+}
+
+/* Mobile M devices (≥420px) */
+@media (min-width: 420px) and (max-width: 479.98px) {
+  .container {
+    max-width: 420px;
+    padding-left: var(--spacing-2);
+    padding-right: var(--spacing-2);
+  }
+}
+
+/* Mobile S devices (≥375px) */
+@media (min-width: 375px) and (max-width: 419.98px) {
+  .container {
+    max-width: 375px;
+    padding-left: var(--spacing-1);
+    padding-right: var(--spacing-1);
+  }
+}
+
+/* Very small devices (≥320px) */
+@media (min-width: 320px) and (max-width: 374.98px) {
+  .container {
+    max-width: 320px;
+    padding-left: var(--spacing-1);
+    padding-right: var(--spacing-1);
+  }
+}
+
+/* Extremely small devices (<320px) */
+@media (max-width: 319.98px) {
+  .container {
+    width: 100%;
+    padding-left: calc(var(--spacing-1) / 2);
+    padding-right: calc(var(--spacing-1) / 2);
+  }
+}
+
 /* Small devices (≥576px) */
 @media (min-width: 576px) {
   .container {
