@@ -27,6 +27,7 @@
 
 /* Cart */
 .navbar-cart-icon {
+  display: block;
   width: 2rem;
   height: auto;
 }

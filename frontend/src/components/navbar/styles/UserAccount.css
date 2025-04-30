@@ -1,7 +1,6 @@
 /* User account */
 .navbar-user-account {
   position: relative;
-  min-width: 12rem; /* Ensure consistent width when showing loading state */
 }
 
 .navbar-user-trigger {
@@ -82,6 +81,10 @@
 @media (max-width: 576px) {
   .navbar-welcome-user {
     display: none;
+  }
+
+  .navbar-user-icon {
+    margin-right: var(--spacing-3);
   }
 }
 
