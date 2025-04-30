@@ -146,13 +146,7 @@
 /* Styles for screens below 475px (as requested) */
 @media screen and (max-width: 475px) {
   .filter-sidebar-checkbox-label {
-    font-size: var(--font-size-xs);
     padding-left: var(--spacing-5);
-  }
-
-  .filter-sidebar-checkmark {
-    height: var(--spacing-3);
-    width: var(--spacing-3);
   }
 
   .filter-sidebar-checkbox-label .filter-sidebar-checkmark:after {

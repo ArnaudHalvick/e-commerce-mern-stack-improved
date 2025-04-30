@@ -348,10 +348,6 @@
     max-width: 100%;
   }
 
-  .product-listing-grid {
-    gap: var(--spacing-8);
-  }
-
   .product-listing-page-number,
   .product-listing-page-btn,
   .product-listing-ellipsis {
@@ -429,9 +425,5 @@
   .product-listing-page-btn {
     min-width: var(--spacing-12);
     padding: var(--spacing-1) var(--spacing-3);
-  }
-
-  .product-listing-grid {
-    gap: var(--spacing-6);
   }
 }

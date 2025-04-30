@@ -90,7 +90,6 @@
 /* Smaller mobile devices */
 @media screen and (max-width: 475px) {
   .filter-sidebar-star-rating {
-    font-size: var(--font-size-xs);
     padding: calc(var(--spacing-1) / 2) var(--spacing-1);
   }
 

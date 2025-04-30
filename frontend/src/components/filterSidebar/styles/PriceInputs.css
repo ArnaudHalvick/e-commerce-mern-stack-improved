@@ -39,13 +39,6 @@
   .filter-sidebar-price-field {
     width: var(--spacing-16);
   }
-
-  /* Class-based selector instead of :has() */
-  .filter-sidebar-price-section .filter-sidebar-options {
-    display: block;
-    max-height: none;
-    overflow-y: visible;
-  }
 }
 
 /* Small Devices (Landscape Phones, less than 768px) */
@@ -97,7 +90,6 @@
 /* Smaller screens */
 @media screen and (max-width: 475px) {
   .filter-sidebar-price-field {
-    font-size: var(--font-size-xs);
     padding: var(--spacing-1);
   }
 }
