@@ -152,4 +152,8 @@
   .description-box-review-default-avatar {
     font-size: var(--font-size-base);
   }
+
+  .description-box-review-verified-badge {
+    font-size: var(--font-size-xxs);
+  }
 }
