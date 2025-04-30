@@ -66,10 +66,15 @@
 .profile-section {
   background-color: var(--color-background-light);
   border-radius: var(--border-radius-lg);
-  padding: 0 var(--spacing-7) var(--spacing-7) var(--spacing-7);
+  padding: var(--spacing-5);
   transition: all var(--transition-duration-normal) ease;
   display: flex;
   flex-direction: column;
+  margin-top: var(--spacing-5);
+}
+
+.profile-section:first-child {
+  margin-top: 0;
 }
 
 /* Section Header */
@@ -170,8 +175,6 @@
 .profile-profile-details {
   display: flex;
   flex-direction: column;
-  margin-top: var(--spacing-4);
-  margin-bottom: var(--spacing-4);
 }
 
 .profile-detail-item {
@@ -185,6 +188,8 @@
 
 .profile-detail-item:last-child {
   border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
 }
 
 /* Small devices (< 576px) */
