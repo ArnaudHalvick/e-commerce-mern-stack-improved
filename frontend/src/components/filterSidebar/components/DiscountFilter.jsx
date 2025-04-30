@@ -10,7 +10,7 @@ import React from "react";
 const DiscountFilter = ({ filters, onFilterChange }) => {
   return (
     <div className="filter-sidebar-section">
-      <label className="filter-sidebar-checkbox">
+      <label className="filter-sidebar-checkbox-label">
         <input
           type="checkbox"
           className="filter-sidebar-checkbox-input"

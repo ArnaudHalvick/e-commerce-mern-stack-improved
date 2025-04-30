@@ -18,7 +18,7 @@ const TagsFilter = ({ availableTags, filters, onFilterChange }) => {
       <h4 className="filter-sidebar-section-subtitle">Tags</h4>
       <div className="filter-sidebar-options">
         {availableTags.map((tag) => (
-          <label key={tag} className="filter-sidebar-checkbox">
+          <label key={tag} className="filter-sidebar-checkbox-label">
             <input
               type="checkbox"
               className="filter-sidebar-checkbox-input"

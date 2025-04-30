@@ -13,7 +13,7 @@ const CategoryFilter = ({ filters, onFilterChange }) => {
       <h4 className="filter-sidebar-section-subtitle">Category</h4>
       <div className="filter-sidebar-options">
         {["men", "women", "kids"].map((category) => (
-          <label key={category} className="filter-sidebar-checkbox">
+          <label key={category} className="filter-sidebar-checkbox-label">
             <input
               type="checkbox"
               className="filter-sidebar-checkbox-input"

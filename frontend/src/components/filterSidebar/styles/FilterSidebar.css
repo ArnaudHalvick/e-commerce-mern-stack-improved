@@ -37,12 +37,20 @@
 }
 
 .filter-sidebar-clear-btn {
-  background: none;
+  background-color: var(--color-primary);
   border: none;
-  color: var(--color-primary);
+  color: white;
   cursor: pointer;
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
+  padding: var(--spacing-1) var(--spacing-2);
+  border-radius: var(--border-radius-sm);
+  transition: background-color var(--transition-duration-fast)
+    var(--transition-timing-ease);
+}
+
+.filter-sidebar-clear-btn:hover {
+  background-color: var(--color-primary-dark);
 }
 
 .filter-sidebar-options {
@@ -169,7 +177,7 @@
 
   .filter-sidebar-clear-btn {
     font-size: calc(var(--font-size-xs) - 1px);
-    padding: var(--spacing-1) / 2;
+    padding: calc(var(--spacing-1) / 2) var(--spacing-1);
   }
 
   .filter-sidebar-section {
@@ -201,7 +209,7 @@
 
   .filter-sidebar-clear-btn {
     font-size: var(--font-size-xxs);
-    padding: var(--spacing-1) / 2;
+    padding: calc(var(--spacing-1) / 2) var(--spacing-1);
   }
 
   .filter-sidebar-section {
@@ -228,6 +236,10 @@
     font-size: var(--font-size-xxs);
   }
 
+  .filter-sidebar-clear-btn {
+    padding: calc(var(--spacing-1) / 2) var(--spacing-1);
+  }
+
   .filter-sidebar-options {
     max-height: 100px;
     padding-right: var(--spacing-1);
@@ -250,17 +262,43 @@
     margin-bottom: var(--spacing-1);
   }
 
+  .filter-sidebar-section-subtitle {
+    font-size: var(--font-size-xxs);
+    margin-bottom: var(--spacing-1);
+  }
+
   .filter-sidebar-clear-btn {
     font-size: var(--font-size-xxs);
-    padding: 2px;
+    padding: calc(var(--spacing-1) / 2) var(--spacing-1);
+  }
+
+  .filter-sidebar-section {
+    margin-bottom: var(--spacing-2);
+    padding-bottom: var(--spacing-1);
   }
 
   .filter-sidebar-options {
-    max-height: 90px;
+    max-height: 100px;
+    gap: calc(var(--spacing-1) / 2);
+    padding-right: var(--spacing-1);
   }
 
   .filter-sidebar-section:not(:first-child) .filter-sidebar-options {
-    max-height: 80px;
+    max-height: 90px;
+  }
+
+  /* Adjust all other text in the sidebar to be smaller */
+  .filter-sidebar-rating-filter {
+    gap: calc(var(--spacing-1) / 2);
+  }
+
+  .filter-sidebar-star-rating {
+    font-size: var(--font-size-xxs);
+    padding: calc(var(--spacing-1) / 2) var(--spacing-1);
+  }
+
+  .filter-sidebar-rating-up-text {
+    margin-left: calc(var(--spacing-1) / 2);
   }
 }
 

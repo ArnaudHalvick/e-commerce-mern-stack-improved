@@ -1,4 +1,4 @@
-.filter-sidebar-checkbox {
+.filter-sidebar-checkbox-label {
   display: flex;
   align-items: center;
   position: relative;
@@ -42,7 +42,7 @@
   display: block;
 }
 
-.filter-sidebar-checkbox .filter-sidebar-checkmark:after {
+.filter-sidebar-checkbox-label .filter-sidebar-checkmark:after {
   left: 60%;
   top: 50%;
   width: var(--spacing-1);
@@ -55,7 +55,7 @@
 /* Responsive styles */
 /* Medium Devices (Tablets, less than 992px) */
 @media screen and (max-width: 991.98px) {
-  .filter-sidebar-checkbox {
+  .filter-sidebar-checkbox-label {
     font-size: var(--font-size-xs);
     padding-left: var(--spacing-5);
   }
@@ -65,7 +65,7 @@
     width: var(--spacing-3);
   }
 
-  .filter-sidebar-checkbox .filter-sidebar-checkmark:after {
+  .filter-sidebar-checkbox-label .filter-sidebar-checkmark:after {
     left: calc(var(--spacing-1) + 1px);
     top: calc(var(--spacing-1) - 1px);
     width: calc(var(--spacing-1) - 1px);
@@ -75,7 +75,7 @@
 
 /* Small Devices (Landscape Phones, less than 768px) */
 @media screen and (max-width: 767.98px) {
-  .filter-sidebar-checkbox {
+  .filter-sidebar-checkbox-label {
     font-size: var(--font-size-xs);
     padding-left: var(--spacing-4);
   }
@@ -85,7 +85,7 @@
     width: var(--spacing-3);
   }
 
-  .filter-sidebar-checkbox .filter-sidebar-checkmark:after {
+  .filter-sidebar-checkbox-label .filter-sidebar-checkmark:after {
     left: calc(var(--spacing-1) + 1px);
     top: calc(var(--spacing-1) - 1px);
     width: calc(var(--spacing-1) - 2px);
@@ -95,7 +95,7 @@
 
 /* Extra Small Devices (Portrait Phones, less than 576px) */
 @media screen and (max-width: 575.98px) {
-  .filter-sidebar-checkbox {
+  .filter-sidebar-checkbox-label {
     font-size: var(--font-size-xs);
     padding-left: var(--spacing-4);
   }
@@ -105,10 +105,30 @@
     width: calc(var(--spacing-3) - 1px);
   }
 
-  .filter-sidebar-checkbox .filter-sidebar-checkmark:after {
+  .filter-sidebar-checkbox-label .filter-sidebar-checkmark:after {
     left: var(--spacing-1);
     top: calc(var(--spacing-1) - 2px);
     width: calc(var(--spacing-1) - 2px);
     height: var(--spacing-1);
+  }
+}
+
+/* Mobile S Devices (iPhone SE, less than 375px) */
+@media screen and (max-width: 374.98px) {
+  .filter-sidebar-checkbox-label {
+    font-size: var(--font-size-xxs);
+    padding-left: var(--spacing-3);
+  }
+
+  .filter-sidebar-checkmark {
+    height: calc(var(--spacing-2) + 2px);
+    width: calc(var(--spacing-2) + 2px);
+  }
+
+  .filter-sidebar-checkbox-label .filter-sidebar-checkmark:after {
+    left: calc(var(--spacing-1) - 1px);
+    top: calc(var(--spacing-1) - 3px);
+    width: calc(var(--spacing-1) - 3px);
+    height: calc(var(--spacing-1) - 1px);
   }
 }

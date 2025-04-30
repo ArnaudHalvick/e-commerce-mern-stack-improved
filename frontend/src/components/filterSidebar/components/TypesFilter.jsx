@@ -18,7 +18,7 @@ const TypesFilter = ({ availableTypes, filters, onFilterChange }) => {
       <h4 className="filter-sidebar-section-subtitle">Product Types</h4>
       <div className="filter-sidebar-options">
         {availableTypes.map((type) => (
-          <label key={type} className="filter-sidebar-checkbox">
+          <label key={type} className="filter-sidebar-checkbox-label">
             <input
               type="checkbox"
               className="filter-sidebar-checkbox-input"
