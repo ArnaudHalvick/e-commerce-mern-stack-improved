@@ -72,3 +72,127 @@
 .filter-sidebar-options::-webkit-scrollbar-thumb:hover {
   background: var(--color-border-dark);
 }
+
+/* Responsive styles */
+/* Large Devices (Desktops, less than 1200px) */
+@media screen and (max-width: 1199.98px) {
+  .filter-sidebar {
+    flex: 0 0 220px;
+  }
+}
+
+/* Medium Devices (Tablets, less than 992px) */
+@media screen and (max-width: 991.98px) {
+  .filter-sidebar {
+    flex: none;
+    width: 100%;
+    margin-bottom: var(--spacing-6);
+    padding: var(--spacing-4);
+  }
+
+  .filter-sidebar-section-title {
+    font-size: var(--font-size-base);
+    margin-bottom: var(--spacing-3);
+  }
+
+  .filter-sidebar-section-subtitle {
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--spacing-2);
+  }
+
+  .filter-sidebar-options {
+    max-height: 160px;
+    gap: var(--spacing-1);
+  }
+
+  .filter-sidebar-section:not(:first-child) .filter-sidebar-options {
+    max-height: 120px;
+  }
+
+  .filter-sidebar-clear-btn {
+    font-size: var(--font-size-xs);
+  }
+
+  .filter-sidebar-section {
+    margin-bottom: var(--spacing-4);
+    padding-bottom: var(--spacing-3);
+  }
+}
+
+/* Small Devices (Landscape Phones, less than 768px) */
+@media screen and (max-width: 767.98px) {
+  .filter-sidebar {
+    padding: var(--spacing-3);
+    margin-bottom: var(--spacing-4);
+  }
+
+  .filter-sidebar-section-title {
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--spacing-2);
+  }
+
+  .filter-sidebar-section-subtitle {
+    font-size: var(--font-size-xs);
+    margin-bottom: var(--spacing-1);
+  }
+
+  .filter-sidebar-clear-btn {
+    padding: var(--spacing-1);
+  }
+
+  .filter-sidebar-section {
+    margin-bottom: var(--spacing-3);
+    padding-bottom: var(--spacing-2);
+  }
+
+  .filter-sidebar-options {
+    max-height: 140px;
+  }
+}
+
+/* Extra Small Devices (Portrait Phones, less than 576px) */
+@media screen and (max-width: 575.98px) {
+  .filter-sidebar {
+    padding: var(--spacing-2);
+    margin-bottom: var(--spacing-3);
+  }
+
+  .filter-sidebar-section-title {
+    font-size: var(--font-size-xs);
+    margin-bottom: var(--spacing-1);
+  }
+
+  .filter-sidebar-section-subtitle {
+    font-size: var(--font-size-xs);
+    margin-bottom: var(--spacing-1);
+  }
+
+  .filter-sidebar-clear-btn {
+    font-size: calc(var(--font-size-xs) - 1px);
+    padding: var(--spacing-1) / 2;
+  }
+
+  .filter-sidebar-section {
+    margin-bottom: var(--spacing-2);
+    padding-bottom: var(--spacing-1);
+  }
+
+  .filter-sidebar-options {
+    max-height: 120px;
+  }
+
+  .filter-sidebar-section:not(:first-child) .filter-sidebar-options {
+    max-height: 100px;
+  }
+}
+
+/* Very Small Devices (Small Phones, less than 400px) */
+@media screen and (max-width: 399.98px) {
+  .filter-sidebar {
+    padding: var(--spacing-1);
+  }
+
+  .filter-sidebar-options {
+    max-height: 100px;
+  }
+}

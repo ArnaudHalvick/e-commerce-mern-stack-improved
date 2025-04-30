@@ -30,3 +30,44 @@
   background-color: var(--color-secondary-light);
   border-color: var(--color-secondary);
 }
+
+/* Responsive styles */
+/* Medium Devices (Tablets, less than 992px) */
+@media screen and (max-width: 991.98px) {
+  .filter-sidebar-rating-filter {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--spacing-1);
+  }
+
+  .filter-sidebar-star-rating {
+    padding: var(--spacing-1);
+    font-size: var(--font-size-xs);
+  }
+
+  .filter-sidebar-rating-up-text {
+    margin-left: calc(var(--spacing-1) / 2);
+  }
+}
+
+/* Small Devices (Landscape Phones, less than 768px) */
+@media screen and (max-width: 767.98px) {
+  .filter-sidebar-star-rating {
+    padding: calc(var(--spacing-1) / 2);
+  }
+}
+
+/* Extra Small Devices (Portrait Phones, less than 576px) */
+@media screen and (max-width: 575.98px) {
+  .filter-sidebar-star-rating {
+    font-size: calc(var(--font-size-xs) - 1px);
+  }
+}
+
+/* Very Small Devices (Small Phones, less than 400px) */
+@media screen and (max-width: 399.98px) {
+  .filter-sidebar-rating-filter {
+    flex-direction: column;
+    gap: calc(var(--spacing-1) / 2);
+  }
+}

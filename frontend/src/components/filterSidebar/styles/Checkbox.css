@@ -51,3 +51,64 @@
   border-width: 0 var(--border-width-medium) var(--border-width-medium) 0;
   transform: translate(-75%, -50%) rotate(45deg);
 }
+
+/* Responsive styles */
+/* Medium Devices (Tablets, less than 992px) */
+@media screen and (max-width: 991.98px) {
+  .filter-sidebar-checkbox {
+    font-size: var(--font-size-xs);
+    padding-left: var(--spacing-5);
+  }
+
+  .filter-sidebar-checkmark {
+    height: var(--spacing-3);
+    width: var(--spacing-3);
+  }
+
+  .filter-sidebar-checkbox .filter-sidebar-checkmark:after {
+    left: calc(var(--spacing-1) + 1px);
+    top: calc(var(--spacing-1) - 1px);
+    width: calc(var(--spacing-1) - 1px);
+    height: var(--spacing-1);
+  }
+}
+
+/* Small Devices (Landscape Phones, less than 768px) */
+@media screen and (max-width: 767.98px) {
+  .filter-sidebar-checkbox {
+    font-size: var(--font-size-xs);
+    padding-left: var(--spacing-4);
+  }
+
+  .filter-sidebar-checkmark {
+    height: var(--spacing-3);
+    width: var(--spacing-3);
+  }
+
+  .filter-sidebar-checkbox .filter-sidebar-checkmark:after {
+    left: calc(var(--spacing-1) + 1px);
+    top: calc(var(--spacing-1) - 1px);
+    width: calc(var(--spacing-1) - 2px);
+    height: calc(var(--spacing-1) + 1px);
+  }
+}
+
+/* Extra Small Devices (Portrait Phones, less than 576px) */
+@media screen and (max-width: 575.98px) {
+  .filter-sidebar-checkbox {
+    font-size: var(--font-size-xs);
+    padding-left: var(--spacing-4);
+  }
+
+  .filter-sidebar-checkmark {
+    height: calc(var(--spacing-3) - 1px);
+    width: calc(var(--spacing-3) - 1px);
+  }
+
+  .filter-sidebar-checkbox .filter-sidebar-checkmark:after {
+    left: var(--spacing-1);
+    top: calc(var(--spacing-1) - 2px);
+    width: calc(var(--spacing-1) - 2px);
+    height: var(--spacing-1);
+  }
+}

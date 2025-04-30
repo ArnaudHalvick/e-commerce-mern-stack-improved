@@ -15,3 +15,43 @@
 .filter-sidebar-price-separator {
   color: var(--color-text-tertiary);
 }
+
+/* Responsive styles */
+/* Medium Devices (Tablets, less than 992px) */
+@media screen and (max-width: 991.98px) {
+  .filter-sidebar-price-field {
+    width: var(--spacing-16);
+  }
+}
+
+/* Small Devices (Landscape Phones, less than 768px) */
+@media screen and (max-width: 767.98px) {
+  .filter-sidebar-price-field {
+    width: var(--spacing-14);
+  }
+}
+
+/* Extra Small Devices (Portrait Phones, less than 576px) */
+@media screen and (max-width: 575.98px) {
+  .filter-sidebar-price-field {
+    width: var(--spacing-12);
+    font-size: var(--font-size-xs);
+  }
+}
+
+/* Very Small Devices (Small Phones, less than 400px) */
+@media screen and (max-width: 399.98px) {
+  .filter-sidebar-price-inputs {
+    flex-direction: column;
+    gap: var(--spacing-1);
+    align-items: flex-start;
+  }
+
+  .filter-sidebar-price-field {
+    width: 100%;
+  }
+
+  .filter-sidebar-price-separator {
+    display: none;
+  }
+}
