@@ -23,7 +23,6 @@
 
 .related-products-items {
   display: flex;
-  flex-wrap: wrap;
   margin-top: var(--spacing-6);
   gap: var(--spacing-8);
   justify-content: center;
@@ -47,6 +46,7 @@
 @media screen and (max-width: 768px) {
   .related-products-items {
     gap: var(--spacing-5);
+    flex-wrap: wrap;
   }
 
   .related-products-title {

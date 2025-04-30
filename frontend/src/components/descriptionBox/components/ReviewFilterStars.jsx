@@ -30,10 +30,22 @@ const ReviewFilterStars = ({ ratingFilter, ratingCounts, onRatingFilter }) => {
 
   const counts = ensureValidCounts();
 
+  // Handler for clicking on a rating filter
+  const handleRatingClick = (rating) => {
+    // Call the parent's filter handler
+    onRatingFilter(rating);
+
+    // Scroll the reviews container to the top
+    const reviewsContainer = document.getElementById("reviewsContainer");
+    if (reviewsContainer) {
+      reviewsContainer.scrollTop = 0;
+    }
+  };
+
   // Handler for keyboard events
   const handleKeyDown = (e, rating) => {
     if (e.key === "Enter" || e.key === " ") {
-      onRatingFilter(rating);
+      handleRatingClick(rating);
       e.preventDefault();
     }
   };
@@ -79,7 +91,7 @@ const ReviewFilterStars = ({ ratingFilter, ratingCounts, onRatingFilter }) => {
             className={`description-box-filter-rating-item ${
               isActive ? "active" : ""
             }`}
-            onClick={() => onRatingFilter(rating)}
+            onClick={() => handleRatingClick(rating)}
             aria-label={`Filter by ${rating} star reviews`}
             tabIndex={0}
             onKeyDown={(e) => handleKeyDown(e, rating)}
@@ -99,7 +111,7 @@ const ReviewFilterStars = ({ ratingFilter, ratingCounts, onRatingFilter }) => {
       {ratingFilter > 0 && (
         <button
           className="description-box-filter-clear-btn"
-          onClick={() => onRatingFilter(0)}
+          onClick={() => handleRatingClick(0)}
           aria-label="Clear rating filter"
         >
           Clear
