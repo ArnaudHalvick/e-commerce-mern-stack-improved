@@ -34,12 +34,6 @@ const ReviewFilterStars = ({ ratingFilter, ratingCounts, onRatingFilter }) => {
   const handleRatingClick = (rating) => {
     // Call the parent's filter handler
     onRatingFilter(rating);
-
-    // Scroll the reviews container to the top
-    const reviewsContainer = document.getElementById("reviewsContainer");
-    if (reviewsContainer) {
-      reviewsContainer.scrollTop = 0;
-    }
   };
 
   // Handler for keyboard events

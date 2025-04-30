@@ -82,6 +82,12 @@ const ReviewModal = ({ product }) => {
   // Handle sort option change
   const handleSortChange = (e) => {
     dispatch(setSortOption(e.target.value));
+
+    // Scroll reviews container back to top when sort changes
+    const reviewsContainer = document.getElementById("reviewsContainer");
+    if (reviewsContainer) {
+      reviewsContainer.scrollTop = 0;
+    }
   };
 
   // Handle rating filter change
@@ -96,6 +102,12 @@ const ReviewModal = ({ product }) => {
 
     // Update the Redux filter state
     dispatch(setRatingFilter(filterToApply));
+
+    // Scroll reviews container back to top when filter changes
+    const reviewsContainer = document.getElementById("reviewsContainer");
+    if (reviewsContainer) {
+      reviewsContainer.scrollTop = 0;
+    }
   };
 
   // Function to render skeleton loaders
@@ -110,6 +122,12 @@ const ReviewModal = ({ product }) => {
 
     setInitialLoad(true);
     setPreloaded(false);
+
+    // Scroll reviews container back to top when filters change
+    const reviewsContainer = document.getElementById("reviewsContainer");
+    if (reviewsContainer) {
+      reviewsContainer.scrollTop = 0;
+    }
 
     // Fetch modal reviews with current filters
     // This is completely separate from the static page reviews
