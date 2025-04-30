@@ -69,3 +69,29 @@
   color: var(--color-primary-light);
   font-weight: var(--font-weight-medium);
 }
+
+/* Responsive styles */
+/* Medium devices (tablets, up to 768px) */
+@media (max-width: 768px) {
+  .navbar-user-dropdown {
+    width: 12rem;
+  }
+}
+
+/* Small devices (landscape phones, up to 576px) */
+@media (max-width: 576px) {
+  .navbar-welcome-user {
+    display: none;
+  }
+}
+
+/* Extra small devices (portrait phones, up to 475px) */
+@media (max-width: 475px) {
+  .navbar-welcome-user {
+    display: none;
+  }
+
+  .navbar-user-trigger {
+    gap: var(--spacing-1);
+  }
+}

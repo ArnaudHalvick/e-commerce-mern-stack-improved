@@ -20,3 +20,52 @@
   font-size: var(--font-size-4xl);
   font-weight: var(--font-weight-medium);
 }
+
+/* Responsive styles */
+/* Extra large devices (large desktops, up to 1200px) */
+@media (max-width: 1200px) {
+  .navbar {
+    padding: var(--spacing-5);
+  }
+
+  .navbar-logo-text {
+    font-size: var(--font-size-3xl);
+  }
+}
+
+/* Large devices (desktops, up to 992px) */
+@media (max-width: 992px) {
+  .navbar {
+    padding: var(--spacing-4);
+  }
+
+  .navbar-logo-text {
+    font-size: var(--font-size-2xl);
+  }
+}
+
+/* Medium devices (tablets, up to 768px) */
+@media (max-width: 768px) {
+  .navbar {
+    padding: var(--spacing-4) var(--spacing-5);
+    justify-content: space-between;
+  }
+}
+
+/* Small devices (landscape phones, up to 576px) */
+@media (max-width: 576px) {
+  .navbar-logo-text {
+    font-size: var(--font-size-xl);
+  }
+}
+
+/* Extra small devices (portrait phones, up to 475px) */
+@media (max-width: 475px) {
+  .navbar {
+    padding: var(--spacing-3) var(--spacing-4);
+  }
+
+  .navbar-logo-text {
+    font-size: var(--font-size-lg);
+  }
+}
