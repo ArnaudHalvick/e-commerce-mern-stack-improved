@@ -1,5 +1,4 @@
 import React from "react";
-import { useSelector } from "react-redux";
 import { FormSubmitButton } from "../../../components/form";
 
 const EmailManager = ({
@@ -7,10 +6,6 @@ const EmailManager = ({
   handleResendVerification,
   isVerificationSending,
 }) => {
-  const verificationRequested = useSelector(
-    (state) => state.user.verificationRequested
-  );
-
   return (
     <section className="profile-section">
       <div className="profile-section-header">
