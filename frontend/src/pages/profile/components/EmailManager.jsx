@@ -47,14 +47,6 @@ const EmailManager = ({
             />
           </div>
         )}
-        {verificationRequested && (
-          <div className="profile-verification-message success">
-            <p>
-              Verification email sent. Please check your inbox to verify your
-              email address.
-            </p>
-          </div>
-        )}
       </div>
     </section>
   );
