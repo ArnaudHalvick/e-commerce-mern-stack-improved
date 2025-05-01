@@ -15,6 +15,10 @@ COPY package*.json ./
 # Install dependencies
 RUN npm ci
 
+# Copy entrypoint script first (for better layer caching)
+COPY docker-entrypoint-dev.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+
 # Copy source code
 COPY --chown=node:node . .
 
@@ -39,5 +43,6 @@ USER node
 EXPOSE 4001
 EXPOSE 4444
 
-# Start development server with nodemon
+# Start development server with nodemon using the entrypoint script
+ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["npm", "run", "dev"] 
