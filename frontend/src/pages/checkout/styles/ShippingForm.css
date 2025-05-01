@@ -148,3 +148,10 @@
     flex: 1;
   }
 }
+
+/* Large desktop styles */
+@media (min-width: 992px) {
+  .checkout-shipping-form-container {
+    height: 685.38px;
+  }
+}
