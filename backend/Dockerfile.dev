@@ -1,5 +1,11 @@
 FROM node:18-bookworm-slim
 
+# Create node user if it doesn't exist
+RUN if ! id -u node > /dev/null 2>&1; then \
+    groupadd --gid 1000 node && \
+    useradd --uid 1000 --gid node --shell /bin/bash --create-home node; \
+  fi
+
 # Set working directory
 WORKDIR /app
 
@@ -10,10 +16,11 @@ COPY package*.json ./
 RUN npm ci
 
 # Copy source code
-COPY . .
+COPY --chown=node:node . .
 
 # Make sure the app directory is created
-RUN mkdir -p /app/upload/images
+RUN mkdir -p /app/upload/images && \
+    chown -R node:node /app
 
 # Set environment variables directly
 ENV NODE_ENV=development \
@@ -24,6 +31,9 @@ ENV NODE_ENV=development \
     DEFAULT_PROTOCOL=http \
     USE_HTTPS=false \
     MONGODB_URI=mongodb://mongo:27017/ecommerce
+
+# Switch to node user for better security and compatibility with watch
+USER node
 
 # Expose ports
 EXPOSE 4001
