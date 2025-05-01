@@ -4,5 +4,5 @@
 @import "./LoadingState.css";
 @import "./ErrorState.css";
 @import "./NoOrders.css";
-@import "./orderFilters.css";
-@import "./orderPagination.css";
+@import "./OrderFilters.css";
+@import "./OrderPagination.css";

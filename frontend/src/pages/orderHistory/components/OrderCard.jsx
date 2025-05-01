@@ -30,10 +30,10 @@ const OrderCard = ({ order }) => {
     >
       <div className="order-history-header">
         <div className="order-history-header-left">
-          <h2>Order #{order._id}</h2>
-          <p className="order-history-date">
+          <div className="order-history-order-number">Order #{order._id}</div>
+          <div className="order-history-date">
             Placed on {formatDate(order.createdAt)}
-          </p>
+          </div>
         </div>
         <div className="order-history-header-right">
           <OrderStatusBadge status={order.orderStatus} />
@@ -44,13 +44,17 @@ const OrderCard = ({ order }) => {
         {order.items.slice(0, 3).map((item, index) => (
           <div className="order-history-item-preview" key={index}>
             <div className="order-history-item-image">
-              <img src={getImageUrl(item.image)} alt={item.name} />
+              <img
+                className="order-history-item-image-content"
+                src={getImageUrl(item.image)}
+                alt={item.name}
+              />
             </div>
             <div className="order-history-item-info">
-              <p className="order-history-item-name">{item.name}</p>
-              <p className="order-history-item-details">
+              <div className="order-history-item-name">{item.name}</div>
+              <div className="order-history-item-details">
                 {item.quantity} × ${item.price.toFixed(2)}
-              </p>
+              </div>
             </div>
           </div>
         ))}
@@ -64,7 +68,7 @@ const OrderCard = ({ order }) => {
 
       <div className="order-history-footer">
         <div className="order-history-total">
-          <span>Total:</span>
+          <span className="order-history-total-label">Total:</span>
           <span className="order-history-total-price">
             ${order.totalAmount.toFixed(2)}
           </span>

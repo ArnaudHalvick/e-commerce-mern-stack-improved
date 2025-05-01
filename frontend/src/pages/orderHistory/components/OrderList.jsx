@@ -68,9 +68,9 @@ const OrderList = ({
       {/* Show orders or empty state message */}
       {filteredOrdersCount === 0 ? (
         <div className="order-history-no-results">
-          <p className="order-history-no-results-text">
+          <div className="order-history-no-results-text">
             No orders match your current filters.
-          </p>
+          </div>
           <button
             className="order-history-clear-filters-btn"
             onClick={clearAllFilters}

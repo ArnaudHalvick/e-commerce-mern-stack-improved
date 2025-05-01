@@ -76,13 +76,13 @@ const OrderFilters = ({
       <div className="order-history-filter-info">
         <div className="order-history-filter-text">
           Showing{" "}
-          <span className="order-history-filter-highlight">
+          <div className="order-history-filter-highlight">
             {calculateDisplayRange()}
-          </span>{" "}
+          </div>{" "}
           of{" "}
-          <span className="order-history-filter-highlight">
+          <div className="order-history-filter-highlight">
             {filteredOrdersCount}
-          </span>{" "}
+          </div>{" "}
           orders
         </div>
 
@@ -154,7 +154,7 @@ const OrderFilters = ({
               aria-label="Filter orders from date"
               placeholder="From"
             />
-            <span className="order-history-filter-date-separator">to</span>
+            <div className="order-history-filter-date-separator">to</div>
             <input
               type="date"
               className="order-history-filter-date"
@@ -191,9 +191,9 @@ const OrderFilters = ({
             aria-label="Sort orders"
             data-testid="sort-dropdown"
           >
-            <span className="order-history-filter-sort-label">
+            <div className="order-history-filter-sort-label">
               {getSortLabel()}
-            </span>
+            </div>
             <img
               src={dropdown_icon}
               alt=""

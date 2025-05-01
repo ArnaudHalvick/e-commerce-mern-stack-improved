@@ -11,10 +11,10 @@ const ErrorState = ({ errorMessage, retryHandler }) => {
   return (
     <div className="order-error-state">
       <div className="order-error-icon">⚠️</div>
-      <p className="order-error-message">
+      <div className="order-error-message">
         {errorMessage ||
           "We're having trouble loading your orders. Please try again."}
-      </p>
+      </div>
       <button
         className="order-error-retry-btn"
         onClick={retryHandler}

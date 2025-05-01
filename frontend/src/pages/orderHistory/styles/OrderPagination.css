@@ -25,7 +25,7 @@
   padding: var(--spacing-2) var(--spacing-5);
   border: var(--border-width-thin) solid var(--color-border);
   border-radius: var(--border-radius-md);
-  background: var(--color-background);
+  background-color: var(--color-background);
   cursor: pointer;
   transition: all var(--transition-duration-fast) var(--transition-timing-ease);
   font-weight: var(--font-weight-medium);
@@ -36,7 +36,7 @@
 
 .order-page-btn:hover:not(.order-disabled) {
   border-color: var(--color-primary-light);
-  background: var(--color-background-light);
+  background-color: var(--color-background-light);
   color: var(--color-primary);
 }
 
@@ -70,7 +70,7 @@
 }
 
 .order-page-number:hover:not(.order-active) {
-  background: var(--color-background-light);
+  background-color: var(--color-background-light);
   border-color: var(--color-primary-light);
   color: var(--color-primary);
 }
@@ -93,7 +93,7 @@
   font-weight: var(--font-weight-medium);
 }
 
-/* Responsive styles for orderPagination */
+/* Responsive styles for OrderPagination */
 @media screen and (max-width: 1199.98px) {
   .order-page-navigation {
     gap: var(--spacing-6);

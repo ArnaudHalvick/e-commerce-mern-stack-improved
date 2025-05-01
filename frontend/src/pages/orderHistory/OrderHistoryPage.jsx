@@ -42,7 +42,7 @@ const OrderHistoryPage = () => {
         routes={[{ label: "Home", path: "/" }, { label: "Order History" }]}
       />
       <div className="order-history-page-container">
-        <h1 className="order-history-page-title">Order History</h1>
+        <div className="order-history-page-title">Order History</div>
 
         {loading ? (
           <LoadingState />
