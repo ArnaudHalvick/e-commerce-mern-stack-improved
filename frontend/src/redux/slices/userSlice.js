@@ -1,8 +1,6 @@
 // frontend/src/redux/slices/userSlice.js
 
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
-import { config } from "../../api";
 import { authService } from "../../api";
 import { cancelPendingRequests } from "../../api/client";
 
