@@ -198,6 +198,23 @@ export const verifyToken = async () => {
   }
 };
 
+/**
+ * Disable user account
+ * @param {Object} data - Object containing password
+ * @returns {Promise} Promise with disable account response
+ */
+export const disableAccount = async (data) => {
+  try {
+    const headers = getAuthHeaders();
+    const response = await apiClient.put("/api/users/disable-account", data, {
+      headers,
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 // Export all functions as auth service
 const authService = {
   getAuthHeaders,
@@ -213,6 +230,7 @@ const authService = {
   refreshToken,
   logout,
   verifyToken,
+  disableAccount,
 };
 
 export default authService;

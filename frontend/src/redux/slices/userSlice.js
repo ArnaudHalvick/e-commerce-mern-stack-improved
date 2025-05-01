@@ -228,18 +228,8 @@ export const disableAccount = createAsyncThunk(
   "user/disableAccount",
   async (password, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem("auth-token");
-      const response = await axios.put(
-        config.getApiUrl("users/disable-account"),
-        { password },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "auth-token": token,
-          },
-        }
-      );
-      return response.data;
+      const response = await authService.disableAccount(password);
+      return response;
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Failed to disable account"
@@ -253,11 +243,8 @@ export const requestEmailVerification = createAsyncThunk(
   "user/requestVerification",
   async (email, { rejectWithValue }) => {
     try {
-      const response = await axios.post(
-        config.getApiUrl("users/request-verification"),
-        { email }
-      );
-      return response.data;
+      const response = await authService.requestEmailVerification(email);
+      return response;
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Failed to request verification"
@@ -271,16 +258,14 @@ export const verifyEmail = createAsyncThunk(
   "user/verifyEmail",
   async (token, { rejectWithValue, dispatch }) => {
     try {
-      const response = await axios.get(
-        config.getApiUrl(`users/verify-email?token=${token}`)
-      );
+      const response = await authService.verifyEmail(token);
 
       // If verification was successful, update the user profile to get the latest verification status
-      if (response.data.success) {
+      if (response.success) {
         dispatch(fetchUserProfile());
       }
 
-      return response.data;
+      return response;
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Failed to verify email"
