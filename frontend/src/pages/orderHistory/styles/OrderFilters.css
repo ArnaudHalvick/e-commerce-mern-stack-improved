@@ -410,7 +410,7 @@
 
   .order-history-filter-info {
     gap: var(--spacing-1);
-    align-items: flex-start;
+    align-items: baseline;
   }
 
   .order-history-filter-text,

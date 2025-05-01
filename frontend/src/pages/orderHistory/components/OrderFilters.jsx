@@ -173,7 +173,7 @@ const OrderFilters = ({
               onClick={handleClearDates}
               aria-label="Clear date filters"
             >
-              Clear
+              Clear Dates
             </button>
           </div>
         </div>
