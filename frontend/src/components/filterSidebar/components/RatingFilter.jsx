@@ -34,8 +34,7 @@ const RatingFilter = ({ filters, onFilterChange }) => {
               aria-label={`${star} star rating and up`}
             >
               {star}★{" "}
-              <span className="filter-sidebar-rating-up-text">& Up</span>{" "}
-              {filters.rating === star && "✓"}
+              <span className="filter-sidebar-rating-up-text">& Up</span>
             </div>
           ))}
         </div>

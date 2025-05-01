@@ -26,10 +26,21 @@
 }
 
 .filter-sidebar-star-rating.active {
-  color: var(--color-primary);
+  color: var(--color-background);
   font-weight: var(--font-weight-medium);
-  background-color: var(--color-secondary-light);
-  border-color: var(--color-secondary);
+  background-color: var(--color-primary);
+}
+
+/* Large Devices (Desktops, more than 992px) */
+@media screen and (min-width: 992px) {
+  .filter-sidebar-rating-filter {
+    flex-direction: column;
+    gap: var(--spacing-1);
+  }
+
+  .filter-sidebar-star-rating {
+    font-size: calc(var(--font-size-sm) - 1px);
+  }
 }
 
 /* Responsive styles */
