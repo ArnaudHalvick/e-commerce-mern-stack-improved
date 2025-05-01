@@ -10,17 +10,17 @@ const ShippingForm = ({
   isLoading = false,
 }) => {
   return (
-    <div className="shipping-form-container">
-      <h2 className="shipping-form-title">Shipping Information</h2>
+    <div className="checkout-shipping-form-container">
+      <h2 className="checkout-shipping-form-title">Shipping Information</h2>
 
       {isLoading ? (
         <LoadingContainer
           message="Loading your shipping details..."
           size="medium"
-          className="shipping-form-loader"
+          className="checkout-shipping-form-loader"
         />
       ) : (
-        <form className="shipping-form">
+        <form className="checkout-shipping-form">
           <FormInputField
             type="text"
             id="name"
@@ -28,7 +28,7 @@ const ShippingForm = ({
             value={shippingInfo.name}
             onChange={handleShippingInfoChange}
             label="Name"
-            containerClassName="shipping-form-group"
+            containerClassName="checkout-shipping-form-group"
             required
           />
 
@@ -39,11 +39,11 @@ const ShippingForm = ({
             value={shippingInfo.address}
             onChange={handleShippingInfoChange}
             label="Street Address"
-            containerClassName="shipping-form-group"
+            containerClassName="checkout-shipping-form-group"
             required
           />
 
-          <div className="shipping-form-row">
+          <div className="checkout-shipping-form-row">
             <FormInputField
               type="text"
               id="city"
@@ -51,7 +51,7 @@ const ShippingForm = ({
               value={shippingInfo.city}
               onChange={handleShippingInfoChange}
               label="City"
-              containerClassName="shipping-form-group"
+              containerClassName="checkout-shipping-form-group"
               required
             />
 
@@ -62,12 +62,12 @@ const ShippingForm = ({
               value={shippingInfo.state}
               onChange={handleShippingInfoChange}
               label="State/Province"
-              containerClassName="shipping-form-group"
+              containerClassName="checkout-shipping-form-group"
               required
             />
           </div>
 
-          <div className="shipping-form-row">
+          <div className="checkout-shipping-form-row">
             <FormInputField
               type="text"
               id="postalCode"
@@ -75,7 +75,7 @@ const ShippingForm = ({
               value={shippingInfo.postalCode}
               onChange={handleShippingInfoChange}
               label="Postal Code"
-              containerClassName="shipping-form-group"
+              containerClassName="checkout-shipping-form-group"
               required
             />
 
@@ -86,8 +86,8 @@ const ShippingForm = ({
               value={shippingInfo.country}
               onChange={handleShippingInfoChange}
               label="Country"
-              containerClassName="shipping-form-group"
-              className="shipping-form-select"
+              containerClassName="checkout-shipping-form-group"
+              className="checkout-shipping-form-select"
               options={countries.map((country) => ({
                 value: country.code,
                 label: country.name,
@@ -103,7 +103,7 @@ const ShippingForm = ({
             value={shippingInfo.phoneNumber}
             onChange={handleShippingInfoChange}
             label="Phone Number"
-            containerClassName="shipping-form-group"
+            containerClassName="checkout-shipping-form-group"
             required
           />
         </form>

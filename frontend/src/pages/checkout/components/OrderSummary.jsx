@@ -5,7 +5,7 @@ import "../styles/OrderSummary.css";
 const OrderSummary = ({ cartSummary, isLoading, error }) => {
   if (isLoading) {
     return (
-      <div className="order-summary-loading">
+      <div className="checkout-order-summary-loading">
         <Spinner message="Loading cart summary..." size="small" />
       </div>
     );
@@ -13,38 +13,42 @@ const OrderSummary = ({ cartSummary, isLoading, error }) => {
 
   if (error) {
     return (
-      <div className="order-summary-error">Failed to load cart summary</div>
+      <div className="checkout-order-summary-error">
+        Failed to load cart summary
+      </div>
     );
   }
 
   if (!cartSummary) {
-    return <div className="order-summary-empty">Your cart is empty</div>;
+    return (
+      <div className="checkout-order-summary-empty">Your cart is empty</div>
+    );
   }
 
   return (
-    <div className="order-summary">
-      <h3 className="order-summary-title">Order Summary</h3>
-      <div className="order-summary-item">
-        <span className="order-item-label">Subtotal:</span>
-        <span className="order-item-value">
+    <div className="checkout-order-summary">
+      <h3 className="checkout-order-summary-title">Order Summary</h3>
+      <div className="checkout-order-summary-item">
+        <span className="checkout-order-item-label">Subtotal:</span>
+        <span className="checkout-order-item-value">
           ${cartSummary.subtotal.toFixed(2)}
         </span>
       </div>
-      <div className="order-summary-item">
-        <span className="order-item-label">Shipping:</span>
-        <span className="order-item-value">
+      <div className="checkout-order-summary-item">
+        <span className="checkout-order-item-label">Shipping:</span>
+        <span className="checkout-order-item-value">
           ${cartSummary.shippingAmount.toFixed(2)}
         </span>
       </div>
-      <div className="order-summary-item">
-        <span className="order-item-label">Tax:</span>
-        <span className="order-item-value">
+      <div className="checkout-order-summary-item">
+        <span className="checkout-order-item-label">Tax:</span>
+        <span className="checkout-order-item-value">
           ${cartSummary.taxAmount.toFixed(2)}
         </span>
       </div>
-      <div className="order-summary-item order-total">
-        <span className="order-item-label">Total:</span>
-        <span className="order-item-value">
+      <div className="checkout-order-summary-item checkout-order-total">
+        <span className="checkout-order-item-label">Total:</span>
+        <span className="checkout-order-item-value">
           ${cartSummary.amount.toFixed(2)}
         </span>
       </div>

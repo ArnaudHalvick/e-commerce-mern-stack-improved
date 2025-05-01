@@ -1,5 +1,5 @@
 /* Payment Form Styles */
-.payment-form-container {
+.checkout-payment-form-container {
   flex: 1;
   min-width: 300px;
   background-color: var(--color-background);
@@ -8,7 +8,7 @@
   box-shadow: var(--shadow-lg);
 }
 
-.payment-form-title {
+.checkout-payment-form-title {
   font-size: var(--font-size-xl);
   color: var(--color-text-secondary);
   margin-bottom: var(--spacing-6);
@@ -16,22 +16,22 @@
   border-bottom: var(--border-width-thin) solid var(--color-border-light);
 }
 
-.payment-form {
+.checkout-payment-form {
   width: 100%;
 }
 
-.payment-form-group {
+.checkout-payment-form-group {
   margin-bottom: var(--spacing-6);
   width: 100%;
 }
 
-.payment-form-row {
+.checkout-payment-form-row {
   display: flex;
   gap: var(--spacing-4);
   margin-bottom: var(--spacing-6);
 }
 
-.payment-form-label {
+.checkout-payment-form-label {
   display: block;
   margin-bottom: var(--spacing-2);
   font-weight: var(--font-weight-medium);
@@ -39,11 +39,11 @@
 }
 
 /* Special style for the card row */
-.payment-form-row.payment-card-row {
+.checkout-payment-form-row.checkout-payment-card-row {
   margin-bottom: var(--spacing-2);
 }
 
-.payment-card-container {
+.checkout-payment-card-container {
   padding: var(--spacing-4);
   border: var(--border-width-thin) solid var(--color-border);
   border-radius: var(--border-radius-lg);
@@ -55,12 +55,12 @@
     var(--transition-timing-ease);
 }
 
-.payment-card-container:focus-within {
+.checkout-payment-card-container:focus-within {
   border-color: var(--color-primary);
   box-shadow: 0 0 0 2px rgba(255, 65, 65, 0.1);
 }
 
-.payment-stripe-element {
+.checkout-payment-stripe-element {
   width: 100%;
   font-size: var(--font-size-base);
   color: var(--color-text-secondary);
@@ -91,34 +91,34 @@
 
 /* Responsive styles */
 @media (max-width: 768px) {
-  .payment-form-row {
+  .checkout-payment-form-row {
     flex-direction: column;
   }
 
-  .payment-form-title {
+  .checkout-payment-form-title {
     font-size: var(--font-size-lg);
   }
 }
 
 @media (max-width: 480px) {
-  .payment-form-container {
+  .checkout-payment-form-container {
     padding: var(--spacing-4);
   }
 
-  .payment-form-title {
+  .checkout-payment-form-title {
     font-size: var(--font-size-md);
     margin-bottom: var(--spacing-4);
   }
 
-  .payment-form-label {
+  .checkout-payment-form-label {
     font-size: var(--font-size-sm);
   }
 
-  .payment-card-container {
+  .checkout-payment-card-container {
     padding: var(--spacing-3);
   }
 
-  .payment-form-row.payment-card-row {
+  .checkout-payment-form-row.checkout-payment-card-row {
     margin-bottom: var(--spacing-1);
   }
 }

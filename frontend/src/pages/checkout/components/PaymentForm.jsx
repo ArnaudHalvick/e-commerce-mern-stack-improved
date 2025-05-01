@@ -15,38 +15,40 @@ const PaymentForm = ({
   totalAmount,
 }) => {
   return (
-    <div className="payment-form-container">
-      <h2 className="payment-form-title">Payment Information</h2>
-      <form className="payment-form" onSubmit={onSubmit}>
-        <div className="payment-form-row payment-card-row">
-          <div className="payment-form-group">
-            <label className="payment-form-label">Card Number</label>
-            <div className="payment-card-container">
+    <div className="checkout-payment-form-container">
+      <h2 className="checkout-payment-form-title">Payment Information</h2>
+      <form className="checkout-payment-form" onSubmit={onSubmit}>
+        <div className="checkout-payment-form-row checkout-payment-card-row">
+          <div className="checkout-payment-form-group">
+            <label className="checkout-payment-form-label">Card Number</label>
+            <div className="checkout-payment-card-container">
               <CardNumberElement
                 options={cardElementOptions}
-                className="payment-stripe-element"
+                className="checkout-payment-stripe-element"
               />
             </div>
           </div>
         </div>
 
-        <div className="payment-form-row payment-card-row">
-          <div className="payment-form-group">
-            <label className="payment-form-label">Expiration Date</label>
-            <div className="payment-card-container">
+        <div className="checkout-payment-form-row checkout-payment-card-row">
+          <div className="checkout-payment-form-group">
+            <label className="checkout-payment-form-label">
+              Expiration Date
+            </label>
+            <div className="checkout-payment-card-container">
               <CardExpiryElement
                 options={cardElementOptions}
-                className="payment-stripe-element"
+                className="checkout-payment-stripe-element"
               />
             </div>
           </div>
 
-          <div className="payment-form-group">
-            <label className="payment-form-label">CVC</label>
-            <div className="payment-card-container">
+          <div className="checkout-payment-form-group">
+            <label className="checkout-payment-form-label">CVC</label>
+            <div className="checkout-payment-card-container">
               <CardCvcElement
                 options={cardElementOptions}
-                className="payment-stripe-element"
+                className="checkout-payment-stripe-element"
               />
             </div>
           </div>

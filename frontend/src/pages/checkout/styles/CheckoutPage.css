@@ -27,6 +27,11 @@
   flex-wrap: wrap;
 }
 
+.checkout-payment-section {
+  flex: 1;
+  min-width: 300px;
+}
+
 /* Responsive styles */
 @media (max-width: 768px) {
   .checkout-container {
