@@ -30,8 +30,6 @@
   }
 
   .filter-sidebar-price-inputs {
-    flex-direction: row;
-    gap: var(--spacing-2);
     width: 100%;
   }
 }
@@ -46,8 +44,6 @@
   .filter-sidebar-price-inputs {
     display: grid;
     grid-template-columns: 1fr auto 1fr;
-    align-items: center;
-    width: 100%;
   }
 }
 

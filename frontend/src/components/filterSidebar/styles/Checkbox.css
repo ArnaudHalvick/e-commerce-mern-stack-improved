@@ -71,11 +71,8 @@
   }
 
   .filter-sidebar-checkbox-label .filter-sidebar-checkmark:after {
-    left: 60%;
-    top: 50%;
     width: calc(var(--spacing-1) - 1px);
     height: calc(var(--spacing-1) + 1px);
-    transform: translate(-75%, -50%) rotate(45deg);
   }
 }
 
@@ -83,7 +80,6 @@
 @media screen and (max-width: 991.98px) {
   .filter-sidebar-checkbox-label {
     font-size: var(--font-size-xs);
-    padding-left: var(--spacing-5);
     min-width: 0;
   }
 
@@ -101,13 +97,7 @@
 /* Small Devices (Landscape Phones, less than 768px) */
 @media screen and (max-width: 767.98px) {
   .filter-sidebar-checkbox-label {
-    font-size: var(--font-size-xs);
     padding-left: var(--spacing-4);
-  }
-
-  .filter-sidebar-checkmark {
-    height: var(--spacing-3);
-    width: var(--spacing-3);
   }
 
   .filter-sidebar-checkbox-label .filter-sidebar-checkmark:after {
@@ -121,8 +111,6 @@
 /* Extra Small Devices (Portrait Phones, less than 576px) */
 @media screen and (max-width: 575.98px) {
   .filter-sidebar-checkbox-label {
-    font-size: var(--font-size-xs);
-    padding-left: var(--spacing-4);
     margin-bottom: var(--spacing-1);
   }
 
@@ -137,7 +125,7 @@
   }
 }
 
-/* Styles for screens below 475px (as requested) */
+/* Styles for screens below 475px */
 @media screen and (max-width: 475px) {
   .filter-sidebar-checkbox-label {
     padding-left: var(--spacing-5);
@@ -165,6 +153,5 @@
   .filter-sidebar-checkbox-label .filter-sidebar-checkmark:after {
     width: calc(var(--spacing-1) - 3px);
     height: calc(var(--spacing-1) - 1px);
-    border-width: 0 var(--border-width-thin) var(--border-width-thin) 0;
   }
 }
