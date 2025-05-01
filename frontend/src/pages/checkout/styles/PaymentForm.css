@@ -6,6 +6,7 @@
   border-radius: var(--border-radius-xl);
   padding: var(--spacing-6);
   box-shadow: var(--shadow-lg);
+  width: 100%;
 }
 
 .checkout-payment-form-title {
@@ -29,6 +30,7 @@
   display: flex;
   gap: var(--spacing-4);
   margin-bottom: var(--spacing-6);
+  width: 100%;
 }
 
 .checkout-payment-form-label {
@@ -41,6 +43,19 @@
 /* Special style for the card row */
 .checkout-payment-form-row.checkout-payment-card-row {
   margin-bottom: var(--spacing-2);
+}
+
+/* Special styles for card details row (expiry and CVC) */
+.checkout-payment-form-row.checkout-payment-card-details {
+  display: flex;
+  flex-direction: row;
+  gap: var(--spacing-4);
+  margin-bottom: var(--spacing-4);
+}
+
+.checkout-payment-form-row.checkout-payment-card-details
+  .checkout-payment-form-group {
+  flex: 1;
 }
 
 .checkout-payment-card-container {
@@ -95,6 +110,10 @@
     flex-direction: column;
   }
 
+  .checkout-payment-form-row.checkout-payment-card-details {
+    flex-direction: column;
+  }
+
   .checkout-payment-form-title {
     font-size: var(--font-size-lg);
   }
@@ -120,5 +139,29 @@
 
   .checkout-payment-form-row.checkout-payment-card-row {
     margin-bottom: var(--spacing-1);
+  }
+}
+
+/* Fix for expiry date and CVC alignment in desktop view */
+@media (min-width: 769px) {
+  .checkout-payment-form-row {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .checkout-payment-form-row.checkout-payment-card-row {
+    flex-wrap: nowrap;
+  }
+
+  .checkout-payment-form-row.checkout-payment-card-details {
+    flex-wrap: nowrap;
+  }
+
+  .checkout-payment-form-row.checkout-payment-card-row
+    .checkout-payment-form-group,
+  .checkout-payment-form-row.checkout-payment-card-details
+    .checkout-payment-form-group {
+    flex: 1;
   }
 }

@@ -69,19 +69,21 @@ const CheckoutPage = () => {
 
   // Always show the checkout page, regardless of loading state
   return (
-    <div className="checkout-page">
+    <div>
       <h1 className="checkout-title">Checkout</h1>
 
       {error && <div className="checkout-error">{error}</div>}
 
       <div className="checkout-container">
         {/* Shipping Information Section - Always show this */}
-        <ShippingForm
-          shippingInfo={shippingInfo}
-          handleShippingInfoChange={handleShippingInfoChange}
-          countries={COUNTRIES}
-          isLoading={isLoadingShippingInfo}
-        />
+        <div className="checkout-shipping-section">
+          <ShippingForm
+            shippingInfo={shippingInfo}
+            handleShippingInfoChange={handleShippingInfoChange}
+            countries={COUNTRIES}
+            isLoading={isLoadingShippingInfo}
+          />
+        </div>
 
         {/* Payment Information Section */}
         <div className="checkout-payment-section">

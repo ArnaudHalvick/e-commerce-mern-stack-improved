@@ -1,9 +1,4 @@
 /* Checkout Page Specific Styles */
-.checkout-page {
-  max-width: var(--container-xl);
-  margin: 0 auto;
-  padding: var(--spacing-8);
-}
 
 .checkout-title {
   text-align: center;
@@ -25,21 +20,25 @@
   display: flex;
   gap: var(--spacing-8);
   flex-wrap: wrap;
+  width: 100%;
+}
+
+.checkout-shipping-section {
+  flex: 1;
+  min-width: 300px;
+  width: 100%;
 }
 
 .checkout-payment-section {
   flex: 1;
   min-width: 300px;
+  width: 100%;
 }
 
 /* Responsive styles */
 @media (max-width: 768px) {
   .checkout-container {
     flex-direction: column;
-  }
-
-  .checkout-page {
-    padding: var(--spacing-4);
   }
 
   .checkout-title {
@@ -51,5 +50,17 @@
   .checkout-title {
     font-size: var(--font-size-xl);
     margin-bottom: var(--spacing-6);
+  }
+}
+
+/* Desktop styles (for screens larger than 768px) */
+@media (min-width: 769px) {
+  .checkout-container {
+    flex-direction: row;
+  }
+
+  .checkout-container > * {
+    flex: 1;
+    min-width: 45%;
   }
 }

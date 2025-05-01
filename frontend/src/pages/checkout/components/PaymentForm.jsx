@@ -30,7 +30,7 @@ const PaymentForm = ({
           </div>
         </div>
 
-        <div className="checkout-payment-form-row checkout-payment-card-row">
+        <div className="checkout-payment-form-row checkout-payment-card-details">
           <div className="checkout-payment-form-group">
             <label className="checkout-payment-form-label">
               Expiration Date
