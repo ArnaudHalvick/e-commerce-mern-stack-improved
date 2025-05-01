@@ -66,7 +66,7 @@ const addToCart = catchAsync(async (req, res, next) => {
     product.new_price > 0 &&
     product.new_price < product.old_price;
 
-  // Calculate the price to use
+  // Calculate the price to use (for total calculation)
   const displayPrice = hasDiscount ? product.new_price : product.old_price;
 
   // Check if the item with the same size already exists in the cart
@@ -77,6 +77,13 @@ const addToCart = catchAsync(async (req, res, next) => {
   // If the item exists, update the quantity
   if (existingItemIndex !== -1) {
     cart.items[existingItemIndex].quantity += quantity;
+    // Make sure price information is up to date
+    cart.items[existingItemIndex].price = displayPrice;
+    cart.items[existingItemIndex].old_price = product.old_price;
+    cart.items[existingItemIndex].new_price = hasDiscount
+      ? product.new_price
+      : 0;
+    cart.items[existingItemIndex].hasDiscount = hasDiscount;
   } else {
     // Otherwise, add a new item with discount information
     cart.items.push({
@@ -239,6 +246,7 @@ const updateCartItem = catchAsync(async (req, res, next) => {
 
   // Update the item quantity
   cart.items[itemIndex].quantity = quantity;
+
   if (size && size !== cart.items[itemIndex].size) {
     // If size is changing, fetch latest product info to ensure price is current
     const product = await Product.findById(productId);
@@ -252,11 +260,12 @@ const updateCartItem = catchAsync(async (req, res, next) => {
       product.new_price > 0 &&
       product.new_price < product.old_price;
 
-    // Update all product info
+    // Calculate the price to use (for total calculation)
+    const displayPrice = hasDiscount ? product.new_price : product.old_price;
+
+    // Update all product info with clear price structure
     cart.items[itemIndex].size = size;
-    cart.items[itemIndex].price = hasDiscount
-      ? product.new_price
-      : product.old_price;
+    cart.items[itemIndex].price = displayPrice;
     cart.items[itemIndex].old_price = product.old_price;
     cart.items[itemIndex].new_price = hasDiscount ? product.new_price : 0;
     cart.items[itemIndex].hasDiscount = hasDiscount;

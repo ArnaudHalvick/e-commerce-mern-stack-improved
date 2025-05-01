@@ -106,14 +106,13 @@ const CartItem = ({
     }
   };
 
-  // Determine if item has a discount - use hasDiscount from backend
-  // Fallback logic in case hasDiscount isn't set
+  // Determine if item has a discount based on user requirements
+  // If new_price is higher than old_price, not equal to 0 and not a value that is invalid (truthy)
   const hasDiscount =
-    item.hasDiscount ||
-    (item.new_price &&
-      item.old_price &&
-      item.new_price > 0 &&
-      item.new_price < item.old_price);
+    item.new_price &&
+    item.new_price > 0 &&
+    item.old_price &&
+    item.new_price < item.old_price;
 
   return (
     <tr className={isPending ? "cart-item-pending" : ""}>
@@ -201,20 +200,20 @@ const CartItem = ({
                 <div className="cart-item-discount-tag">
                   -
                   {Math.round(
-                    ((item.old_price - item.price) / item.old_price) * 100
+                    ((item.old_price - item.new_price) / item.old_price) * 100
                   )}
                   %
                 </div>
-                <div className="cart-items-price-old">
+                <div className="product-display-right-price-old">
                   ${item.old_price.toFixed(2)}
                 </div>
-                <div className="cart-items-price-new">
-                  ${item.price.toFixed(2)}
+                <div className="product-display-right-price-new">
+                  ${item.new_price.toFixed(2)}
                 </div>
               </>
             ) : (
-              <div className="cart-items-price-current">
-                ${item.price.toFixed(2)}
+              <div className="product-display-right-price-current">
+                ${item.old_price.toFixed(2)}
               </div>
             )}
           </div>
