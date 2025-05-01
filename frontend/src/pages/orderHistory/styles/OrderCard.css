@@ -1,5 +1,4 @@
 /* Order Card Component Styles */
-/* Removed .order-history-container definition since it's now in OrderHistoryPage.css */
 
 .order-history-card {
   background-color: var(--color-background);
@@ -273,6 +272,11 @@
     font-size: var(--font-size-xs);
     margin-bottom: var(--spacing-1);
     line-height: var(--line-height-tight);
+    line-clamp: 1;
+    -webkit-line-clamp: 1;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   .order-history-item-details {
@@ -335,6 +339,7 @@
     font-size: var(--font-size-xs);
     margin-bottom: var(--spacing-0-5);
     line-height: var(--line-height-tight);
+    line-clamp: 1;
     -webkit-line-clamp: 1;
     display: -webkit-box;
     -webkit-box-orient: vertical;
