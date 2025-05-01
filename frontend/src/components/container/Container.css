@@ -6,89 +6,60 @@
   margin-right: auto;
   margin-left: auto;
   box-sizing: border-box;
+  padding-left: var(--spacing-1);
+  padding-right: var(--spacing-1);
 }
 
-/* Mobile L devices (≥480px) */
-@media (min-width: 480px) {
-  .container {
-    max-width: 480px;
-    padding-left: var(--spacing-2);
-    padding-right: var(--spacing-2);
-  }
-}
-
-/* Mobile M devices (≥420px) */
-@media (min-width: 420px) and (max-width: 479.98px) {
-  .container {
-    max-width: 420px;
-    padding-left: var(--spacing-2);
-    padding-right: var(--spacing-2);
-  }
-}
-
-/* Mobile S devices (≥375px) */
-@media (min-width: 375px) and (max-width: 419.98px) {
+/* xs - Small devices (iPhone SE) - ≥375px */
+@media (min-width: 375px) {
   .container {
     max-width: 375px;
-    padding-left: var(--spacing-1);
-    padding-right: var(--spacing-1);
   }
 }
 
-/* Very small devices (≥320px) */
-@media (min-width: 320px) and (max-width: 374.98px) {
+/* md - Large phones - ≥475px */
+@media (min-width: 475px) {
   .container {
-    max-width: 320px;
-    padding-left: var(--spacing-1);
-    padding-right: var(--spacing-1);
+    max-width: 475px;
   }
 }
 
-/* Extremely small devices (<320px) */
-@media (max-width: 319.98px) {
-  .container {
-    width: 100%;
-    padding-left: calc(var(--spacing-1) / 2);
-    padding-right: calc(var(--spacing-1) / 2);
-  }
-}
-
-/* Small devices (≥576px) */
+/* lg - Small devices (phones) - ≥576px */
 @media (min-width: 576px) {
   .container {
     max-width: 576px;
   }
 }
 
-/* Medium devices (≥768px) */
+/* xl - Medium devices (tablets) - ≥768px */
 @media (min-width: 768px) {
   .container {
     max-width: 768px;
   }
 }
 
-/* Large devices (≥992px) */
+/* 2xl - Large devices (laptops) - ≥992px */
 @media (min-width: 992px) {
   .container {
     max-width: 992px;
   }
 }
 
-/* Extra large devices (≥1200px) */
+/* 3xl - Extra large devices (large laptops) - ≥1200px */
 @media (min-width: 1200px) {
   .container {
     max-width: 1200px;
   }
 }
 
-/* Extra extra large devices (≥1400px) */
+/* 4xl - Extra extra large devices (large desktops) - ≥1400px */
 @media (min-width: 1400px) {
   .container {
     max-width: 1400px;
   }
 }
 
-/* Extra extra extra large devices (≥1536px) */
+/* 5xl - Ultra wide devices - ≥1536px */
 @media (min-width: 1536px) {
   .container {
     max-width: 1536px;

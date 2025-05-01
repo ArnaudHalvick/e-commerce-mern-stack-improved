@@ -196,9 +196,8 @@
   @media screen and (max-width: 1399.98px) {} // 4xl (Extra large devices)
   @media screen and (max-width: 1535.98px) {} // 5xl (Extra extra large devices)
   */
-  --breakpoint-xxs: 320px; /* Very small devices */
+
   --breakpoint-xs: 375px; /* Small devices (iPhone SE) */
-  --breakpoint-sm: 420px; /* Medium phones */
   --breakpoint-md: 475px; /* Large phones */
   --breakpoint-lg: 576px; /* Small devices (phones) */
   --breakpoint-xl: 768px; /* Medium devices (tablets) */
@@ -208,16 +207,15 @@
   --breakpoint-5xl: 1536px; /* Ultra wide devices */
 
   /* Container max-widths - matching your Container.css */
-  --container-xxs: 320px; /* Very small devices */
-  --container-xs: 375px; /* Small devices (iPhone SE) */
-  --container-sm: 420px; /* Medium phones */
-  --container-md: 480px; /* Large phones */
-  --container-lg: 540px; /* Small devices (phones) */
-  --container-xl: 720px; /* Medium devices (tablets) */
-  --container-2xl: 960px; /* Large devices (laptops) */
-  --container-3xl: 1140px; /* Extra large devices (large laptops) */
-  --container-4xl: 1320px; /* Extra extra large devices (large desktops) */
-  --container-5xl: 1440px; /* Ultra wide devices */
+
+  --container-xs: 375px; /* Medium phones */
+  --container-md: 475px; /* Large phones */
+  --container-lg: 576px; /* Small devices (phones) */
+  --container-xl: 768px; /* Medium devices (tablets) */
+  --container-2xl: 992px; /* Large devices (laptops) */
+  --container-3xl: 1200px; /* Extra large devices (large laptops) */
+  --container-4xl: 1400px; /* Extra extra large devices (large desktops) */
+  --container-5xl: 1536px; /* Ultra wide devices */
 }
 
 * {
