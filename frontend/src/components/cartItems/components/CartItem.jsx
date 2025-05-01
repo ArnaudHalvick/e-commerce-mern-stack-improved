@@ -156,41 +156,39 @@ const CartItem = ({
           </div>
 
           {/* Quantity controls */}
-          <div className="cart-item-quantity-container">
-            <div className="cart-items-quantity-controls">
-              <button
-                className="cart-items-quantity-adjust-btn"
-                onClick={handleRemoveItemClick}
-                onKeyDown={(e) => handleKeyDown(e, handleRemoveItemClick)}
-                aria-label="Decrease quantity"
-                tabIndex="0"
-                disabled={localQuantity <= 1 || isPending}
-              >
-                -
-              </button>
-              <input
-                type="number"
-                className="cart-items-quantity-input"
-                value={localQuantity}
-                onChange={(event) =>
-                  handleLocalQuantityChange(event.target.value)
-                }
-                onBlur={handleBlur}
-                min="1"
-                aria-label={`Quantity for ${item.name}, size ${item.size}`}
-                disabled={isPending}
-              />
-              <button
-                className="cart-items-quantity-adjust-btn"
-                onClick={handleAddItemClick}
-                onKeyDown={(e) => handleKeyDown(e, handleAddItemClick)}
-                aria-label="Increase quantity"
-                tabIndex="0"
-                disabled={isPending}
-              >
-                +
-              </button>
-            </div>
+          <div className="cart-items-quantity-controls">
+            <button
+              className="cart-items-quantity-adjust-btn"
+              onClick={handleRemoveItemClick}
+              onKeyDown={(e) => handleKeyDown(e, handleRemoveItemClick)}
+              aria-label="Decrease quantity"
+              tabIndex="0"
+              disabled={localQuantity <= 1 || isPending}
+            >
+              -
+            </button>
+            <input
+              type="number"
+              className="cart-items-quantity-input"
+              value={localQuantity}
+              onChange={(event) =>
+                handleLocalQuantityChange(event.target.value)
+              }
+              onBlur={handleBlur}
+              min="1"
+              aria-label={`Quantity for ${item.name}, size ${item.size}`}
+              disabled={isPending}
+            />
+            <button
+              className="cart-items-quantity-adjust-btn"
+              onClick={handleAddItemClick}
+              onKeyDown={(e) => handleKeyDown(e, handleAddItemClick)}
+              aria-label="Increase quantity"
+              tabIndex="0"
+              disabled={isPending}
+            >
+              +
+            </button>
           </div>
 
           {/* Price */}
