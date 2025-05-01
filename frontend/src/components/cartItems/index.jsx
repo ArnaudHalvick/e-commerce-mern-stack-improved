@@ -103,53 +103,49 @@ const CartItems = () => {
       {showVerificationBanner && <EmailVerificationBanner />}
 
       <div className="cart-items-container">
-        {/* Cart Table with responsive wrapper */}
-        <div className="cart-items-table-responsive">
-          <table className="cart-items-table">
-            <thead>
-              <tr>
-                <th data-label="Img">
-                  <span className="header-text">Image</span>
-                </th>
-                <th data-label="Product">
-                  <span className="header-text">Product</span>
-                </th>
-                <th data-label="Price">
-                  <span className="header-text">Price</span>
-                </th>
-                <th data-label="Size">
-                  <span className="header-text">Size</span>
-                </th>
-                <th data-label="Qty">
-                  <span className="header-text">Quantity</span>
-                </th>
-                <th data-label="Total">
-                  <span className="header-text">Total</span>
-                </th>
-                <th data-label="×">
-                  <span className="header-text">Remove</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {items.map((item) => (
-                <CartItem
-                  key={`${item.productId}-${item.size}`}
-                  item={item}
-                  onRemoveItem={removeItem}
-                  onAddItem={addItem}
-                  onRemoveAll={removeAllItems}
-                  onQuantityBlur={updateQuantity}
-                />
-              ))}
-            </tbody>
-          </table>
+        {/* Cart Items List */}
+        <div className="cart-items-section">
+          <div className="cart-items-list">
+            <table className="cart-items-table">
+              <tbody>
+                {items.map((item) => (
+                  <CartItem
+                    key={`${item.productId}-${item.size}`}
+                    item={item}
+                    onRemoveItem={removeItem}
+                    onAddItem={addItem}
+                    onRemoveAll={removeAllItems}
+                    onQuantityBlur={updateQuantity}
+                  />
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
 
-        {/* Cart Totals and Promo Code Section */}
+        {/* Cart Summary - Mercadolibre style */}
         <div className="cart-summary-section">
-          <CartTotals totalPrice={localTotalPrice} />
-          <PromoCodeSection />
+          <div className="cart-summary-header">
+            <h2 className="cart-summary-title">Order Summary</h2>
+          </div>
+          <div className="cart-summary-content">
+            <div className="cart-summary-row">
+              <span>Products ({items.length})</span>
+              <span>${localTotalPrice.toFixed(2)}</span>
+            </div>
+            <div className="cart-summary-row">
+              <span>Shipping</span>
+              <span className="cart-summary-free">Free</span>
+            </div>
+            <PromoCodeSection />
+            <div className="cart-summary-total">
+              <span>Total</span>
+              <span>${localTotalPrice.toFixed(2)}</span>
+            </div>
+            <button className="cart-summary-checkout-btn">
+              PROCEED TO CHECKOUT
+            </button>
+          </div>
         </div>
       </div>
     </div>

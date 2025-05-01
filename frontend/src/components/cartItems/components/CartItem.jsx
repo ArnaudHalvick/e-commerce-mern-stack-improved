@@ -1,11 +1,8 @@
 import React, { memo, useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 
-// Local assets
-import remove_icon from "../../../components/assets/cart_cross_icon.png";
 import { config } from "../../../api";
 
-// Styles
 import "../styles/CartItem.css";
 
 /**
@@ -109,102 +106,118 @@ const CartItem = ({
     }
   };
 
-  // Compute total price based on local quantity for immediate UI feedback
-  const itemTotal = (item.price * localQuantity).toFixed(2);
-
-  // Format product name for smaller screens
-  const formatProductName = (name) => {
-    // If product name is very long, create a shortened version for mobile
-    if (name.length > 30) {
-      return name.substring(0, 28) + "...";
-    }
-    return name;
-  };
+  // Determine if item has a discount - use hasDiscount from backend
+  // Fallback logic in case hasDiscount isn't set
+  const hasDiscount =
+    item.hasDiscount ||
+    (item.new_price &&
+      item.old_price &&
+      item.new_price > 0 &&
+      item.new_price < item.old_price);
 
   return (
     <tr className={isPending ? "cart-item-pending" : ""}>
-      <td>
-        <img
-          className="cart-items-product-image"
-          src={config.getImageUrl(item.image)}
-          alt={item.name}
-        />
-      </td>
-      <td>
-        <Link
-          to={`/product/${item.productId}`}
-          className="cart-items-product-link"
-          title={item.name}
-        >
-          {formatProductName(item.name)}
-        </Link>
-      </td>
-      <td>
-        <span
-          className={item.isDiscounted ? "cart-items-price-discounted" : ""}
-        >
-          ${item.price}
-        </span>
-      </td>
-      <td>
-        <span className="cart-items-item-size">{item.size}</span>
-      </td>
-      <td>
-        <div className="cart-items-quantity-controls">
-          <button
-            className="cart-items-quantity-adjust-btn"
-            onClick={handleRemoveItemClick}
-            onKeyDown={(e) => handleKeyDown(e, handleRemoveItemClick)}
-            aria-label="Decrease quantity"
-            tabIndex="0"
-            disabled={localQuantity <= 1 || isPending}
-          >
-            -
-          </button>
-          <input
-            type="number"
-            className="cart-items-quantity-input"
-            value={localQuantity}
-            onChange={(event) => handleLocalQuantityChange(event.target.value)}
-            onBlur={handleBlur}
-            min="1"
-            aria-label={`Quantity for ${item.name}, size ${item.size}`}
-            disabled={isPending}
-          />
-          <button
-            className="cart-items-quantity-adjust-btn"
-            onClick={handleAddItemClick}
-            onKeyDown={(e) => handleKeyDown(e, handleAddItemClick)}
-            aria-label="Increase quantity"
-            tabIndex="0"
-            disabled={isPending}
-          >
-            +
-          </button>
-        </div>
-      </td>
-      <td>
-        <span
-          className={item.isDiscounted ? "cart-items-price-discounted" : ""}
-        >
-          ${itemTotal}
-        </span>
-      </td>
-      <td>
-        <div className="cart-items-remove-icon-container">
-          <img
-            className="cart-items-remove-icon"
-            onClick={() => onRemoveAll(item.productId, item.size)}
-            onKeyDown={(e) =>
-              handleKeyDown(e, () => onRemoveAll(item.productId, item.size))
-            }
-            src={remove_icon}
-            alt={`Remove ${item.name} from cart`}
-            title="Remove all"
-            tabIndex="0"
-            role="button"
-            style={{ opacity: isPending ? 0.6 : 1 }}
-          />
+      <td className="cart-item-content">
+        <div className="cart-item-row">
+          {/* Product image */}
+          <div className="cart-item-image-container">
+            <img
+              className="cart-items-product-image"
+              src={config.getImageUrl(item.image)}
+              alt={item.name}
+            />
+          </div>
+
+          {/* Product details */}
+          <div className="cart-item-details">
+            <Link
+              to={`/product/${item.productId}`}
+              className="cart-items-product-link"
+              title={item.name}
+            >
+              {item.name}
+            </Link>
+            <div className="cart-item-meta">
+              <span className="cart-items-item-size">Size: {item.size}</span>
+              {/* Remove all button */}
+              <div className="cart-item-remove-btn">
+                <button
+                  className="cart-item-action-btn cart-item-remove-text"
+                  onClick={() => onRemoveAll(item.productId, item.size)}
+                  onKeyDown={(e) =>
+                    handleKeyDown(e, () =>
+                      onRemoveAll(item.productId, item.size)
+                    )
+                  }
+                >
+                  Remove all
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Quantity controls */}
+          <div className="cart-item-quantity-container">
+            <div className="cart-items-quantity-controls">
+              <button
+                className="cart-items-quantity-adjust-btn"
+                onClick={handleRemoveItemClick}
+                onKeyDown={(e) => handleKeyDown(e, handleRemoveItemClick)}
+                aria-label="Decrease quantity"
+                tabIndex="0"
+                disabled={localQuantity <= 1 || isPending}
+              >
+                -
+              </button>
+              <input
+                type="number"
+                className="cart-items-quantity-input"
+                value={localQuantity}
+                onChange={(event) =>
+                  handleLocalQuantityChange(event.target.value)
+                }
+                onBlur={handleBlur}
+                min="1"
+                aria-label={`Quantity for ${item.name}, size ${item.size}`}
+                disabled={isPending}
+              />
+              <button
+                className="cart-items-quantity-adjust-btn"
+                onClick={handleAddItemClick}
+                onKeyDown={(e) => handleKeyDown(e, handleAddItemClick)}
+                aria-label="Increase quantity"
+                tabIndex="0"
+                disabled={isPending}
+              >
+                +
+              </button>
+            </div>
+          </div>
+
+          {/* Price */}
+          <div className="cart-item-price">
+            {hasDiscount ? (
+              <>
+                <div className="cart-item-discount-tag">
+                  -
+                  {Math.round(
+                    ((item.old_price - item.price) / item.old_price) * 100
+                  )}
+                  %
+                </div>
+                <div className="cart-items-price-old">
+                  ${item.old_price.toFixed(2)}
+                </div>
+                <div className="cart-items-price-new">
+                  ${item.price.toFixed(2)}
+                </div>
+              </>
+            ) : (
+              <div className="cart-items-price-current">
+                ${item.price.toFixed(2)}
+              </div>
+            )}
+          </div>
         </div>
       </td>
     </tr>

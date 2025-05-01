@@ -21,6 +21,18 @@ const CartItemSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    old_price: {
+      type: Number,
+      required: true,
+    },
+    new_price: {
+      type: Number,
+      default: 0,
+    },
+    hasDiscount: {
+      type: Boolean,
+      default: false,
+    },
     name: {
       type: String,
       required: true,

@@ -60,6 +60,15 @@ const addToCart = catchAsync(async (req, res, next) => {
     return next(new AppError("Product is not available", 400));
   }
 
+  // Determine if the product has a discount
+  const hasDiscount =
+    product.new_price &&
+    product.new_price > 0 &&
+    product.new_price < product.old_price;
+
+  // Calculate the price to use
+  const displayPrice = hasDiscount ? product.new_price : product.old_price;
+
   // Check if the item with the same size already exists in the cart
   const existingItemIndex = cart.items.findIndex(
     (item) => item.productId.toString() === productId && item.size === size
@@ -69,12 +78,15 @@ const addToCart = catchAsync(async (req, res, next) => {
   if (existingItemIndex !== -1) {
     cart.items[existingItemIndex].quantity += quantity;
   } else {
-    // Otherwise, add a new item
+    // Otherwise, add a new item with discount information
     cart.items.push({
       productId: productId,
       quantity,
       size,
-      price: product.new_price || product.old_price,
+      price: displayPrice,
+      old_price: product.old_price,
+      new_price: hasDiscount ? product.new_price : 0,
+      hasDiscount,
       name: product.name,
       image: product.mainImage || (product.images && product.images[0]),
     });
@@ -101,7 +113,7 @@ const addToCart = catchAsync(async (req, res, next) => {
 
 // Remove item from cart
 const removeFromCart = catchAsync(async (req, res, next) => {
-  const { productId, size, removeAll = false } = req.body;
+  const { productId, quantity = 1, size, removeAll = false } = req.body;
 
   if (!productId) {
     return next(new AppError("Product ID is required", 400));
@@ -128,7 +140,7 @@ const removeFromCart = catchAsync(async (req, res, next) => {
     cart.items.splice(itemIndex, 1);
   } else {
     // Reduce quantity
-    cart.items[itemIndex].quantity -= 1;
+    cart.items[itemIndex].quantity -= quantity;
 
     // If quantity becomes 0, remove the item
     if (cart.items[itemIndex].quantity <= 0) {
@@ -227,8 +239,27 @@ const updateCartItem = catchAsync(async (req, res, next) => {
 
   // Update the item quantity
   cart.items[itemIndex].quantity = quantity;
-  if (size) {
+  if (size && size !== cart.items[itemIndex].size) {
+    // If size is changing, fetch latest product info to ensure price is current
+    const product = await Product.findById(productId);
+    if (!product) {
+      return next(new AppError("Product not found", 404));
+    }
+
+    // Determine if the product has a discount
+    const hasDiscount =
+      product.new_price &&
+      product.new_price > 0 &&
+      product.new_price < product.old_price;
+
+    // Update all product info
     cart.items[itemIndex].size = size;
+    cart.items[itemIndex].price = hasDiscount
+      ? product.new_price
+      : product.old_price;
+    cart.items[itemIndex].old_price = product.old_price;
+    cart.items[itemIndex].new_price = hasDiscount ? product.new_price : 0;
+    cart.items[itemIndex].hasDiscount = hasDiscount;
   }
 
   // Recalculate total price and items
