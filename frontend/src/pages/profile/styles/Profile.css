@@ -8,21 +8,28 @@
 }
 
 /* Responsive breakpoints for profile-page-container */
-@media screen and (max-width: 992px) {
+@media screen and (max-width: 1199.98px) {
+  .profile-page-container {
+    margin: var(--spacing-7) auto;
+    padding: 0 var(--spacing-5);
+  }
+}
+
+@media screen and (max-width: 991.98px) {
   .profile-page-container {
     margin: var(--spacing-6) auto;
     padding: 0 var(--spacing-5);
   }
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 767.98px) {
   .profile-page-container {
     margin: var(--spacing-5) auto;
     padding: 0 var(--spacing-4);
   }
 }
 
-@media screen and (max-width: 576px) {
+@media screen and (max-width: 575.98px) {
   .profile-page-container {
     margin: var(--spacing-4) auto;
     padding: 0 var(--spacing-3);
@@ -42,7 +49,6 @@
 .profile-container {
   margin: var(--spacing-8) auto;
   max-width: var(--container-xl);
-  padding: 0 var(--spacing-6);
 }
 
 .profile-sections {
@@ -200,6 +206,12 @@
   }
 }
 
+@media (max-width: 474.98px) {
+  .profile-profile-details {
+    margin-top: var(--spacing-4);
+  }
+}
+
 .profile-detail-label {
   font-weight: var(--font-weight-medium);
   margin-right: var(--spacing-4);
@@ -239,48 +251,197 @@
   }
 }
 
-/* Responsive styles for profile-title */
-@media screen and (max-width: 992px) {
+/* ============================================
+   Responsive Typography & Components
+============================================ */
+
+/* Extra large devices (Large laptops and desktops, 1200px and up) */
+@media screen and (max-width: 1199.98px) {
+  .profile-title {
+    font-size: calc(var(--font-size-4xl) * 0.95);
+  }
+
+  .profile-section-title {
+    font-size: calc(var(--font-size-xl) * 0.95);
+  }
+
+  .profile-form-input {
+    font-size: var(--font-size-base);
+  }
+
+  .profile-detail-label {
+    min-width: 110px;
+  }
+}
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media screen and (max-width: 991.98px) {
   .profile-title {
     font-size: var(--font-size-3xl);
   }
+
+  .profile-section-title {
+    font-size: var(--font-size-lg);
+  }
+
+  .profile-section {
+    padding: var(--spacing-4);
+  }
+
+  .profile-form-input {
+    font-size: var(--font-size-base);
+    padding: var(--spacing-2) var(--spacing-3);
+  }
+
+  .profile-detail-label {
+    min-width: 100px;
+    margin-right: var(--spacing-3);
+  }
 }
 
-@media screen and (max-width: 768px) {
+/* Medium devices (tablets, 768px and up) */
+@media screen and (max-width: 767.98px) {
   .profile-title {
     font-size: var(--font-size-2xl);
+    margin-bottom: var(--spacing-3);
+  }
+
+  .profile-section-title {
+    font-size: var(--font-size-md);
+    padding-bottom: var(--spacing-1);
+    margin-bottom: var(--spacing-3);
+  }
+
+  .profile-section {
+    padding: var(--spacing-4) var(--spacing-3);
+    margin-top: var(--spacing-4);
+  }
+
+  .profile-form-input {
+    font-size: var(--font-size-sm);
+  }
+
+  .profile-form-label {
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--spacing-2);
+  }
+
+  .profile-detail-label {
+    font-size: var(--font-size-sm);
+    min-width: 90px;
+  }
+
+  .profile-detail-value {
+    font-size: var(--font-size-sm);
+  }
+
+  .profile-field-error {
+    font-size: var(--font-size-xs);
   }
 }
 
-@media screen and (max-width: 576px) {
+/* Small devices (landscape phones, 576px and up) */
+@media screen and (max-width: 575.98px) {
   .profile-title {
     font-size: var(--font-size-xl);
+    margin-bottom: var(--spacing-2);
   }
-}
 
-/* Add the button group styles to the main CSS to be available for all profile components */
-.profile-form-actions {
-  margin-top: var(--spacing-6);
-}
+  .profile-section-title {
+    font-size: var(--font-size-base);
+    margin-bottom: var(--spacing-3);
+  }
 
-.profile-button-group {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--spacing-3);
-}
+  .profile-section-title::after {
+    width: 30px;
+  }
 
-.profile-button-group button {
-  flex: 0 0 auto;
-  min-width: 120px;
-}
+  .profile-section {
+    padding: var(--spacing-3);
+    margin-top: var(--spacing-3);
+    border-radius: var(--border-radius-md);
+  }
 
-@media (max-width: 575.98px) {
-  /* Ensure buttons stack nicely on small screens */
+  .profile-form-input {
+    font-size: var(--font-size-xs);
+    padding: var(--spacing-2) var(--spacing-2);
+  }
+
+  .profile-form-label {
+    font-size: var(--font-size-xs);
+    margin-bottom: var(--spacing-1);
+  }
+
+  .profile-detail-label {
+    font-size: var(--font-size-xs);
+    min-width: 80px;
+    margin-right: var(--spacing-2);
+  }
+
+  .profile-detail-value {
+    font-size: var(--font-size-xs);
+  }
+
+  .profile-field-error {
+    font-size: var(--font-size-xxs);
+    padding: var(--spacing-1) var(--spacing-2);
+  }
+
   .profile-button-group {
-    flex-direction: column;
+    width: 100%;
   }
 
   .profile-button-group button {
     width: 100%;
   }
+}
+
+/* Extra small devices (Mobile L, 475px and below) */
+@media screen and (max-width: 474.98px) {
+  .profile-container {
+    margin: var(--spacing-3) auto;
+  }
+
+  .profile-title {
+    font-size: var(--font-size-lg);
+  }
+
+  .profile-section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-2);
+  }
+
+  .profile-section-header button {
+    align-self: flex-start;
+  }
+}
+
+/* Very small devices (Mobile S - iPhone SE, 375px and below) */
+@media screen and (max-width: 374.98px) {
+  .profile-title {
+    font-size: var(--font-size-md);
+  }
+
+  .profile-section-title {
+    font-size: var(--font-size-sm);
+  }
+
+  .profile-form-input {
+    font-size: var(--font-size-xxs);
+  }
+}
+
+.profile-form-actions {
+  display: flex;
+  margin-top: var(--spacing-8);
+}
+
+.profile-button-group {
+  display: flex;
+  gap: var(--spacing-3);
+}
+
+.profile-button-group button {
+  min-width: 100px;
 }

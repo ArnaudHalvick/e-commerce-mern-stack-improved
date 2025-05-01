@@ -7,10 +7,31 @@
   gap: var(--spacing-4);
 }
 
+/* Medium devices (< 768px) */
+@media (max-width: 767.98px) {
+  .profile-account-actions {
+    gap: var(--spacing-3);
+  }
+
+  .profile-account-warning {
+    font-size: var(--font-size-xs);
+    padding: var(--spacing-3);
+    margin-top: var(--spacing-3);
+  }
+}
+
 /* Small devices (< 576px) */
 @media (max-width: 575.98px) {
   .profile-account-actions {
     flex-direction: column;
+    gap: var(--spacing-2);
+  }
+
+  .profile-account-warning {
+    font-size: var(--font-size-xxs);
+    padding: var(--spacing-2);
+    margin-top: var(--spacing-2);
+    border-left-width: var(--border-width-medium);
   }
 }
 

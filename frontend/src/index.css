@@ -187,10 +187,8 @@
   These variables are for JavaScript reference only.
   
   In media queries, use the pixel values directly:
-  @media screen and (max-width: 319.98px) {} // xxs (Very small devices)
   @media screen and (max-width: 374.98px) {} // xs (Mobile S - iPhone SE)
-  @media screen and (max-width: 419.98px) {} // sm (Mobile M) 
-  @media screen and (max-width: 479.98px) {} // md (Mobile L)
+  @media screen and (max-width: 474.98px) {} // md (Mobile L)
   @media screen and (max-width: 575.98px) {} // lg (Small devices - Portrait phones)
   @media screen and (max-width: 767.98px) {} // xl (Landscape phones)
   @media screen and (max-width: 991.98px) {} // 2xl (Tablets)
@@ -201,7 +199,7 @@
   --breakpoint-xxs: 320px; /* Very small devices */
   --breakpoint-xs: 375px; /* Small devices (iPhone SE) */
   --breakpoint-sm: 420px; /* Medium phones */
-  --breakpoint-md: 480px; /* Large phones */
+  --breakpoint-md: 475px; /* Large phones */
   --breakpoint-lg: 576px; /* Small devices (phones) */
   --breakpoint-xl: 768px; /* Medium devices (tablets) */
   --breakpoint-2xl: 992px; /* Large devices (laptops) */

@@ -13,6 +13,14 @@
 @media (max-width: 767.98px) {
   .profile-form-row {
     grid-template-columns: 1fr;
+    grid-gap: var(--spacing-4);
+  }
+}
+
+/* Small devices (< 576px) */
+@media (max-width: 575.98px) {
+  .profile-form-row {
+    grid-gap: var(--spacing-3);
   }
 }
 
@@ -24,4 +32,18 @@
   border-radius: var(--border-radius-md);
   font-size: var(--font-size-sm);
   animation: fadeIn 0.3s ease-out;
+}
+
+/* Responsive success message */
+@media (max-width: 767.98px) {
+  .profile-field-success {
+    font-size: var(--font-size-xs);
+    padding: var(--spacing-1) var(--spacing-2);
+  }
+}
+
+@media (max-width: 474.98px) {
+  .profile-field-success {
+    font-size: var(--font-size-xxs);
+  }
 }

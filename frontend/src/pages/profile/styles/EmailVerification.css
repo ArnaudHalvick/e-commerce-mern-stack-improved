@@ -22,6 +22,55 @@
   animation: fadeIn var(--transition-duration-normal) ease;
 }
 
+/* Large devices (< 992px) */
+@media (max-width: 991.98px) {
+  .profile-verification-alert {
+    padding: var(--spacing-4) var(--spacing-5);
+  }
+}
+
+/* Medium devices (< 768px) */
+@media (max-width: 767.98px) {
+  .profile-verification-alert {
+    padding: var(--spacing-3) var(--spacing-4);
+    font-size: var(--font-size-sm);
+  }
+
+  .profile-verification-sent {
+    font-size: var(--font-size-sm);
+    padding: var(--spacing-1) var(--spacing-2);
+  }
+}
+
+/* Small devices (< 576px) */
+@media (max-width: 575.98px) {
+  .profile-verification-alert {
+    padding: var(--spacing-2) var(--spacing-3);
+    font-size: var(--font-size-xs);
+    border-left-width: var(--border-width-medium);
+    border-radius: var(--border-radius-md);
+  }
+
+  .profile-verification-sent {
+    font-size: var(--font-size-xs);
+    margin-top: var(--spacing-2);
+    padding: var(--spacing-1);
+    border-radius: var(--border-radius-sm);
+  }
+}
+
+/* Extra small devices (< 375px) */
+@media (max-width: 374.98px) {
+  .profile-verification-alert {
+    padding: var(--spacing-2);
+    font-size: var(--font-size-xxs);
+  }
+
+  .profile-verification-sent {
+    font-size: var(--font-size-xxs);
+  }
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
