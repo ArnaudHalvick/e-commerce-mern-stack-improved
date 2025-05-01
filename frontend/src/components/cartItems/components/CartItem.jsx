@@ -112,6 +112,15 @@ const CartItem = ({
   // Compute total price based on local quantity for immediate UI feedback
   const itemTotal = (item.price * localQuantity).toFixed(2);
 
+  // Format product name for smaller screens
+  const formatProductName = (name) => {
+    // If product name is very long, create a shortened version for mobile
+    if (name.length > 30) {
+      return name.substring(0, 28) + "...";
+    }
+    return name;
+  };
+
   return (
     <tr className={isPending ? "cart-item-pending" : ""}>
       <td>
@@ -125,8 +134,9 @@ const CartItem = ({
         <Link
           to={`/product/${item.productId}`}
           className="cart-items-product-link"
+          title={item.name}
         >
-          {item.name}
+          {formatProductName(item.name)}
         </Link>
       </td>
       <td>

@@ -55,6 +55,12 @@
   border-bottom: var(--border-width-thin) solid var(--color-border);
 }
 
+/* Special styling for image cell */
+.cart-items-table td:first-child {
+  vertical-align: middle;
+  text-align: center;
+}
+
 .cart-items-table th {
   background-color: var(--color-background-light);
   font-weight: var(--font-weight-semibold);
@@ -113,15 +119,17 @@
     padding: var(--spacing-2);
   }
 
+  /* Product name column - make it wrap to save space */
   .cart-items-table th:nth-child(2),
   .cart-items-table td:nth-child(2) {
-    max-width: 150px;
+    max-width: 120px;
     white-space: normal;
-    overflow: visible;
-    text-overflow: initial;
+    overflow: hidden;
+    text-overflow: ellipsis;
     word-break: break-word;
   }
 
+  /* Size column */
   .cart-items-table th:nth-child(4),
   .cart-items-table td:nth-child(4) {
     max-width: 40px;
@@ -155,9 +163,32 @@
     padding-right: var(--spacing-2);
   }
 
-  .cart-items-table th,
-  .cart-items-table td {
-    padding: var(--spacing-2) var(--spacing-1);
+  /* Product name column - limit space and show ellipsis */
+  .cart-items-table th:nth-child(2),
+  .cart-items-table td:nth-child(2) {
+    max-width: 80px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Make size column smaller */
+  .cart-items-table th:nth-child(4),
+  .cart-items-table td:nth-child(4) {
+    max-width: 35px;
+    padding: var(--spacing-1);
+  }
+
+  /* Price column */
+  .cart-items-table th:nth-child(3),
+  .cart-items-table td:nth-child(3) {
+    padding: var(--spacing-1);
+  }
+
+  /* Total column */
+  .cart-items-table th:nth-child(6),
+  .cart-items-table td:nth-child(6) {
+    padding: var(--spacing-1);
   }
 }
 
@@ -172,10 +203,78 @@
     padding: var(--spacing-1);
   }
 
+  /* Make image column smaller */
+  .cart-items-table th:nth-child(1),
+  .cart-items-table td:nth-child(1) {
+    width: 40px;
+    padding: var(--spacing-1) var(--spacing-0-5);
+  }
+
+  /* Product name column - even smaller on tiny screens */
+  .cart-items-table th:nth-child(2),
+  .cart-items-table td:nth-child(2) {
+    max-width: 60px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Size column */
   .cart-items-table th:nth-child(3),
   .cart-items-table td:nth-child(3),
+  .cart-items-table th:nth-child(4),
+  .cart-items-table td:nth-child(4),
   .cart-items-table th:nth-child(6),
   .cart-items-table td:nth-child(6) {
+    max-width: 40px;
+    padding: var(--spacing-1) var(--spacing-0-5);
+  }
+
+  /* Remove column - make smaller */
+  .cart-items-table th:nth-child(7),
+  .cart-items-table td:nth-child(7) {
+    width: 20px;
+    padding: var(--spacing-1) var(--spacing-0-5);
+  }
+
+  /* Smaller quantity column */
+  .cart-items-table th:nth-child(5),
+  .cart-items-table td:nth-child(5) {
+    width: 80px;
+    padding: var(--spacing-1) var(--spacing-0-5);
+  }
+}
+
+/* Extra small devices (≤375px) */
+@media (max-width: 375px) {
+  .cart-items-table {
+    font-size: 10px; /* Extra small font for tiny screens */
+  }
+
+  /* Product name column - tiny screens need tiny text */
+  .cart-items-table th:nth-child(2),
+  .cart-items-table td:nth-child(2) {
     max-width: 50px;
+  }
+
+  /* Make all cells tight */
+  .cart-items-table th,
+  .cart-items-table td {
+    padding: var(--spacing-0-5);
+  }
+
+  /* Show abbreviated header labels on tiny screens */
+  .cart-items-table th::before {
+    content: attr(data-label);
+    display: inline-block;
+  }
+
+  .cart-items-table th {
+    font-size: 9px;
+  }
+
+  /* Hide the original header text */
+  .cart-items-table th span.header-text {
+    display: none;
   }
 }

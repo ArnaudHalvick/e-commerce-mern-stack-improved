@@ -108,13 +108,27 @@ const CartItems = () => {
           <table className="cart-items-table">
             <thead>
               <tr>
-                <th>Image</th>
-                <th>Product</th>
-                <th>Price</th>
-                <th>Size</th>
-                <th>Quantity</th>
-                <th>Total</th>
-                <th>Remove</th>
+                <th data-label="Img">
+                  <span className="header-text">Image</span>
+                </th>
+                <th data-label="Product">
+                  <span className="header-text">Product</span>
+                </th>
+                <th data-label="Price">
+                  <span className="header-text">Price</span>
+                </th>
+                <th data-label="Size">
+                  <span className="header-text">Size</span>
+                </th>
+                <th data-label="Qty">
+                  <span className="header-text">Quantity</span>
+                </th>
+                <th data-label="Total">
+                  <span className="header-text">Total</span>
+                </th>
+                <th data-label="×">
+                  <span className="header-text">Remove</span>
+                </th>
               </tr>
             </thead>
             <tbody>
