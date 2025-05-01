@@ -185,9 +185,8 @@
 /* Sort dropdown */
 .order-history-filter-sort {
   position: relative;
-  width: 100%;
+  width: 30%;
   clear: both;
-  margin-top: var(--spacing-3);
 }
 
 .order-history-filter-sort-dropdown {
@@ -314,10 +313,6 @@
     align-items: flex-start;
   }
 
-  .order-history-filter-sort {
-    margin-top: var(--spacing-3);
-  }
-
   .order-history-filter-sort-dropdown {
     width: 100%;
   }
@@ -400,10 +395,6 @@
   .order-history-filter-select,
   .order-history-select {
     width: 100%;
-  }
-
-  .order-history-filter-sort {
-    margin-bottom: var(--spacing-2);
   }
 
   .order-history-filter-sort-dropdown {
