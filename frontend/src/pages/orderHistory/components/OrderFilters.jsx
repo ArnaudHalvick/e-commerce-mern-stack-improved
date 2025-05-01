@@ -177,87 +177,87 @@ const OrderFilters = ({
             </button>
           </div>
         </div>
+      </div>
 
-        {/* Sort dropdown */}
-        <div className="order-history-filter-sort">
-          <div
-            className="order-history-filter-sort-dropdown"
-            onClick={() => setShowSortOptions(!showSortOptions)}
-            onKeyDown={handleSortKeyDown}
-            tabIndex="0"
-            role="button"
-            aria-haspopup="listbox"
-            aria-expanded={showSortOptions}
-            aria-label="Sort orders"
-            data-testid="sort-dropdown"
-          >
-            <div className="order-history-filter-sort-label">
-              {getSortLabel()}
-            </div>
-            <img
-              src={dropdown_icon}
-              alt=""
-              className="order-history-filter-sort-icon"
-            />
+      {/* Sort dropdown in separate container */}
+      <div className="order-history-filter-sort">
+        <div
+          className="order-history-filter-sort-dropdown"
+          onClick={() => setShowSortOptions(!showSortOptions)}
+          onKeyDown={handleSortKeyDown}
+          tabIndex="0"
+          role="button"
+          aria-haspopup="listbox"
+          aria-expanded={showSortOptions}
+          aria-label="Sort orders"
+          data-testid="sort-dropdown"
+        >
+          <div className="order-history-filter-sort-label">
+            {getSortLabel()}
           </div>
-
-          {showSortOptions && (
-            <div className="order-history-filter-sort-options" role="listbox">
-              <div
-                className="order-history-filter-sort-option"
-                onClick={() => {
-                  handleSortChange("newest");
-                  setShowSortOptions(false);
-                }}
-                onKeyDown={(e) => handleSortOptionKeyDown(e, "newest")}
-                tabIndex="0"
-                role="option"
-                aria-selected={sortBy === "newest"}
-              >
-                Newest First
-              </div>
-              <div
-                className="order-history-filter-sort-option"
-                onClick={() => {
-                  handleSortChange("oldest");
-                  setShowSortOptions(false);
-                }}
-                onKeyDown={(e) => handleSortOptionKeyDown(e, "oldest")}
-                tabIndex="0"
-                role="option"
-                aria-selected={sortBy === "oldest"}
-              >
-                Oldest First
-              </div>
-              <div
-                className="order-history-filter-sort-option"
-                onClick={() => {
-                  handleSortChange("price-high");
-                  setShowSortOptions(false);
-                }}
-                onKeyDown={(e) => handleSortOptionKeyDown(e, "price-high")}
-                tabIndex="0"
-                role="option"
-                aria-selected={sortBy === "price-high"}
-              >
-                Price: High to Low
-              </div>
-              <div
-                className="order-history-filter-sort-option"
-                onClick={() => {
-                  handleSortChange("price-low");
-                  setShowSortOptions(false);
-                }}
-                onKeyDown={(e) => handleSortOptionKeyDown(e, "price-low")}
-                tabIndex="0"
-                role="option"
-                aria-selected={sortBy === "price-low"}
-              >
-                Price: Low to High
-              </div>
-            </div>
-          )}
+          <img
+            src={dropdown_icon}
+            alt=""
+            className="order-history-filter-sort-icon"
+          />
         </div>
+
+        {showSortOptions && (
+          <div className="order-history-filter-sort-options" role="listbox">
+            <div
+              className="order-history-filter-sort-option"
+              onClick={() => {
+                handleSortChange("newest");
+                setShowSortOptions(false);
+              }}
+              onKeyDown={(e) => handleSortOptionKeyDown(e, "newest")}
+              tabIndex="0"
+              role="option"
+              aria-selected={sortBy === "newest"}
+            >
+              Newest First
+            </div>
+            <div
+              className="order-history-filter-sort-option"
+              onClick={() => {
+                handleSortChange("oldest");
+                setShowSortOptions(false);
+              }}
+              onKeyDown={(e) => handleSortOptionKeyDown(e, "oldest")}
+              tabIndex="0"
+              role="option"
+              aria-selected={sortBy === "oldest"}
+            >
+              Oldest First
+            </div>
+            <div
+              className="order-history-filter-sort-option"
+              onClick={() => {
+                handleSortChange("price-high");
+                setShowSortOptions(false);
+              }}
+              onKeyDown={(e) => handleSortOptionKeyDown(e, "price-high")}
+              tabIndex="0"
+              role="option"
+              aria-selected={sortBy === "price-high"}
+            >
+              Price: High to Low
+            </div>
+            <div
+              className="order-history-filter-sort-option"
+              onClick={() => {
+                handleSortChange("price-low");
+                setShowSortOptions(false);
+              }}
+              onKeyDown={(e) => handleSortOptionKeyDown(e, "price-low")}
+              tabIndex="0"
+              role="option"
+              aria-selected={sortBy === "price-low"}
+            >
+              Price: Low to High
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

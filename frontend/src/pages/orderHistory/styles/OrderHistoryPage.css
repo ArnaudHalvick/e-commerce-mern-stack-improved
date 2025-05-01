@@ -1,27 +1,31 @@
 /* Order History Page Specific Styles */
-.order-history-page-container {
+.order-history-container {
   margin: var(--spacing-8) auto;
   max-width: var(--container-xl);
   padding: 0 var(--spacing-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
 }
 
-/* Responsive breakpoints for order-history-page-container */
+/* Responsive breakpoints for order-history-container */
 @media screen and (max-width: 992px) {
-  .order-history-page-container {
+  .order-history-container {
     margin: var(--spacing-6) auto;
     padding: 0 var(--spacing-5);
   }
 }
 
 @media screen and (max-width: 767.98px) {
-  .order-history-page-container {
+  .order-history-container {
     margin: var(--spacing-4) auto;
     padding: 0 var(--spacing-3);
+    gap: var(--spacing-3);
   }
 }
 
 @media screen and (max-width: 575.98px) {
-  .order-history-page-container {
+  .order-history-container {
     margin: var(--spacing-3) auto;
     padding: 0 var(--spacing-2);
   }
@@ -82,10 +86,6 @@
     font-size: var(--font-size-2xl);
     margin-bottom: var(--spacing-3);
     padding-top: var(--spacing-3);
-  }
-
-  .order-history-container {
-    gap: var(--spacing-3);
   }
 
   .order-history-list {

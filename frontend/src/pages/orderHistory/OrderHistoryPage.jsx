@@ -41,7 +41,7 @@ const OrderHistoryPage = () => {
       <Breadcrumb
         routes={[{ label: "Home", path: "/" }, { label: "Order History" }]}
       />
-      <div className="order-history-page-container">
+      <div className="order-history-container">
         <div className="order-history-page-title">Order History</div>
 
         {loading ? (
