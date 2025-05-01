@@ -1,0 +1,33 @@
+FROM node:18-bookworm-slim
+
+# Set working directory
+WORKDIR /app
+
+# Copy package.json and package-lock.json
+COPY package*.json ./
+
+# Install dependencies
+RUN npm ci
+
+# Copy source code
+COPY . .
+
+# Make sure the app directory is created
+RUN mkdir -p /app/upload/images
+
+# Set environment variables directly
+ENV NODE_ENV=development \
+    PORT=4001 \
+    HTTPS_PORT=4444 \
+    FRONTEND_URL=http://localhost:3000 \
+    PUBLIC_URL=http://localhost:3000 \
+    DEFAULT_PROTOCOL=http \
+    USE_HTTPS=false \
+    MONGODB_URI=mongodb://mongo:27017/ecommerce
+
+# Expose ports
+EXPOSE 4001
+EXPOSE 4444
+
+# Start development server with nodemon
+CMD ["npm", "run", "dev"] 

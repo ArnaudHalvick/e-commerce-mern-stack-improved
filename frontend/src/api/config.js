@@ -13,20 +13,10 @@ const defaultProtocol =
   process.env.REACT_APP_DEFAULT_PROTOCOL ||
   (isDevEnvironment ? "http" : "https");
 
-// Determine if we're running in Docker by checking hostname
-const isDockerEnvironment = window.location.hostname === "localhost";
-
 // Get the base API URL from environment variables with environment-specific fallbacks
 export const API_BASE_URL = (() => {
   // If explicitly set in environment variables, use that regardless of environment
   if (process.env.REACT_APP_API_URL) {
-    // When in Docker, make sure we use the actual 'localhost'
-    if (
-      isDockerEnvironment &&
-      process.env.REACT_APP_API_URL.includes("localhost")
-    ) {
-      return process.env.REACT_APP_API_URL;
-    }
     return process.env.REACT_APP_API_URL;
   }
 
@@ -35,8 +25,8 @@ export const API_BASE_URL = (() => {
     return `${defaultProtocol}://localhost:4000`;
   }
 
-  // Production fallback - should not reach here if properly configured
-  return `${defaultProtocol}://api.your-domain.com`;
+  // Production fallback
+  return `${defaultProtocol}://mernappshopper.xyz/api`;
 })();
 
 /**
@@ -81,24 +71,16 @@ export const joinUrl = (baseUrl, path) => {
  * @returns {string} The full API URL.
  */
 export const getApiUrl = (path) => {
-  // Check if the base URL already contains "/api".
+  // Check if the base URL already contains "/api"
   const baseHasApi = API_BASE_URL.includes("/api");
 
-  // Adjust the API path based on whether the base already has "/api".
-  let apiPath = path;
+  // If path starts with api/ and baseUrl already includes /api, remove the prefix
   if (baseHasApi && path.startsWith("api/")) {
-    // Remove "api/" prefix from the path if base URL already has "/api".
-    apiPath = path.substring(4);
-  } else if (!baseHasApi && !path.startsWith("api/")) {
-    // Add "api/" prefix if not present and base doesn't have it.
-    apiPath = `api/${path}`;
+    path = path.substring(4);
   }
 
-  // Ensure proper joining of URL segments.
-  return joinUrl(
-    API_BASE_URL,
-    apiPath.startsWith("/") ? apiPath : `/${apiPath}`
-  );
+  // Ensure proper joining of URL segments
+  return joinUrl(API_BASE_URL, path.startsWith("/") ? path : `/${path}`);
 };
 
 /**

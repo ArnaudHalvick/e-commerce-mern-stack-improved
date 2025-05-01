@@ -37,23 +37,23 @@ export const cancelPendingRequests = (message = "Operation canceled") => {
 
 // Public API endpoints that don't require authentication
 const publicEndpoints = [
-  "/api/users/login",
-  "/api/users/signup",
-  "/api/users/forgot-password",
-  "/api/users/reset-password",
-  "/api/users/request-verification",
-  "/api/users/verify-email",
-  "/api/users/refresh-token",
-  "/api/users/verify-token",
-  "/api/error-demo",
-  "/api/products",
-  "/api/products/all-products",
-  "/api/products/newcollection",
-  "/api/products/featured-women",
-  "/api/products/category",
-  "/api/products/tag",
-  "/api/products/type",
-  "/api/products/related",
+  "/users/login",
+  "/users/signup",
+  "/users/forgot-password",
+  "/users/reset-password",
+  "/users/request-verification",
+  "/users/verify-email",
+  "/users/refresh-token",
+  "/users/verify-token",
+  "/error-demo",
+  "/products",
+  "/products/all-products",
+  "/products/newcollection",
+  "/products/featured-women",
+  "/products/category",
+  "/products/tag",
+  "/products/type",
+  "/products/related",
 ];
 
 // Function to check if user is logged out
@@ -76,9 +76,22 @@ const processQueue = (error, token = null) => {
   failedQueue = [];
 };
 
+// Helper to ensure URL starts with /api
+const ensureApiPrefix = (url) => {
+  if (!url.startsWith("/api/") && !url.startsWith("api/")) {
+    return `/api${url.startsWith("/") ? url : `/${url}`}`;
+  }
+  return url;
+};
+
 // Add a request interceptor to include auth token
 apiClient.interceptors.request.use(
   (config) => {
+    // Make sure all URLs have /api prefix
+    if (config.url) {
+      config.url = ensureApiPrefix(config.url);
+    }
+
     // Check if this is a public endpoint that doesn't require authentication
     const isPublicEndpoint = publicEndpoints.some((endpoint) =>
       config.url.includes(endpoint)
@@ -103,11 +116,11 @@ apiClient.interceptors.request.use(
 
     // Add cancel token to non-auth requests
     if (
-      !config.url.includes("/api/users/login") &&
-      !config.url.includes("/api/users/signup") &&
-      !config.url.includes("/api/users/refresh-token") &&
-      !config.url.includes("/api/users/forgot-password") &&
-      !config.url.includes("/api/users/reset-password")
+      !config.url.includes("/users/login") &&
+      !config.url.includes("/users/signup") &&
+      !config.url.includes("/users/refresh-token") &&
+      !config.url.includes("/users/forgot-password") &&
+      !config.url.includes("/users/reset-password")
     ) {
       config.cancelToken = cancelTokenSource.token;
     }
@@ -161,8 +174,8 @@ apiClient.interceptors.response.use(
       // Check if this is a password recovery related endpoint
       if (
         error.config &&
-        (error.config.url.includes("/api/users/forgot-password") ||
-          error.config.url.includes("/api/users/reset-password"))
+        (error.config.url.includes("/users/forgot-password") ||
+          error.config.url.includes("/users/reset-password"))
       ) {
         // Allow password recovery to proceed even when logged out
         return Promise.reject({

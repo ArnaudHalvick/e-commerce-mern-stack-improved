@@ -1,0 +1,30 @@
+FROM node:18-bookworm-slim
+
+# Set working directory
+WORKDIR /app
+
+# Copy package.json and package-lock.json
+COPY package*.json ./
+
+# Install dependencies
+RUN npm ci
+
+# Copy source code
+COPY . .
+
+# Copy docker env file to local env
+RUN cp .env.docker .env.local
+
+# Set environment variables
+ENV NODE_ENV=development \
+    REACT_APP_ENV=development \
+    HOST=0.0.0.0 \
+    WDS_SOCKET_PORT=0 \
+    CHOKIDAR_USEPOLLING=true \
+    DANGEROUSLY_DISABLE_HOST_CHECK=true
+
+# Expose port for dev server
+EXPOSE 3000
+
+# Start development server
+CMD ["npm", "run", "dev:docker"] 
