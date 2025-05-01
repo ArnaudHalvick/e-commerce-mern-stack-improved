@@ -4,7 +4,6 @@ import { useAuth } from "../../hooks/state";
 // Internal Components
 import {
   CartItem,
-  CartTotals,
   PromoCodeSection,
   EmailVerificationBanner,
 } from "./components";
