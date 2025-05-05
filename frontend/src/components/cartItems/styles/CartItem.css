@@ -304,8 +304,11 @@
 
   .cart-items-quantity-controls {
     display: flex;
+    flex-direction: column;
     align-items: center;
     gap: var(--spacing-1);
+    margin-top: var(--spacing-2);
+    margin-bottom: var(--spacing-2);
   }
 
   .cart-items-quantity-adjust-btn {
