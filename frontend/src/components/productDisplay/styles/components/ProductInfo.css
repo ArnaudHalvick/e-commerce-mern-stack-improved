@@ -5,6 +5,21 @@
   font-weight: var(--font-weight-bold);
 }
 
+.product-display-discount-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-primary-light);
+  color: white;
+  font-size: var(--font-size-xs);
+  padding: 2px 6px;
+  border-radius: var(--border-radius-sm);
+  font-weight: var(--font-weight-medium);
+  margin-left: var(--spacing-2);
+  height: 20px;
+  min-width: 40px;
+}
+
 .product-display-right-stars {
   display: flex;
   align-items: center;
@@ -21,11 +36,12 @@
 
 .product-display-right-prices {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: var(--spacing-8);
   font-size: var(--font-size-xl);
   font-weight: var(--font-weight-bold);
   margin-top: var(--spacing-3);
+  flex-wrap: wrap;
 }
 
 .product-display-right-price-old {
@@ -65,6 +81,11 @@
     font-size: var(--font-size-3xl);
   }
 
+  .product-display-discount-tag {
+    font-size: var(--font-size-xs);
+    padding: 1px 6px;
+  }
+
   .product-display-right-prices {
     gap: var(--spacing-6);
   }
@@ -76,6 +97,14 @@
     font-size: var(--font-size-2xl);
     text-align: center;
     margin-bottom: var(--spacing-2);
+  }
+
+  .product-display-discount-tag {
+    font-size: var(--font-size-xxs);
+    padding: 1px 5px;
+    height: 18px;
+    min-width: 36px;
+    margin-left: var(--spacing-1);
   }
 
   .product-display-right-prices {
@@ -101,6 +130,13 @@
     font-size: var(--font-size-xl);
   }
 
+  .product-display-discount-tag {
+    font-size: var(--font-size-xxs);
+    padding: 1px 4px;
+    height: 16px;
+    min-width: 32px;
+  }
+
   .product-display-right-stars {
     margin-top: calc(-1 * var(--spacing-2));
   }
@@ -112,13 +148,21 @@
 
 /* Extra small devices (portrait phones, less than 576px) */
 @media screen and (max-width: 576px) {
+  .product-display-discount-tag {
+    font-size: var(--font-size-xxs);
+    padding: 0 3px;
+    height: 14px;
+    min-width: 28px;
+  }
+
   .product-display-right-price-current {
     font-size: var(--font-size-m);
   }
 
   .product-display-right-prices {
-    flex-direction: column;
+    flex-direction: row;
     gap: var(--spacing-1);
+    align-items: center;
   }
 
   .product-display-right-category {

@@ -10,7 +10,18 @@ import star_dull_icon from "../../assets/star_dull_icon.png";
  */
 const ProductInfo = ({ product }) => {
   // Check if the product has a discount (new_price > 0)
-  const hasDiscount = product.new_price && product.new_price > 0;
+  const hasDiscount =
+    product.new_price &&
+    product.new_price > 0 &&
+    product.old_price &&
+    product.new_price < product.old_price;
+
+  // Calculate discount percentage
+  const discountPercentage = hasDiscount
+    ? Math.round(
+        ((product.old_price - product.new_price) / product.old_price) * 100
+      )
+    : 0;
 
   // Render star rating
   const renderStarRating = useMemo(() => {
@@ -51,10 +62,12 @@ const ProductInfo = ({ product }) => {
   return (
     <>
       <h1 className="product-display-right-title">{product.name}</h1>
+
       <div className="product-display-right-stars">
         {renderStarRating}
         <p className="product-display-review-count">({reviewCount})</p>
       </div>
+
       <div className="product-display-right-prices">
         {hasDiscount ? (
           <>
@@ -63,6 +76,9 @@ const ProductInfo = ({ product }) => {
             </div>
             <div className="product-display-right-price-new">
               ${product.new_price}
+            </div>
+            <div className="product-display-discount-tag">
+              -{discountPercentage}%
             </div>
           </>
         ) : (
