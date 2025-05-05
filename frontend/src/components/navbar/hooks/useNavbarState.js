@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useAuth } from "../../../hooks/state";
+import { useLocation } from "react-router-dom";
 
 // Navigation menu items
 export const NAV_ITEMS = [
@@ -16,11 +17,34 @@ export const NAV_ITEMS = [
  */
 const useNavbarState = () => {
   const { isAuthenticated, user, logout, inTransition } = useAuth();
-  const [activeMenu, setActiveMenu] = useState("home");
+  const [activeMenu, setActiveMenu] = useState(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [displayName, setDisplayName] = useState("User");
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const userMenuRef = useRef(null);
+  const location = useLocation();
+
+  // Update activeMenu based on current path
+  useEffect(() => {
+    const pathname = location.pathname;
+
+    // Find matching nav item or set to null if not found
+    const matchedItem = NAV_ITEMS.find((item) => {
+      // Exact path match
+      if (item.path === pathname) {
+        return true;
+      }
+
+      // Special case for home (root path)
+      if (item.id === "home" && pathname === "/") {
+        return true;
+      }
+
+      return false;
+    });
+
+    setActiveMenu(matchedItem ? matchedItem.id : null);
+  }, [location.pathname]);
 
   // Update displayName whenever user changes
   useEffect(() => {

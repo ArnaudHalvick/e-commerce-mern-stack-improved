@@ -23,8 +23,10 @@ const NavMenu = ({ activeMenu, handleMenuClick, isMobileMenuOpen }) => (
         role="menuitem"
       >
         <Link to={item.path}>
-          {item.label}{" "}
-          {activeMenu === item.id && <hr className="navbar-menu-indicator" />}
+          {item.label}
+          {activeMenu && activeMenu === item.id && (
+            <hr className="navbar-menu-indicator" />
+          )}
         </Link>
       </li>
     ))}
