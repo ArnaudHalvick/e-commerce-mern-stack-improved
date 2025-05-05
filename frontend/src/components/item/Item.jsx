@@ -28,9 +28,16 @@ const Item = (props) => {
   }, [props.slug, props._id, props.id]);
 
   const hasNewPrice = props.new_price > 0;
+  const hasDiscount = hasNewPrice && props.old_price > props.new_price;
+  const discountPercentage = hasDiscount
+    ? Math.round(((props.old_price - props.new_price) / props.old_price) * 100)
+    : 0;
 
   return (
     <div className="product-item">
+      {hasDiscount && (
+        <div className="product-item-discount-tag">-{discountPercentage}%</div>
+      )}
       <Link to={productUrl} data-discover="true">
         <img className="product-item-image" src={imageUrl} alt={props.name} />
       </Link>
