@@ -1,0 +1,982 @@
+{
+  "info": {
+    "_postman_id": "8e3fb72d-f79c-4b62-96cb-fa7d12a0a1e2",
+    "name": "E-Commerce MERN Stack API",
+    "description": "A collection of API endpoints for the E-Commerce MERN Stack application",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "auth_token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{URL}}/api/health",
+          "host": ["{{URL}}"],
+          "path": ["api", "health"]
+        }
+      }
+    },
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Sign Up",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/users/signup",
+              "host": ["{{URL}}"],
+              "path": ["api", "users", "signup"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"test@example.com\",\n  \"password\": \"Password123!\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.token) {",
+                  "    pm.environment.set('auth_token', jsonData.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/users/login",
+              "host": ["{{URL}}"],
+              "path": ["api", "users", "login"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"Password123!\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{URL}}/api/users/refresh-token",
+              "host": ["{{URL}}"],
+              "path": ["api", "users", "refresh-token"]
+            }
+          }
+        },
+        {
+          "name": "Request Email Verification",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/users/request-verification",
+              "host": ["{{URL}}"],
+              "path": ["api", "users", "request-verification"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Verify Email",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{URL}}/api/users/verify-email/:token",
+              "host": ["{{URL}}"],
+              "path": ["api", "users", "verify-email", ":token"],
+              "variable": [
+                {
+                  "key": "token",
+                  "value": "YOUR_VERIFICATION_TOKEN"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/users/forgot-password",
+              "host": ["{{URL}}"],
+              "path": ["api", "users", "forgot-password"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/users/reset-password",
+              "host": ["{{URL}}"],
+              "path": ["api", "users", "reset-password"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"YOUR_RESET_TOKEN\",\n  \"password\": \"NewPassword123!\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/users/logout",
+              "host": ["{{URL}}"],
+              "path": ["api", "users", "logout"]
+            }
+          }
+        },
+        {
+          "name": "Verify Token",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/users/verify-token",
+              "host": ["{{URL}}"],
+              "path": ["api", "users", "verify-token"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "User Profile",
+      "item": [
+        {
+          "name": "Get User Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/users/me",
+              "host": ["{{URL}}"],
+              "path": ["api", "users", "me"]
+            }
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/users/profile",
+              "host": ["{{URL}}"],
+              "path": ["api", "users", "profile"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Name\",\n  \"email\": \"updated@example.com\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/users/change-password",
+              "host": ["{{URL}}"],
+              "path": ["api", "users", "change-password"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"Password123!\",\n  \"newPassword\": \"NewPassword123!\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Disable Account",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/users/disable-account",
+              "host": ["{{URL}}"],
+              "path": ["api", "users", "disable-account"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"password\": \"Password123!\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "Get All Products",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{URL}}/api/products/all-products",
+              "host": ["{{URL}}"],
+              "path": ["api", "products", "all-products"]
+            }
+          }
+        },
+        {
+          "name": "Get New Collection",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{URL}}/api/products/newcollection",
+              "host": ["{{URL}}"],
+              "path": ["api", "products", "newcollection"]
+            }
+          }
+        },
+        {
+          "name": "Get Featured Women",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{URL}}/api/products/featured-women",
+              "host": ["{{URL}}"],
+              "path": ["api", "products", "featured-women"]
+            }
+          }
+        },
+        {
+          "name": "Get Products by Tag",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{URL}}/api/products/tag/:tag",
+              "host": ["{{URL}}"],
+              "path": ["api", "products", "tag", ":tag"],
+              "variable": [
+                {
+                  "key": "tag",
+                  "value": "popular"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Products by Type",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{URL}}/api/products/type/:type",
+              "host": ["{{URL}}"],
+              "path": ["api", "products", "type", ":type"],
+              "variable": [
+                {
+                  "key": "type",
+                  "value": "shirt"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Products by Category",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{URL}}/api/products/category/:category",
+              "host": ["{{URL}}"],
+              "path": ["api", "products", "category", ":category"],
+              "variable": [
+                {
+                  "key": "category",
+                  "value": "women"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Product by Slug",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{URL}}/api/products/slug/:slug",
+              "host": ["{{URL}}"],
+              "path": ["api", "products", "slug", ":slug"],
+              "variable": [
+                {
+                  "key": "slug",
+                  "value": "women-fitted-t-shirt"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Product by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{URL}}/api/products/:id",
+              "host": ["{{URL}}"],
+              "path": ["api", "products", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "PRODUCT_ID"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Related Products",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{URL}}/api/products/related/:category/:productId?/:productSlug?",
+              "host": ["{{URL}}"],
+              "path": [
+                "api",
+                "products",
+                "related",
+                ":category",
+                ":productId",
+                ":productSlug"
+              ],
+              "variable": [
+                {
+                  "key": "category",
+                  "value": "women"
+                },
+                {
+                  "key": "productId",
+                  "value": "PRODUCT_ID"
+                },
+                {
+                  "key": "productSlug",
+                  "value": "women-fitted-t-shirt"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Add Product (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/products/add-product",
+              "host": ["{{URL}}"],
+              "path": ["api", "products", "add-product"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"New Product\",\n  \"image\": \"image_url.jpg\",\n  \"category\": \"women\",\n  \"new_price\": 50.99,\n  \"old_price\": 70.99,\n  \"description\": \"Product description\",\n  \"tags\": [\"new\", \"popular\"],\n  \"type\": \"shirt\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Remove Product (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/products/remove-product",
+              "host": ["{{URL}}"],
+              "path": ["api", "products", "remove-product"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"PRODUCT_ID\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cart",
+      "item": [
+        {
+          "name": "Get Cart",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/cart",
+              "host": ["{{URL}}"],
+              "path": ["api", "cart"]
+            }
+          }
+        },
+        {
+          "name": "Add to Cart",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/cart/add",
+              "host": ["{{URL}}"],
+              "path": ["api", "cart", "add"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": \"PRODUCT_ID\",\n  \"quantity\": 1\n}"
+            }
+          }
+        },
+        {
+          "name": "Remove from Cart",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/cart/remove",
+              "host": ["{{URL}}"],
+              "path": ["api", "cart", "remove"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": \"PRODUCT_ID\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Cart Item",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/cart/update",
+              "host": ["{{URL}}"],
+              "path": ["api", "cart", "update"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": \"PRODUCT_ID\",\n  \"quantity\": 2\n}"
+            }
+          }
+        },
+        {
+          "name": "Clear Cart",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/cart/clear",
+              "host": ["{{URL}}"],
+              "path": ["api", "cart", "clear"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reviews",
+      "item": [
+        {
+          "name": "Get Product Reviews",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{URL}}/api/reviews/products/:productId",
+              "host": ["{{URL}}"],
+              "path": ["api", "reviews", "products", ":productId"],
+              "variable": [
+                {
+                  "key": "productId",
+                  "value": "PRODUCT_ID"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Review",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{URL}}/api/reviews/:reviewId",
+              "host": ["{{URL}}"],
+              "path": ["api", "reviews", ":reviewId"],
+              "variable": [
+                {
+                  "key": "reviewId",
+                  "value": "REVIEW_ID"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Add Review",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/reviews",
+              "host": ["{{URL}}"],
+              "path": ["api", "reviews"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": \"PRODUCT_ID\",\n  \"rating\": 5,\n  \"title\": \"Great product\",\n  \"text\": \"This is an amazing product!\",\n  \"images\": []\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Review",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/reviews/:reviewId",
+              "host": ["{{URL}}"],
+              "path": ["api", "reviews", ":reviewId"],
+              "variable": [
+                {
+                  "key": "reviewId",
+                  "value": "REVIEW_ID"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rating\": 4,\n  \"title\": \"Updated title\",\n  \"text\": \"Updated review text\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Review",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/reviews/:reviewId",
+              "host": ["{{URL}}"],
+              "path": ["api", "reviews", ":reviewId"],
+              "variable": [
+                {
+                  "key": "reviewId",
+                  "value": "REVIEW_ID"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Mark Review as Helpful",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/reviews/:reviewId/helpful",
+              "host": ["{{URL}}"],
+              "path": ["api", "reviews", ":reviewId", "helpful"],
+              "variable": [
+                {
+                  "key": "reviewId",
+                  "value": "REVIEW_ID"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Payments",
+      "item": [
+        {
+          "name": "Get Cart Summary",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/payment/cart-summary",
+              "host": ["{{URL}}"],
+              "path": ["api", "payment", "cart-summary"]
+            }
+          }
+        },
+        {
+          "name": "Create Payment Intent",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/payment/create-payment-intent",
+              "host": ["{{URL}}"],
+              "path": ["api", "payment", "create-payment-intent"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"shippingAddress\": {\n    \"name\": \"John Doe\",\n    \"addressLine1\": \"123 Main St\",\n    \"addressLine2\": \"Apt 4B\",\n    \"city\": \"New York\",\n    \"state\": \"NY\",\n    \"postalCode\": \"10001\",\n    \"country\": \"US\",\n    \"phone\": \"123-456-7890\"\n  }\n}"
+            }
+          }
+        },
+        {
+          "name": "Confirm Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/payment/confirm-order",
+              "host": ["{{URL}}"],
+              "path": ["api", "payment", "confirm-order"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"paymentIntentId\": \"pi_PAYMENT_INTENT_ID\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get My Orders",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/payment/my-orders",
+              "host": ["{{URL}}"],
+              "path": ["api", "payment", "my-orders"]
+            }
+          }
+        },
+        {
+          "name": "Get Order by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/payment/order/:id",
+              "host": ["{{URL}}"],
+              "path": ["api", "payment", "order", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "ORDER_ID"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Order by Payment Intent",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/payment/order-by-payment/:paymentIntentId",
+              "host": ["{{URL}}"],
+              "path": [
+                "api",
+                "payment",
+                "order-by-payment",
+                ":paymentIntentId"
+              ],
+              "variable": [
+                {
+                  "key": "paymentIntentId",
+                  "value": "pi_PAYMENT_INTENT_ID"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Image Upload",
+      "item": [
+        {
+          "name": "Upload Image",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/upload",
+              "host": ["{{URL}}"],
+              "path": ["api", "upload"]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "product",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Error Demo",
+      "item": [
+        {
+          "name": "Test Error",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{URL}}/api/error-demo/test-error",
+              "host": ["{{URL}}"],
+              "path": ["api", "error-demo", "test-error"]
+            }
+          }
+        },
+        {
+          "name": "Validation Error",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{URL}}/api/error-demo/validation-error",
+              "host": ["{{URL}}"],
+              "path": ["api", "error-demo", "validation-error"]
+            }
+          }
+        },
+        {
+          "name": "Delayed Success",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{URL}}/api/error-demo/delayed-success",
+              "host": ["{{URL}}"],
+              "path": ["api", "error-demo", "delayed-success"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
