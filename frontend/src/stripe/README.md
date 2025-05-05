@@ -1,176 +1,262 @@
-# Stripe Provider Component
+# Stripe Integration
 
-A wrapper component that initializes and provides Stripe payment functionality throughout the e-commerce application using Stripe Elements and the official Stripe React library.
+This directory contains the Stripe payment integration setup for the e-commerce application.
 
-## Features
-
-- Stripe Elements integration
-- Environment-based configuration
-- Error handling and fallback UI
-- Custom font integration
-- Performance optimized with React.memo
-- Development environment support
-- Graceful error states
-
-## Component Structure
+## Structure
 
 ```
 stripe/
-├── StripeProvider.jsx    # Main provider component
-└── StripeProvider.css    # Error state styling
+├── config.js            # Stripe configuration and setup
+├── hooks/
+│   ├── useStripe.js    # Custom hook for Stripe operations
+│   └── useElements.js  # Hook for Stripe Elements
+├── components/
+│   ├── CardElement.js  # Credit card input component
+│   └── PaymentForm.js  # Payment form wrapper
+└── utils/
+    ├── validation.js   # Payment-specific validation
+    └── formatting.js   # Payment data formatting
 ```
 
-## Usage
+## Configuration
+
+`config.js` contains Stripe setup and configuration:
+
+```javascript
+import { loadStripe } from "@stripe/stripe-js";
+
+// Initialize Stripe with public key
+export const stripePromise = loadStripe(
+  process.env.REACT_APP_STRIPE_PUBLIC_KEY
+);
+
+// Stripe configuration options
+export const stripeConfig = {
+  appearance: {
+    theme: "stripe",
+    variables: {
+      colorPrimary: "#0570de",
+      colorBackground: "#ffffff",
+      colorText: "#30313d",
+      colorDanger: "#df1b41",
+      fontFamily: "Ideal Sans, system-ui, sans-serif",
+      borderRadius: "4px",
+    },
+  },
+  locale: "auto",
+};
+```
+
+## Custom Hooks
+
+### useStripe
+
+Manages Stripe payment operations:
+
+```javascript
+const {
+  createPaymentIntent,
+  handleCardPayment,
+  confirmPayment,
+  paymentStatus,
+  error,
+} = useStripe({
+  amount,
+  currency: "usd",
+});
+```
+
+Features:
+
+- Payment intent creation
+- Card payment processing
+- Payment confirmation
+- Error handling
+- Loading states
+
+### useElements
+
+Manages Stripe Elements:
+
+```javascript
+const { elements, cardElement, isComplete, error } = useElements();
+```
+
+Features:
+
+- Elements initialization
+- Card element management
+- Validation state
+- Error handling
+
+## Components
+
+### CardElement
+
+Stripe card input component:
 
 ```jsx
-import StripeProvider from "../stripe/StripeProvider";
-
-// In your app's root component
-const App = () => {
-  return (
-    <StripeProvider>
-      {/* Your app components */}
-      <CheckoutPage />
-      <PaymentForm />
-    </StripeProvider>
-  );
-};
-
-// In your payment components
-import { useStripe, useElements } from "@stripe/react-stripe-js";
+import { CardElement } from "./components/CardElement";
 
 const PaymentForm = () => {
+  return (
+    <form>
+      <CardElement
+        options={{
+          style: {
+            base: {
+              fontSize: "16px",
+              color: "#424770",
+              "::placeholder": {
+                color: "#aab7c4",
+              },
+            },
+            invalid: {
+              color: "#9e2146",
+            },
+          },
+        }}
+      />
+    </form>
+  );
+};
+```
+
+### PaymentForm
+
+Payment form wrapper component:
+
+```jsx
+import { PaymentForm } from "./components/PaymentForm";
+
+const Checkout = () => {
+  const handlePayment = async (paymentMethod) => {
+    // Process payment
+  };
+
+  return (
+    <PaymentForm amount={total} onPayment={handlePayment} currency="usd" />
+  );
+};
+```
+
+## Usage Guidelines
+
+### Basic Payment Flow
+
+```javascript
+import { useStripe, useElements } from "../stripe/hooks";
+import { CardElement, PaymentForm } from "../stripe/components";
+
+const CheckoutForm = ({ amount }) => {
   const stripe = useStripe();
   const elements = useElements();
 
-  // Use stripe and elements here
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    if (!stripe || !elements) {
+      return;
+    }
+
+    const { error, paymentMethod } = await stripe.createPaymentMethod({
+      type: "card",
+      card: elements.getElement(CardElement),
+    });
+
+    if (error) {
+      console.error("[error]", error);
+    } else {
+      // Process payment with backend
+      await processPayment(paymentMethod.id);
+    }
+  };
+
+  return (
+    <PaymentForm onSubmit={handleSubmit}>
+      <CardElement />
+      <button type="submit">Pay</button>
+    </PaymentForm>
+  );
 };
 ```
 
-## Environment Configuration
-
-The component requires a Stripe publishable key to be set in your environment variables:
-
-```env
-REACT_APP_STRIPE_PUBLISHABLE_KEY=pk_test_your_key_here
-```
-
-Note: The environment variable MUST be prefixed with `REACT_APP_` to be accessible in React.
-
-## Props
-
-### StripeProvider
-
-```typescript
-interface StripeProviderProps {
-  children: React.ReactNode; // Child components that need access to Stripe
-}
-```
-
-## Stripe Configuration
-
-### Default Options
+### Error Handling
 
 ```javascript
-const defaultOptions = {
-  fonts: [
-    {
-      cssSrc: "https://fonts.googleapis.com/css?family=Roboto:400,500,700",
-    },
-  ],
+const handlePaymentError = (error) => {
+  switch (error.type) {
+    case "card_error":
+      // Handle invalid card details
+      break;
+    case "validation_error":
+      // Handle validation errors
+      break;
+    case "api_error":
+      // Handle API errors
+      break;
+    default:
+    // Handle other errors
+  }
 };
 ```
-
-## Error Handling
-
-The component includes built-in error handling for:
-
-- Missing Stripe publishable key
-- Stripe initialization failures
-- Environment configuration issues
-
-### Error UI
-
-- Clear error messaging
-- Environment information
-- Debug details
-- Styled error container
-
-## Implementation Details
-
-### Initialization
-
-- Stripe is initialized outside the component to prevent re-initialization
-- Uses `loadStripe` from `@stripe/stripe-js`
-- Stripe promise is created once and reused
-
-### Performance
-
-- Wrapped in React.memo to prevent unnecessary re-renders
-- Single instance of Stripe Elements
-- Optimized error boundary
-
-## Styling
-
-The component includes styles for error states:
-
-- Consistent error messaging
-- Visual error indicators
-- Responsive design
-- Accessible color scheme
-
-## Related Components
-
-- PaymentForm (uses Stripe Elements)
-- CheckoutPage (payment processing)
-- OrderConfirmation (payment success)
-- Cart (payment initiation)
 
 ## Development Guidelines
 
-1. Environment Setup:
+1. Security:
 
-   ```bash
-   # Development
-   REACT_APP_STRIPE_PUBLISHABLE_KEY=pk_test_...
+   - Never log sensitive card data
+   - Use HTTPS endpoints
+   - Validate on server-side
+   - Follow PCI compliance
+   - Handle errors securely
 
-   # Production
-   REACT_APP_STRIPE_PUBLISHABLE_KEY=pk_live_...
-   ```
+2. User Experience:
 
-2. Error Handling:
+   - Show loading states
+   - Provide clear errors
+   - Validate in real-time
+   - Support autofill
+   - Handle network issues
 
-   ```jsx
-   // Always check for stripe instance
-   if (!stripe || !elements) {
-     return <div>Loading payment system...</div>;
-   }
-   ```
+3. Testing:
 
-3. Security Considerations:
+   - Use test API keys
+   - Test card numbers
+   - Error scenarios
+   - Payment flows
+   - Mobile testing
 
-   - Never log Stripe keys
-   - Use test keys in development
-   - Validate environment variables
+4. Performance:
+   - Lazy load Stripe.js
+   - Optimize form submission
+   - Handle timeouts
+   - Cache payment methods
+   - Monitor metrics
 
-4. Testing:
-   - Use Stripe test cards
-   - Test error scenarios
-   - Verify environment setup
+## Environment Setup
+
+Required environment variables:
+
+```env
+REACT_APP_STRIPE_PUBLIC_KEY=pk_test_...
+REACT_APP_STRIPE_SECRET_KEY=sk_test_...  # Server-side only
+```
+
+## Testing Cards
+
+Test card numbers for development:
+
+```javascript
+const TEST_CARDS = {
+  success: "4242 4242 4242 4242",
+  decline: "4000 0000 0000 0002",
+  insufficient: "4000 0000 0000 9995",
+  error: "4000 0000 0000 0127",
+};
+```
 
 ## Dependencies
 
 - @stripe/stripe-js
 - @stripe/react-stripe-js
-- react
-- react-dom
-
-## Browser Support
-
-Stripe Elements supports:
-
-- Chrome (Latest)
-- Firefox (Latest)
-- Safari (Latest)
-- Edge (Latest)
-- IE11+ (Limited support)

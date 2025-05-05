@@ -1,249 +1,296 @@
 # Redux State Management
 
-A comprehensive Redux implementation for the e-commerce application using Redux Toolkit. This setup manages global state for user authentication, shopping cart, product reviews, and error handling.
-
-## Features
-
-- Centralized state management
-- Redux Toolkit implementation
-- Async thunk actions
-- Automatic error handling
-- Toast notifications system
-- Authentication state persistence
-- Shopping cart management
-- Reviews management
-- Global error handling
+This directory contains the Redux state management setup for the e-commerce application using Redux Toolkit.
 
 ## Structure
 
 ```
 redux/
-├── slices/                     # Feature slices
-│   ├── userSlice.js           # User authentication and profile
-│   ├── cartSlice.js           # Shopping cart management
-│   ├── reviewsSlice.js        # Product reviews
-│   └── errorSlice.js          # Error and toast notifications
-└── store.js                   # Store configuration
+├── slices/              # Feature-specific Redux slices
+│   ├── cartSlice.js    # Shopping cart state
+│   ├── authSlice.js    # Authentication state
+│   ├── uiSlice.js      # UI state (modals, loading, etc.)
+│   └── filterSlice.js  # Product filtering state
+├── store.js            # Redux store configuration
+└── selectors.js        # Reusable Redux selectors
 ```
 
 ## Store Configuration
 
+The Redux store is configured in `store.js` using Redux Toolkit's `configureStore`:
+
 ```javascript
 import { configureStore } from "@reduxjs/toolkit";
+import cartReducer from "./slices/cartSlice";
+import authReducer from "./slices/authSlice";
+import uiReducer from "./slices/uiSlice";
+import filterReducer from "./slices/filterSlice";
 
-const store = configureStore({
+export const store = configureStore({
   reducer: {
-    user: userReducer,
     cart: cartReducer,
-    reviews: reviewsReducer,
-    error: errorReducer,
+    auth: authReducer,
+    ui: uiReducer,
+    filter: filterReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      serializableCheck: false,
+      serializableCheck: {
+        ignoredActions: ["auth/login/fulfilled"],
+        ignoredPaths: ["auth.user"],
+      },
     }),
 });
 ```
 
 ## Feature Slices
 
-### User Slice
-
-Manages authentication and user profile:
-
-```typescript
-interface UserState {
-  user: User | null;
-  loading: boolean;
-  error: string | null;
-  isAuthenticated: boolean;
-  token: string | null;
-}
-```
-
 ### Cart Slice
 
-Handles shopping cart operations:
+Manages shopping cart state:
 
-```typescript
-interface CartState {
-  items: CartItem[];
-  loading: boolean;
-  error: string | null;
-  total: number;
-  itemCount: number;
-}
+```javascript
+const cartSlice = createSlice({
+  name: "cart",
+  initialState: {
+    items: [],
+    total: 0,
+    quantity: 0,
+  },
+  reducers: {
+    addItem: (state, action) => {
+      /* ... */
+    },
+    removeItem: (state, action) => {
+      /* ... */
+    },
+    updateQuantity: (state, action) => {
+      /* ... */
+    },
+    clearCart: (state) => {
+      /* ... */
+    },
+  },
+});
 ```
 
-### Reviews Slice
+### Auth Slice
 
-Manages product reviews:
+Handles authentication state:
 
-```typescript
-interface ReviewsState {
-  reviews: Review[];
-  loading: boolean;
-  error: string | null;
-  userReview: Review | null;
-}
+```javascript
+const authSlice = createSlice({
+  name: "auth",
+  initialState: {
+    user: null,
+    token: null,
+    isAuthenticated: false,
+    loading: false,
+    error: null,
+  },
+  reducers: {
+    setUser: (state, action) => {
+      /* ... */
+    },
+    setToken: (state, action) => {
+      /* ... */
+    },
+    logout: (state) => {
+      /* ... */
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(login.pending, (state) => {
+        /* ... */
+      })
+      .addCase(login.fulfilled, (state, action) => {
+        /* ... */
+      })
+      .addCase(login.rejected, (state, action) => {
+        /* ... */
+      });
+  },
+});
 ```
 
-### Error Slice
+### UI Slice
 
-Handles global errors and notifications:
+Manages UI state:
 
-```typescript
-interface ErrorState {
-  toasts: Toast[];
-  globalError: string | null;
-}
+```javascript
+const uiSlice = createSlice({
+  name: "ui",
+  initialState: {
+    modals: {
+      cart: false,
+      login: false,
+    },
+    loading: {
+      products: false,
+      checkout: false,
+    },
+    notifications: [],
+  },
+  reducers: {
+    showModal: (state, action) => {
+      /* ... */
+    },
+    hideModal: (state, action) => {
+      /* ... */
+    },
+    setLoading: (state, action) => {
+      /* ... */
+    },
+    addNotification: (state, action) => {
+      /* ... */
+    },
+  },
+});
 ```
 
-## Usage
+### Filter Slice
 
-### Store Setup
+Manages product filtering state:
 
-```jsx
-import { Provider } from "react-redux";
-import store from "./redux/store";
+```javascript
+const filterSlice = createSlice({
+  name: "filter",
+  initialState: {
+    category: null,
+    priceRange: { min: 0, max: 1000 },
+    sortBy: "newest",
+    searchQuery: "",
+    page: 1,
+  },
+  reducers: {
+    setCategory: (state, action) => {
+      /* ... */
+    },
+    setPriceRange: (state, action) => {
+      /* ... */
+    },
+    setSortBy: (state, action) => {
+      /* ... */
+    },
+    setSearchQuery: (state, action) => {
+      /* ... */
+    },
+    setPage: (state, action) => {
+      /* ... */
+    },
+  },
+});
+```
 
-const App = () => {
+## Selectors
+
+Reusable selectors for accessing state:
+
+```javascript
+// Cart selectors
+export const selectCartItems = (state) => state.cart.items;
+export const selectCartTotal = (state) => state.cart.total;
+export const selectCartQuantity = (state) => state.cart.quantity;
+
+// Auth selectors
+export const selectUser = (state) => state.auth.user;
+export const selectIsAuthenticated = (state) => state.auth.isAuthenticated;
+export const selectAuthLoading = (state) => state.auth.loading;
+
+// UI selectors
+export const selectModalState = (modal) => (state) => state.ui.modals[modal];
+export const selectLoadingState = (key) => (state) => state.ui.loading[key];
+export const selectNotifications = (state) => state.ui.notifications;
+
+// Filter selectors
+export const selectActiveFilters = (state) => ({
+  category: state.filter.category,
+  priceRange: state.filter.priceRange,
+  sortBy: state.filter.sortBy,
+  searchQuery: state.filter.searchQuery,
+});
+```
+
+## Usage Guidelines
+
+### Using Redux State
+
+```javascript
+import { useSelector, useDispatch } from "react-redux";
+import { selectCartItems, selectCartTotal } from "../redux/selectors";
+import { addItem, removeItem } from "../redux/slices/cartSlice";
+
+const Cart = () => {
+  const dispatch = useDispatch();
+  const items = useSelector(selectCartItems);
+  const total = useSelector(selectCartTotal);
+
+  const handleAddItem = (item) => {
+    dispatch(addItem(item));
+  };
+
   return (
-    <Provider store={store}>
-      <YourApp />
-    </Provider>
+    <div>
+      {items.map((item) => (
+        <CartItem key={item.id} item={item} onAdd={() => handleAddItem(item)} />
+      ))}
+      <div>Total: ${total}</div>
+    </div>
   );
 };
 ```
 
-### Using in Components
-
-```jsx
-import { useSelector, useDispatch } from "react-redux";
-import { addToCart } from "./redux/slices/cartSlice";
-
-const Component = () => {
-  const dispatch = useDispatch();
-  const cart = useSelector((state) => state.cart);
-
-  const handleAddToCart = (item) => {
-    dispatch(addToCart(item));
-  };
-};
-```
-
-## Error Handling
-
-### Toast Notifications
+### Async Actions
 
 ```javascript
-// Show different types of notifications
-dispatch(showError("Error message"));
-dispatch(showSuccess("Success message"));
-dispatch(showWarning("Warning message"));
-dispatch(showInfo("Info message"));
-```
+import { createAsyncThunk } from "@reduxjs/toolkit";
 
-### Global Error
-
-```javascript
-// Set global error
-dispatch(setGlobalError("Something went wrong"));
-
-// Clear global error
-dispatch(clearGlobalError());
-```
-
-## Authentication Flow
-
-1. Initial Check:
-
-```javascript
-const initializeAuthState = () => {
-  const token = localStorage.getItem("auth-token");
-  if (token) {
-    store.dispatch(verifyToken());
+export const fetchProducts = createAsyncThunk(
+  "products/fetch",
+  async (params, { rejectWithValue }) => {
+    try {
+      const response = await api.get("/products", { params });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
   }
-};
-```
-
-2. Login/Signup:
-
-```javascript
-dispatch(loginUser(credentials));
-dispatch(registerUser(userData));
-```
-
-3. Logout:
-
-```javascript
-dispatch(logoutUser());
-```
-
-## Cart Management
-
-1. Add Item:
-
-```javascript
-dispatch(addToCart({ productId, quantity, size }));
-```
-
-2. Update Item:
-
-```javascript
-dispatch(updateCartItem({ itemId, quantity }));
-```
-
-3. Remove Item:
-
-```javascript
-dispatch(removeFromCart(itemId));
-```
-
-## Reviews Management
-
-1. Add Review:
-
-```javascript
-dispatch(addReview({ productId, rating, comment }));
-```
-
-2. Update Review:
-
-```javascript
-dispatch(updateReview({ reviewId, rating, comment }));
-```
-
-3. Delete Review:
-
-```javascript
-dispatch(deleteReview(reviewId));
+);
 ```
 
 ## Development Guidelines
 
-1. Action Creation:
+1. State Structure:
 
-   - Use createAsyncThunk for async operations
-   - Include proper error handling
-   - Maintain action type naming conventions
-
-2. State Updates:
-
-   - Use immer-powered reducers
    - Keep state normalized
-   - Include loading and error states
+   - Avoid redundant data
+   - Use proper types
+   - Handle loading states
+   - Manage errors
 
-3. Selectors:
+2. Performance:
 
-   - Create memoized selectors for derived data
-   - Use reselect for complex computations
-   - Keep components data-agnostic
+   - Memoize selectors
+   - Batch updates
+   - Optimize renders
+   - Handle side effects
+   - Use middleware
 
-4. Error Handling:
-   - Use the error slice for global errors
-   - Include proper error messages
-   - Handle loading states appropriately
+3. Error Handling:
+
+   - Handle async errors
+   - Validate actions
+   - Show error states
+   - Log errors
+   - Recover gracefully
+
+4. Testing:
+   - Test reducers
+   - Test selectors
+   - Mock async actions
+   - Test side effects
+   - Verify state changes
 
 ## Dependencies
 
