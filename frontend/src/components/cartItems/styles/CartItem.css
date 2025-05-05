@@ -221,7 +221,7 @@
 /* ----- RESPONSIVE BREAKPOINTS ----- */
 /* Ordered from largest to smallest to ensure proper cascade */
 
-/* Large devices (< 992px) */
+/* Large devices - Tablets (< 992px) */
 @media (max-width: 991.98px) {
   .cart-item-content {
     padding: var(--spacing-2);
@@ -232,7 +232,7 @@
   }
 }
 
-/* Medium devices (< 768px) */
+/* Medium devices - Landscape phones (< 768px) */
 @media (max-width: 767.98px) {
   .cart-item-content {
     padding: var(--spacing-2) var(--spacing-1);
@@ -252,8 +252,8 @@
   }
 }
 
-/* Small devices (< 576px) */
-@media (max-width: 576px) {
+/* Small devices - Portrait phones (< 576px) */
+@media (max-width: 575.98px) {
   .cart-item-row {
     flex-wrap: nowrap;
     gap: var(--spacing-1);
@@ -319,27 +319,24 @@
   }
 }
 
-/* Small screens (< 475px) - Mobile M and Mobile S */
+/* Mobile L (< 475px) */
 @media (max-width: 474.98px) {
   .cart-items-price-current {
-    font-size: var(--font-size-sm); /* Downgrade from base to sm */
+    font-size: var(--font-size-sm);
   }
 
   .cart-items-price-old {
-    font-size: var(--font-size-xs); /* Downgrade from sm to xs */
+    font-size: var(--font-size-xs);
   }
 
   .cart-items-price-new {
-    font-size: var(--font-size-sm); /* Downgrade from md to sm */
+    font-size: var(--font-size-sm);
   }
 
   .cart-item-discount-tag {
-    font-size: var(--font-size-xxs); /* Downgrade from xs to xxs */
+    font-size: var(--font-size-xxs);
   }
-}
 
-/* Extra small devices (< 450px) */
-@media (max-width: 450px) {
   .cart-item-content {
     padding: var(--spacing-1);
   }
@@ -364,16 +361,11 @@
   }
 
   .cart-item-remove-text {
-    font-size: 10px;
+    font-size: var(--font-size-xxs);
   }
 
   .cart-items-item-size {
-    font-size: 10px;
-  }
-
-  .cart-items-quantity-controls {
-    flex-direction: column;
-    gap: var(--spacing-1);
+    font-size: var(--font-size-xxs);
   }
 
   .cart-items-quantity-input {
@@ -398,8 +390,8 @@
   }
 }
 
-/* Tiny devices (< 350px) */
-@media (max-width: 350px) {
+/* Mobile S - iPhone SE (< 375px) */
+@media (max-width: 374.98px) {
   .cart-item-row {
     flex-direction: row;
     flex-wrap: nowrap;
@@ -427,7 +419,7 @@
   .cart-items-quantity-adjust-btn {
     width: 18px;
     height: 18px;
-    font-size: 12px;
+    font-size: var(--font-size-xs);
   }
 
   .cart-items-quantity-input {
@@ -442,11 +434,11 @@
   .cart-items-price-old,
   .cart-items-price-new,
   .cart-items-price-current {
-    font-size: 12px;
+    font-size: var(--font-size-xs);
   }
 
   .cart-item-discount-tag {
-    font-size: 9px;
+    font-size: var(--font-size-xxs);
     padding: 0 3px;
   }
 }
