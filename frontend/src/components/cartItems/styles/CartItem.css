@@ -297,7 +297,6 @@
 
   .cart-items-quantity-controls {
     display: flex;
-    flex-direction: column;
     align-items: center;
     gap: var(--spacing-1);
   }

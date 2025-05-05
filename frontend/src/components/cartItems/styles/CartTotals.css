@@ -91,14 +91,14 @@
   top: var(--spacing-5);
 }
 
-/* Medium devices (< 992px) */
+/* Large devices - Tablets (< 992px) */
 @media (max-width: 991.98px) {
   .cart-items-totals {
     position: static;
   }
 }
 
-/* Medium devices (< 768px) */
+/* Medium devices - Landscape phones (< 768px) */
 @media (max-width: 767.98px) {
   .cart-items-checkout-button {
     padding: var(--spacing-2);
@@ -110,8 +110,8 @@
   }
 }
 
-/* Small devices (≤576px) */
-@media (max-width: 576px) {
+/* Small devices - Portrait phones (< 576px) */
+@media (max-width: 575.98px) {
   .cart-items-totals {
     padding: var(--spacing-4);
   }

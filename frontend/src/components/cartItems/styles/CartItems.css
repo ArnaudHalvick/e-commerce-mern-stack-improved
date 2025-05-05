@@ -141,7 +141,7 @@
 /* ----- RESPONSIVE BREAKPOINTS ----- */
 /* Ordered from largest to smallest to ensure proper cascade */
 
-/* Medium devices (< 992px) */
+/* Large devices - Tablets (< 992px) */
 @media (max-width: 991.98px) {
   .cart-items-page {
     padding: 0 var(--spacing-3);
@@ -156,7 +156,7 @@
   }
 }
 
-/* Tablets and medium devices (< 768px) */
+/* Medium devices - Landscape phones (< 768px) */
 @media (max-width: 767.98px) {
   .cart-items-page {
     padding: 0 var(--spacing-2);
@@ -168,8 +168,8 @@
   }
 }
 
-/* Small devices (≤576px) */
-@media (max-width: 576px) {
+/* Small devices - Portrait phones (< 576px) */
+@media (max-width: 575.98px) {
   .cart-items-page {
     padding: 0 var(--spacing-1);
   }
@@ -192,8 +192,8 @@
   }
 }
 
-/* Very small screens (≤450px) */
-@media (max-width: 450px) {
+/* Mobile L (< 475px) */
+@media (max-width: 474.98px) {
   .cart-summary-checkout-btn {
     padding: var(--spacing-2);
     font-size: var(--font-size-sm);
