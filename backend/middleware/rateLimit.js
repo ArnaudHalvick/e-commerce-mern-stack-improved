@@ -44,7 +44,7 @@ const createRateLimiter = (maxRequests, windowMs, message) => {
  * Limits to 5 login attempts per 15 minutes window from the same IP
  */
 const loginLimiter = createRateLimiter(
-  10, // 5 attempts
+  5, // 5 attempts
   15 * 60 * 1000, // 15 minutes
   "Too many login attempts. Please try again after 15 minutes."
 );
@@ -54,7 +54,7 @@ const loginLimiter = createRateLimiter(
  * Limits to 3 account creations per hour from the same IP
  */
 const accountCreationLimiter = createRateLimiter(
-  20, // Increased from 3 to 20 accounts
+  5, // 5 accounts
   15 * 60 * 1000, // Reduced from 1 hour to 15 minutes
   "Too many accounts created. Please try again after 15 minutes."
 );
@@ -74,7 +74,7 @@ const passwordResetLimiter = createRateLimiter(
  * Limits to 100 requests per 15 minutes window from the same IP
  */
 const apiLimiter = createRateLimiter(
-  500, // 500 requests
+  50, // 50 requests
   15 * 60 * 1000, // 15 minutes
   "Too many requests. Please try again later."
 );
