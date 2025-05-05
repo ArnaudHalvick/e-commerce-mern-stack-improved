@@ -202,15 +202,15 @@ const CartItem = ({
                   )}
                   %
                 </div>
-                <div className="product-display-right-price-old">
+                <div className="cart-items-price-old">
                   ${item.old_price.toFixed(2)}
                 </div>
-                <div className="product-display-right-price-new">
+                <div className="cart-items-price-new">
                   ${item.new_price.toFixed(2)}
                 </div>
               </>
             ) : (
-              <div className="product-display-right-price-current">
+              <div className="cart-items-price-current">
                 ${item.old_price.toFixed(2)}
               </div>
             )}

@@ -186,6 +186,7 @@
   color: var(--color-text-light);
   text-decoration: line-through;
   font-size: var(--font-size-sm);
+  margin-bottom: var(--spacing-1);
 }
 
 .cart-items-price-new {
@@ -195,26 +196,6 @@
 }
 
 .cart-items-price-current {
-  color: var(--color-text-primary);
-  font-weight: var(--font-weight-semibold);
-  font-size: var(--font-size-md);
-}
-
-/* Product display price styles as requested */
-.product-display-right-price-old {
-  color: var(--color-text-light);
-  text-decoration: line-through;
-  font-size: var(--font-size-sm);
-  margin-bottom: var(--spacing-1);
-}
-
-.product-display-right-price-new {
-  color: var(--color-primary);
-  font-weight: var(--font-weight-semibold);
-  font-size: var(--font-size-md);
-}
-
-.product-display-right-price-current {
   color: var(--color-text-primary);
   font-weight: var(--font-weight-semibold);
   font-size: var(--font-size-md);
@@ -266,7 +247,7 @@
     display: none;
   }
 
-  .product-display-right-price-current {
+  .cart-items-price-current {
     font-size: var(--font-size-xl);
   }
 }
@@ -305,12 +286,12 @@
     text-overflow: ellipsis;
   }
 
-  .product-display-right-price-current {
+  .cart-items-price-current {
     font-size: var(--font-size-base);
   }
 
-  .product-display-right-price-old,
-  .product-display-right-price-new {
+  .cart-items-price-old,
+  .cart-items-price-new {
     font-size: var(--font-size-sm);
   }
 
@@ -340,15 +321,15 @@
 
 /* Small screens (< 475px) - Mobile M and Mobile S */
 @media (max-width: 474.98px) {
-  .product-display-right-price-current {
+  .cart-items-price-current {
     font-size: var(--font-size-sm); /* Downgrade from base to sm */
   }
 
-  .product-display-right-price-old {
+  .cart-items-price-old {
     font-size: var(--font-size-xs); /* Downgrade from sm to xs */
   }
 
-  .product-display-right-price-new {
+  .cart-items-price-new {
     font-size: var(--font-size-sm); /* Downgrade from md to sm */
   }
 
@@ -458,9 +439,9 @@
     min-width: 50px;
   }
 
-  .product-display-right-price-old,
-  .product-display-right-price-new,
-  .product-display-right-price-current {
+  .cart-items-price-old,
+  .cart-items-price-new,
+  .cart-items-price-current {
     font-size: 12px;
   }
 
