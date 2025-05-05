@@ -1,40 +1,6 @@
 /* ============================================
    Profile Container & Content Layout
 ============================================ */
-.profile-page-container {
-  margin: var(--spacing-8) auto;
-  max-width: var(--container-xl);
-  padding: 0 var(--spacing-6);
-}
-
-/* Responsive breakpoints for profile-page-container */
-@media screen and (max-width: 1199.98px) {
-  .profile-page-container {
-    margin: var(--spacing-7) auto;
-    padding: 0 var(--spacing-5);
-  }
-}
-
-@media screen and (max-width: 991.98px) {
-  .profile-page-container {
-    margin: var(--spacing-6) auto;
-    padding: 0 var(--spacing-5);
-  }
-}
-
-@media screen and (max-width: 767.98px) {
-  .profile-page-container {
-    margin: var(--spacing-5) auto;
-    padding: 0 var(--spacing-4);
-  }
-}
-
-@media screen and (max-width: 575.98px) {
-  .profile-page-container {
-    margin: var(--spacing-4) auto;
-    padding: 0 var(--spacing-3);
-  }
-}
 
 /* Profile Title - Consistent with product-listing-title */
 .profile-title {

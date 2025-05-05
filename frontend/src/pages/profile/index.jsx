@@ -96,67 +96,68 @@ const Profile = () => {
   }
 
   return (
-    <div className="profile-page-container">
+    <>
       <Breadcrumb routes={breadcrumbRoutes} />
+      <div className="profile-page-container">
+        <h1 className="profile-title">Profile</h1>
 
-      <h1 className="profile-title">Profile</h1>
+        <div className="profile-container">
+          <div className="profile-sections">
+            {/* Email Manager */}
+            <EmailManager
+              user={user}
+              handleResendVerification={handleResendVerification}
+              isVerificationSending={loadingStates?.sendingVerification}
+            />
 
-      <div className="profile-container">
-        <div className="profile-sections">
-          {/* Email Manager */}
-          <EmailManager
-            user={user}
-            handleResendVerification={handleResendVerification}
-            isVerificationSending={loadingStates?.sendingVerification}
-          />
+            {/* Email Verification Status */}
+            <EmailVerification
+              user={user}
+              verificationRequested={verificationRequested}
+            />
 
-          {/* Email Verification Status */}
-          <EmailVerification
-            user={user}
-            verificationRequested={verificationRequested}
-          />
+            {/* Basic Information Section */}
+            <BasicInfoSection
+              formData={formData}
+              fieldErrors={fieldErrors}
+              handleInputChange={handleInputChange}
+              handleSubmit={handleSubmit}
+              isSubmitting={isSubmitting || loadingStates?.updatingProfile}
+            />
 
-          {/* Basic Information Section */}
-          <BasicInfoSection
-            formData={formData}
-            fieldErrors={fieldErrors}
-            handleInputChange={handleInputChange}
-            handleSubmit={handleSubmit}
-            isSubmitting={isSubmitting || loadingStates?.updatingProfile}
-          />
+            {/* Shipping Address Section */}
+            <ShippingAddressSection
+              formData={formData}
+              fieldErrors={fieldErrors}
+              handleInputChange={handleInputChange}
+              handleSubmit={handleSubmit}
+              isSubmitting={isSubmitting || loadingStates?.updatingProfile}
+            />
 
-          {/* Shipping Address Section */}
-          <ShippingAddressSection
-            formData={formData}
-            fieldErrors={fieldErrors}
-            handleInputChange={handleInputChange}
-            handleSubmit={handleSubmit}
-            isSubmitting={isSubmitting || loadingStates?.updatingProfile}
-          />
+            {/* Password Manager */}
+            <PasswordManager
+              passwordData={passwordData}
+              passwordErrors={passwordErrors}
+              isChangingPassword={isChangingPassword}
+              handlePasswordInputChange={handlePasswordInputChange}
+              handlePasswordSubmit={handlePasswordSubmit}
+              togglePasswordChange={togglePasswordChange}
+              isSubmittingPassword={
+                isSubmittingPassword || loadingStates?.changePassword
+              }
+            />
 
-          {/* Password Manager */}
-          <PasswordManager
-            passwordData={passwordData}
-            passwordErrors={passwordErrors}
-            isChangingPassword={isChangingPassword}
-            handlePasswordInputChange={handlePasswordInputChange}
-            handlePasswordSubmit={handlePasswordSubmit}
-            togglePasswordChange={togglePasswordChange}
-            isSubmittingPassword={
-              isSubmittingPassword || loadingStates?.changePassword
-            }
-          />
-
-          {/* Account Manager (Disable Account) */}
-          <AccountManager
-            handleDisableAccount={handleDisableAccount}
-            isDisablingAccount={
-              isDisablingAccount || loadingStates?.disableAccount
-            }
-          />
+            {/* Account Manager (Disable Account) */}
+            <AccountManager
+              handleDisableAccount={handleDisableAccount}
+              isDisablingAccount={
+                isDisablingAccount || loadingStates?.disableAccount
+              }
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
