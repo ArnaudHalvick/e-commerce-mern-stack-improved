@@ -35,11 +35,13 @@ const Item = (props) => {
 
   return (
     <div className="product-item">
-      {hasDiscount && (
-        <div className="product-item-discount-tag">-{discountPercentage}%</div>
-      )}
-      <Link to={productUrl} data-discover="true">
+      <Link to={productUrl} data-discover="true" className="product-image-link">
         <img className="product-item-image" src={imageUrl} alt={props.name} />
+        {hasDiscount && (
+          <div className="product-item-discount-tag">
+            -{discountPercentage}%
+          </div>
+        )}
       </Link>
       <p className="product-item-name">{props.name}</p>
       <div className="product-item-prices">
