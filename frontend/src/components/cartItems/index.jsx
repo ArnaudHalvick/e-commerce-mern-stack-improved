@@ -1,5 +1,6 @@
 // External Libraries
 import { useAuth } from "../../hooks/state";
+import { useNavigate } from "react-router-dom";
 
 // Internal Components
 import {
@@ -21,6 +22,7 @@ import "../errorHandling/styles/LoadingIndicator.css";
  * Cart display component showing all items in cart and totals
  */
 const CartItems = () => {
+  const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth();
   const {
     items,
@@ -96,6 +98,10 @@ const CartItems = () => {
     );
   }
 
+  const handleCheckout = () => {
+    navigate("/checkout");
+  };
+
   return (
     <div className="cart-items-page">
       {/* Email Verification Banner - Now outside the container */}
@@ -141,7 +147,11 @@ const CartItems = () => {
               <span>Total</span>
               <span>${localTotalPrice.toFixed(2)}</span>
             </div>
-            <button className="cart-summary-checkout-btn">
+            <button
+              className="cart-summary-checkout-btn"
+              onClick={handleCheckout}
+              aria-label="Proceed to checkout"
+            >
               PROCEED TO CHECKOUT
             </button>
           </div>
