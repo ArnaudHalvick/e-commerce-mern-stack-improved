@@ -11,6 +11,7 @@ This document provides a comprehensive guide to the error handling system implem
 5. [Environment-Specific Behavior](#environment-specific-behavior)
 6. [Logging Configuration](#logging-configuration)
 7. [Standardized Error Creation](#standardized-error-creation)
+8. [Implementation Guidelines](#implementation-guidelines)
 
 ## Core Components
 
@@ -337,3 +338,127 @@ Benefits of this approach:
 4. **Reduced boilerplate code** by combining error creation and logging
 
 When migrating existing error handling code, gradually replace direct `AppError` instantiation with the `createAndLogError` method to improve logging consistency and provide better debugging information.
+
+## Implementation Guidelines
+
+### Step-by-Step Implementation for New Controllers
+
+1. **Import Required Utilities**
+
+```javascript
+const catchAsync = require("../utils/common/catchAsync");
+const AppError = require("../utils/errors/AppError");
+```
+
+2. **Replace try/catch Blocks with catchAsync**
+
+```javascript
+// Before
+const getResource = async (req, res) => {
+  try {
+    const resource = await Resource.findById(req.params.id);
+    if (!resource) {
+      return res.status(404).json({
+        success: false,
+        message: "Resource not found",
+      });
+    }
+    res.status(200).json({
+      success: true,
+      data: resource,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
+    });
+  }
+};
+
+// After
+const getResource = catchAsync(async (req, res, next) => {
+  const resource = await Resource.findById(req.params.id);
+
+  if (!resource) {
+    return next(new AppError("Resource not found", 404));
+  }
+
+  res.status(200).json({
+    success: true,
+    data: resource,
+  });
+});
+```
+
+### Common Implementation Patterns
+
+1. **MongoDB ID Validation**
+
+```javascript
+const mongoose = require("mongoose");
+
+const getResource = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return next(new AppError("Invalid ID format", 400));
+  }
+
+  // ... rest of the code
+});
+```
+
+2. **Authorization Check Pattern**
+
+```javascript
+// Check if user is owner of resource
+if (resource.user.toString() !== req.user.id) {
+  return next(new AppError("Not authorized to access this resource", 403));
+}
+```
+
+3. **Duplicate Entry Handling**
+
+```javascript
+try {
+  await Resource.create(data);
+} catch (error) {
+  if (error.code === 11000) {
+    return next(new AppError("Resource with this name already exists", 400));
+  }
+  throw error;
+}
+```
+
+### Error Handling in Services
+
+For services or utilities that don't have access to Express `next`:
+
+```javascript
+const emailService = {
+  sendWelcomeEmail: async (user) => {
+    try {
+      // Send email logic
+    } catch (error) {
+      throw new AppError("Failed to send welcome email", 500);
+    }
+  },
+};
+
+// In the controller
+const registerUser = catchAsync(async (req, res, next) => {
+  const user = await User.create(req.body);
+
+  try {
+    await emailService.sendWelcomeEmail(user);
+  } catch (error) {
+    return next(error);
+  }
+
+  res.status(201).json({
+    success: true,
+    data: user,
+  });
+});
+```
