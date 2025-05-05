@@ -376,7 +376,6 @@
   .cart-item-meta {
     gap: var(--spacing-1);
     flex-direction: row;
-    align-items: center;
   }
 
   .cart-item-remove-btn {
@@ -441,7 +440,6 @@
   }
 
   .cart-item-meta {
-    align-items: baseline;
     flex-wrap: nowrap;
   }
 
