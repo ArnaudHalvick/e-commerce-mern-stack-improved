@@ -52,7 +52,7 @@ const AccountManager = ({ handleDisableAccount, isDisablingAccount }) => {
         />
       </div>
       <div className="profile-account-warning">
-        <p>
+        <p className="profile-account-warning-text">
           <strong>Warning:</strong> Disabling your account will prevent you from
           accessing your order history and saved information. This action can be
           reversed by contacting customer support.

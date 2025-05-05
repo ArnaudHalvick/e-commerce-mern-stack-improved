@@ -7,6 +7,25 @@
   gap: var(--spacing-4);
 }
 
+.profile-account-warning {
+  margin-top: var(--spacing-4);
+  padding: var(--spacing-4);
+  background-color: rgba(220, 53, 69, 0.1);
+  border-left: var(--border-width-thick) solid var(--color-danger);
+  border-radius: var(--border-radius-md);
+}
+
+.profile-account-warning-text {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-primary);
+}
+
+.profile-account-warning-text strong {
+  color: var(--color-danger);
+  font-weight: var(--font-weight-semibold);
+}
+
 /* Medium devices (< 768px) */
 @media (max-width: 767.98px) {
   .profile-account-actions {
@@ -14,9 +33,12 @@
   }
 
   .profile-account-warning {
-    font-size: var(--font-size-xs);
     padding: var(--spacing-3);
     margin-top: var(--spacing-3);
+  }
+
+  .profile-account-warning-text {
+    font-size: var(--font-size-xs);
   }
 }
 
@@ -28,18 +50,13 @@
   }
 
   .profile-account-warning {
-    font-size: var(--font-size-xxs);
     padding: var(--spacing-2);
     margin-top: var(--spacing-2);
     border-left-width: var(--border-width-medium);
   }
-}
 
-.profile-account-warning {
-  margin-top: var(--spacing-4);
-  padding: var(--spacing-4);
-  background-color: rgba(220, 53, 69, 0.1);
-  border-left: var(--border-width-thick) solid var(--color-danger);
-  border-radius: var(--border-radius-md);
-  font-size: var(--font-size-sm);
+  .profile-account-warning-text {
+    font-size: var(--font-size-xxs);
+    line-height: var(--line-height-snug);
+  }
 }
