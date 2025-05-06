@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { createSelector } from "@reduxjs/toolkit";
 import useErrorRedux from "../../hooks/useErrorRedux";
 
 // Redux actions
@@ -24,12 +25,39 @@ import Spinner from "../../components/ui/spinner";
 // CSS
 import "./styles/index.css";
 
+// Memoized selectors
+const selectUserData = createSelector(
+  (state) => state.user.user,
+  (state) => state.user.loading,
+  (state) => state.user.loadingStates.fetchingProfile,
+  (state) => state.user.isAuthenticated,
+  (state) => state.user.verificationRequested,
+  (state) => state.user.passwordChanged,
+  (state) => state.user.loadingStates,
+  (
+    user,
+    loading,
+    fetchingProfile,
+    isAuthenticated,
+    verificationRequested,
+    passwordChanged,
+    loadingStates
+  ) => ({
+    user,
+    loading: loading || fetchingProfile,
+    isAuthenticated,
+    verificationRequested,
+    passwordChanged,
+    loadingStates,
+  })
+);
+
 const Profile = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { showError, showSuccess } = useErrorRedux();
 
-  // Simplified selector with just what we need
+  // Use the memoized selector
   const {
     user,
     loading,
@@ -37,14 +65,7 @@ const Profile = () => {
     verificationRequested,
     passwordChanged,
     loadingStates,
-  } = useSelector((state) => ({
-    user: state.user.user,
-    loading: state.user.loading || state.user.loadingStates.fetchingProfile,
-    isAuthenticated: state.user.isAuthenticated,
-    verificationRequested: state.user.verificationRequested,
-    passwordChanged: state.user.passwordChanged,
-    loadingStates: state.user.loadingStates,
-  }));
+  } = useSelector(selectUserData);
 
   // Fetch the full profile when the component mounts
   useEffect(() => {
