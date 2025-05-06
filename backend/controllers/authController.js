@@ -14,6 +14,7 @@ const {
   handleFailedLogin,
   resetLoginAttempts,
 } = require("../services/authService");
+const { resetRateLimiterForIP } = require("../middleware/rateLimit");
 
 /**
  * User registration
@@ -166,6 +167,17 @@ const logoutUser = catchAsync(async (req, res, next) => {
       { refreshToken: "" },
       { runValidators: false }
     );
+  }
+
+  // Reset login rate limiter for this IP address
+  const userIP = req.ip;
+  const resetResult = await resetRateLimiterForIP("loginLimiter", userIP);
+
+  // Log the reset result for monitoring
+  if (resetResult) {
+    logger.info(`Rate limiter reset for user IP ${userIP} on logout`);
+  } else {
+    logger.warn(`Failed to reset rate limiter for user IP ${userIP} on logout`);
   }
 
   // Clear cookie

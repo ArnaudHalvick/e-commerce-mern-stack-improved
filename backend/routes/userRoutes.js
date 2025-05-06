@@ -14,6 +14,7 @@ const {
   loginLimiter,
   accountCreationLimiter,
   passwordResetLimiter,
+  resetRateLimiterForIP,
 } = require("../middleware/rateLimit");
 
 // Public routes - Authentication
@@ -71,5 +72,44 @@ router.put(
   isAuthenticated,
   profileController.disableAccount
 );
+
+// Test route for rate limiter (development only)
+if (process.env.NODE_ENV === "development") {
+  router.get("/test-rate-limit", loginLimiter, (req, res) => {
+    res.status(200).json({
+      success: true,
+      message: "Test rate limit endpoint",
+      rateLimit: req.rateLimit,
+    });
+  });
+
+  router.post(
+    "/reset-rate-limit/:limiterId",
+    isAuthenticated,
+    async (req, res) => {
+      try {
+        const { limiterId } = req.params;
+        const ip = req.ip;
+
+        const resetResult = await resetRateLimiterForIP(limiterId, ip);
+
+        res.status(200).json({
+          success: true,
+          message: resetResult
+            ? `Rate limiter ${limiterId} reset successfully`
+            : `Failed to reset rate limiter ${limiterId}`,
+          ip,
+          resetResult,
+        });
+      } catch (error) {
+        res.status(500).json({
+          success: false,
+          message: "Error resetting rate limiter",
+          error: error.message,
+        });
+      }
+    }
+  );
+}
 
 module.exports = router;
