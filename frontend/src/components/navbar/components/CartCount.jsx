@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useCartCount } from "../hooks";
+import { useAuth } from "../../../hooks/state/";
 
 /**
  * CartCount Component
@@ -10,6 +11,11 @@ import { useCartCount } from "../hooks";
  */
 const CartCount = ({ inTransition }) => {
   const { totalItems } = useCartCount();
+  const { isAuthenticated } = useAuth();
+
+  if (!isAuthenticated) {
+    return null;
+  }
 
   return (
     <Link
