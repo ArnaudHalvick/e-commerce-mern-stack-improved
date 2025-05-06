@@ -9,19 +9,19 @@
   border-radius: 2rem;
 }
 
-.shop-left {
+.shop-section-left {
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
-.shop-title {
+.shop-title-text {
   color: #171717;
   font-size: 5em;
   font-weight: 600;
 }
 
-.shop-subtitle {
+.shop-subtitle-text {
   color: #171717;
   font-size: 1.4em;
   font-weight: 600;
@@ -40,13 +40,13 @@
   cursor: pointer;
 }
 
-.shop-right {
+.shop-section-right {
   display: flex;
   align-items: center;
   justify-content: flex-end;
 }
 
-.shop-image {
+.shop-product-image {
   max-width: 100%;
   height: auto;
 }
@@ -57,7 +57,7 @@
     min-height: 20vh;
   }
 
-  .shop-title {
+  .shop-title-text {
     font-size: 4em;
   }
 
@@ -69,11 +69,11 @@
 }
 
 @media (max-width: 991.98px) {
-  .shop-title {
+  .shop-title-text {
     font-size: 3em;
   }
 
-  .shop-subtitle {
+  .shop-subtitle-text {
     font-size: 1.2em;
   }
 
@@ -85,36 +85,36 @@
 }
 
 @media (max-width: 767.98px) {
-  .shop {
+  .shop-container {
     flex-direction: column;
     padding: 2rem;
     width: 85%;
   }
 
-  .shop-left {
+  .shop-section-left {
     align-items: center;
     text-align: center;
   }
 
-  .shop-title {
+  .shop-title-text {
     font-size: 2.5em;
   }
 
-  .shop-right {
+  .shop-section-right {
     justify-content: center;
   }
 }
 
 @media (max-width: 575.98px) {
-  .shop {
+  .shop-container {
     width: 90%;
   }
 
-  .shop-title {
+  .shop-title-text {
     font-size: 2em;
   }
 
-  .shop-subtitle {
+  .shop-subtitle-text {
     font-size: 1em;
   }
 

@@ -8,21 +8,21 @@ const Hero = () => {
   return (
     <div className="hero-container">
       <div className="hero-section-left">
-        <h2>NEW ARRIVALS ONLY</h2>
+        <h2 className="hero-heading">NEW ARRIVALS ONLY</h2>
         <div>
           <div className="hero-icon-container">
-            <p>NEW</p>
+            <p className="hero-text">NEW</p>
           </div>
-          <p>collection</p>
-          <p>for everyone</p>
+          <p className="hero-text">collection</p>
+          <p className="hero-text">for everyone</p>
         </div>
         <Link to="/shop" className="hero-button-latest">
           <div>Latest Collection</div>
-          <img src={arrow_icon} alt="" />
+          <img src={arrow_icon} alt="Arrow" />
         </Link>
       </div>
       <div className="hero-section-right">
-        <img src={hero_image} alt="" />
+        <img src={hero_image} alt="Hero" className="hero-image" />
       </div>
     </div>
   );
