@@ -2,7 +2,8 @@
 .hero-container {
   display: flex;
   background: var(--gradient-hero);
-  min-height: 80vh;
+  padding-top: var(--spacing-4);
+  padding-bottom: var(--spacing-4);
   height: auto;
   flex-direction: row;
 }
@@ -114,7 +115,6 @@
 @media (max-width: 767.98px) {
   .hero-container {
     flex-direction: column;
-    padding: var(--spacing-8) 0;
   }
 
   .hero-section-left {
@@ -131,13 +131,9 @@
     margin-top: var(--spacing-3);
   }
 
-  .hero-section-right {
-    margin-top: var(--spacing-8);
-  }
-
   .hero-section-right img {
     max-width: 80%;
-    height: auto;
+    height: 30vh;
   }
 }
 
