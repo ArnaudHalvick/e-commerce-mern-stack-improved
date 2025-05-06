@@ -402,6 +402,7 @@
 
   .cart-item-details {
     margin-left: var(--spacing-1);
+    max-width: 200px;
     gap: var(--spacing-2);
   }
 
@@ -448,6 +449,7 @@
     max-width: 80%;
     text-wrap: nowrap;
     margin-bottom: var(--spacing-1);
+    margin-top: var(--spacing-2);
   }
 
   .cart-item-price {
