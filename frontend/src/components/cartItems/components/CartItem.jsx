@@ -188,7 +188,7 @@ const CartItem = ({
                   +
                 </button>
               </div>
-            </div>{" "}
+            </div>
           </div>
 
           {/* Quantity controls for large screens */}

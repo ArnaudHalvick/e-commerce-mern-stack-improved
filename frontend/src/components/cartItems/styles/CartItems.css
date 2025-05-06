@@ -29,8 +29,8 @@
 .cart-items-section {
   width: 100%;
   background-color: white;
-  border-radius: var(--border-radius-lg);
   overflow: hidden;
+  border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-sm);
 }
 
