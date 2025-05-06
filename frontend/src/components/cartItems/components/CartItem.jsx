@@ -152,13 +152,49 @@ const CartItem = ({
                   Remove all
                 </button>
               </div>
-            </div>
+
+              {/* Quantity controls for small screens */}
+              <div className="cart-items-quantity-controls-sm-screens">
+                <button
+                  className="cart-items-quantity-adjust-btn cart-items-quantity-decrease-sm"
+                  onClick={handleRemoveItemClick}
+                  onKeyDown={(e) => handleKeyDown(e, handleRemoveItemClick)}
+                  aria-label="Decrease quantity"
+                  tabIndex="0"
+                  disabled={localQuantity <= 1 || isPending}
+                >
+                  -
+                </button>
+                <input
+                  type="number"
+                  className="cart-items-quantity-input cart-items-quantity-input-sm"
+                  value={localQuantity}
+                  onChange={(event) =>
+                    handleLocalQuantityChange(event.target.value)
+                  }
+                  onBlur={handleBlur}
+                  min="1"
+                  aria-label={`Quantity for ${item.name}, size ${item.size}`}
+                  disabled={isPending}
+                />
+                <button
+                  className="cart-items-quantity-adjust-btn cart-items-quantity-increase-sm"
+                  onClick={handleAddItemClick}
+                  onKeyDown={(e) => handleKeyDown(e, handleAddItemClick)}
+                  aria-label="Increase quantity"
+                  tabIndex="0"
+                  disabled={isPending}
+                >
+                  +
+                </button>
+              </div>
+            </div>{" "}
           </div>
 
-          {/* Quantity controls */}
-          <div className="cart-items-quantity-controls">
+          {/* Quantity controls for large screens */}
+          <div className="cart-items-quantity-controls-lg-screens">
             <button
-              className="cart-items-quantity-adjust-btn"
+              className="cart-items-quantity-adjust-btn cart-items-quantity-decrease-lg"
               onClick={handleRemoveItemClick}
               onKeyDown={(e) => handleKeyDown(e, handleRemoveItemClick)}
               aria-label="Decrease quantity"
@@ -169,7 +205,7 @@ const CartItem = ({
             </button>
             <input
               type="number"
-              className="cart-items-quantity-input"
+              className="cart-items-quantity-input cart-items-quantity-input-lg"
               value={localQuantity}
               onChange={(event) =>
                 handleLocalQuantityChange(event.target.value)
@@ -180,7 +216,7 @@ const CartItem = ({
               disabled={isPending}
             />
             <button
-              className="cart-items-quantity-adjust-btn"
+              className="cart-items-quantity-adjust-btn cart-items-quantity-increase-lg"
               onClick={handleAddItemClick}
               onKeyDown={(e) => handleKeyDown(e, handleAddItemClick)}
               aria-label="Increase quantity"
