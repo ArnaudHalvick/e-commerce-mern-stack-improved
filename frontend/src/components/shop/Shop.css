@@ -123,3 +123,44 @@
     height: 2.5rem;
   }
 }
+
+@media (max-width: 474.98px) {
+  .shop-container {
+    padding: 1.5rem;
+  }
+
+  .shop-title-text {
+    font-size: 1.5em;
+  }
+
+  .shop-subtitle-text {
+    font-size: 0.8em;
+  }
+
+  .shop-cta-button {
+    width: 10rem;
+    height: 2rem;
+    font-size: 0.8em;
+  }
+}
+
+@media (max-width: 374.98px) {
+  .shop-container {
+    padding: 1rem;
+  }
+
+  .shop-title-text {
+    font-size: 1.2em;
+  }
+
+  .shop-subtitle-text {
+    font-size: 0.7em;
+  }
+
+  .shop-cta-button {
+    width: 8rem;
+    height: 1.8rem;
+    font-size: 0.7em;
+    margin-top: 1em;
+  }
+}
