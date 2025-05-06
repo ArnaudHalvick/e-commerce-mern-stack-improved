@@ -252,10 +252,6 @@
   .cart-item-actions-desktop {
     display: none;
   }
-
-  .cart-items-price-current {
-    font-size: var(--font-size-xl);
-  }
 }
 
 /* Small devices - Portrait phones (< 576px) */
