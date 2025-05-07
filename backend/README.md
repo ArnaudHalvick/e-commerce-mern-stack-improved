@@ -1,6 +1,8 @@
 # E-Commerce Platform - Backend API
 
-A robust, secure, and production-ready RESTful API powering a modern e-commerce platform. This backend implementation demonstrates comprehensive professional development practices including clean architecture, advanced authentication, intelligent error handling, and enterprise-grade security.
+A robust, secure, and production-ready RESTful API powering a modern e-commerce platform. This backend implementation demonstrates
+comprehensive professional development practices including clean architecture, advanced authentication, intelligent error handling,
+and security.
 
 ![Node.js](https://img.shields.io/badge/Node.js-v18.x-green)
 ![Express](https://img.shields.io/badge/Express-v4.21.x-blue)
