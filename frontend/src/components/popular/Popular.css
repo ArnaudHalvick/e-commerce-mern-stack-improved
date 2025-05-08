@@ -28,6 +28,7 @@
   gap: var(--spacing-8);
   flex-wrap: wrap;
   justify-content: center;
+  width: 100%;
 }
 
 .popular-loading,
@@ -43,6 +44,27 @@
 }
 
 /* Media Queries */
+@media (min-width: 1536px) {
+  .popular-items {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1535.98px) {
+  .popular-items {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .popular-title {
+    font-size: var(--font-size-4xl);
+  }
+}
+
 @media (max-width: 991.98px) {
   .popular-title {
     font-size: var(--font-size-4xl);
