@@ -18,8 +18,9 @@
 
 /* Container for the entire cart page */
 .cart-items-container {
-  display: grid;
-  grid-template-columns: 1fr 320px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
   gap: var(--spacing-4);
   width: 100%;
   margin: var(--spacing-4) 0;
@@ -27,9 +28,9 @@
 
 /* Cart Items Section */
 .cart-items-section {
+  flex: 1;
   width: 100%;
   background-color: white;
-  overflow: hidden;
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-sm);
 }
@@ -74,6 +75,7 @@
 
 /* Cart Summary Section - Mercadolibre style */
 .cart-summary-section {
+  flex-shrink: 0;
   background-color: white;
   border-radius: var(--border-radius-lg);
   overflow: hidden;
@@ -141,18 +143,16 @@
 /* ----- RESPONSIVE BREAKPOINTS ----- */
 /* Ordered from largest to smallest to ensure proper cascade */
 
+@media (max-width: 1199.98px) {
+  .cart-items-container {
+    justify-content: center;
+  }
+}
+
 /* Large devices - Tablets (< 992px) */
 @media (max-width: 991.98px) {
   .cart-items-page {
     padding: 0 var(--spacing-3);
-  }
-
-  .cart-items-container {
-    grid-template-columns: 1fr;
-  }
-
-  .cart-summary-section {
-    width: 100%;
   }
 }
 
@@ -163,7 +163,6 @@
   }
 
   .cart-items-container {
-    gap: var(--spacing-3);
     margin: var(--spacing-3) 0;
   }
 }
@@ -175,7 +174,6 @@
   }
 
   .cart-items-container {
-    gap: var(--spacing-2);
     margin: var(--spacing-2) 0;
   }
 
