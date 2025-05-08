@@ -75,14 +75,20 @@ const useAuthForm = (formType = "login") => {
           break;
         }
         case "password": {
-          // Use the appropriate schema based on form type
-          const passwordValidationSchema =
-            formType === "login"
-              ? loginFormSchema.password
-              : registrationFormSchema.password;
-
-          const result = validatePassword(value, passwordValidationSchema);
-          if (!result.isValid) errorMessage = result.message;
+          // For login form, only check if password is provided
+          if (formType === "login") {
+            // Simple check if password exists
+            if (!value || value.trim() === "") {
+              errorMessage = "Password is required";
+            }
+          } else {
+            // For registration, apply full password validation
+            const result = validatePassword(
+              value,
+              registrationFormSchema.password
+            );
+            if (!result.isValid) errorMessage = result.message;
+          }
           break;
         }
         case "confirmPassword": {
@@ -171,7 +177,20 @@ const useAuthForm = (formType = "login") => {
       e.preventDefault();
       clearFormError();
 
-      if (!validateFormData()) return;
+      // For login, only validate that email and password are not empty
+      if (formType === "login") {
+        if (!formData.email || !formData.email.trim()) {
+          setFieldErrors({ email: "Email is required" });
+          return;
+        }
+        if (!formData.password || !formData.password.trim()) {
+          setFieldErrors({ password: "Password is required" });
+          return;
+        }
+      } else {
+        // For registration, do full validation
+        if (!validateFormData()) return;
+      }
 
       setLoading(true);
 

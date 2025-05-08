@@ -255,7 +255,7 @@ export const validateForm = (formData, rules = {}) => {
     if (!formData.password || formData.password.trim() === "") {
       errors.password = "Password is required";
     } else {
-      const result = validatePassword(formData.password);
+      const result = validatePassword(formData.password, rules.password);
       if (!result.isValid) errors.password = result.message;
     }
   } else if (rules.newPassword && formData.newPassword !== undefined) {
