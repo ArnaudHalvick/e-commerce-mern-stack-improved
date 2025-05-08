@@ -24,13 +24,13 @@ echo -e "${YELLOW}Checking environment variables...${NC}"
 # Source .env to get variables
 source /root/e-commerce-mern/.env
 
-# Check Resend API Key
-if [ -z "$RESEND_API_KEY" ]; then
-    echo -e "${RED}Error: RESEND_API_KEY is not set in .env file!${NC}"
+# Check MailerSend API Key
+if [ -z "$MAILERSEND_API_KEY" ]; then
+    echo -e "${RED}Error: MAILERSEND_API_KEY is not set in .env file!${NC}"
 else
-    echo -e "${GREEN}✓ RESEND_API_KEY is set.${NC}"
+    echo -e "${GREEN}✓ MAILERSEND_API_KEY is set.${NC}"
     # Only show first 5 characters for security
-    KEY_PREFIX="${RESEND_API_KEY:0:5}..."
+    KEY_PREFIX="${MAILERSEND_API_KEY:0:5}..."
     echo -e "  Key prefix: ${KEY_PREFIX}"
 fi
 
@@ -43,31 +43,38 @@ fi
 
 # Check docker-compose environment
 echo -e "\n${YELLOW}Checking Docker container environment...${NC}"
-docker compose exec api env | grep -i "RESEND\|EMAIL"
+docker compose exec api env | grep -i "MAILERSEND\|EMAIL"
 
-# Test connectivity to Resend API
-echo -e "\n${YELLOW}Testing connectivity to Resend API...${NC}"
-echo -e "Attempting to contact api.resend.com..."
-HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}\n" https://api.resend.com)
+# Test connectivity to MailerSend API
+echo -e "\n${YELLOW}Testing connectivity to MailerSend API...${NC}"
+echo -e "Attempting to contact api.mailersend.com..."
+HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}\n" https://api.mailersend.com)
 
-if [ "$HTTP_STATUS" == "200" ]; then
-    echo -e "${GREEN}✓ Successfully connected to Resend API (Status: $HTTP_STATUS)${NC}"
+if [ "$HTTP_STATUS" == "200" ] || [ "$HTTP_STATUS" == "401" ]; then
+    echo -e "${GREEN}✓ Successfully connected to MailerSend API (Status: $HTTP_STATUS)${NC}"
 else
-    echo -e "${RED}✗ Failed to connect to Resend API (Status: $HTTP_STATUS)${NC}"
+    echo -e "${RED}✗ Failed to connect to MailerSend API (Status: $HTTP_STATUS)${NC}"
     echo -e "This could indicate network connectivity issues or firewall restrictions."
 fi
 
 # Test a basic email via REST API using curl
-echo -e "\n${YELLOW}Testing sending an email via Resend REST API...${NC}"
-TEST_EMAIL="delivered@resend.dev"  # Resend test email address
+echo -e "\n${YELLOW}Testing sending an email via MailerSend REST API...${NC}"
+TEST_EMAIL="delivered@resend.dev"  # Using Resend's test email address for testing
 
-RESPONSE=$(curl -s -X POST 'https://api.resend.com/emails' \
+RESPONSE=$(curl -s -X POST 'https://api.mailersend.com/v1/email' \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $RESEND_API_KEY" \
+  -H "X-Requested-With: XMLHttpRequest" \
+  -H "Authorization: Bearer $MAILERSEND_API_KEY" \
   -d "{
-    \"from\": \"E-Commerce Store <$FROM_EMAIL>\",
-    \"to\": [\"$TEST_EMAIL\"],
-    \"subject\": \"Email Test\",
+    \"from\": {
+        \"email\": \"$FROM_EMAIL\",
+        \"name\": \"E-Commerce Store\"
+    },
+    \"to\": [{
+        \"email\": \"$TEST_EMAIL\",
+        \"name\": \"Test Recipient\"
+    }],
+    \"subject\": \"MailerSend Test Email\",
     \"html\": \"<p>This is a test email sent from verify-email-service.sh script.</p>\"
   }")
 

@@ -1,10 +1,10 @@
 // backend/utils/emails/sendEmail.js
 
-const https = require("https");
+const { MailerSend, EmailParams, Sender, Recipient } = require("mailersend");
 const logger = require("../common/logger");
 
 /**
- * Send an email using Resend REST API
+ * Send an email using MailerSend API
  * @param {Object} options - Email options
  * @param {string} options.email - Recipient email
  * @param {string} options.subject - Email subject
@@ -45,7 +45,7 @@ const sendEmail = async (options) => {
     }
 
     // Set a timeout for email sending to prevent hanging indefinitely
-    const emailPromise = sendWithRestAPI(
+    const emailPromise = sendWithMailerSend(
       options.email,
       options.subject,
       htmlContent,
@@ -78,139 +78,71 @@ const sendEmail = async (options) => {
 };
 
 /**
- * Send an email using Resend REST API
+ * Send an email using MailerSend API
  * @param {string} to - Recipient email
  * @param {string} subject - Email subject
  * @param {string} htmlContent - HTML content of the email
  * @param {string} textContent - Plain text content of the email
  * @returns {Promise} - Promise that resolves when email is sent
  */
-const sendWithRestAPI = async (to, subject, htmlContent, textContent) => {
-  // Check if Resend API key is set
-  if (!process.env.RESEND_API_KEY) {
+const sendWithMailerSend = async (to, subject, htmlContent, textContent) => {
+  // Check if MailerSend API key is set
+  if (!process.env.MAILERSEND_API_KEY) {
     logger.error(
-      "Resend API key is not configured. Please set RESEND_API_KEY in .env file."
+      "MailerSend API key is not configured. Please set MAILERSEND_API_KEY in .env file."
     );
-    throw new Error("Resend API key is not configured");
+    throw new Error("MailerSend API key is not configured");
   }
 
   // Log email configuration for troubleshooting
-  logger.info("Email REST API Configuration:", {
-    apiKeyPresent: !!process.env.RESEND_API_KEY,
-    apiKeyLength: process.env.RESEND_API_KEY
-      ? process.env.RESEND_API_KEY.length
+  logger.info("Email MailerSend API Configuration:", {
+    apiKeyPresent: !!process.env.MAILERSEND_API_KEY,
+    apiKeyLength: process.env.MAILERSEND_API_KEY
+      ? process.env.MAILERSEND_API_KEY.length
       : 0,
-    fromEmail: process.env.FROM_EMAIL || "onboarding@resend.dev",
+    fromEmail: process.env.FROM_EMAIL || "noreply@mernappshopper.xyz",
   });
 
-  // Define from email address
-  const fromEmail = process.env.FROM_EMAIL || "onboarding@resend.dev";
+  try {
+    // Define from email address
+    const fromEmail = process.env.FROM_EMAIL || "noreply@mernappshopper.xyz";
 
-  // Prepare the sender with a friendly name
-  const sender = `E-Commerce Store <${fromEmail}>`;
+    // Initialize MailerSend with API key
+    const mailerSend = new MailerSend({
+      apiKey: process.env.MAILERSEND_API_KEY,
+    });
 
-  return new Promise((resolve, reject) => {
-    // Prepare the request data
-    const payload = {
-      from: sender,
-      to: Array.isArray(to) ? to : [to], // Ensure 'to' is always an array
-      subject: subject,
-      html: htmlContent,
-      text: textContent,
+    // Create sender and recipient objects
+    const sentFrom = new Sender(fromEmail, "E-Commerce Store");
+    const recipients = [
+      new Recipient(to)
+    ];
+
+    // Create email parameters
+    const emailParams = new EmailParams()
+      .setFrom(sentFrom)
+      .setTo(recipients)
+      .setSubject(subject)
+      .setHtml(htmlContent)
+      .setText(textContent);
+
+    // Send email
+    const response = await mailerSend.email.send(emailParams);
+    
+    logger.info(`Email sent to ${to} with MailerSend API`);
+    
+    return {
+      id: response?.body?.id || "unknown",
+      provider: "mailersend",
     };
-
-    const data = JSON.stringify(payload);
-
-    // Log the complete request payload for debugging
-    logger.info(`Sending email to ${to} via Resend REST API`, {
-      from: sender,
-      to: payload.to,
+  } catch (error) {
+    logger.error("MailerSend API error:", {
+      error: error.message,
+      to: to,
       subject: subject,
-      dataSize: data.length,
-      // Include sanitized payload without HTML content to avoid huge logs
-      payload: {
-        ...payload,
-        html: payload.html
-          ? `[HTML content: ${payload.html.length} chars]`
-          : null,
-        text: payload.text
-          ? `[Text content: ${payload.text.length} chars]`
-          : null,
-      },
     });
-
-    // Configure the request options
-    const options = {
-      hostname: "api.resend.com",
-      port: 443,
-      path: "/emails",
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-        "Content-Length": data.length,
-      },
-      timeout: 10000, // 10 second timeout
-    };
-
-    // Send the request
-    const req = https.request(options, (res) => {
-      let responseData = "";
-
-      res.on("data", (chunk) => {
-        responseData += chunk;
-      });
-
-      res.on("end", () => {
-        try {
-          if (res.statusCode >= 200 && res.statusCode < 300) {
-            const parsedData = JSON.parse(responseData);
-            logger.info(
-              `Email sent to ${to} with Resend REST API: ${parsedData.id}`
-            );
-            resolve({
-              id: parsedData.id,
-              rest: true,
-            });
-          } else {
-            logger.error(
-              `Resend REST API error (${res.statusCode}): ${responseData}`
-            );
-            reject(new Error(`Resend API error: ${responseData}`));
-          }
-        } catch (error) {
-          logger.error("Error parsing Resend API response:", {
-            error: error.message,
-            responseData,
-            statusCode: res.statusCode,
-          });
-          reject(error);
-        }
-      });
-    });
-
-    req.on("error", (error) => {
-      logger.error("Resend REST API request error:", {
-        error: error.message,
-        to: to,
-        subject: subject,
-      });
-      reject(error);
-    });
-
-    req.on("timeout", () => {
-      req.destroy();
-      logger.error("Resend REST API request timed out", {
-        to: to,
-        subject: subject,
-      });
-      reject(new Error("REST API request timed out"));
-    });
-
-    // Write data to request body
-    req.write(data);
-    req.end();
-  });
+    throw error;
+  }
 };
 
 module.exports = sendEmail;
