@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import ListProductTable from "./components/ListProductTable";
 import ListProductEditModal from "./components/ListProductEditModal";
 import { useProductList } from "./hooks/useProductList";
-import Button from "../ui/button/Button";
+import { Button } from "../ui/button/Button";
 import { useToast } from "../ui/errorHandling/toast/ToastHooks";
 import "./styles/ListProduct.css";
 
