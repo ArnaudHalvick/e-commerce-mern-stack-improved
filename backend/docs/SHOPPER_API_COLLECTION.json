@@ -10,6 +10,11 @@
       "key": "auth_token",
       "value": "",
       "type": "string"
+    },
+    {
+      "key": "admin_token",
+      "value": "",
+      "type": "string"
     }
   ],
   "item": [
@@ -206,6 +211,338 @@
               "raw": "{{URL}}/api/users/verify-token",
               "host": ["{{URL}}"],
               "path": ["api", "users", "verify-token"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin Authentication",
+      "item": [
+        {
+          "name": "Admin Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.token) {",
+                  "    pm.environment.set('admin_token', jsonData.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/admin/auth/login",
+              "host": ["{{URL}}"],
+              "path": ["api", "admin", "auth", "login"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"AdminPassword123!\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Admin Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/admin/auth/logout",
+              "host": ["{{URL}}"],
+              "path": ["api", "admin", "auth", "logout"]
+            }
+          }
+        },
+        {
+          "name": "Verify Admin Token",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/admin/auth/verify",
+              "host": ["{{URL}}"],
+              "path": ["api", "admin", "auth", "verify"]
+            }
+          }
+        },
+        {
+          "name": "Admin Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{URL}}/api/admin/auth/refresh-token",
+              "host": ["{{URL}}"],
+              "path": ["api", "admin", "auth", "refresh-token"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin Products",
+      "item": [
+        {
+          "name": "Get All Products (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/admin/products",
+              "host": ["{{URL}}"],
+              "path": ["api", "admin", "products"],
+              "query": [
+                {
+                  "key": "includeDeleted",
+                  "value": "false",
+                  "disabled": true
+                },
+                {
+                  "key": "onlyDeleted",
+                  "value": "false",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Product by ID (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/admin/products/:id",
+              "host": ["{{URL}}"],
+              "path": ["api", "admin", "products", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "PRODUCT_ID"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Product",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/admin/products",
+              "host": ["{{URL}}"],
+              "path": ["api", "admin", "products"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"New Product\",\n  \"images\": [\"/images/placeholder.jpg\"],\n  \"mainImageIndex\": 0,\n  \"shortDescription\": \"Short product description\",\n  \"longDescription\": \"Detailed product description with all features and benefits\",\n  \"category\": \"women\",\n  \"new_price\": 50.99,\n  \"old_price\": 70.99,\n  \"sizes\": [\"S\", \"M\", \"L\", \"XL\"],\n  \"tags\": [\"new\", \"popular\"],\n  \"types\": [\"shirt\"],\n  \"available\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/admin/products/:id",
+              "host": ["{{URL}}"],
+              "path": ["api", "admin", "products", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "PRODUCT_ID"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Product Name\",\n  \"new_price\": 45.99,\n  \"available\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "Soft Delete Product",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/admin/products/:id",
+              "host": ["{{URL}}"],
+              "path": ["api", "admin", "products", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "PRODUCT_ID"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Permanently Delete Product",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/admin/products/:id/permanent",
+              "host": ["{{URL}}"],
+              "path": ["api", "admin", "products", ":id", "permanent"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "PRODUCT_ID"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Restore Product",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/admin/products/:id/restore",
+              "host": ["{{URL}}"],
+              "path": ["api", "admin", "products", ":id", "restore"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "PRODUCT_ID"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Toggle Product Availability",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/admin/products/:id/toggle-availability",
+              "host": ["{{URL}}"],
+              "path": [
+                "api",
+                "admin",
+                "products",
+                ":id",
+                "toggle-availability"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "PRODUCT_ID"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"available\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "Upload Product Images",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/admin/products/upload",
+              "host": ["{{URL}}"],
+              "path": ["api", "admin", "products", "upload"]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "images",
+                  "type": "file",
+                  "src": []
+                }
+              ]
             }
           }
         }
