@@ -32,19 +32,25 @@ const NavBar = ({ toggleSidebar, sidebarOpen }) => {
     <div className="admin-navbar">
       <div className="admin-navbar-left">
         <button
-          className="admin-sidebar-toggle"
+          className="admin-navbar-toggle"
           onClick={toggleSidebar}
           onKeyDown={handleKeyDown}
           aria-label={sidebarOpen ? "Close sidebar" : "Open sidebar"}
           tabIndex="0"
         >
-          <span className={`hamburger-icon ${sidebarOpen ? "open" : ""}`}>
+          <span
+            className={`admin-navbar-hamburger ${sidebarOpen ? "open" : ""}`}
+          >
             <span></span>
             <span></span>
             <span></span>
           </span>
         </button>
-        <img src={navlogo} alt="Admin Dashboard" className="admin-logo" />
+        <img
+          src={navlogo}
+          alt="Admin Dashboard"
+          className="admin-navbar-logo"
+        />
       </div>
 
       <div className="admin-navbar-center">
@@ -54,7 +60,7 @@ const NavBar = ({ toggleSidebar, sidebarOpen }) => {
       <div className="admin-navbar-right">
         <div className="admin-navbar-profile">
           <div
-            className="admin-profile-avatar"
+            className="admin-navbar-avatar"
             onClick={handleToggleDropdown}
             onKeyDown={(e) => {
               if (e.key === "Enter" || e.key === " ") {
@@ -65,11 +71,11 @@ const NavBar = ({ toggleSidebar, sidebarOpen }) => {
             aria-label="Toggle profile dropdown"
           >
             <img src={navProfile} alt="Profile" />
-            {user && <span className="admin-profile-name">{user.name}</span>}
+            {user && <span className="admin-navbar-name">{user.name}</span>}
           </div>
 
           {dropdownOpen && (
-            <div className="admin-profile-dropdown">
+            <div className="admin-navbar-dropdown">
               <ul>
                 <li>
                   <a href="#profile" onClick={closeDropdown}>
@@ -83,7 +89,7 @@ const NavBar = ({ toggleSidebar, sidebarOpen }) => {
                 </li>
                 <li>
                   <button
-                    className="admin-logout-button"
+                    className="admin-navbar-logout"
                     onClick={handleLogout}
                     tabIndex="0"
                   >

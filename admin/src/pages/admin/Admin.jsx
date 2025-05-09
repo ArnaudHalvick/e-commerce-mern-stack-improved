@@ -13,16 +13,16 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="admin-dashboard">
+    <div className="admin-page-dashboard">
       <h1 className="admin-page-title">Dashboard</h1>
 
-      <div className="admin-stats-grid">
+      <div className="admin-page-stats-grid">
         {stats.map((stat, index) => (
-          <div key={index} className="admin-stat-card">
-            <div className="admin-stat-title">{stat.title}</div>
-            <div className="admin-stat-value">{stat.value}</div>
+          <div key={index} className="admin-page-stat-card">
+            <div className="admin-page-stat-title">{stat.title}</div>
+            <div className="admin-page-stat-value">{stat.value}</div>
             <div
-              className={`admin-stat-change ${
+              className={`admin-page-stat-change ${
                 stat.positive ? "positive" : "negative"
               }`}
             >
@@ -32,14 +32,14 @@ const Dashboard = () => {
         ))}
       </div>
 
-      <div className="admin-row">
-        <div className="admin-card">
-          <div className="admin-card-header">
+      <div className="admin-page-row">
+        <div className="admin-page-card">
+          <div className="admin-page-card-header">
             <h2>Recent Orders</h2>
           </div>
-          <div className="admin-card-body">
-            <div className="admin-table-responsive">
-              <table className="admin-table">
+          <div className="admin-page-card-body">
+            <div className="admin-page-table-responsive">
+              <table className="admin-page-table">
                 <thead>
                   <tr>
                     <th>Order ID</th>
