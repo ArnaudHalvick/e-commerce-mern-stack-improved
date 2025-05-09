@@ -20,8 +20,8 @@ export const useProductList = () => {
     setError(null);
 
     try {
-      const data = await api.products.getAllProducts(options);
-      setProducts(data.products || []);
+      const response = await api.products.getAllProducts(options);
+      setProducts(response.data || []);
     } catch (err) {
       setError(err);
       console.error("Error fetching products:", err);
