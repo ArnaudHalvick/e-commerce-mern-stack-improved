@@ -20,6 +20,22 @@
   --color-accent-light: #ff7a35;
   --color-accent-dark: #e04e04;
 
+  /* Admin Theme Colors */
+  --admin-primary: #3949ab;
+  --admin-primary-light: #6f74dd;
+  --admin-primary-dark: #00227b;
+  --admin-secondary: #673ab7;
+  --admin-accent: #ff9800;
+  --admin-background: #f5f7fa;
+  --admin-surface: #ffffff;
+  --admin-border: #e2e8f0;
+  --admin-text-primary: #1e293b;
+  --admin-text-secondary: #64748b;
+  --admin-text-disabled: #94a3b8;
+  --admin-sidebar-width: 250px;
+  --admin-sidebar-collapsed-width: 64px;
+  --admin-header-height: 64px;
+
   /* Semantic Colors */
   --color-success: #28a745;
   --color-success-light: #a8e5b5;
@@ -182,40 +198,32 @@
   --transition-timing-ease-out: cubic-bezier(0, 0, 0.58, 1);
   --transition-timing-ease-in-out: cubic-bezier(0.42, 0, 0.58, 1);
 
-  /* Common Breakpoints 
-  ⚠️ IMPORTANT: DO NOT USE THESE VARIABLES IN MEDIA QUERIES! 
-  These variables are for JavaScript reference only.
+  /* 
+  MOBILE FIRST BREAKPOINTS
   
-  In media queries, use the pixel values directly:
-  @media screen and (max-width: 374.98px) {} // xs (Mobile S - iPhone SE)
-  @media screen and (max-width: 474.98px) {} // md (Mobile L)
-  @media screen and (max-width: 575.98px) {} // lg (Small devices - Portrait phones)
-  @media screen and (max-width: 767.98px) {} // xl (Landscape phones)
-  @media screen and (max-width: 991.98px) {} // 2xl (Tablets)
-  @media screen and (max-width: 1199.98px) {} // 3xl (Large devices - Desktops)
-  @media screen and (max-width: 1399.98px) {} // 4xl (Extra large devices)
-  @media screen and (max-width: 1535.98px) {} // 5xl (Extra extra large devices)
+  Usage in CSS:
+  
+  Default styles are for mobile
+  
+  @media screen and (min-width: 576px) { } // sm (Small devices)
+  @media screen and (min-width: 768px) { } // md (Medium devices)
+  @media screen and (min-width: 992px) { } // lg (Large devices)
+  @media screen and (min-width: 1200px) { } // xl (Extra large devices)
+  @media screen and (min-width: 1400px) { } // 2xl (Extra extra large devices)
   */
 
-  --breakpoint-xs: 375px; /* Small devices (iPhone SE) */
-  --breakpoint-md: 475px; /* Large phones */
-  --breakpoint-lg: 576px; /* Small devices (phones) */
-  --breakpoint-xl: 768px; /* Medium devices (tablets) */
-  --breakpoint-2xl: 992px; /* Large devices (laptops) */
-  --breakpoint-3xl: 1200px; /* Extra large devices (large laptops) */
-  --breakpoint-4xl: 1400px; /* Extra extra large devices (large desktops) */
-  --breakpoint-5xl: 1536px; /* Ultra wide devices */
+  --breakpoint-sm: 576px; /* Small devices */
+  --breakpoint-md: 768px; /* Medium devices (tablets) */
+  --breakpoint-lg: 992px; /* Large devices (laptops) */
+  --breakpoint-xl: 1200px; /* Extra large devices (large laptops) */
+  --breakpoint-2xl: 1400px; /* Extra extra large devices (large desktops) */
 
-  /* Container max-widths - matching your Container.css */
-
-  --container-xs: 375px; /* Medium phones */
-  --container-md: 475px; /* Large phones */
-  --container-lg: 576px; /* Small devices (phones) */
-  --container-xl: 768px; /* Medium devices (tablets) */
-  --container-2xl: 992px; /* Large devices (laptops) */
-  --container-3xl: 1200px; /* Extra large devices (large laptops) */
-  --container-4xl: 1400px; /* Extra extra large devices (large desktops) */
-  --container-5xl: 1536px; /* Ultra wide devices */
+  /* Container max-widths */
+  --container-sm: 540px;
+  --container-md: 720px;
+  --container-lg: 960px;
+  --container-xl: 1140px;
+  --container-2xl: 1320px;
 }
 
 * {
@@ -243,4 +251,37 @@ code {
 a {
   text-decoration: none;
   color: inherit;
+}
+
+/* Admin specific base styles */
+.admin-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--admin-background);
+}
+
+@media screen and (min-width: 992px) {
+  .admin-container {
+    flex-direction: row;
+  }
+}
+
+/* Admin scrollbar styles */
+.admin-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.admin-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.admin-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--admin-text-disabled);
+  border-radius: var(--border-radius-full);
+}
+
+.admin-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--admin-text-secondary);
 }
