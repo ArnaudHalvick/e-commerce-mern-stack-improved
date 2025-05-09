@@ -74,6 +74,11 @@
   font-size: 12px;
 }
 
+.list-product-current-price {
+  font-weight: 500;
+  color: #2c3e50;
+}
+
 .list-product-actions {
   display: flex;
   gap: 8px;

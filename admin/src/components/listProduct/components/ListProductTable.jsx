@@ -85,11 +85,19 @@ const ListProductTable = ({
               <Table.Cell>{product.category}</Table.Cell>
               <Table.Cell>
                 <div className="list-product-price-cell">
-                  <span className="list-product-new-price">
-                    {formatPrice(product.new_price)}
-                  </span>
-                  {product.old_price > product.new_price && (
-                    <span className="list-product-old-price">
+                  {product.new_price && product.new_price > 0 ? (
+                    <>
+                      <span className="list-product-new-price">
+                        {formatPrice(product.new_price)}
+                      </span>
+                      {product.old_price > product.new_price && (
+                        <span className="list-product-old-price">
+                          {formatPrice(product.old_price)}
+                        </span>
+                      )}
+                    </>
+                  ) : (
+                    <span className="list-product-current-price">
                       {formatPrice(product.old_price)}
                     </span>
                   )}
