@@ -14,6 +14,9 @@ const {
   updateProduct,
   deleteProduct,
   uploadProductImages,
+  restoreProduct,
+  toggleAvailability,
+  permanentDeleteProduct,
 } = require("../controllers/adminController");
 
 // Set up multer for file storage
@@ -54,7 +57,7 @@ const upload = multer({
 // All routes require authentication
 router.use(isAuthenticated);
 
-// Get all products
+// Get all products (includes query params for filtering deleted products)
 router.get("/products", getAllProducts);
 
 // Get single product
@@ -66,8 +69,17 @@ router.post("/products", createProduct);
 // Update product
 router.put("/products/:id", updateProduct);
 
-// Delete product
+// Soft delete product (mark as deleted)
 router.delete("/products/:id", deleteProduct);
+
+// Permanently delete product (use with caution)
+router.delete("/products/:id/permanent", permanentDeleteProduct);
+
+// Restore deleted product
+router.post("/products/:id/restore", restoreProduct);
+
+// Toggle product availability
+router.patch("/products/:id/toggle-availability", toggleAvailability);
 
 // Upload product images
 router.post(

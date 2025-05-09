@@ -126,7 +126,11 @@ const getAllProducts = catchAsync(async (req, res, next) => {
   const includeReviews = req.query.includeReviews === "true";
   const basicInfo = req.query.basicInfo !== "false";
 
-  let query = Product.find();
+  // Only show available and non-deleted products to regular users
+  let query = {
+    deleted: { $ne: true },
+    available: true,
+  };
 
   // Only populate reviews if requested
   if (includeReviews) {
@@ -136,7 +140,7 @@ const getAllProducts = catchAsync(async (req, res, next) => {
     });
   }
 
-  let products = await query;
+  let products = await Product.find(query);
 
   // Format products based on requested detail level
   const formattedProducts = products.map((product) =>
@@ -164,14 +168,20 @@ const getNewCollection = catchAsync(async (req, res, next) => {
     ? { path: "reviews", populate: { path: "user", select: "name" } }
     : null;
 
+  // Base filter to exclude deleted products and only show available ones
+  const baseFilter = {
+    deleted: { $ne: true },
+    available: true,
+  };
+
   // Build queries for each category using sort and limit by date
-  const womenQuery = Product.find({ category: "women" })
+  const womenQuery = Product.find({ ...baseFilter, category: "women" })
     .sort({ date: -1 })
     .limit(4);
-  const menQuery = Product.find({ category: "men" })
+  const menQuery = Product.find({ ...baseFilter, category: "men" })
     .sort({ date: -1 })
     .limit(2);
-  const kidsQuery = Product.find({ category: "kids" })
+  const kidsQuery = Product.find({ ...baseFilter, category: "kids" })
     .sort({ date: -1 })
     .limit(2);
 
@@ -209,6 +219,8 @@ const getFeaturedWomen = catchAsync(async (req, res, next) => {
   let query = Product.find({
     category: "women",
     rating: { $gte: 3.7 }, // Only products with rating 3.7 or above
+    deleted: { $ne: true }, // Filter out deleted products
+    available: true, // Only show available products
   })
     .sort({ createdAt: -1 }) // Sort by latest created date
     .limit(4); // Return a maximum of 4 products
@@ -241,7 +253,12 @@ const getProductsByTag = catchAsync(async (req, res, next) => {
   const includeReviews = req.query.includeReviews === "true";
   const basicInfo = req.query.basicInfo !== "false";
 
-  let query = Product.find({ tags: tag });
+  // Filter out deleted and unavailable products
+  let query = Product.find({
+    tags: tag,
+    deleted: { $ne: true },
+    available: true,
+  });
 
   // Only populate reviews if requested
   if (includeReviews) {
@@ -271,7 +288,12 @@ const getProductsByType = catchAsync(async (req, res, next) => {
   const includeReviews = req.query.includeReviews === "true";
   const basicInfo = req.query.basicInfo !== "false";
 
-  let query = Product.find({ types: type });
+  // Filter out deleted and unavailable products
+  let query = Product.find({
+    types: type,
+    deleted: { $ne: true },
+    available: true,
+  });
 
   // Only populate reviews if requested
   if (includeReviews) {
@@ -296,7 +318,12 @@ const getProductsByType = catchAsync(async (req, res, next) => {
 
 // Get product by ID
 const getProductById = catchAsync(async (req, res, next) => {
-  const product = await Product.findById(req.params.id).populate("reviews");
+  // Only show non-deleted and available products
+  const product = await Product.findOne({
+    _id: req.params.id,
+    deleted: { $ne: true },
+    available: true,
+  }).populate("reviews");
 
   if (!product) {
     return next(new AppError("Product not found", 404));
@@ -314,17 +341,24 @@ const getProductBySlug = catchAsync(async (req, res, next) => {
   // Check if we should include reviews
   const includeReviews = req.query.includeReviews !== "false"; // Default to true for single product view
 
-  let query = Product.findOne({ slug });
+  // Only show non-deleted and available products
+  let query = {
+    slug: slug,
+    deleted: { $ne: true },
+    available: true,
+  };
+
+  let product;
 
   // Populate reviews if requested
   if (includeReviews) {
-    query = query.populate({
+    product = await Product.findOne(query).populate({
       path: "reviews",
       populate: { path: "user", select: "name" },
     });
+  } else {
+    product = await Product.findOne(query);
   }
-
-  let product = await query;
 
   if (!product) {
     return next(new AppError("Product not found", 404));
@@ -357,7 +391,12 @@ const getProductsByCategory = catchAsync(async (req, res, next) => {
   const includeReviews = req.query.includeReviews === "true";
   const basicInfo = req.query.basicInfo !== "false";
 
-  let query = Product.find({ category: category });
+  // Filter out deleted and unavailable products
+  let query = Product.find({
+    category: category,
+    deleted: { $ne: true },
+    available: true,
+  });
 
   // Only populate reviews if requested
   if (includeReviews) {
@@ -397,7 +436,11 @@ const getRelatedProducts = catchAsync(async (req, res, next) => {
   const limit = parseInt(req.query.limit) || 4; // Default to 4 related products
 
   // Build query to find products in the same category, excluding the current product
-  let query = { category };
+  let query = {
+    category,
+    deleted: { $ne: true },
+    available: true,
+  };
 
   // Exclude the current product from results
   if (productId) {
@@ -463,5 +506,6 @@ module.exports = {
   formatProductForResponse,
   getProductsByCategory,
   getRelatedProducts,
-  // Add any other functions that exist in the file but aren't listed here
+  getNewCollection,
+  getFeaturedWomen,
 };

@@ -170,6 +170,15 @@ const ProductSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
+  deleted: {
+    type: Boolean,
+    default: false,
+    index: true, // Add index for faster queries
+  },
+  deletedAt: {
+    type: Date,
+    default: null,
+  },
 });
 
 function arrayLimit(val) {
