@@ -10,8 +10,6 @@ A full-stack e-commerce solution featuring a modern React frontend and a robust 
 
 **Live Demo:** [https://mernappshopper.xyz](https://mernappshopper.xyz)
 
-![E-Commerce Platform Screenshot](https://via.placeholder.com/800x400?text=E-Commerce+Platform+Screenshot)
-
 ## ✨ Key Features
 
 - **Complete E-Commerce Functionality**
@@ -20,7 +18,6 @@ A full-stack e-commerce solution featuring a modern React frontend and a robust 
   - Shopping cart and wishlist management
   - User accounts and profiles
   - Order processing and history
-  - Admin dashboard with product management
 
 - **Secure Authentication System**
 
@@ -44,7 +41,6 @@ A full-stack e-commerce solution featuring a modern React frontend and a robust 
   - User-friendly error messages
 
 - **Responsive Design**
-  - Mobile-first approach
   - Optimized for all device sizes
   - Consistent user experience across platforms
   - Accessible UI components
