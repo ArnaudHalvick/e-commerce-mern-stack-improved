@@ -1,12 +1,16 @@
 // Path: admin/src/App.jsx
 import { useState, useEffect } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
 import NavBar from "./components/navbar/Navbar";
 import Sidebar from "./components/sidebar/Sidebar";
 import Admin from "./pages/admin/Admin";
+import Login from "./pages/auth/Login";
+import ProtectedRoute from "./components/authGuard/ProtectedRoute";
+import AuthProvider from "./context/auth/AuthProvider";
 import { ErrorState } from "./context/index.jsx";
 import "./App.css";
 
-function App() {
+const AdminLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 992);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 992);
 
@@ -35,16 +39,42 @@ function App() {
   };
 
   return (
-    <ErrorState>
-      <div className="admin-container">
-        <NavBar toggleSidebar={toggleSidebar} sidebarOpen={sidebarOpen} />
-        <div className="admin-main">
-          <Sidebar isOpen={sidebarOpen} />
-          <div className={`admin-content ${sidebarOpen ? "sidebar-open" : ""}`}>
-            <Admin />
-          </div>
+    <div className="admin-container">
+      <NavBar toggleSidebar={toggleSidebar} sidebarOpen={sidebarOpen} />
+      <div className="admin-main">
+        <Sidebar isOpen={sidebarOpen} />
+        <div className={`admin-content ${sidebarOpen ? "sidebar-open" : ""}`}>
+          {children}
         </div>
       </div>
+    </div>
+  );
+};
+
+function App() {
+  return (
+    <ErrorState>
+      <AuthProvider>
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/login" element={<Login />} />
+
+          {/* Protected Routes - Any path within /* requires authentication */}
+          <Route
+            path="/*"
+            element={
+              <ProtectedRoute>
+                <AdminLayout>
+                  <Admin />
+                </AdminLayout>
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Redirect to dashboard if no route matches */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </AuthProvider>
     </ErrorState>
   );
 }

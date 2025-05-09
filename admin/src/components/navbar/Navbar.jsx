@@ -1,11 +1,13 @@
 // Path: admin/src/components/navbar/Navbar.jsx
-import { useState } from "react";
+import { useState, useContext } from "react";
 import "./Navbar.css";
 import navlogo from "../../assets/admin_assets/nav-logo.svg";
 import navProfile from "../../assets/admin_assets/nav-profile.svg";
+import AuthContext from "../../context/auth/AuthContext";
 
 const NavBar = ({ toggleSidebar, sidebarOpen }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const { user, logout } = useContext(AuthContext);
 
   const handleToggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
@@ -15,6 +17,15 @@ const NavBar = ({ toggleSidebar, sidebarOpen }) => {
     if (e.key === "Enter" || e.key === " ") {
       toggleSidebar();
     }
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    // Redirect happens automatically in AuthProvider
+  };
+
+  const closeDropdown = () => {
+    setDropdownOpen(false);
   };
 
   return (
@@ -54,19 +65,30 @@ const NavBar = ({ toggleSidebar, sidebarOpen }) => {
             aria-label="Toggle profile dropdown"
           >
             <img src={navProfile} alt="Profile" />
+            {user && <span className="admin-profile-name">{user.name}</span>}
           </div>
 
           {dropdownOpen && (
             <div className="admin-profile-dropdown">
               <ul>
                 <li>
-                  <a href="#profile">My Profile</a>
+                  <a href="#profile" onClick={closeDropdown}>
+                    My Profile
+                  </a>
                 </li>
                 <li>
-                  <a href="#settings">Settings</a>
+                  <a href="#settings" onClick={closeDropdown}>
+                    Settings
+                  </a>
                 </li>
                 <li>
-                  <a href="#logout">Logout</a>
+                  <button
+                    className="admin-logout-button"
+                    onClick={handleLogout}
+                    tabIndex="0"
+                  >
+                    Logout
+                  </button>
                 </li>
               </ul>
             </div>

@@ -161,6 +161,28 @@
   background-color: rgba(0, 0, 0, 0.05);
 }
 
+.admin-profile-name {
+  margin-left: 8px;
+  font-weight: 500;
+  display: none;
+}
+
+.admin-logout-button {
+  background: none;
+  border: none;
+  color: var(--admin-text-primary);
+  width: 100%;
+  text-align: left;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  display: block;
+}
+
+.admin-logout-button:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
 /* Responsive styles */
 @media screen and (min-width: 768px) {
   .admin-navbar {
@@ -169,6 +191,10 @@
 
   .admin-navbar-center {
     display: block;
+  }
+
+  .admin-profile-name {
+    display: inline;
   }
 }
 
