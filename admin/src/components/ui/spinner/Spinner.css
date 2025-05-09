@@ -1,0 +1,122 @@
+/* Path: admin/src/components/ui/spinner/Spinner.css */
+.admin-spinner {
+  display: inline-flex;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+}
+
+.admin-spinner-circle {
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-top-color: transparent;
+  animation: admin-spinner-rotate 0.75s linear infinite;
+}
+
+/* Spinner sizes */
+.admin-spinner-small {
+  width: 16px;
+  height: 16px;
+}
+
+.admin-spinner-small .admin-spinner-circle {
+  width: 16px;
+  height: 16px;
+  border-width: 2px;
+}
+
+.admin-spinner-medium {
+  width: 24px;
+  height: 24px;
+}
+
+.admin-spinner-medium .admin-spinner-circle {
+  width: 24px;
+  height: 24px;
+  border-width: 2px;
+}
+
+.admin-spinner-large {
+  width: 36px;
+  height: 36px;
+}
+
+.admin-spinner-large .admin-spinner-circle {
+  width: 36px;
+  height: 36px;
+  border-width: 3px;
+}
+
+/* Spinner variants */
+.admin-spinner-primary {
+  color: var(--admin-primary);
+}
+
+.admin-spinner-secondary {
+  color: var(--admin-secondary);
+}
+
+.admin-spinner-light {
+  color: white;
+}
+
+.admin-spinner-dark {
+  color: var(--admin-text-primary);
+}
+
+/* Accessibility: hide text from visual users but keep for screen readers */
+.admin-spinner-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Full page spinner */
+.admin-spinner-fullpage {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.7);
+  z-index: var(--z-index-modal);
+}
+
+/* Overlay spinner (for loading states on components/sections) */
+.admin-spinner-overlay-container {
+  position: relative;
+}
+
+.admin-spinner-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.7);
+  z-index: 10;
+  border-radius: inherit;
+}
+
+/* Animation */
+@keyframes admin-spinner-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
