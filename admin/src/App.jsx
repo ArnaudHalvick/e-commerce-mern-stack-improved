@@ -8,7 +8,6 @@ import Login from "./pages/auth/Login";
 import ProtectedRoute from "./components/authGuard/ProtectedRoute";
 import AuthProvider from "./context/auth/AuthProvider";
 import { ErrorState } from "./context/index.jsx";
-import "./App.css";
 
 const AdminLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 992);
@@ -39,11 +38,15 @@ const AdminLayout = ({ children }) => {
   };
 
   return (
-    <div className="admin-container">
+    <div className="admin-page-container">
       <NavBar toggleSidebar={toggleSidebar} sidebarOpen={sidebarOpen} />
-      <div className="admin-main">
+      <div className="admin-page-main">
         <Sidebar isOpen={sidebarOpen} />
-        <div className={`admin-content ${sidebarOpen ? "sidebar-open" : ""}`}>
+        <div
+          className={`admin-page-content-area ${
+            sidebarOpen ? "sidebar-open" : ""
+          }`}
+        >
           {children}
         </div>
       </div>
