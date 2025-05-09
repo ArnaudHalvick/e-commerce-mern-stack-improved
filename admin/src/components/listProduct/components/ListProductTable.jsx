@@ -57,7 +57,7 @@ const ListProductTable = ({
             <Table.Cell isHeader>Category</Table.Cell>
             <Table.Cell isHeader>Price</Table.Cell>
             <Table.Cell isHeader>Status</Table.Cell>
-            <Table.Cell isHeader>Updated</Table.Cell>
+            <Table.Cell isHeader>Date Added</Table.Cell>
             <Table.Cell isHeader>Actions</Table.Cell>
           </Table.Row>
         </Table.Head>

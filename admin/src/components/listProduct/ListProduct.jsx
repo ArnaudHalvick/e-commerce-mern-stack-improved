@@ -23,11 +23,13 @@ const ListProduct = () => {
   } = useProductList();
 
   // Filter products based on search term
-  const filteredProducts = products.filter(
-    (product) =>
-      product?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product?.category?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredProducts = products
+    .filter(
+      (product) =>
+        product?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        product?.category?.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   useEffect(() => {
     fetchProducts();
@@ -55,6 +57,8 @@ const ListProduct = () => {
         message: "Product updated successfully",
       });
       handleModalClose();
+      // Refresh the product list after update
+      fetchProducts();
     } catch (error) {
       showToast({
         type: "error",
@@ -72,6 +76,8 @@ const ListProduct = () => {
           !currentStatus ? "activated" : "deactivated"
         } successfully`,
       });
+      // Refresh the product list after toggling availability
+      fetchProducts();
     } catch (error) {
       showToast({
         type: "error",

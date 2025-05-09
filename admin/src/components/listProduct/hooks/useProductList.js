@@ -37,14 +37,28 @@ export const useProductList = () => {
    */
   const updateProduct = useCallback(async (productId, productData) => {
     try {
+      // Optimistically update the UI
+      const optimisticProduct = { ...productData };
+      setProducts((prevProducts) =>
+        prevProducts.map((product) =>
+          product._id === productId
+            ? { ...product, ...optimisticProduct }
+            : product
+        )
+      );
+
+      // Perform the actual API call
       const updatedProduct = await api.products.updateProduct(
         productId,
         productData
       );
 
+      // Update with the confirmed data from the server
       setProducts((prevProducts) =>
         prevProducts.map((product) =>
-          product._id === productId ? updatedProduct : product
+          product._id === productId
+            ? { ...product, ...updatedProduct }
+            : product
         )
       );
 
@@ -83,20 +97,41 @@ export const useProductList = () => {
   const toggleProductAvailability = useCallback(
     async (productId, available) => {
       try {
+        // Optimistically update the UI
+        setProducts((prevProducts) =>
+          prevProducts.map((product) =>
+            product._id === productId ? { ...product, available } : product
+          )
+        );
+
+        // Perform the actual API call
         const updatedProduct = await api.products.toggleAvailability(
           productId,
           available
         );
 
+        // Update with the confirmed data from the server
         setProducts((prevProducts) =>
           prevProducts.map((product) =>
-            product._id === productId ? updatedProduct : product
+            product._id === productId
+              ? { ...product, ...updatedProduct }
+              : product
           )
         );
 
         return updatedProduct;
       } catch (error) {
         console.error("Error toggling product availability:", error);
+
+        // Revert the optimistic update if the API call fails
+        setProducts((prevProducts) =>
+          prevProducts.map((product) =>
+            product._id === productId
+              ? { ...product, available: !available }
+              : product
+          )
+        );
+
         throw error;
       }
     },
