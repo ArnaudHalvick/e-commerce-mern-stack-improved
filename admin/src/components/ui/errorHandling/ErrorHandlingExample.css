@@ -1,0 +1,97 @@
+/* Path: admin/src/components/ui/errorHandling/ErrorHandlingExample.css */
+.error-handling-examples {
+  padding: var(--spacing-6);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.error-handling-examples h2 {
+  margin-bottom: var(--spacing-6);
+  color: var(--admin-text-primary);
+  font-size: var(--font-size-2xl);
+}
+
+.error-handling-examples h3 {
+  margin: var(--spacing-6) 0 var(--spacing-4);
+  color: var(--admin-text-primary);
+  font-size: var(--font-size-xl);
+  border-bottom: 1px solid var(--admin-border);
+  padding-bottom: var(--spacing-2);
+}
+
+.error-handling-examples section {
+  margin-bottom: var(--spacing-8);
+  background-color: var(--admin-surface);
+  padding: var(--spacing-4);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.error-example-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-3);
+  margin: var(--spacing-4) 0;
+}
+
+.error-example-buttons button {
+  padding: var(--spacing-2) var(--spacing-4);
+  background-color: var(--admin-primary);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: background-color var(--transition-duration-fast) ease;
+}
+
+.error-example-buttons button:hover {
+  background-color: var(--admin-primary-dark);
+}
+
+.error-example-alerts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  margin: var(--spacing-4) 0;
+}
+
+/* Error page previews */
+.error-example-pages {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--spacing-4);
+  margin-top: var(--spacing-4);
+}
+
+.error-page-preview {
+  border: 1px solid var(--admin-border);
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+}
+
+.error-page-preview h4 {
+  background-color: var(--admin-background);
+  padding: var(--spacing-2) var(--spacing-4);
+  margin: 0;
+  border-bottom: 1px solid var(--admin-border);
+  font-size: var(--font-size-md);
+}
+
+.error-page-frame {
+  height: 400px;
+  overflow: auto;
+  transform: scale(0.7);
+  transform-origin: top center;
+  border: none;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+  .error-example-pages {
+    grid-template-columns: 1fr;
+  }
+
+  .error-page-frame {
+    height: 300px;
+  }
+}

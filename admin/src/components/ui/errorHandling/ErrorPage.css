@@ -1,0 +1,76 @@
+/* Path: admin/src/components/ui/errorHandling/ErrorPage.css */
+.admin-error-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+  padding: var(--spacing-6);
+  background-color: var(--admin-background);
+}
+
+.admin-error-page-content {
+  max-width: 600px;
+  text-align: center;
+  padding: var(--spacing-8);
+  background-color: var(--admin-surface);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.admin-error-page-code {
+  font-size: var(--font-size-6xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--admin-primary);
+  margin-bottom: var(--spacing-4);
+  line-height: 1;
+  opacity: 0.8;
+}
+
+.admin-error-page-title {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--admin-text-primary);
+  margin-bottom: var(--spacing-4);
+}
+
+.admin-error-page-message {
+  font-size: var(--font-size-base);
+  color: var(--admin-text-secondary);
+  margin-bottom: var(--spacing-6);
+  line-height: var(--line-height-relaxed);
+}
+
+.admin-error-page-actions {
+  margin-top: var(--spacing-6);
+}
+
+.admin-error-page-back-link {
+  display: inline-block;
+  padding: var(--spacing-2) var(--spacing-4);
+  background-color: var(--admin-primary);
+  color: white;
+  border-radius: var(--border-radius-md);
+  text-decoration: none;
+  font-weight: var(--font-weight-medium);
+  transition: background-color var(--transition-duration-fast) ease;
+}
+
+.admin-error-page-back-link:hover {
+  background-color: var(--admin-primary-dark);
+  text-decoration: none;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 576px) {
+  .admin-error-page-content {
+    padding: var(--spacing-4);
+  }
+
+  .admin-error-page-code {
+    font-size: var(--font-size-5xl);
+  }
+
+  .admin-error-page-title {
+    font-size: var(--font-size-xl);
+  }
+}

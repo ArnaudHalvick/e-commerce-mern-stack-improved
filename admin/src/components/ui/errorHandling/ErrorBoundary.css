@@ -1,0 +1,72 @@
+/* Path: admin/src/components/ui/errorHandling/ErrorBoundary.css */
+.admin-error-boundary {
+  padding: var(--spacing-6);
+  margin: var(--spacing-4) 0;
+  text-align: center;
+  background-color: #fdf0f0;
+  border-radius: var(--border-radius-lg);
+  border: 1px solid var(--color-danger-light);
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.admin-error-boundary-icon {
+  font-size: 3rem;
+  margin-bottom: var(--spacing-3);
+}
+
+.admin-error-boundary-title {
+  font-size: var(--font-size-xl);
+  color: var(--color-danger-dark);
+  margin-bottom: var(--spacing-3);
+}
+
+.admin-error-boundary-message {
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-4);
+  font-size: var(--font-size-md);
+}
+
+.admin-error-boundary-details {
+  margin: var(--spacing-4) 0;
+  text-align: left;
+  font-family: monospace;
+  background-color: rgba(0, 0, 0, 0.03);
+  padding: var(--spacing-2);
+  border-radius: var(--border-radius-md);
+}
+
+.admin-error-boundary-details summary {
+  cursor: pointer;
+  padding: var(--spacing-2);
+  font-weight: var(--font-weight-semibold);
+  color: var(--admin-text-secondary);
+}
+
+.admin-error-boundary-stack {
+  overflow-x: auto;
+  margin: var(--spacing-2) 0;
+  padding: var(--spacing-3);
+  background-color: rgba(0, 0, 0, 0.02);
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--admin-text-secondary);
+}
+
+.admin-error-boundary-button {
+  background-color: var(--color-danger);
+  color: white;
+  border: none;
+  padding: var(--spacing-2) var(--spacing-4);
+  font-size: var(--font-size-base);
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: background-color var(--transition-duration-fast) ease;
+}
+
+.admin-error-boundary-button:hover {
+  background-color: var(--color-danger-dark);
+}

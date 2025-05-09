@@ -1,0 +1,109 @@
+/* Path: admin/src/components/ui/errorHandling/Alert.css */
+.admin-alert {
+  display: flex;
+  align-items: flex-start;
+  padding: var(--spacing-3) var(--spacing-4);
+  border-radius: var(--border-radius-md);
+  margin-bottom: var(--spacing-4);
+  border-left-width: 4px;
+  border-left-style: solid;
+}
+
+/* Variants - Light (default) */
+.admin-alert-success {
+  background-color: #e6f7f0;
+  border-left-color: var(--color-success);
+  color: var(--color-success-dark);
+}
+
+.admin-alert-error {
+  background-color: #fdf0f0;
+  border-left-color: var(--color-danger);
+  color: var(--color-danger-dark);
+}
+
+.admin-alert-warning {
+  background-color: #fff8e6;
+  border-left-color: var(--color-warning);
+  color: var(--color-warning-dark);
+}
+
+.admin-alert-info {
+  background-color: #e6f3ff;
+  border-left-color: var(--color-info);
+  color: var(--color-info-dark);
+}
+
+/* Variants - Solid */
+.admin-alert-solid.admin-alert-success {
+  background-color: var(--color-success);
+  color: white;
+}
+
+.admin-alert-solid.admin-alert-error {
+  background-color: var(--color-danger);
+  color: white;
+}
+
+.admin-alert-solid.admin-alert-warning {
+  background-color: var(--color-warning);
+  color: var(--color-warning-dark);
+}
+
+.admin-alert-solid.admin-alert-info {
+  background-color: var(--color-info);
+  color: white;
+}
+
+/* Content layout */
+.admin-alert-icon {
+  flex-shrink: 0;
+  margin-right: var(--spacing-3);
+  font-size: var(--font-size-md);
+}
+
+.admin-alert-content {
+  flex: 1;
+}
+
+.admin-alert-title {
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--spacing-1);
+}
+
+.admin-alert-message {
+  font-size: var(--font-size-sm);
+}
+
+.admin-alert-close {
+  background: transparent;
+  border: none;
+  color: inherit;
+  opacity: 0.7;
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  margin-left: var(--spacing-2);
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--border-radius-sm);
+  transition: opacity var(--transition-duration-fast) ease;
+}
+
+.admin-alert-close:hover {
+  opacity: 1;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 576px) {
+  .admin-alert {
+    padding: var(--spacing-2) var(--spacing-3);
+  }
+
+  .admin-alert-icon {
+    margin-right: var(--spacing-2);
+  }
+}
