@@ -23,6 +23,7 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
   });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [hasDiscount, setHasDiscount] = useState(false);
 
   // Category options
   const categoryOptions = [
@@ -76,6 +77,7 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
   // Initialize form with product data when modal opens
   useEffect(() => {
     if (product) {
+      const hasDiscountValue = product.new_price > 0;
       setFormData({
         ...product,
         // Convert array fields to match the expected format of the Select component
@@ -83,6 +85,7 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
         tags: product.tags || [],
         types: product.types || [],
       });
+      setHasDiscount(hasDiscountValue);
     }
   }, [product]);
 
@@ -95,10 +98,10 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
     if (!formData.longDescription)
       newErrors.longDescription = "Long description is required";
     if (!formData.category) newErrors.category = "Category is required";
-    if (formData.new_price <= 0)
-      newErrors.new_price = "New price must be greater than 0";
     if (formData.old_price <= 0)
-      newErrors.old_price = "Old price must be greater than 0";
+      newErrors.old_price = "Original price must be greater than 0";
+    if (hasDiscount && formData.new_price <= 0)
+      newErrors.new_price = "Discounted price must be greater than 0";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -118,6 +121,19 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
     }
   };
 
+  const handleDiscountChange = (e) => {
+    const { checked } = e.target;
+    setHasDiscount(checked);
+
+    // Reset new_price to 0 when discount is disabled
+    if (!checked) {
+      setFormData((prev) => ({
+        ...prev,
+        new_price: 0,
+      }));
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -132,10 +148,14 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
     setIsSubmitting(true);
 
     try {
-      await onSave({
+      // If discount is disabled, ensure new_price is set to 0
+      const updatedData = {
         ...formData,
         _id: product._id, // Ensure ID is preserved
-      });
+        new_price: hasDiscount ? formData.new_price : 0,
+      };
+
+      await onSave(updatedData);
     } catch (error) {
       console.error("Error saving product:", error);
     } finally {
@@ -232,20 +252,7 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
             </div>
           </div>
 
-          <div className="list-product-form-row two-column">
-            <div className="list-product-form-group">
-              <Input
-                label="Current Price ($)"
-                type="number"
-                name="new_price"
-                value={formData.new_price}
-                onChange={handleChange}
-                error={errors.new_price}
-                min={0}
-                step={0.01}
-                required
-              />
-            </div>
+          <div className="list-product-form-row">
             <div className="list-product-form-group">
               <Input
                 label="Original Price ($)"
@@ -254,12 +261,53 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
                 value={formData.old_price}
                 onChange={handleChange}
                 error={errors.old_price}
-                min={0}
+                min={0.01}
                 step={0.01}
                 required
               />
             </div>
           </div>
+
+          <div className="list-product-form-row">
+            <div className="list-product-form-group">
+              <div className="list-product-checkbox-container discount">
+                <label className="list-product-checkbox-label">
+                  <input
+                    type="checkbox"
+                    name="hasDiscount"
+                    checked={hasDiscount}
+                    onChange={handleDiscountChange}
+                  />
+                  <span>Apply Discount</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          {hasDiscount && (
+            <div className="list-product-form-row">
+              <div className="list-product-form-group">
+                <Input
+                  label="Discounted Price ($)"
+                  type="number"
+                  name="new_price"
+                  value={formData.new_price}
+                  onChange={handleChange}
+                  error={errors.new_price}
+                  min={0.01}
+                  max={formData.old_price - 0.01}
+                  step={0.01}
+                  required={hasDiscount}
+                  disabled={!hasDiscount}
+                />
+                {formData.new_price >= formData.old_price && hasDiscount && (
+                  <div className="list-product-input-error">
+                    Discounted price must be less than original price
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
           <div className="list-product-form-row">
             <div className="list-product-form-group">

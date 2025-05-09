@@ -56,6 +56,12 @@
   margin-top: 25px;
 }
 
+/* Styles for the discount checkbox container */
+.list-product-checkbox-container.discount {
+  margin-top: 0;
+  margin-bottom: 5px;
+}
+
 .list-product-checkbox-group {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
