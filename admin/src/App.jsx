@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import NavBar from "./components/navbar/Navbar";
 import Sidebar from "./components/sidebar/Sidebar";
 import Admin from "./pages/admin/Admin";
+import { ErrorState } from "./context/error/index.jsx";
 import "./App.css";
 
 function App() {
@@ -34,15 +35,17 @@ function App() {
   };
 
   return (
-    <div className="admin-container">
-      <NavBar toggleSidebar={toggleSidebar} sidebarOpen={sidebarOpen} />
-      <div className="admin-main">
-        <Sidebar isOpen={sidebarOpen} />
-        <div className={`admin-content ${sidebarOpen ? "sidebar-open" : ""}`}>
-          <Admin />
+    <ErrorState>
+      <div className="admin-container">
+        <NavBar toggleSidebar={toggleSidebar} sidebarOpen={sidebarOpen} />
+        <div className="admin-main">
+          <Sidebar isOpen={sidebarOpen} />
+          <div className={`admin-content ${sidebarOpen ? "sidebar-open" : ""}`}>
+            <Admin />
+          </div>
         </div>
       </div>
-    </div>
+    </ErrorState>
   );
 }
 
