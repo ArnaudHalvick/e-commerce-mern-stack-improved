@@ -4,6 +4,7 @@ import Button from "../../ui/button/Button";
 import Input from "../../ui/input/Input";
 import Select from "../../ui/select/Select";
 import { useToast } from "../../ui/errorHandling/toast/ToastHooks";
+import { getImageUrl } from "../../../utils/apiUtils";
 import "../styles/ListProductEditModal.css";
 
 const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
@@ -365,7 +366,10 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
                 {formData.images &&
                   formData.images.map((image, index) => (
                     <div key={index} className="list-product-image-preview">
-                      <img src={image} alt={`Product ${index + 1}`} />
+                      <img
+                        src={getImageUrl(image)}
+                        alt={`Product ${index + 1}`}
+                      />
                       <div className="list-product-image-preview-actions">
                         <button
                           type="button"
