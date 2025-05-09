@@ -1,195 +1,118 @@
 // Path: admin/src/components/addProduct/AddProduct.jsx
 import "./AddProduct.css";
-import axios from "axios";
-import upload_area from "../../assets/admin_assets/upload_area.svg";
-import { useState } from "react";
-import { getApiUrl } from "../../utils/apiUtils";
 
 const AddProduct = () => {
-  const [image, setImage] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [product, setProduct] = useState({
-    name: "",
-    image: "",
-    category: "women",
-    new_price: "",
-    old_price: "",
-  });
-
-  const changeHandler = (e) => {
-    setProduct({ ...product, [e.target.name]: e.target.value });
-  };
-
-  const imageHandler = (e) => {
-    const file = e.target.files[0];
-    if (file && file.type.startsWith("image/")) {
-      setImage(file);
-    } else {
-      alert("Please upload an image file");
-    }
-  };
-
-  const validateForm = () => {
-    if (!product.name.trim()) {
-      alert("Please enter a product name");
-      return false;
-    }
-    if (!product.new_price || product.new_price <= 0) {
-      alert("Please enter a valid new price");
-      return false;
-    }
-    if (!product.old_price || product.old_price <= 0) {
-      alert("Please enter a valid old price");
-      return false;
-    }
-    if (!image) {
-      alert("Please upload a product image");
-      return false;
-    }
-    return true;
-  };
-
-  const addProduct = async () => {
-    if (!validateForm()) return;
-
-    try {
-      setLoading(true);
-      // Create form data for image upload
-      const formData = new FormData();
-      formData.append("product", image);
-
-      // Use the new utility function for proper URL construction
-      const uploadUrl = getApiUrl("upload");
-
-      // Upload image first
-      const uploadResponse = await axios.post(uploadUrl, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      if (uploadResponse.data.success) {
-        // Create product with image URL - use the relative path returned from the backend
-        const productData = {
-          ...product,
-          image: uploadResponse.data.image_url,
-        };
-
-        // Use the new utility function for proper URL construction
-        const addUrl = getApiUrl("products/add-product");
-
-        // Add product to database
-        const addResponse = await axios.post(addUrl, productData, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
-        if (addResponse.data.success) {
-          alert("Product Added Successfully!");
-          // Reset form
-          setProduct({
-            name: "",
-            image: "",
-            category: "women",
-            new_price: "",
-            old_price: "",
-          });
-          setImage(null);
-        }
-      }
-    } catch (error) {
-      console.error("Error adding product:", error);
-      alert(
-        error.response?.data?.message ||
-          "Error adding product. Please try again."
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
-    <div className="product-form">
-      <h1>Add Product</h1>
-      <div className="product-form__field">
-        <input
-          type="text"
-          name="name"
-          value={product.name}
-          onChange={changeHandler}
-          placeholder="Product name"
-          required
-        />
-      </div>
+    <div className="admin-add-product">
+      <h1 className="admin-page-title">Add Product</h1>
 
-      <div className="product-form__field">
-        <select
-          name="category"
-          value={product.category}
-          onChange={changeHandler}
-          required
-        >
-          <option value="women">Women</option>
-          <option value="men">Men</option>
-          <option value="kids">Kids</option>
-        </select>
-      </div>
-
-      <div className="product-form__price-fields">
-        <div className="product-form__field">
-          <input
-            type="number"
-            name="old_price"
-            value={product.old_price}
-            onChange={changeHandler}
-            placeholder="Old Price"
-            min="0"
-            step="0.01"
-            required
-          />
+      <div className="admin-card">
+        <div className="admin-card-header">
+          <h2>Product Information</h2>
         </div>
+        <div className="admin-card-body">
+          <div className="admin-form-group">
+            <label htmlFor="product-name" className="admin-form-label">
+              Product Name
+            </label>
+            <input
+              type="text"
+              id="product-name"
+              className="admin-form-input"
+              placeholder="Enter product name"
+            />
+          </div>
 
-        <div className="product-form__field">
-          <input
-            type="number"
-            name="new_price"
-            value={product.new_price}
-            onChange={changeHandler}
-            placeholder="New Price"
-            min="0"
-            step="0.01"
-            required
-          />
+          <div className="admin-form-row">
+            <div className="admin-form-group">
+              <label htmlFor="product-category" className="admin-form-label">
+                Category
+              </label>
+              <select id="product-category" className="admin-form-input">
+                <option value="">Select a category</option>
+                <option value="women">Women</option>
+                <option value="men">Men</option>
+                <option value="kids">Kids</option>
+              </select>
+            </div>
+
+            <div className="admin-form-group">
+              <label htmlFor="product-status" className="admin-form-label">
+                Status
+              </label>
+              <select id="product-status" className="admin-form-input">
+                <option value="active">Active</option>
+                <option value="draft">Draft</option>
+                <option value="archived">Archived</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="admin-form-row">
+            <div className="admin-form-group">
+              <label htmlFor="product-price" className="admin-form-label">
+                Regular Price
+              </label>
+              <input
+                type="number"
+                id="product-price"
+                className="admin-form-input"
+                placeholder="0.00"
+                min="0"
+                step="0.01"
+              />
+            </div>
+
+            <div className="admin-form-group">
+              <label htmlFor="product-sale-price" className="admin-form-label">
+                Sale Price
+              </label>
+              <input
+                type="number"
+                id="product-sale-price"
+                className="admin-form-input"
+                placeholder="0.00"
+                min="0"
+                step="0.01"
+              />
+            </div>
+          </div>
+
+          <div className="admin-form-group">
+            <label htmlFor="product-description" className="admin-form-label">
+              Description
+            </label>
+            <textarea
+              id="product-description"
+              className="admin-form-input admin-form-textarea"
+              placeholder="Enter product description"
+              rows="4"
+            ></textarea>
+          </div>
+
+          <div className="admin-form-group">
+            <label className="admin-form-label">Product Images</label>
+            <div className="admin-image-upload-area">
+              <div className="admin-image-upload-placeholder">
+                <span className="admin-image-upload-icon">➕</span>
+                <p>
+                  Drop your image here, or <span>browse</span>
+                </p>
+                <p className="admin-image-upload-hint">
+                  Supports JPG, PNG, GIF up to 5MB
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="admin-form-actions">
+            <button className="admin-btn admin-btn-outline">Cancel</button>
+            <button className="admin-btn admin-btn-primary">
+              Save Product
+            </button>
+          </div>
         </div>
       </div>
-
-      <div className="product-form__field">
-        <label htmlFor="file-input" className="product-form__upload-label">
-          <img
-            src={image ? URL.createObjectURL(image) : upload_area}
-            alt={image ? "Product preview" : "Upload area"}
-            className="product-form__upload-image"
-          />
-          <p>{image ? "Click to change image" : "Click to upload image"}</p>
-        </label>
-        <input
-          type="file"
-          id="file-input"
-          name="image"
-          hidden
-          accept="image/*"
-          onChange={imageHandler}
-          required
-        />
-      </div>
-      <button
-        onClick={addProduct}
-        className="product-form__submit-button"
-        disabled={loading}
-      >
-        {loading ? "Adding Product..." : "Add Product"}
-      </button>
     </div>
   );
 };

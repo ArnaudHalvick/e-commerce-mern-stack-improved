@@ -1,8 +1,6 @@
 // Path: admin/src/components/sidebar/Sidebar.jsx
 import "./Sidebar.css";
 import { Link, useLocation } from "react-router-dom";
-import add_product_icon from "../../assets/admin_assets/Product_Cart.svg";
-import list_product_icon from "../../assets/admin_assets/Product_list_icon.svg";
 
 const Sidebar = ({ isOpen }) => {
   const location = useLocation();
@@ -11,37 +9,37 @@ const Sidebar = ({ isOpen }) => {
     {
       name: "Dashboard",
       path: "/",
-      icon: "🏠", // Replace with proper icon
+      icon: "🏠",
     },
     {
       name: "Add Product",
       path: "/add-product",
-      icon: add_product_icon,
+      icon: "➕",
     },
     {
       name: "Product List",
       path: "/list-product",
-      icon: list_product_icon,
+      icon: "📋",
     },
     {
       name: "Orders",
       path: "/orders",
-      icon: "📦", // Replace with proper icon
+      icon: "📦",
     },
     {
       name: "Customers",
       path: "/customers",
-      icon: "👥", // Replace with proper icon
+      icon: "👥",
     },
     {
       name: "Analytics",
       path: "/analytics",
-      icon: "📊", // Replace with proper icon
+      icon: "📊",
     },
     {
       name: "Settings",
       path: "/settings",
-      icon: "⚙️", // Replace with proper icon
+      icon: "⚙️",
     },
   ];
 
@@ -75,11 +73,7 @@ const Sidebar = ({ isOpen }) => {
               aria-current={isActive(item.path) ? "page" : undefined}
             >
               <div className="admin-sidebar-icon">
-                {typeof item.icon === "string" ? (
-                  <span className="admin-sidebar-emoji">{item.icon}</span>
-                ) : (
-                  <img src={item.icon} alt={`${item.name} icon`} />
-                )}
+                <span className="admin-sidebar-emoji">{item.icon}</span>
               </div>
               <span className="admin-sidebar-label">{item.name}</span>
             </Link>

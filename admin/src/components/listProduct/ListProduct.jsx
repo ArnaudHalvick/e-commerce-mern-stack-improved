@@ -1,104 +1,121 @@
 // Path: admin/src/components/listProduct/ListProduct.jsx
-import { useState, useEffect } from "react";
 import "./ListProduct.css";
-import { getApiUrl, getImageUrl } from "../../utils/apiUtils";
-
-// TODO: Rework the layout, need to use table with all info in a line with responsive design for smaller screens
-// Also implement product editing
 
 const ListProduct = () => {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        // Use the new utility function for proper URL construction
-        const apiUrl = getApiUrl("/products/all-products");
-
-        const response = await fetch(apiUrl);
-        const data = await response.json();
-        setProducts(data);
-        setLoading(false);
-      } catch (err) {
-        console.error("Error fetching products:", err);
-        setError(err + "/" + "Failed to fetch products");
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, []);
-
-  const handleDelete = async (productId, name) => {
-    if (window.confirm(`Are you sure you want to delete ${name}?`)) {
-      try {
-        // Use the new utility function for proper URL construction
-        const apiUrl = getApiUrl("products/remove-product");
-
-        const response = await fetch(apiUrl, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ id: productId }),
-        });
-        const data = await response.json();
-
-        if (data.success) {
-          setProducts(products.filter((product) => product._id !== productId));
-          alert("Product deleted successfully!");
-        }
-      } catch (err) {
-        alert(err + "/" + "Failed to delete product. Please try again.");
-      }
-    }
-  };
-
-  if (loading) return <div className="loading">Loading products...</div>;
-  if (error) return <div className="error">{error}</div>;
+  // Placeholder data
+  const products = [
+    {
+      id: 1,
+      name: "Modern T-shirt",
+      category: "Men",
+      price: 29.99,
+      status: "Active",
+      stock: 45,
+    },
+    {
+      id: 2,
+      name: "Summer Dress",
+      category: "Women",
+      price: 49.99,
+      status: "Active",
+      stock: 32,
+    },
+    {
+      id: 3,
+      name: "Kids Sneakers",
+      category: "Kids",
+      price: 34.99,
+      status: "Active",
+      stock: 20,
+    },
+  ];
 
   return (
-    <div className="list-product">
-      <h1>All Products</h1>
-      <div className="list-product-format-main">
-        <p>Products</p>
-        <p>Title</p>
-        <p>Old Price</p>
-        <p>New Price</p>
-        <p>Category</p>
-        <p>Remove</p>
+    <div className="admin-product-list">
+      <div className="admin-page-header">
+        <h1 className="admin-page-title">Product List</h1>
+        <button className="admin-btn admin-btn-primary">
+          <span>➕</span> Add New Product
+        </button>
       </div>
-      <div className="list-product-allproducts">
-        <hr />
-        {products.length === 0 ? (
-          <p className="no-products">No products found</p>
-        ) : (
-          products.map((product, index) => {
-            return (
-              <div key={index} className="list-product-format">
-                <img
-                  src={getImageUrl(
-                    product.images ? product.images[0] : product.image
-                  )}
-                  alt={product.name}
-                  className="list-product-image"
-                />
-                <p>{product.name}</p>
-                <p>${product.old_price}</p>
-                <p>${product.new_price}</p>
-                <p>{product.category}</p>
-                <button
-                  className="list-product-remove"
-                  onClick={() => handleDelete(product._id, product.name)}
-                >
-                  <img src="/cross.png" alt="delete" />
-                </button>
-              </div>
-            );
-          })
-        )}
+
+      <div className="admin-card">
+        <div className="admin-card-header">
+          <h2>All Products</h2>
+          <div className="admin-search-field">
+            <input
+              type="text"
+              className="admin-form-input admin-search-input"
+              placeholder="Search products..."
+            />
+          </div>
+        </div>
+        <div className="admin-card-body">
+          <div className="admin-table-responsive">
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Category</th>
+                  <th>Price</th>
+                  <th>Status</th>
+                  <th>Stock</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {products.map((product) => (
+                  <tr key={product.id}>
+                    <td>
+                      <div className="admin-product-cell">
+                        <div className="admin-product-image-placeholder"></div>
+                        <span>{product.name}</span>
+                      </div>
+                    </td>
+                    <td>{product.category}</td>
+                    <td>${product.price.toFixed(2)}</td>
+                    <td>
+                      <span className="admin-status-badge">
+                        {product.status}
+                      </span>
+                    </td>
+                    <td>{product.stock} units</td>
+                    <td>
+                      <div className="admin-table-actions">
+                        <button
+                          className="admin-action-btn admin-action-btn-edit"
+                          aria-label="Edit product"
+                        >
+                          ✏️
+                        </button>
+                        <button
+                          className="admin-action-btn admin-action-btn-delete"
+                          aria-label="Delete product"
+                        >
+                          🗑️
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="admin-pagination">
+            <button className="admin-pagination-btn" disabled>
+              Previous
+            </button>
+            <div className="admin-pagination-pages">
+              <button className="admin-pagination-btn admin-pagination-btn-active">
+                1
+              </button>
+              <button className="admin-pagination-btn">2</button>
+              <button className="admin-pagination-btn">3</button>
+            </div>
+            <button className="admin-pagination-btn">Next</button>
+          </div>
+        </div>
       </div>
     </div>
   );

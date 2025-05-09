@@ -1,4 +1,142 @@
 /* Path: admin/src/components/listProduct/ListProduct.css */
+.admin-product-list {
+  width: 100%;
+}
+
+.admin-page-header {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  align-items: flex-start;
+}
+
+@media screen and (min-width: 768px) {
+  .admin-page-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.admin-search-field {
+  position: relative;
+  max-width: 300px;
+  width: 100%;
+}
+
+.admin-search-input {
+  padding-left: 2.5rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/circle%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'%3E%3C/line%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 0.75rem center;
+  background-size: 1rem;
+}
+
+.admin-product-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.admin-product-image-placeholder {
+  width: 40px;
+  height: 40px;
+  background-color: var(--admin-border);
+  border-radius: var(--border-radius-md);
+  flex-shrink: 0;
+}
+
+.admin-status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--border-radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  background-color: rgba(57, 73, 171, 0.1);
+  color: var(--admin-primary);
+}
+
+.admin-table-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.admin-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: background-color var(--transition-duration-fast)
+    var(--transition-timing-ease);
+}
+
+.admin-action-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.admin-action-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--admin-primary-light);
+}
+
+.admin-action-btn-edit {
+  color: var(--admin-primary);
+}
+
+.admin-action-btn-delete {
+  color: var(--color-danger);
+}
+
+.admin-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.admin-pagination-pages {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.admin-pagination-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--border-radius-md);
+  background-color: transparent;
+  color: var(--admin-text-secondary);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: all var(--transition-duration-fast) var(--transition-timing-ease);
+}
+
+.admin-pagination-btn:hover:not(:disabled) {
+  background-color: rgba(0, 0, 0, 0.03);
+  border-color: var(--admin-text-secondary);
+}
+
+.admin-pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.admin-pagination-btn-active {
+  background-color: var(--admin-primary);
+  color: white;
+  border-color: var(--admin-primary);
+}
+
 .list-product-container {
   padding: 2rem;
   max-width: 1200px;
