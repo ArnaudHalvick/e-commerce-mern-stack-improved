@@ -23,7 +23,7 @@ const PromoCodeSection = () => {
   return (
     <div className="cart-items-promo-code-section">
       <p className="cart-items-promo-code-text">
-        If you have a promo code, Enter it here
+        If you have a promo code, enter it here
       </p>
       <form
         onSubmit={handleSubmit}

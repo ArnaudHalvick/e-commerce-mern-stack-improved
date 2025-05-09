@@ -128,14 +128,14 @@ const CartItems = () => {
           </div>
         </div>
 
-        {/* Cart Summary - Mercadolibre style */}
+        {/* Cart Summary */}
         <div className="cart-summary-section">
           <div className="cart-summary-header">
             <h2 className="cart-summary-title">Order Summary</h2>
           </div>
           <div className="cart-summary-content">
             <div className="cart-summary-row">
-              <span>Products ({items.length})</span>
+              <span>Products</span>
               <span>${localTotalPrice.toFixed(2)}</span>
             </div>
             <div className="cart-summary-row">
