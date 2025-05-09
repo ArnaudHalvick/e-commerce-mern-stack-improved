@@ -1,20 +1,6 @@
-import React, { createContext, useContext, useState, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import Toast from "./Toast";
-
-// Create the context
-const ToastContext = createContext(null);
-
-/**
- * Custom hook to use the toast system
- * @returns {Object} Toast methods: { showToast, clearToasts }
- */
-export const useToast = () => {
-  const context = useContext(ToastContext);
-  if (!context) {
-    throw new Error("useToast must be used within a ToastProvider");
-  }
-  return context;
-};
+import { ToastContext } from "./ToastContext";
 
 /**
  * Toast Provider component to manage multiple toast notifications

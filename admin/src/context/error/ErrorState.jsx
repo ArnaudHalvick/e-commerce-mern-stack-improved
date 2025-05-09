@@ -1,10 +1,8 @@
 import React, { useReducer } from "react";
 import ErrorContext from "./ErrorContext";
 import ErrorReducer from "./ErrorReducer";
-import {
-  ToastProvider,
-  useToast,
-} from "../../components/ui/errorHandling/toast/ToastProvider";
+import ToastProvider from "../../components/ui/errorHandling/toast/ToastProvider";
+import { useToast } from "../../components/ui/errorHandling/toast/ToastHooks";
 import {
   SET_ERROR,
   CLEAR_ERROR,

@@ -1,7 +1,9 @@
 import Alert from "./Alert";
 import ErrorBoundary from "./ErrorBoundary";
 import Toast from "./toast/Toast";
-import ToastProvider, { useToast } from "./toast/ToastProvider";
+import ToastProvider from "./toast/ToastProvider";
+import { useToast } from "./toast/ToastHooks";
+import { ToastContext } from "./toast/ToastContext";
 
 /**
  * Utility function to handle errors consistently
@@ -66,6 +68,7 @@ export {
   ErrorBoundary,
   Toast,
   ToastProvider,
+  ToastContext,
   useToast,
   handleError,
   createErrorThrower,
