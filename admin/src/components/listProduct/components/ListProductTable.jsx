@@ -97,10 +97,11 @@ const ListProductTable = ({
               </Table.Cell>
               <Table.Cell>
                 <Badge
-                  type={product.available ? "success" : "warning"}
+                  variant={product.available ? "success" : "danger"}
                   onClick={() =>
                     onToggleAvailability(product._id, product.available)
                   }
+                  className="list-product-status-badge"
                 >
                   {product.available ? "Active" : "Inactive"}
                 </Badge>

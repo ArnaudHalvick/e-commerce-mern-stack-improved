@@ -78,3 +78,18 @@
   display: flex;
   gap: 8px;
 }
+
+/* Status badge styles */
+.list-product-status-badge {
+  cursor: pointer;
+  padding: 4px 8px;
+  min-width: 80px;
+  text-align: center;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.list-product-status-badge:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
