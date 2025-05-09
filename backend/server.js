@@ -35,6 +35,7 @@ const reviewRoutes = require("./routes/reviewRoutes");
 const errorDemoRoutes = require("./routes/errorDemoRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
 const adminRoutes = require("./routes/adminRoutes");
+const adminAuthRoutes = require("./routes/adminAuthRoutes");
 
 // Initialize express app
 const app = express();
@@ -248,6 +249,9 @@ app.use("/api/cart", cartRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/error-demo", errorDemoRoutes);
+
+// Admin routes - grouped under /api/admin
+app.use("/api/admin/auth", adminAuthRoutes);
 app.use("/api/admin", adminRoutes);
 
 // 404 handler - unhandled routes

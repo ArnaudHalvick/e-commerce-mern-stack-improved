@@ -3,27 +3,51 @@
  * Contains all API-related configuration for the admin dashboard
  */
 
-// Get the environment
-const isDevEnvironment = import.meta.env.DEV;
+// Get API URL from environment variables
+export const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+export const ADMIN_API_PATH =
+  import.meta.env.VITE_ADMIN_API_PATH || "/api/admin";
 
-// Default protocol based on environment
-const defaultProtocol = isDevEnvironment ? "http" : "https";
+// Construct full API base URL
+export const API_BASE_URL = API_URL;
 
-// Get the base API URL with environment-specific fallbacks
-export const API_BASE_URL = (() => {
-  // First check if explicitly set in environment variables
-  if (import.meta.env.VITE_API_URL) {
-    return import.meta.env.VITE_API_URL;
-  }
+// Authentication endpoints
+export const AUTH_ENDPOINTS = {
+  LOGIN: `${ADMIN_API_PATH}/auth/login`,
+  LOGOUT: `${ADMIN_API_PATH}/auth/logout`,
+  VERIFY: `${ADMIN_API_PATH}/auth/verify`,
+  REFRESH_TOKEN: `${ADMIN_API_PATH}/auth/refresh-token`,
+};
 
-  // Development fallback
-  if (isDevEnvironment) {
-    return `${defaultProtocol}://localhost:4000`;
-  }
+// Product endpoints
+export const PRODUCT_ENDPOINTS = {
+  GET_ALL: `${ADMIN_API_PATH}/products`,
+  GET_BY_ID: (id) => `${ADMIN_API_PATH}/products/${id}`,
+  CREATE: `${ADMIN_API_PATH}/products`,
+  UPDATE: (id) => `${ADMIN_API_PATH}/products/${id}`,
+  DELETE: (id) => `${ADMIN_API_PATH}/products/${id}`,
+  PERMANENT_DELETE: (id) => `${ADMIN_API_PATH}/products/${id}/permanent`,
+  RESTORE: (id) => `${ADMIN_API_PATH}/products/${id}/restore`,
+  TOGGLE_AVAILABILITY: (id) =>
+    `${ADMIN_API_PATH}/products/${id}/toggle-availability`,
+  UPLOAD_IMAGES: `${ADMIN_API_PATH}/products/upload`,
+};
 
-  // Production fallback
-  return `${defaultProtocol}://mernappshopper.xyz/api`;
-})();
+// Order endpoints
+export const ORDER_ENDPOINTS = {
+  GET_ALL: `${ADMIN_API_PATH}/orders`,
+  GET_BY_ID: (id) => `${ADMIN_API_PATH}/orders/${id}`,
+  UPDATE_STATUS: (id) => `${ADMIN_API_PATH}/orders/${id}/status`,
+};
+
+// Users endpoints
+export const USER_ENDPOINTS = {
+  GET_ALL: `${ADMIN_API_PATH}/users`,
+  GET_BY_ID: (id) => `${ADMIN_API_PATH}/users/${id}`,
+  UPDATE: (id) => `${ADMIN_API_PATH}/users/${id}`,
+  DISABLE: (id) => `${ADMIN_API_PATH}/users/${id}/disable`,
+  ENABLE: (id) => `${ADMIN_API_PATH}/users/${id}/enable`,
+};
 
 /**
  * Gets the base URL without the trailing "/api" suffix
@@ -34,7 +58,7 @@ export const getBaseUrl = () => {
   let baseUrl = API_BASE_URL.replace(/\/api$/, "");
 
   // For images in production, use the main domain without port
-  if (!isDevEnvironment) {
+  if (!import.meta.env.DEV) {
     baseUrl = baseUrl.replace(/:\d+$/, "");
   }
 
@@ -92,4 +116,8 @@ export default {
   joinUrl,
   getApiUrl,
   getImageUrl,
+  AUTH_ENDPOINTS,
+  PRODUCT_ENDPOINTS,
+  ORDER_ENDPOINTS,
+  USER_ENDPOINTS,
 };

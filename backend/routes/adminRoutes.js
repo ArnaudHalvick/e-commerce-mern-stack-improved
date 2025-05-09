@@ -6,7 +6,7 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const { v4: uuidv4 } = require("uuid");
-const { isAuthenticated } = require("../middleware/auth");
+const { isAdmin } = require("../middleware/auth");
 const {
   createProduct,
   getAllProducts,
@@ -54,8 +54,8 @@ const upload = multer({
 });
 
 // Product Routes
-// All routes require authentication
-router.use(isAuthenticated);
+// All routes require admin authentication
+router.use(isAdmin);
 
 // Get all products (includes query params for filtering deleted products)
 router.get("/products", getAllProducts);

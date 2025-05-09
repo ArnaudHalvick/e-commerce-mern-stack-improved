@@ -3,17 +3,24 @@
  * Central file to export all API services and configuration
  */
 
-import apiClient from "./client";
+import apiClient, { cancelPendingRequests } from "./client";
 import * as config from "./config";
 import productsService from "./services/products";
-import authService from "./services/auth";
+import authService from "./services/authService";
 
 // Export individual services for direct importing
-export { apiClient, config, productsService, authService };
+export {
+  apiClient,
+  cancelPendingRequests,
+  config,
+  productsService,
+  authService,
+};
 
 // Export default as a single API object
 const api = {
   client: apiClient,
+  cancelPendingRequests,
   config,
   products: productsService,
   auth: authService,

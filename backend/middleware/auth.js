@@ -5,25 +5,43 @@ const {
   extractAndVerifyRefreshToken,
 } = require("../services/authService");
 const AppError = require("../utils/errors/AppError");
+const catchAsync = require("../utils/common/catchAsync");
 
 /**
  * Middleware to ensure user is authenticated
  */
-const isAuthenticated = async (req, res, next) => {
+const isAuthenticated = catchAsync(async (req, res, next) => {
   const result = await extractAndVerifyToken(req);
 
   if (!result.success) {
-    return next(
-      AppError.createAndLogError(result.message, 401, {
-        path: req.originalUrl,
-        method: req.method,
-      })
-    );
+    return next(new AppError(result.message, 401));
   }
 
   req.user = result.user;
   next();
-};
+});
+
+/**
+ * Middleware to check if user is an admin
+ */
+const isAdmin = catchAsync(async (req, res, next) => {
+  // First check if the user is authenticated
+  const result = await extractAndVerifyToken(req);
+
+  if (!result.success) {
+    return next(new AppError(result.message, 401));
+  }
+
+  const user = result.user;
+
+  // Check if user has admin role
+  if (!user.isAdmin) {
+    return next(new AppError("Admin access required", 403));
+  }
+
+  req.user = user;
+  next();
+});
 
 /**
  * Middleware to prevent already authenticated users from accessing login/signup routes
@@ -102,4 +120,5 @@ module.exports = {
   isNotAuthenticated,
   verifyRefreshToken,
   isEmailVerified,
+  isAdmin,
 };

@@ -4,7 +4,7 @@
  */
 
 import axios from "axios";
-import { API_BASE_URL } from "./config";
+import { API_BASE_URL, AUTH_ENDPOINTS } from "./config";
 
 // Create axios instance with default config
 const apiClient = axios.create({
@@ -27,8 +27,19 @@ export const cancelPendingRequests = (message = "Operation canceled") => {
   cancelTokenSource = axios.CancelToken.source();
 };
 
-// Helper to ensure URL starts with /api
+// Helper to ensure URL starts with /api if necessary
 const ensureApiPrefix = (url) => {
+  // Skip adding /api if the URL already includes the full path from the config
+  if (
+    url.includes(AUTH_ENDPOINTS.LOGIN) ||
+    url.includes(AUTH_ENDPOINTS.LOGOUT) ||
+    url.includes(AUTH_ENDPOINTS.VERIFY) ||
+    url.includes(AUTH_ENDPOINTS.REFRESH_TOKEN)
+  ) {
+    return url;
+  }
+
+  // Otherwise, ensure it has the /api prefix
   if (!url.startsWith("/api/") && !url.startsWith("api/")) {
     return `/api${url.startsWith("/") ? url : `/${url}`}`;
   }
@@ -38,7 +49,7 @@ const ensureApiPrefix = (url) => {
 // Request interceptor to add authentication token
 apiClient.interceptors.request.use(
   (config) => {
-    // Ensure URLs have /api prefix
+    // Ensure URLs have proper prefix
     if (config.url) {
       config.url = ensureApiPrefix(config.url);
     }
@@ -51,8 +62,8 @@ apiClient.interceptors.request.use(
 
     // Add cancel token to most requests
     if (
-      !config.url.includes("/users/login") &&
-      !config.url.includes("/users/signup")
+      !config.url.includes(AUTH_ENDPOINTS.LOGIN) &&
+      !config.url.includes(AUTH_ENDPOINTS.LOGOUT)
     ) {
       config.cancelToken = cancelTokenSource.token;
     }
