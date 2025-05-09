@@ -1,0 +1,154 @@
+/* Path: admin/src/components/ui/button/Button.css */
+.admin-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--font-weight-medium);
+  border-radius: var(--border-radius-md);
+  transition: all var(--transition-duration-fast) var(--transition-timing-ease);
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  line-height: var(--line-height-normal);
+  white-space: nowrap;
+  text-decoration: none;
+  gap: 0.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.admin-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+}
+
+.admin-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Button variants */
+.admin-btn-primary {
+  background-color: var(--admin-primary);
+  color: white;
+}
+
+.admin-btn-primary:hover:not(:disabled),
+.admin-btn-primary:focus:not(:disabled) {
+  background-color: var(--admin-primary-dark);
+}
+
+.admin-btn-secondary {
+  background-color: var(--admin-secondary);
+  color: white;
+}
+
+.admin-btn-secondary:hover:not(:disabled),
+.admin-btn-secondary:focus:not(:disabled) {
+  background-color: #5e35b1; /* Darker shade of admin-secondary */
+}
+
+.admin-btn-outline {
+  background-color: transparent;
+  border: 1px solid var(--admin-border);
+  color: var(--admin-text-secondary);
+}
+
+.admin-btn-outline:hover:not(:disabled),
+.admin-btn-outline:focus:not(:disabled) {
+  border-color: var(--admin-primary);
+  color: var(--admin-primary);
+  background-color: rgba(57, 73, 171, 0.05);
+}
+
+.admin-btn-danger {
+  background-color: var(--color-danger);
+  color: white;
+}
+
+.admin-btn-danger:hover:not(:disabled),
+.admin-btn-danger:focus:not(:disabled) {
+  background-color: var(--color-danger-dark);
+}
+
+.admin-btn-success {
+  background-color: var(--color-success);
+  color: white;
+}
+
+.admin-btn-success:hover:not(:disabled),
+.admin-btn-success:focus:not(:disabled) {
+  background-color: var(--color-success-dark);
+}
+
+/* Button sizes */
+.admin-btn-small {
+  padding: 0.5rem 1rem;
+  font-size: var(--font-size-xs);
+  height: 32px;
+}
+
+.admin-btn-medium {
+  padding: 0.75rem 1.5rem;
+  font-size: var(--font-size-sm);
+  height: 40px;
+}
+
+.admin-btn-large {
+  padding: 1rem 2rem;
+  font-size: var(--font-size-base);
+  height: 48px;
+}
+
+/* Full width button */
+.admin-btn-full {
+  width: 100%;
+}
+
+/* Button with icon */
+.admin-btn-icon {
+  justify-content: center;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-lg);
+}
+
+.admin-btn-icon.admin-btn-small {
+  width: 32px;
+  height: 32px;
+  font-size: var(--font-size-md);
+}
+
+.admin-btn-icon.admin-btn-large {
+  width: 48px;
+  height: 48px;
+  font-size: var(--font-size-xl);
+}
+
+/* Loading state */
+.admin-btn-loading {
+  position: relative;
+  color: transparent !important;
+}
+
+.admin-btn-loading::after {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 50%;
+  left: 50%;
+  margin: -10px 0 0 -10px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-top-color: white;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

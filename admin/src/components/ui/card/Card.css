@@ -1,0 +1,88 @@
+/* Path: admin/src/components/ui/card/Card.css */
+.admin-card {
+  background-color: var(--admin-surface);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: box-shadow var(--transition-duration-normal)
+    var(--transition-timing-ease);
+  margin-bottom: 1.5rem;
+}
+
+.admin-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.admin-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--admin-border);
+}
+
+.admin-card-header h1,
+.admin-card-header h2,
+.admin-card-header h3,
+.admin-card-header h4,
+.admin-card-header h5,
+.admin-card-header h6 {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--admin-text-primary);
+}
+
+.admin-card-body {
+  padding: 1.5rem;
+}
+
+.admin-card-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  border-top: 1px solid var(--admin-border);
+  gap: 1rem;
+}
+
+/* Card variants */
+.admin-card-flat {
+  box-shadow: none;
+  border: 1px solid var(--admin-border);
+}
+
+.admin-card-flat:hover {
+  box-shadow: none;
+}
+
+.admin-card-hover {
+  transition: transform var(--transition-duration-normal)
+      var(--transition-timing-ease),
+    box-shadow var(--transition-duration-normal) var(--transition-timing-ease);
+}
+
+.admin-card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Card with actions */
+.admin-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 767px) {
+  .admin-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .admin-card-header > *:nth-child(2) {
+    width: 100%;
+  }
+}

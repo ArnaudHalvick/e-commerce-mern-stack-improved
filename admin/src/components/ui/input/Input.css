@@ -1,0 +1,104 @@
+/* Path: admin/src/components/ui/input/Input.css */
+.admin-input-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.25rem;
+}
+
+.admin-input-group-full {
+  width: 100%;
+}
+
+.admin-input-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: var(--font-weight-medium);
+  color: var(--admin-text-primary);
+  font-size: var(--font-size-sm);
+}
+
+.admin-input-required {
+  color: var(--color-danger);
+  margin-left: 0.25rem;
+}
+
+.admin-input {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--border-radius-md);
+  background-color: var(--admin-surface);
+  color: var(--admin-text-primary);
+  font-size: var(--font-size-sm);
+  transition: all var(--transition-duration-fast) var(--transition-timing-ease);
+  width: 100%;
+  font-family: inherit;
+  line-height: var(--line-height-normal);
+}
+
+.admin-input:focus {
+  outline: none;
+  border-color: var(--admin-primary);
+  box-shadow: 0 0 0 3px rgba(57, 73, 171, 0.1);
+}
+
+.admin-input:disabled {
+  background-color: var(--color-background-dark);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.admin-input::placeholder {
+  color: var(--admin-text-disabled);
+}
+
+/* Input sizes */
+.admin-input-small {
+  padding: 0.5rem 0.75rem;
+  font-size: var(--font-size-xs);
+  height: 32px;
+}
+
+.admin-input-medium {
+  padding: 0.75rem 1rem;
+  font-size: var(--font-size-sm);
+  height: 40px;
+}
+
+.admin-input-large {
+  padding: 1rem 1.25rem;
+  font-size: var(--font-size-base);
+  height: 48px;
+}
+
+/* Error state */
+.admin-input-error {
+  border-color: var(--color-danger);
+}
+
+.admin-input-error:focus {
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+}
+
+.admin-input-error-text {
+  margin-top: 0.5rem;
+  color: var(--color-danger);
+  font-size: var(--font-size-xs);
+}
+
+.admin-input-helper-text {
+  margin-top: 0.5rem;
+  color: var(--admin-text-secondary);
+  font-size: var(--font-size-xs);
+}
+
+/* Textarea */
+textarea.admin-input {
+  min-height: 100px;
+  resize: vertical;
+  height: auto;
+}
+
+/* Width */
+.admin-input-full {
+  width: 100%;
+}

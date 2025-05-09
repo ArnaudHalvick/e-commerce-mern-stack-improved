@@ -1,0 +1,130 @@
+/* Path: admin/src/components/ui/select/Select.css */
+.admin-select-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.25rem;
+}
+
+.admin-select-group-full {
+  width: 100%;
+}
+
+.admin-select-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: var(--font-weight-medium);
+  color: var(--admin-text-primary);
+  font-size: var(--font-size-sm);
+}
+
+.admin-select-required {
+  color: var(--color-danger);
+  margin-left: 0.25rem;
+}
+
+.admin-select-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.admin-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding: 0.75rem 1rem;
+  padding-right: 2.5rem;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--border-radius-md);
+  background-color: var(--admin-surface);
+  color: var(--admin-text-primary);
+  font-size: var(--font-size-sm);
+  transition: all var(--transition-duration-fast) var(--transition-timing-ease);
+  width: 100%;
+  cursor: pointer;
+  font-family: inherit;
+  line-height: var(--line-height-normal);
+}
+
+.admin-select:focus {
+  outline: none;
+  border-color: var(--admin-primary);
+  box-shadow: 0 0 0 3px rgba(57, 73, 171, 0.1);
+}
+
+.admin-select:disabled {
+  background-color: var(--color-background-dark);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Select sizes */
+.admin-select-small {
+  padding: 0.5rem 0.75rem;
+  padding-right: 2rem;
+  font-size: var(--font-size-xs);
+  height: 32px;
+}
+
+.admin-select-medium {
+  padding: 0.75rem 1rem;
+  padding-right: 2.5rem;
+  font-size: var(--font-size-sm);
+  height: 40px;
+}
+
+.admin-select-large {
+  padding: 1rem 1.25rem;
+  padding-right: 3rem;
+  font-size: var(--font-size-base);
+  height: 48px;
+}
+
+/* Error state */
+.admin-select-error {
+  border-color: var(--color-danger);
+}
+
+.admin-select-error:focus {
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+}
+
+.admin-select-error-text {
+  margin-top: 0.5rem;
+  color: var(--color-danger);
+  font-size: var(--font-size-xs);
+}
+
+.admin-select-helper-text {
+  margin-top: 0.5rem;
+  color: var(--admin-text-secondary);
+  font-size: var(--font-size-xs);
+}
+
+/* Width */
+.admin-select-full {
+  width: 100%;
+}
+
+/* Custom dropdown arrow */
+.admin-select-arrow {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--admin-text-secondary);
+}
+
+.admin-select-small ~ .admin-select-arrow {
+  right: 0.75rem;
+}
+
+.admin-select-large ~ .admin-select-arrow {
+  right: 1.25rem;
+}
+
+/* Option styles */
+.admin-select option {
+  padding: 0.5rem;
+}

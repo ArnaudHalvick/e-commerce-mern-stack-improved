@@ -1,0 +1,111 @@
+/* Path: admin/src/components/ui/table/Table.css */
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+  color: var(--admin-text-primary);
+}
+
+.admin-table-cell {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--admin-border);
+  vertical-align: middle;
+}
+
+.admin-table-header-cell {
+  font-weight: var(--font-weight-semibold);
+  color: var(--admin-text-primary);
+  background-color: rgba(0, 0, 0, 0.02);
+  white-space: nowrap;
+}
+
+/* Table variants */
+.admin-table-striped tbody tr:nth-child(odd) {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.admin-table-hover tbody tr:hover {
+  background-color: rgba(57, 73, 171, 0.04);
+}
+
+.admin-table-bordered {
+  border: 1px solid var(--admin-border);
+}
+
+.admin-table-bordered .admin-table-cell {
+  border: 1px solid var(--admin-border);
+}
+
+/* Responsive table */
+.admin-table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 1rem;
+}
+
+/* Data table with actions */
+.admin-table-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.admin-table-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: background-color var(--transition-duration-fast)
+    var(--transition-timing-ease);
+}
+
+.admin-table-action-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.admin-table-action-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--admin-primary-light);
+}
+
+/* Small screens - responsive table */
+@media screen and (max-width: 767px) {
+  .admin-table-responsive-stacked .admin-table,
+  .admin-table-responsive-stacked .admin-table-body,
+  .admin-table-responsive-stacked .admin-table-row,
+  .admin-table-responsive-stacked .admin-table-cell {
+    display: block;
+    width: 100%;
+  }
+
+  .admin-table-responsive-stacked .admin-table-head {
+    display: none;
+  }
+
+  .admin-table-responsive-stacked .admin-table-cell {
+    text-align: right;
+    position: relative;
+    padding-left: 50%;
+  }
+
+  .admin-table-responsive-stacked .admin-table-cell:before {
+    content: attr(data-label);
+    position: absolute;
+    left: 1rem;
+    width: 45%;
+    text-align: left;
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .admin-table-responsive-stacked .admin-table-row {
+    border-bottom: 2px solid var(--admin-border);
+    margin-bottom: 1rem;
+  }
+}
