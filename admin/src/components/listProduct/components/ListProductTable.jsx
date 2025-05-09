@@ -3,6 +3,7 @@ import Table from "../../ui/table/Table";
 import Button from "../../ui/button/Button";
 import Badge from "../../ui/badge/Badge";
 import Spinner from "../../ui/spinner/Spinner";
+import { getImageUrl } from "../../../utils/apiUtils";
 import "../styles/ListProductTable.css";
 
 const ListProductTable = ({
@@ -68,8 +69,8 @@ const ListProductTable = ({
                   <img
                     src={
                       product.images && product.images.length > 0
-                        ? product.images[0]
-                        : "/placeholder.jpg"
+                        ? getImageUrl(product.images[0])
+                        : getImageUrl("/placeholder.jpg")
                     }
                     alt={product.name}
                     className="list-product-thumbnail"
