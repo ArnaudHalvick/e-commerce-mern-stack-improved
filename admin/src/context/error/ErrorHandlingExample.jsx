@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useError } from "./index";
+import { useError } from "../exports/hooks.js";
 import { Alert, ErrorBoundary } from "../../components/ui/errorHandling";
 import Spinner from "../../components/ui/spinner/Spinner";
 

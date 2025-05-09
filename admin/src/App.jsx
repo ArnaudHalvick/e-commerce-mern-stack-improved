@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import NavBar from "./components/navbar/Navbar";
 import Sidebar from "./components/sidebar/Sidebar";
 import Admin from "./pages/admin/Admin";
-import { ErrorState } from "./context/error/index.jsx";
+import { ErrorState } from "./context/index.jsx";
 import "./App.css";
 
 function App() {

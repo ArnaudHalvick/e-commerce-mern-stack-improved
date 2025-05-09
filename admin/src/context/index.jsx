@@ -1,15 +1,8 @@
-import { ErrorState, useError } from "./error";
-import AuthContext from "./auth/AuthContext";
-import ProductContext from "./product/ProductContext";
+// Export only components for Fast Refresh compatibility
+import ErrorState from "./error/ErrorState.jsx";
 
-export {
-  // Error context
-  ErrorState,
-  useError,
+// We can export components directly since they don't affect Fast Refresh
+export { ErrorState };
 
-  // Auth context
-  AuthContext,
-
-  // Product context
-  ProductContext,
-};
+// Default export
+export default { ErrorState };

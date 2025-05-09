@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import ErrorContext from "./ErrorContext";
+import { ErrorContext } from "../exports/contexts.js";
 
 /**
  * Custom hook to use the Error context
