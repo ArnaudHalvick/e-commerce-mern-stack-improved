@@ -18,6 +18,7 @@ const {
   toggleAvailability,
   permanentDeleteProduct,
   deleteUploadedImages,
+  getAllUploadedImages,
 } = require("../controllers/adminController");
 
 // Set up multer for file storage
@@ -70,6 +71,9 @@ router.post(
   upload.array("images", 5), // Allow up to 5 images
   uploadProductImages
 );
+
+// Get all uploaded images
+router.get("/products/images", getAllUploadedImages);
 
 // Delete uploaded images - specific routes before dynamic routes
 router.delete("/products/images", deleteUploadedImages);

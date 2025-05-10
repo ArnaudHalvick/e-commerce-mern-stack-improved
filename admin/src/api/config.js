@@ -32,6 +32,7 @@ export const PRODUCT_ENDPOINTS = {
     `${ADMIN_API_PATH}/products/${id}/toggle-availability`,
   UPLOAD_IMAGES: `${ADMIN_API_PATH}/products/upload`,
   DELETE_IMAGES: `${ADMIN_API_PATH}/products/images`,
+  GET_IMAGES: `${ADMIN_API_PATH}/products/images`,
 };
 
 // Order endpoints

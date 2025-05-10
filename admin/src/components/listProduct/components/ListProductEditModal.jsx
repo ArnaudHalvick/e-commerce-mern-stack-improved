@@ -6,6 +6,7 @@ import Select from "../../ui/select/Select";
 import { useToast } from "../../ui/errorHandling/toast/ToastHooks";
 import { getImageUrl } from "../../../utils/apiUtils";
 import productsService from "../../../api/services/products";
+import ImageGalleryModal from "./ImageGalleryModal";
 import "../styles/ListProductEditModal.css";
 
 const ConfirmationModal = ({ isOpen, onConfirm, onCancel, title, message }) => {
@@ -58,6 +59,7 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
   const [originalFormData, setOriginalFormData] = useState(null);
   const [newlyUploadedImages, setNewlyUploadedImages] = useState([]);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [isGalleryModalOpen, setIsGalleryModalOpen] = useState(false);
 
   // Category options
   const categoryOptions = [
@@ -301,6 +303,40 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
   const handleCancelDiscard = () => {
     // User canceled discarding changes, just close the confirmation modal
     setIsConfirmModalOpen(false);
+  };
+
+  // Handle images selected from the gallery
+  const handleGalleryImagesSelected = (selectedImages) => {
+    // Calculate how many more images we can add
+    const currentImageCount = formData.images.length;
+    const maxImages = 5;
+    const remainingSlots = maxImages - currentImageCount;
+
+    if (remainingSlots <= 0) {
+      showToast({
+        type: "error",
+        message: "You can only have up to 5 images per product",
+      });
+      return;
+    }
+
+    // Only add up to the remaining slots
+    const imagesToAdd = selectedImages.slice(0, remainingSlots);
+
+    // Add selected images to the form
+    const newImages = [...formData.images, ...imagesToAdd];
+
+    setFormData((prev) => ({
+      ...prev,
+      images: newImages,
+      // If this is the first image, set it as main
+      mainImageIndex: prev.images.length === 0 ? 0 : prev.mainImageIndex,
+    }));
+
+    showToast({
+      type: "success",
+      message: `Added ${imagesToAdd.length} image(s) to product`,
+    });
   };
 
   return (
@@ -615,22 +651,30 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
                     ))}
 
                   {(!formData.images || formData.images.length < 5) && (
-                    <div className="list-product-image-upload-placeholder">
-                      {isUploading ? (
-                        <span>Uploading...</span>
-                      ) : (
-                        <>
-                          <span>Add Image</span>
-                          <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleImageUpload}
-                            disabled={isUploading}
-                            multiple
-                          />
-                        </>
-                      )}
-                    </div>
+                    <>
+                      <div className="list-product-image-upload-placeholder">
+                        {isUploading ? (
+                          <span>Uploading...</span>
+                        ) : (
+                          <>
+                            <span>Upload New</span>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={handleImageUpload}
+                              disabled={isUploading}
+                              multiple
+                            />
+                          </>
+                        )}
+                      </div>
+                      <div
+                        className="list-product-image-upload-placeholder list-product-image-gallery-btn"
+                        onClick={() => setIsGalleryModalOpen(true)}
+                      >
+                        <span>Select Existing</span>
+                      </div>
+                    </>
                   )}
                 </div>
                 <div className="list-product-image-help-text">
@@ -667,6 +711,14 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
         onCancel={handleCancelDiscard}
         title="Discard Changes"
         message={getConfirmationMessage()}
+      />
+
+      {/* Image Gallery modal for selecting existing images */}
+      <ImageGalleryModal
+        isOpen={isGalleryModalOpen}
+        onClose={() => setIsGalleryModalOpen(false)}
+        onSelectImages={handleGalleryImagesSelected}
+        maxSelect={5 - (formData.images?.length || 0)}
       />
     </>
   );

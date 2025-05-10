@@ -154,6 +154,15 @@ const deleteUploadedImages = async (imagePaths) => {
 };
 
 /**
+ * Get all uploaded images
+ * @returns {Promise} Promise with all available images
+ */
+const getAllUploadedImages = async () => {
+  const response = await apiClient.get("/api/admin/products/images");
+  return response.data;
+};
+
+/**
  * Checks if a product exists by a specific field (like name or slug)
  * @param {string} field - Field to check (e.g., "name", "slug")
  * @param {string} value - Value to check for
@@ -184,6 +193,7 @@ const productsService = {
   uploadProductImages,
   deleteUploadedImages,
   checkProductExists,
+  getAllUploadedImages,
 };
 
 export default productsService;

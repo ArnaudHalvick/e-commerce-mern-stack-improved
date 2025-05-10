@@ -386,6 +386,30 @@ const deleteUploadedImages = catchAsync(async (req, res, next) => {
   });
 });
 
+/**
+ * Get all uploaded images
+ * @route GET /api/admin/products/images
+ * @access Private (requires authentication)
+ */
+const getAllUploadedImages = catchAsync(async (req, res, next) => {
+  const imagesDir = path.join(__dirname, "../upload/images");
+
+  // Get all files from the images directory, excluding placeholders
+  const files = fs.readdirSync(imagesDir).filter((file) => {
+    // Exclude placeholder directory and any dot files
+    return file !== "placeholders" && !file.startsWith(".");
+  });
+
+  // Format the response with image paths
+  const imagePaths = files.map((file) => `/images/${file}`);
+
+  res.status(200).json({
+    success: true,
+    count: imagePaths.length,
+    data: imagePaths,
+  });
+});
+
 module.exports = {
   createProduct,
   getAllProducts,
@@ -397,4 +421,5 @@ module.exports = {
   toggleAvailability,
   permanentDeleteProduct,
   deleteUploadedImages,
+  getAllUploadedImages,
 };
