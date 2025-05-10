@@ -282,7 +282,7 @@ const ListProduct = () => {
             className="list-product-filter-select"
           />
           <Button
-            size="small"
+            size="medium"
             variant="outline"
             onClick={() =>
               setSortDirection(sortDirection === "asc" ? "desc" : "asc")
