@@ -256,15 +256,7 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
     if (imagesToDelete.length === 0) return;
 
     try {
-      console.log("Attempting to delete images:", imagesToDelete);
-      const response = await productsService.deleteUploadedImages(
-        imagesToDelete
-      );
-      console.log("Cleanup response:", response);
-
-      if (response.failed && response.failed.length > 0) {
-        console.warn("Some images failed to delete:", response.failed);
-      }
+      await productsService.deleteUploadedImages(imagesToDelete);
     } catch (error) {
       console.error("Error cleaning up images:", error);
     }
@@ -298,13 +290,7 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
   const handleConfirmDiscard = () => {
     // User confirmed discarding changes, so clean up any images that were uploaded
     if (newlyUploadedImages.length > 0) {
-      console.log(
-        "Discarding changes and cleaning up images:",
-        newlyUploadedImages
-      );
       cleanupUploadedImages(newlyUploadedImages);
-    } else {
-      console.log("No newly uploaded images to clean up");
     }
 
     // Close confirmation modal and main edit modal
@@ -609,10 +595,6 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
                               // Check if the removed image was newly uploaded
                               if (newlyUploadedImages.includes(imageToRemove)) {
                                 // Remove from new uploads and clean it up on the server immediately
-                                console.log(
-                                  "Removing newly uploaded image:",
-                                  imageToRemove
-                                );
                                 cleanupUploadedImages([imageToRemove]);
                                 setNewlyUploadedImages((prev) =>
                                   prev.filter((img) => img !== imageToRemove)
@@ -655,26 +637,6 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
                   You can upload up to 5 images. The first image will be used as
                   the main product image.
                 </div>
-
-                {/* Debug button for testing image deletion */}
-                {import.meta.env.DEV && newlyUploadedImages.length > 0 && (
-                  <div className="debug-section">
-                    <p className="debug-info">
-                      Debug: {newlyUploadedImages.length} new images
-                    </p>
-                    <Button
-                      variant="danger"
-                      size="small"
-                      onClick={() => {
-                        console.log("Manual cleanup triggered");
-                        cleanupUploadedImages([...newlyUploadedImages]);
-                      }}
-                      className="debug-button"
-                    >
-                      Test Image Deletion
-                    </Button>
-                  </div>
-                )}
               </div>
             </div>
           </form>

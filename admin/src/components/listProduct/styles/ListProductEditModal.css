@@ -177,23 +177,3 @@
   color: #e74c3c;
   font-weight: 600;
 }
-
-/* Debug tools */
-.debug-section {
-  margin-top: 15px;
-  padding: 10px;
-  background-color: #f8f9fa;
-  border: 1px dashed #d63031;
-  border-radius: 4px;
-}
-
-.debug-info {
-  margin: 0 0 10px;
-  font-size: 14px;
-  color: #e17055;
-}
-
-.debug-button {
-  background-color: #d63031 !important;
-  border-color: #d63031 !important;
-}
