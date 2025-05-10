@@ -3,6 +3,8 @@ import ListProductTable from "./components/ListProductTable";
 import ListProductEditModal from "./components/ListProductEditModal";
 import { useProductList } from "./hooks/useProductList";
 import Button from "../ui/button/Button";
+import Input from "../ui/input/Input";
+import Select from "../ui/select/Select";
 import { useToast } from "../ui/errorHandling/toast/ToastHooks";
 import "./styles/ListProduct.css";
 
@@ -10,6 +12,12 @@ const ListProduct = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [filters, setFilters] = useState({
+    category: "",
+    status: "",
+    discount: "",
+  });
+  const [sortOption, setSortOption] = useState("name");
   const { showToast } = useToast();
 
   const {
@@ -22,14 +30,60 @@ const ListProduct = () => {
     toggleProductAvailability,
   } = useProductList();
 
-  // Filter products based on search term
+  // Extract unique categories from products
+  const categories = [...new Set(products.map((product) => product.category))];
+
+  // Filter products based on search term and filters
   const filteredProducts = products
-    .filter(
-      (product) =>
+    .filter((product) => {
+      // Search term filter - now includes product ID
+      const matchesSearch =
+        searchTerm === "" ||
         product?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product?.category?.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-    .sort((a, b) => a.name.localeCompare(b.name));
+        product?._id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        product?.category?.toLowerCase().includes(searchTerm.toLowerCase());
+
+      // Category filter
+      const matchesCategory =
+        filters.category === "" || product.category === filters.category;
+
+      // Status filter
+      const matchesStatus =
+        filters.status === "" ||
+        (filters.status === "active" && product.available) ||
+        (filters.status === "inactive" && !product.available);
+
+      // Discount filter
+      const hasDiscount =
+        product.new_price &&
+        product.new_price > 0 &&
+        product.new_price < product.old_price;
+      const matchesDiscount =
+        filters.discount === "" ||
+        (filters.discount === "discounted" && hasDiscount) ||
+        (filters.discount === "regular" && !hasDiscount);
+
+      return (
+        matchesSearch && matchesCategory && matchesStatus && matchesDiscount
+      );
+    })
+    .sort((a, b) => {
+      // Sort based on selected option
+      switch (sortOption) {
+        case "name":
+          return a.name.localeCompare(b.name);
+        case "id":
+          return a._id.localeCompare(b._id);
+        case "date":
+          return new Date(b.date) - new Date(a.date);
+        case "priceAsc":
+          return (a.new_price || a.old_price) - (b.new_price || b.old_price);
+        case "priceDesc":
+          return (b.new_price || b.old_price) - (a.new_price || a.old_price);
+        default:
+          return a.name.localeCompare(b.name);
+      }
+    });
 
   useEffect(() => {
     fetchProducts();
@@ -47,6 +101,17 @@ const ListProduct = () => {
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
+  };
+
+  const handleFilterChange = (name, value) => {
+    setFilters((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSortChange = (e) => {
+    setSortOption(e.target.value);
   };
 
   const handleSaveProduct = async (updatedProduct) => {
@@ -117,17 +182,76 @@ const ListProduct = () => {
     <div className="list-product-container">
       <div className="list-product-header">
         <h1>Products</h1>
-        <div className="list-product-actions">
-          <div className="list-product-search-container">
-            <input
-              type="text"
-              placeholder="Search products..."
-              value={searchTerm}
-              onChange={handleSearchChange}
-              className="list-product-search-input"
-            />
-          </div>
-          <Button>Add New Product</Button>
+      </div>
+
+      <div className="list-product-filter-section">
+        <div className="list-product-filters">
+          <Input
+            type="text"
+            placeholder="Search by name or ID..."
+            value={searchTerm}
+            onChange={handleSearchChange}
+            className="list-product-filter-input"
+            size="small"
+          />
+
+          <Select
+            size="small"
+            placeholder="Select Category"
+            value={filters.category}
+            onChange={(e) => handleFilterChange("category", e.target.value)}
+            options={[
+              { value: "", label: "All Categories" },
+              ...categories.map((category) => ({
+                value: category,
+                label: category.charAt(0).toUpperCase() + category.slice(1),
+              })),
+            ]}
+            className="list-product-filter-select"
+          />
+
+          <Select
+            size="small"
+            placeholder="Product Status"
+            value={filters.status}
+            onChange={(e) => handleFilterChange("status", e.target.value)}
+            options={[
+              { value: "", label: "All Status" },
+              { value: "active", label: "Active" },
+              { value: "inactive", label: "Inactive" },
+            ]}
+            className="list-product-filter-select"
+          />
+
+          <Select
+            size="small"
+            placeholder="Discount Status"
+            value={filters.discount}
+            onChange={(e) => handleFilterChange("discount", e.target.value)}
+            options={[
+              { value: "", label: "All Products" },
+              { value: "discounted", label: "Discounted" },
+              { value: "regular", label: "Not Discounted" },
+            ]}
+            className="list-product-filter-select"
+          />
+        </div>
+
+        <div className="list-product-sort">
+          <Select
+            size="small"
+            placeholder="Sort By"
+            value={sortOption}
+            onChange={handleSortChange}
+            options={[
+              { value: "name", label: "Sort by Name" },
+              { value: "id", label: "Sort by ID" },
+              { value: "date", label: "Sort by Date Added" },
+              { value: "priceAsc", label: "Price: Low to High" },
+              { value: "priceDesc", label: "Price: High to Low" },
+            ]}
+            className="list-product-filter-select"
+          />
         </div>
       </div>
 

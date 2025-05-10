@@ -17,6 +17,54 @@
   margin: 0;
 }
 
+/* Filter section styles */
+.list-product-filter-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding: 16px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.list-product-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.list-product-filter-input {
+  min-width: 200px;
+}
+
+.list-product-filter-select {
+  min-width: 150px;
+}
+
+.list-product-sort {
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media screen and (min-width: 992px) {
+  .list-product-filter-section {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
+  .list-product-filters {
+    flex: 1;
+  }
+
+  .list-product-sort {
+    min-width: 200px;
+  }
+}
+
 .list-product-actions {
   display: flex;
   align-items: center;
