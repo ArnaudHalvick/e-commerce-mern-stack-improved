@@ -55,19 +55,19 @@
 .admin-input-small {
   padding: var(--spacing-2) var(--spacing-3);
   font-size: var(--font-size-xs);
-  height: 32px;
+  height: 40px;
 }
 
 .admin-input-medium {
   padding: var(--spacing-3) var(--spacing-4);
   font-size: var(--font-size-sm);
-  height: 40px;
+  height: 48px;
 }
 
 .admin-input-large {
   padding: var(--spacing-4) var(--spacing-5);
   font-size: var(--font-size-base);
-  height: 48px;
+  height: 56px;
 }
 
 /* Error state */
