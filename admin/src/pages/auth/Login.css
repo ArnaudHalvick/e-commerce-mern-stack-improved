@@ -5,47 +5,70 @@
   align-items: center;
   justify-content: center;
   background-color: var(--admin-background);
-  padding: 1rem;
+  padding: var(--spacing-4);
 }
 
 .admin-login-card {
   width: 100%;
   max-width: 450px;
-  padding: 2.5rem;
-  border-radius: 8px;
+  padding: var(--spacing-10);
+  border-radius: var(--border-radius-lg);
   background-color: var(--admin-surface);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-md);
 }
 
 .admin-login-header {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: var(--spacing-8);
 }
 
 .admin-login-header h1 {
-  font-size: 1.75rem;
-  margin-bottom: 0.5rem;
+  font-size: var(--font-size-2xl);
+  margin-bottom: var(--spacing-2);
   color: var(--admin-text-primary);
+  font-weight: var(--font-weight-semibold);
 }
 
 .admin-login-header p {
   color: var(--admin-text-secondary);
-  font-size: 0.95rem;
+  font-size: var(--font-size-sm);
 }
 
 .admin-login-form {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: var(--spacing-5);
 }
 
-/* Responsive adjustments */
-@media (max-width: 480px) {
+/* Desktop-first responsive adjustments */
+@media screen and (max-width: 768px) {
   .admin-login-card {
-    padding: 1.5rem;
+    padding: var(--spacing-8);
   }
 
   .admin-login-header {
-    margin-bottom: 1.5rem;
+    margin-bottom: var(--spacing-6);
+  }
+
+  .admin-login-header h1 {
+    font-size: var(--font-size-xl);
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .admin-login-card {
+    padding: var(--spacing-6);
+  }
+
+  .admin-login-header {
+    margin-bottom: var(--spacing-5);
+  }
+
+  .admin-login-header h1 {
+    font-size: var(--font-size-lg);
+  }
+
+  .admin-login-form {
+    gap: var(--spacing-4);
   }
 }

@@ -2,22 +2,29 @@
 .admin-page {
   display: flex;
   flex: 1;
-  background-color: #f5f5f5;
+  background-color: var(--admin-background);
 }
 
 .admin-page-content {
   flex: 1;
-  padding: 2rem;
+  padding: var(--spacing-8);
   overflow-y: auto;
 }
 
+/* Responsive styles - Desktop first */
 @media screen and (max-width: 768px) {
   .admin-page {
     flex-direction: column;
   }
 
   .admin-page-content {
-    padding: 1rem;
+    padding: var(--spacing-4);
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .admin-page-content {
+    padding: var(--spacing-3);
   }
 }
 
@@ -29,11 +36,11 @@
   font-size: var(--font-size-xl);
   font-weight: var(--font-weight-bold);
   color: var(--admin-text-primary);
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--spacing-6);
 }
 
 .admin-page-row {
-  margin-top: 2rem;
+  margin-top: var(--spacing-8);
 }
 
 /* Card elements */
@@ -41,17 +48,17 @@
   background-color: var(--admin-surface);
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-sm);
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
+  padding: var(--spacing-6);
+  margin-bottom: var(--spacing-6);
 }
 
 .admin-page-card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.25rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--admin-border);
+  margin-bottom: var(--spacing-5);
+  padding-bottom: var(--spacing-3);
+  border-bottom: var(--border-width-thin) solid var(--admin-border);
 }
 
 .admin-page-card-header h2 {
@@ -66,20 +73,20 @@
 
 /* Form elements */
 .admin-page-form-group {
-  margin-bottom: 1.25rem;
+  margin-bottom: var(--spacing-5);
 }
 
 .admin-page-form-label {
   display: block;
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--spacing-2);
   font-weight: var(--font-weight-medium);
   color: var(--admin-text-primary);
 }
 
 .admin-page-form-input {
   width: 100%;
-  padding: 0.75rem 1rem;
-  border: 1px solid var(--admin-border);
+  padding: var(--spacing-3) var(--spacing-4);
+  border: var(--border-width-thin) solid var(--admin-border);
   border-radius: var(--border-radius-md);
   background-color: var(--admin-surface);
   color: var(--admin-text-primary);
@@ -97,7 +104,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.75rem 1.5rem;
+  padding: var(--spacing-3) var(--spacing-6);
   border-radius: var(--border-radius-md);
   font-weight: var(--font-weight-medium);
   cursor: pointer;
@@ -125,7 +132,7 @@
 
 .admin-page-btn-outline {
   background-color: transparent;
-  border: 1px solid var(--admin-border);
+  border: var(--border-width-thin) solid var(--admin-border);
   color: var(--admin-text-secondary);
 }
 
@@ -142,9 +149,9 @@
 
 .admin-page-table th,
 .admin-page-table td {
-  padding: 1rem;
+  padding: var(--spacing-4);
   text-align: left;
-  border-bottom: 1px solid var(--admin-border);
+  border-bottom: var(--border-width-thin) solid var(--admin-border);
 }
 
 .admin-page-table th {
@@ -166,26 +173,27 @@
 /* Stats widget */
 .admin-page-stats-grid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--spacing-4);
 }
 
-@media screen and (min-width: 576px) {
+/* Responsive grid adjustments - Desktop first */
+@media screen and (max-width: 992px) {
   .admin-page-stats-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media screen and (min-width: 992px) {
+@media screen and (max-width: 576px) {
   .admin-page-stats-grid {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: 1fr;
   }
 }
 
 .admin-page-stat-card {
   background-color: var(--admin-surface);
   border-radius: var(--border-radius-lg);
-  padding: 1.25rem;
+  padding: var(--spacing-5);
   box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
@@ -194,14 +202,14 @@
 .admin-page-stat-title {
   color: var(--admin-text-secondary);
   font-size: var(--font-size-sm);
-  margin-bottom: 0.75rem;
+  margin-bottom: var(--spacing-3);
 }
 
 .admin-page-stat-value {
   color: var(--admin-text-primary);
   font-size: var(--font-size-2xl);
   font-weight: var(--font-weight-bold);
-  margin-bottom: 0.75rem;
+  margin-bottom: var(--spacing-3);
 }
 
 .admin-page-stat-change {
@@ -222,8 +230,8 @@
 .admin-page-activity-item {
   display: flex;
   align-items: center;
-  padding: 0.75rem 0;
-  border-bottom: 1px solid var(--admin-border);
+  padding: var(--spacing-3) 0;
+  border-bottom: var(--border-width-thin) solid var(--admin-border);
 }
 
 .admin-page-activity-item:last-child {
@@ -235,7 +243,7 @@
   height: 40px;
   border-radius: var(--border-radius-full);
   overflow: hidden;
-  margin-right: 1rem;
+  margin-right: var(--spacing-4);
   background-color: var(--admin-primary-light);
   display: flex;
   align-items: center;
@@ -257,7 +265,7 @@
 .admin-page-activity-message {
   font-size: var(--font-size-sm);
   color: var(--admin-text-primary);
-  margin-bottom: 0.25rem;
+  margin-bottom: var(--spacing-1);
 }
 
 .admin-page-activity-time {
@@ -271,79 +279,76 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 3rem 1rem;
+  padding: var(--spacing-10) var(--spacing-5);
   text-align: center;
-  background-color: var(--admin-background);
+  background-color: var(--admin-surface);
   border-radius: var(--border-radius-lg);
-  border: 1px dashed var(--admin-border);
+  box-shadow: var(--shadow-sm);
 }
 
 .admin-page-empty-state-icon {
-  font-size: 3rem;
+  font-size: var(--font-size-4xl);
   color: var(--admin-text-disabled);
-  margin-bottom: 1rem;
+  margin-bottom: var(--spacing-4);
 }
 
 .admin-page-empty-state-title {
   font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
   color: var(--admin-text-primary);
-  margin-bottom: 0.5rem;
-  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--spacing-2);
 }
 
 .admin-page-empty-state-description {
   font-size: var(--font-size-sm);
   color: var(--admin-text-secondary);
-  margin-bottom: 1.5rem;
   max-width: 400px;
+  margin-bottom: var(--spacing-6);
 }
 
-/* Admin dashboard specific responsive styles */
-@media screen and (min-width: 768px) {
-  .admin-page-title {
-    font-size: var(--font-size-2xl);
-  }
-}
-
-/* Container styles moved from App.css, renamed with admin-page prefix */
+/* Main layout containers */
 .admin-page-container {
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: var(--admin-background);
+  min-height: 100vh;
 }
 
 .admin-page-main {
   display: flex;
-  flex-direction: column;
   flex: 1;
-  position: relative;
   min-height: calc(100vh - var(--admin-header-height));
 }
 
 .admin-page-content-area {
   flex: 1;
-  padding: 1rem;
-  transition: all var(--transition-duration-normal)
-    var(--transition-timing-ease);
-  background-color: var(--admin-background);
+  padding: var(--spacing-8);
+  overflow-y: auto;
 }
 
-/* Tablet and larger screens */
-@media screen and (min-width: 768px) {
+/* Responsive layout adjustments */
+@media screen and (max-width: 768px) {
   .admin-page-content-area {
-    padding: 1.5rem;
+    padding: var(--spacing-4);
+  }
+
+  .admin-page-title {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--spacing-4);
   }
 }
 
-/* Desktop screens */
-@media screen and (min-width: 992px) {
-  .admin-page-main {
-    flex-direction: row;
+@media screen and (max-width: 480px) {
+  .admin-page-content-area {
+    padding: var(--spacing-3);
   }
 
-  .admin-page-content-area {
-    padding: 2rem;
-    margin-left: 0;
+  .admin-page-card {
+    padding: var(--spacing-4);
+  }
+
+  .admin-page-table th,
+  .admin-page-table td {
+    padding: var(--spacing-2);
+    font-size: var(--font-size-sm);
   }
 }
