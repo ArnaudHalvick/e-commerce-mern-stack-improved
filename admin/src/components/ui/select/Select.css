@@ -63,21 +63,21 @@
   padding: var(--spacing-2) var(--spacing-3);
   padding-right: var(--spacing-8);
   font-size: var(--font-size-xs);
-  height: 32px;
+  height: 40px;
 }
 
 .admin-select-medium {
   padding: var(--spacing-3) var(--spacing-4);
   padding-right: var(--spacing-10);
   font-size: var(--font-size-sm);
-  height: 40px;
+  height: 48px;
 }
 
 .admin-select-large {
   padding: var(--spacing-4) var(--spacing-5);
   padding-right: var(--spacing-12);
   font-size: var(--font-size-base);
-  height: 48px;
+  height: 56px;
 }
 
 /* Error state */
