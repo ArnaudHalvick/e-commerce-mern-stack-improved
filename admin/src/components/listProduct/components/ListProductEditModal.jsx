@@ -5,6 +5,7 @@ import Input from "../../ui/input/Input";
 import Select from "../../ui/select/Select";
 import { useToast } from "../../ui/errorHandling/toast/ToastHooks";
 import { getImageUrl } from "../../../utils/apiUtils";
+import productsService from "../../../api/services/products";
 import "../styles/ListProductEditModal.css";
 
 const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
@@ -20,10 +21,14 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
     sizes: [],
     tags: [],
     types: [],
+    images: [],
+    mainImageIndex: 0,
   });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hasDiscount, setHasDiscount] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [originalFormData, setOriginalFormData] = useState(null);
 
   // Category options
   const categoryOptions = [
@@ -78,13 +83,19 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
   useEffect(() => {
     if (product) {
       const hasDiscountValue = product.new_price > 0;
-      setFormData({
+      const productData = {
         ...product,
         // Convert array fields to match the expected format of the Select component
         sizes: product.sizes || [],
         tags: product.tags || [],
         types: product.types || [],
-      });
+        images: product.images || [],
+        mainImageIndex: product.mainImageIndex || 0,
+      };
+
+      setFormData(productData);
+      // Store the original form data for potential cancellation
+      setOriginalFormData(JSON.parse(JSON.stringify(productData)));
       setHasDiscount(hasDiscountValue);
     }
   }, [product]);
@@ -163,9 +174,64 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
     }
   };
 
+  const handleImageUpload = async (e) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    setIsUploading(true);
+
+    try {
+      // Upload the images
+      const response = await productsService.uploadProductImages(files);
+
+      if (response && response.data) {
+        // Update the form data with the new images
+        const newImages = [...formData.images, ...response.data];
+
+        setFormData((prev) => ({
+          ...prev,
+          images: newImages,
+          // If this is the first image, set it as main
+          mainImageIndex: prev.images.length === 0 ? 0 : prev.mainImageIndex,
+        }));
+
+        showToast({
+          type: "success",
+          message: `Successfully uploaded ${response.count} image(s)`,
+        });
+      }
+    } catch (error) {
+      console.error("Error uploading images:", error);
+      showToast({
+        type: "error",
+        message: `Failed to upload images: ${error.message}`,
+      });
+    } finally {
+      setIsUploading(false);
+      // Reset the input field to allow uploading the same file again
+      e.target.value = null;
+    }
+  };
+
+  const handleModalClose = () => {
+    // If there are unsaved changes, ask for confirmation
+    if (JSON.stringify(formData) !== JSON.stringify(originalFormData)) {
+      const confirmDiscard = window.confirm(
+        "You have unsaved changes. Are you sure you want to discard them?"
+      );
+
+      if (!confirmDiscard) {
+        return; // Stay in the modal if user cancels
+      }
+    }
+
+    // Call the parent's onClose function
+    onClose();
+  };
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="large">
-      <Modal.Header onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={handleModalClose} size="large">
+      <Modal.Header onClose={handleModalClose}>
         Edit Product: {product?.name}
       </Modal.Header>
 
@@ -406,7 +472,7 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
             </div>
           </div>
 
-          {/* Image management section - placeholder for now */}
+          {/* Image management section */}
           <div className="list-product-form-row">
             <div className="list-product-form-group">
               <label>Product Images</label>
@@ -465,16 +531,20 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
 
                 {(!formData.images || formData.images.length < 5) && (
                   <div className="list-product-image-upload-placeholder">
-                    <span>Add Image</span>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => {
-                        // This is a simplified placeholder - would need to implement file upload
-                        console.log("File selected:", e.target.files[0]);
-                        // In a real implementation, you would upload the file and add the URL to formData.images
-                      }}
-                    />
+                    {isUploading ? (
+                      <span>Uploading...</span>
+                    ) : (
+                      <>
+                        <span>Add Image</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageUpload}
+                          disabled={isUploading}
+                          multiple
+                        />
+                      </>
+                    )}
                   </div>
                 )}
               </div>
@@ -488,13 +558,17 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
       </Modal.Body>
 
       <Modal.Footer>
-        <Button variant="secondary" onClick={onClose} disabled={isSubmitting}>
+        <Button
+          variant="secondary"
+          onClick={handleModalClose}
+          disabled={isSubmitting || isUploading}
+        >
           Cancel
         </Button>
         <Button
           variant="primary"
           onClick={handleSubmit}
-          disabled={isSubmitting}
+          disabled={isSubmitting || isUploading}
         >
           {isSubmitting ? "Saving..." : "Save Changes"}
         </Button>
