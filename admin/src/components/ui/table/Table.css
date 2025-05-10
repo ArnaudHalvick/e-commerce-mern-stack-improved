@@ -20,6 +20,23 @@
   white-space: nowrap;
 }
 
+/* Interactive header cell */
+.admin-table-header-cell[tabindex="0"] {
+  cursor: pointer;
+  position: relative;
+  transition: background-color var(--transition-duration-fast)
+    var(--transition-timing-ease);
+}
+
+.admin-table-header-cell[tabindex="0"]:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.admin-table-header-cell[tabindex="0"]:focus {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--admin-primary-light);
+}
+
 /* Table variants */
 .admin-table-striped tbody tr:nth-child(odd) {
   background-color: rgba(0, 0, 0, 0.02);

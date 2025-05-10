@@ -12,6 +12,9 @@ const ListProductTable = ({
   onEdit,
   onDelete,
   onToggleAvailability,
+  onHeaderClick,
+  sortOption,
+  sortDirection,
 }) => {
   if (loading) {
     return (
@@ -47,15 +50,62 @@ const ListProductTable = ({
     }).format(date);
   };
 
+  // Render sort indicator
+  const renderSortIndicator = (column) => {
+    if (sortOption !== column) return null;
+    return (
+      <span className="list-product-sort-indicator">
+        {sortDirection === "asc" ? " ↑" : " ↓"}
+      </span>
+    );
+  };
+
+  // Sortable header cell
+  const SortableHeaderCell = ({ column, label, onClick }) => {
+    return (
+      <Table.Cell
+        isHeader
+        onClick={() => onClick(column)}
+        className={`list-product-header-cell ${
+          sortOption === column ? "sorted" : ""
+        }`}
+        tabIndex="0"
+        onKeyDown={(e) => e.key === "Enter" && onClick(column)}
+        aria-label={`Sort by ${label}`}
+        aria-sort={
+          sortOption === column
+            ? sortDirection === "asc"
+              ? "ascending"
+              : "descending"
+            : undefined
+        }
+      >
+        {label} {renderSortIndicator(column)}
+      </Table.Cell>
+    );
+  };
+
   // Responsive column rendering - hide less important columns on mobile
   const renderMobileResponsiveTable = () => {
     return (
       <Table striped hoverable className="list-product-table">
         <Table.Head>
           <Table.Row isHeader>
-            <Table.Cell isHeader>Product</Table.Cell>
-            <Table.Cell isHeader>Price</Table.Cell>
-            <Table.Cell isHeader>Status</Table.Cell>
+            <SortableHeaderCell
+              column="name"
+              label="Product"
+              onClick={onHeaderClick}
+            />
+            <SortableHeaderCell
+              column="price"
+              label="Price"
+              onClick={onHeaderClick}
+            />
+            <SortableHeaderCell
+              column="status"
+              label="Status"
+              onClick={onHeaderClick}
+            />
             <Table.Cell isHeader>Actions</Table.Cell>
           </Table.Row>
         </Table.Head>
@@ -146,11 +196,31 @@ const ListProductTable = ({
         <Table.Head>
           <Table.Row isHeader>
             <Table.Cell isHeader>Image</Table.Cell>
-            <Table.Cell isHeader>Name</Table.Cell>
-            <Table.Cell isHeader>Category</Table.Cell>
-            <Table.Cell isHeader>Price</Table.Cell>
-            <Table.Cell isHeader>Status</Table.Cell>
-            <Table.Cell isHeader>Date Added</Table.Cell>
+            <SortableHeaderCell
+              column="name"
+              label="Name"
+              onClick={onHeaderClick}
+            />
+            <SortableHeaderCell
+              column="category"
+              label="Category"
+              onClick={onHeaderClick}
+            />
+            <SortableHeaderCell
+              column="price"
+              label="Price"
+              onClick={onHeaderClick}
+            />
+            <SortableHeaderCell
+              column="status"
+              label="Status"
+              onClick={onHeaderClick}
+            />
+            <SortableHeaderCell
+              column="date"
+              label="Date Added"
+              onClick={onHeaderClick}
+            />
             <Table.Cell isHeader>Actions</Table.Cell>
           </Table.Row>
         </Table.Head>

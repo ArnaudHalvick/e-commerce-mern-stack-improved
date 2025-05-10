@@ -26,6 +26,36 @@
   font-size: var(--font-size-base);
 }
 
+/* Sortable header styles */
+.list-product-header-cell {
+  cursor: pointer;
+  transition: background-color var(--transition-duration-fast)
+    var(--transition-timing-ease);
+  user-select: none;
+}
+
+.list-product-header-cell:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.list-product-header-cell.sorted {
+  background-color: rgba(57, 73, 171, 0.05);
+  color: var(--admin-primary);
+}
+
+.list-product-sort-indicator {
+  font-weight: bold;
+  display: inline-block;
+  margin-left: 4px;
+}
+
+.list-product-sort-direction {
+  margin-left: var(--spacing-2);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1);
+}
+
 /* Mobile-Desktop view switching */
 .desktop-table-view {
   display: block;

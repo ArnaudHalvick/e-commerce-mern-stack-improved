@@ -17,7 +17,8 @@ const ListProduct = () => {
     status: "",
     discount: "",
   });
-  const [sortOption, setSortOption] = useState("name");
+  const [sortOption, setSortOption] = useState("date");
+  const [sortDirection, setSortDirection] = useState("desc");
   const { showToast } = useToast();
 
   const {
@@ -68,21 +69,34 @@ const ListProduct = () => {
       );
     })
     .sort((a, b) => {
-      // Sort based on selected option
+      // Sort based on selected option and direction
+      let result = 0;
+
       switch (sortOption) {
         case "name":
-          return a.name.localeCompare(b.name);
+          result = a.name.localeCompare(b.name);
+          break;
         case "id":
-          return a._id.localeCompare(b._id);
+          result = a._id.localeCompare(b._id);
+          break;
         case "date":
-          return new Date(b.date) - new Date(a.date);
-        case "priceAsc":
-          return (a.new_price || a.old_price) - (b.new_price || b.old_price);
-        case "priceDesc":
-          return (b.new_price || b.old_price) - (a.new_price || a.old_price);
+          result = new Date(a.date) - new Date(b.date);
+          break;
+        case "category":
+          result = a.category.localeCompare(b.category);
+          break;
+        case "price":
+          result = (a.new_price || a.old_price) - (b.new_price || b.old_price);
+          break;
+        case "status":
+          result = a.available === b.available ? 0 : a.available ? 1 : -1;
+          break;
         default:
-          return a.name.localeCompare(b.name);
+          result = a.name.localeCompare(b.name);
       }
+
+      // Apply sort direction
+      return sortDirection === "asc" ? result : -result;
     });
 
   useEffect(() => {
@@ -112,6 +126,20 @@ const ListProduct = () => {
 
   const handleSortChange = (e) => {
     setSortOption(e.target.value);
+  };
+
+  const handleHeaderClick = (columnName) => {
+    // Don't sort by actions column
+    if (columnName === "actions") return;
+
+    if (sortOption === columnName) {
+      // Toggle direction if same column clicked
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+    } else {
+      // Set new column and default to ascending for most columns, but descending for date
+      setSortOption(columnName);
+      setSortDirection(columnName === "date" ? "desc" : "asc");
+    }
   };
 
   const handleSaveProduct = async (updatedProduct) => {
@@ -246,12 +274,26 @@ const ListProduct = () => {
             options={[
               { value: "name", label: "Sort by Name" },
               { value: "id", label: "Sort by ID" },
-              { value: "date", label: "Sort by Date Added" },
-              { value: "priceAsc", label: "Price: Low to High" },
-              { value: "priceDesc", label: "Price: High to Low" },
+              { value: "category", label: "Sort by Category" },
+              { value: "price", label: "Sort by Price" },
+              { value: "status", label: "Sort by Status" },
+              { value: "date", label: "Sort by Date" },
             ]}
             className="list-product-filter-select"
           />
+          <Button
+            size="small"
+            variant="outline"
+            onClick={() =>
+              setSortDirection(sortDirection === "asc" ? "desc" : "asc")
+            }
+            className="list-product-sort-direction"
+            aria-label={`Sort ${
+              sortDirection === "asc" ? "ascending" : "descending"
+            }`}
+          >
+            {sortDirection === "asc" ? "↑ Ascending" : "↓ Descending"}
+          </Button>
         </div>
       </div>
 
@@ -261,6 +303,9 @@ const ListProduct = () => {
         onEdit={handleEditClick}
         onDelete={handleDeleteProduct}
         onToggleAvailability={handleToggleAvailability}
+        onHeaderClick={handleHeaderClick}
+        sortOption={sortOption}
+        sortDirection={sortDirection}
       />
 
       {selectedProduct && (
