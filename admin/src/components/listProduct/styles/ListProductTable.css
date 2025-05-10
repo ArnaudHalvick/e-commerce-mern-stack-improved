@@ -1,10 +1,11 @@
 /* ListProductTable.css */
 
 .list-product-table-container {
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background-color: var(--admin-surface);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-sm);
   overflow: hidden;
+  width: 100%;
 }
 
 .list-product-table-loading,
@@ -13,24 +14,47 @@
   justify-content: center;
   align-items: center;
   min-height: 200px;
-  padding: 20px;
+  padding: var(--spacing-5);
   text-align: center;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background-color: var(--admin-surface);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-sm);
 }
 
 .list-product-table-empty p {
-  color: #7f8c8d;
-  font-size: 16px;
+  color: var(--admin-text-secondary);
+  font-size: var(--font-size-base);
+}
+
+/* Mobile-Desktop view switching */
+.desktop-table-view {
+  display: block;
+}
+
+.mobile-table-view {
+  display: none;
+}
+
+/* Mobile product cell with combined image and text */
+.list-product-mobile-product-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.list-product-category {
+  font-size: var(--font-size-xs);
+  color: var(--admin-text-secondary);
+  margin-top: var(--spacing-1);
+  display: block;
 }
 
 .list-product-image-container {
   width: 50px;
   height: 50px;
-  border-radius: 4px;
+  border-radius: var(--border-radius-md);
   overflow: hidden;
-  background-color: #f9f9f9;
+  background-color: var(--admin-background);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -48,14 +72,14 @@
 }
 
 .list-product-name {
-  font-weight: 500;
-  color: #2c3e50;
-  margin-bottom: 4px;
+  font-weight: var(--font-weight-medium);
+  color: var(--admin-text-primary);
+  margin-bottom: var(--spacing-1);
 }
 
 .list-product-id {
-  font-size: 12px;
-  color: #95a5a6;
+  font-size: var(--font-size-xs);
+  color: var(--admin-text-secondary);
 }
 
 .list-product-price-cell {
@@ -65,39 +89,94 @@
 
 /* Discounted price (new_price) */
 .list-product-new-price {
-  font-weight: 500;
-  color: #2c3e50;
+  font-weight: var(--font-weight-medium);
+  color: var(--admin-text-primary);
 }
 
 /* Original price (old_price) */
 .list-product-old-price {
   text-decoration: line-through;
-  color: #95a5a6;
-  font-size: 12px;
+  color: var(--admin-text-secondary);
+  font-size: var(--font-size-xs);
 }
 
 /* Regular price when no discount is applied (old_price) */
 .list-product-current-price {
-  font-weight: 500;
-  color: #2c3e50;
+  font-weight: var(--font-weight-medium);
+  color: var(--admin-text-primary);
 }
 
 .list-product-actions {
   display: flex;
-  gap: 8px;
+  gap: var(--spacing-2);
 }
 
 /* Status badge styles */
 .list-product-status-badge {
   cursor: pointer;
-  padding: 4px 8px;
+  padding: var(--spacing-1) var(--spacing-2);
   min-width: 80px;
   text-align: center;
-  font-weight: 500;
-  transition: all 0.2s ease;
+  font-weight: var(--font-weight-medium);
+  transition: all var(--transition-duration-fast) var(--transition-timing-ease);
 }
 
 .list-product-status-badge:hover {
   transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-xs);
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 992px) {
+  .list-product-actions {
+    flex-direction: column;
+    gap: var(--spacing-1);
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .desktop-table-view {
+    display: none;
+  }
+
+  .mobile-table-view {
+    display: block;
+  }
+
+  .list-product-image-container {
+    width: 40px;
+    height: 40px;
+  }
+
+  .list-product-name {
+    font-size: var(--font-size-sm);
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .list-product-table-container {
+    border-radius: var(--border-radius-md);
+  }
+
+  .list-product-table-loading,
+  .list-product-table-empty {
+    padding: var(--spacing-4);
+  }
+
+  .list-product-mobile-product-cell {
+    gap: var(--spacing-2);
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .list-product-image-container {
+    width: 36px;
+    height: 36px;
+  }
+
+  .list-product-actions button {
+    width: 100%;
+    padding: var(--spacing-1) var(--spacing-2);
+    font-size: var(--font-size-xs);
+  }
 }

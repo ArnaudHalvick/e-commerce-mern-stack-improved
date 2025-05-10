@@ -47,9 +47,102 @@ const ListProductTable = ({
     }).format(date);
   };
 
-  return (
-    <div className="list-product-table-container">
-      <Table striped hoverable>
+  // Responsive column rendering - hide less important columns on mobile
+  const renderMobileResponsiveTable = () => {
+    return (
+      <Table striped hoverable className="list-product-table">
+        <Table.Head>
+          <Table.Row isHeader>
+            <Table.Cell isHeader>Product</Table.Cell>
+            <Table.Cell isHeader>Price</Table.Cell>
+            <Table.Cell isHeader>Status</Table.Cell>
+            <Table.Cell isHeader>Actions</Table.Cell>
+          </Table.Row>
+        </Table.Head>
+        <Table.Body>
+          {products.map((product) => (
+            <Table.Row key={product._id}>
+              <Table.Cell>
+                <div className="list-product-mobile-product-cell">
+                  <div className="list-product-image-container">
+                    <img
+                      src={
+                        product.images && product.images.length > 0
+                          ? getImageUrl(product.images[0])
+                          : getImageUrl("/placeholder.jpg")
+                      }
+                      alt={product.name}
+                      className="list-product-thumbnail"
+                    />
+                  </div>
+                  <div className="list-product-name-cell">
+                    <span className="list-product-name">{product.name}</span>
+                    <span className="list-product-category">
+                      {product.category}
+                    </span>
+                  </div>
+                </div>
+              </Table.Cell>
+              <Table.Cell>
+                <div className="list-product-price-cell">
+                  {product.new_price && product.new_price > 0 ? (
+                    <>
+                      <span className="list-product-new-price">
+                        {formatPrice(product.new_price)}
+                      </span>
+                      <span className="list-product-old-price">
+                        {formatPrice(product.old_price)}
+                      </span>
+                    </>
+                  ) : (
+                    <span className="list-product-current-price">
+                      {formatPrice(product.old_price)}
+                    </span>
+                  )}
+                </div>
+              </Table.Cell>
+              <Table.Cell>
+                <Badge
+                  variant={product.available ? "success" : "danger"}
+                  onClick={() =>
+                    onToggleAvailability(product._id, product.available)
+                  }
+                  className="list-product-status-badge"
+                >
+                  {product.available ? "Active" : "Inactive"}
+                </Badge>
+              </Table.Cell>
+              <Table.Cell>
+                <div className="list-product-actions">
+                  <Button
+                    size="small"
+                    variant="outline"
+                    onClick={() => onEdit(product)}
+                    aria-label="Edit product"
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    size="small"
+                    variant="danger"
+                    onClick={() => onDelete(product._id)}
+                    aria-label="Delete product"
+                  >
+                    Delete
+                  </Button>
+                </div>
+              </Table.Cell>
+            </Table.Row>
+          ))}
+        </Table.Body>
+      </Table>
+    );
+  };
+
+  // Desktop view with all columns
+  const renderDesktopTable = () => {
+    return (
+      <Table striped hoverable className="list-product-table">
         <Table.Head>
           <Table.Row isHeader>
             <Table.Cell isHeader>Image</Table.Cell>
@@ -138,6 +231,14 @@ const ListProductTable = ({
           ))}
         </Table.Body>
       </Table>
+    );
+  };
+
+  return (
+    <div className="list-product-table-container">
+      {/* Use CSS media queries to show/hide appropriate tables */}
+      <div className="desktop-table-view">{renderDesktopTable()}</div>
+      <div className="mobile-table-view">{renderMobileResponsiveTable()}</div>
     </div>
   );
 };

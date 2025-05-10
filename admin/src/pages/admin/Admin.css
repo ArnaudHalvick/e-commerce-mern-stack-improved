@@ -346,8 +346,4 @@
     padding: 2rem;
     margin-left: 0;
   }
-
-  .admin-page-content-area.sidebar-open {
-    margin-left: var(--admin-sidebar-width);
-  }
 }
