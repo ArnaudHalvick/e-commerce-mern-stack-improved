@@ -91,24 +91,24 @@ const ImageGalleryModal = ({
       isOpen={isOpen}
       onClose={onClose}
       size="large"
-      className="image-gallery-modal"
+      className="admin-image-gallery-modal"
     >
       <Modal.Header onClose={onClose}>
         Select Images ({selectedImages.length}/{maxSelect})
       </Modal.Header>
       <Modal.Body>
         {isLoading ? (
-          <div className="image-gallery-loading">Loading images...</div>
+          <div className="admin-image-gallery-loading">Loading images...</div>
         ) : images.length === 0 ? (
-          <div className="image-gallery-empty">
+          <div className="admin-image-gallery-empty">
             No images found. Upload some images first.
           </div>
         ) : (
-          <div className="image-gallery-grid">
+          <div className="admin-image-gallery-grid">
             {images.map((image, index) => (
               <div
                 key={index}
-                className={`image-gallery-item ${
+                className={`admin-image-gallery-item ${
                   selectedImages.includes(image) ? "selected" : ""
                 }`}
                 onClick={() => handleImageClick(image)}
@@ -125,7 +125,7 @@ const ImageGalleryModal = ({
               >
                 <img src={getImageUrl(image)} alt={`Gallery image ${index}`} />
                 {selectedImages.includes(image) && (
-                  <div className="image-gallery-selected-indicator">
+                  <div className="admin-image-gallery-selected-indicator">
                     <span>✓</span>
                   </div>
                 )}

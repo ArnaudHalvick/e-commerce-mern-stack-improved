@@ -60,12 +60,12 @@ const ImageGalleryDisplay = ({
   };
 
   return (
-    <div className="image-gallery-display">
-      <div className="image-gallery-preview-container">
+    <div className="admin-image-gallery-display">
+      <div className="admin-image-gallery-preview-container">
         {images.map((image, index) => (
-          <div key={index} className="image-gallery-preview">
+          <div key={index} className="admin-image-gallery-preview">
             <img src={getImageUrl(image)} alt={`Product ${index + 1}`} />
-            <div className="image-gallery-preview-actions">
+            <div className="admin-image-gallery-preview-actions">
               <Button
                 type="button"
                 size="small"
@@ -88,8 +88,8 @@ const ImageGalleryDisplay = ({
         ))}
 
         {images.length < maxImages && (
-          <div className="image-gallery-actions">
-            <div className="image-gallery-upload-placeholder">
+          <div className="admin-image-gallery-actions">
+            <div className="admin-image-gallery-upload-placeholder">
               {isUploading ? (
                 <span>Uploading...</span>
               ) : (
@@ -106,7 +106,7 @@ const ImageGalleryDisplay = ({
               )}
             </div>
             <div
-              className="image-gallery-upload-placeholder select-existing"
+              className="admin-image-gallery-upload-placeholder admin-select-existing"
               onClick={() => setIsGalleryModalOpen(true)}
               tabIndex="0"
               onKeyDown={(e) => {
@@ -122,7 +122,7 @@ const ImageGalleryDisplay = ({
           </div>
         )}
       </div>
-      <div className="image-gallery-help-text">
+      <div className="admin-image-gallery-help-text">
         You can upload up to {maxImages} images. The first image will be used as
         the main product image.
       </div>

@@ -1,11 +1,11 @@
-.image-gallery-modal .admin-modal-body {
+.admin-image-gallery-modal .admin-modal-body {
   padding: 20px;
   overflow-y: auto;
   max-height: 70vh;
 }
 
-.image-gallery-loading,
-.image-gallery-empty {
+.admin-image-gallery-loading,
+.admin-image-gallery-empty {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -14,14 +14,14 @@
   color: #7f8c8d;
 }
 
-.image-gallery-grid {
+.admin-image-gallery-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   gap: 15px;
   padding: 10px 0;
 }
 
-.image-gallery-item {
+.admin-image-gallery-item {
   position: relative;
   cursor: pointer;
   border: 2px solid transparent;
@@ -31,23 +31,23 @@
   aspect-ratio: 1;
 }
 
-.image-gallery-item:hover {
+.admin-image-gallery-item:hover {
   transform: translateY(-3px);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
-.image-gallery-item.selected {
+.admin-image-gallery-item.selected {
   border-color: #3498db;
 }
 
-.image-gallery-item img {
+.admin-image-gallery-item img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
 
-.image-gallery-selected-indicator {
+.admin-image-gallery-selected-indicator {
   position: absolute;
   top: 0;
   right: 0;
@@ -61,7 +61,7 @@
   border-radius: 0 0 0 4px;
 }
 
-.image-gallery-selected-indicator span {
+.admin-image-gallery-selected-indicator span {
   font-size: 14px;
   font-weight: bold;
 }
