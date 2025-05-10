@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Modal from "../../ui/modal/Modal";
 import Button from "../../ui/button/Button";
 import productsService from "../../../api/services/products";
@@ -20,21 +20,7 @@ const ImageGalleryModal = ({
   const [isLoading, setIsLoading] = useState(false);
   const { showToast } = useToast();
 
-  // Fetch all images when modal opens
-  useEffect(() => {
-    if (isOpen) {
-      fetchImages();
-    }
-  }, [isOpen]);
-
-  // Reset selection when modal closes
-  useEffect(() => {
-    if (!isOpen) {
-      setSelectedImages([]);
-    }
-  }, [isOpen]);
-
-  const fetchImages = async () => {
+  const fetchImages = useCallback(async () => {
     setIsLoading(true);
     try {
       const response = await productsService.getAllUploadedImages();
@@ -50,7 +36,21 @@ const ImageGalleryModal = ({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [showToast]);
+
+  // Fetch all images when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      fetchImages();
+    }
+  }, [isOpen, fetchImages]);
+
+  // Reset selection when modal closes
+  useEffect(() => {
+    if (!isOpen) {
+      setSelectedImages([]);
+    }
+  }, [isOpen]);
 
   const handleImageClick = (imagePath) => {
     setSelectedImages((prev) => {
