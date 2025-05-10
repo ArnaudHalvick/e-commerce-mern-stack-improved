@@ -7,9 +7,9 @@
 }
 
 .admin-table-cell {
-  padding: 1rem;
+  padding: var(--spacing-4);
   text-align: left;
-  border-bottom: 1px solid var(--admin-border);
+  border-bottom: var(--border-width-thin) solid var(--admin-border);
   vertical-align: middle;
 }
 
@@ -30,11 +30,11 @@
 }
 
 .admin-table-bordered {
-  border: 1px solid var(--admin-border);
+  border: var(--border-width-thin) solid var(--admin-border);
 }
 
 .admin-table-bordered .admin-table-cell {
-  border: 1px solid var(--admin-border);
+  border: var(--border-width-thin) solid var(--admin-border);
 }
 
 /* Responsive table */
@@ -42,13 +42,13 @@
   width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-  margin-bottom: 1rem;
+  margin-bottom: var(--spacing-4);
 }
 
 /* Data table with actions */
 .admin-table-actions {
   display: flex;
-  gap: 0.5rem;
+  gap: var(--spacing-2);
   justify-content: flex-end;
 }
 
@@ -75,8 +75,8 @@
   box-shadow: 0 0 0 2px var(--admin-primary-light);
 }
 
-/* Small screens - responsive table */
-@media screen and (max-width: 767px) {
+/* Desktop first responsive table */
+@media screen and (max-width: 768px) {
   .admin-table-responsive-stacked .admin-table,
   .admin-table-responsive-stacked .admin-table-body,
   .admin-table-responsive-stacked .admin-table-row,
@@ -98,7 +98,7 @@
   .admin-table-responsive-stacked .admin-table-cell:before {
     content: attr(data-label);
     position: absolute;
-    left: 1rem;
+    left: var(--spacing-4);
     width: 45%;
     text-align: left;
     font-weight: var(--font-weight-semibold);
@@ -106,6 +106,27 @@
 
   .admin-table-responsive-stacked .admin-table-row {
     border-bottom: 2px solid var(--admin-border);
-    margin-bottom: 1rem;
+    margin-bottom: var(--spacing-4);
+  }
+
+  .admin-table-cell {
+    padding: var(--spacing-3);
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .admin-table-cell {
+    padding: var(--spacing-2);
+    font-size: var(--font-size-xs);
+  }
+
+  .admin-table-responsive-stacked .admin-table-cell:before {
+    left: var(--spacing-2);
+  }
+
+  .admin-table-actions {
+    flex-direction: column;
+    gap: var(--spacing-1);
+    align-items: flex-end;
   }
 }

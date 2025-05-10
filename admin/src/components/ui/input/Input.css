@@ -2,7 +2,7 @@
 .admin-input-group {
   display: flex;
   flex-direction: column;
-  margin-bottom: 1.25rem;
+  margin-bottom: var(--spacing-5);
 }
 
 .admin-input-group-full {
@@ -11,7 +11,7 @@
 
 .admin-input-label {
   display: block;
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--spacing-2);
   font-weight: var(--font-weight-medium);
   color: var(--admin-text-primary);
   font-size: var(--font-size-sm);
@@ -19,12 +19,12 @@
 
 .admin-input-required {
   color: var(--color-danger);
-  margin-left: 0.25rem;
+  margin-left: var(--spacing-1);
 }
 
 .admin-input {
-  padding: 0.75rem 1rem;
-  border: 1px solid var(--admin-border);
+  padding: var(--spacing-3) var(--spacing-4);
+  border: var(--border-width-thin) solid var(--admin-border);
   border-radius: var(--border-radius-md);
   background-color: var(--admin-surface);
   color: var(--admin-text-primary);
@@ -53,19 +53,19 @@
 
 /* Input sizes */
 .admin-input-small {
-  padding: 0.5rem 0.75rem;
+  padding: var(--spacing-2) var(--spacing-3);
   font-size: var(--font-size-xs);
   height: 32px;
 }
 
 .admin-input-medium {
-  padding: 0.75rem 1rem;
+  padding: var(--spacing-3) var(--spacing-4);
   font-size: var(--font-size-sm);
   height: 40px;
 }
 
 .admin-input-large {
-  padding: 1rem 1.25rem;
+  padding: var(--spacing-4) var(--spacing-5);
   font-size: var(--font-size-base);
   height: 48px;
 }
@@ -80,13 +80,13 @@
 }
 
 .admin-input-error-text {
-  margin-top: 0.5rem;
+  margin-top: var(--spacing-2);
   color: var(--color-danger);
   font-size: var(--font-size-xs);
 }
 
 .admin-input-helper-text {
-  margin-top: 0.5rem;
+  margin-top: var(--spacing-2);
   color: var(--admin-text-secondary);
   font-size: var(--font-size-xs);
 }
@@ -101,4 +101,23 @@ textarea.admin-input {
 /* Width */
 .admin-input-full {
   width: 100%;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 576px) {
+  .admin-input-small {
+    padding: var(--spacing-1) var(--spacing-2);
+  }
+
+  .admin-input-medium {
+    padding: var(--spacing-2) var(--spacing-3);
+  }
+
+  .admin-input-large {
+    padding: var(--spacing-3) var(--spacing-4);
+  }
+
+  .admin-input-group {
+    margin-bottom: var(--spacing-4);
+  }
 }

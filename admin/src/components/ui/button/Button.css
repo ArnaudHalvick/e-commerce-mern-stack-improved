@@ -12,7 +12,7 @@
   line-height: var(--line-height-normal);
   white-space: nowrap;
   text-decoration: none;
-  gap: 0.5rem;
+  gap: var(--spacing-2);
   position: relative;
   overflow: hidden;
 }
@@ -50,7 +50,7 @@
 
 .admin-btn-outline {
   background-color: transparent;
-  border: 1px solid var(--admin-border);
+  border: var(--border-width-thin) solid var(--admin-border);
   color: var(--admin-text-secondary);
 }
 
@@ -83,19 +83,19 @@
 
 /* Button sizes */
 .admin-btn-small {
-  padding: 0.5rem 1rem;
+  padding: var(--spacing-2) var(--spacing-4);
   font-size: var(--font-size-xs);
   height: 32px;
 }
 
 .admin-btn-medium {
-  padding: 0.75rem 1.5rem;
+  padding: var(--spacing-3) var(--spacing-6);
   font-size: var(--font-size-sm);
   height: 40px;
 }
 
 .admin-btn-large {
-  padding: 1rem 2rem;
+  padding: var(--spacing-4) var(--spacing-8);
   font-size: var(--font-size-base);
   height: 48px;
 }
@@ -150,5 +150,20 @@
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+/* Responsive adjustments for small screens */
+@media screen and (max-width: 576px) {
+  .admin-btn-small {
+    padding: var(--spacing-1) var(--spacing-3);
+  }
+
+  .admin-btn-medium {
+    padding: var(--spacing-2) var(--spacing-4);
+  }
+
+  .admin-btn-large {
+    padding: var(--spacing-3) var(--spacing-6);
   }
 }
