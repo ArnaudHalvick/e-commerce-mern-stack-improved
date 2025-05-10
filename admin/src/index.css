@@ -199,24 +199,26 @@
   --transition-timing-ease-in-out: cubic-bezier(0.42, 0, 0.58, 1);
 
   /* 
-  MOBILE FIRST BREAKPOINTS
+  DESKTOP FIRST BREAKPOINTS
   
   Usage in CSS:
   
-  Default styles are for mobile
+  Default styles are for desktop
   
-  @media screen and (min-width: 576px) { } // sm (Small devices)
-  @media screen and (min-width: 768px) { } // md (Medium devices)
-  @media screen and (min-width: 992px) { } // lg (Large devices)
-  @media screen and (min-width: 1200px) { } // xl (Extra large devices)
-  @media screen and (min-width: 1400px) { } // 2xl (Extra extra large devices)
+  @media screen and (max-width: 1400px) { } // 2xl (Extra extra large devices)
+  @media screen and (max-width: 1200px) { } // xl (Extra large devices)
+  @media screen and (max-width: 992px) { } // lg (Large devices)
+  @media screen and (max-width: 768px) { } // md (Medium devices)
+  @media screen and (max-width: 576px) { } // sm (Small devices)
+  @media screen and (max-width: 480px) { } // xs (Extra small devices)
   */
 
-  --breakpoint-sm: 576px; /* Small devices */
-  --breakpoint-md: 768px; /* Medium devices (tablets) */
-  --breakpoint-lg: 992px; /* Large devices (laptops) */
-  --breakpoint-xl: 1200px; /* Extra large devices (large laptops) */
   --breakpoint-2xl: 1400px; /* Extra extra large devices (large desktops) */
+  --breakpoint-xl: 1200px; /* Extra large devices (large laptops) */
+  --breakpoint-lg: 992px; /* Large devices (laptops) */
+  --breakpoint-md: 768px; /* Medium devices (tablets) */
+  --breakpoint-sm: 576px; /* Small devices */
+  --breakpoint-xs: 480px; /* Extra small devices (mobile phones) */
 
   /* Container max-widths */
   --container-sm: 540px;
@@ -256,14 +258,14 @@ a {
 /* Admin specific base styles */
 .admin-container {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   min-height: 100vh;
   background-color: var(--admin-background);
 }
 
-@media screen and (min-width: 992px) {
+@media screen and (max-width: 992px) {
   .admin-container {
-    flex-direction: row;
+    flex-direction: column;
   }
 }
 
