@@ -27,7 +27,7 @@ const ListProductTable = ({
   if (!products || products.length === 0) {
     return (
       <div className="list-product-table-empty">
-        <p>No products found.</p>
+        <p className="list-product-table-empty-text">No products found.</p>
       </div>
     );
   }
@@ -169,6 +169,7 @@ const ListProductTable = ({
                     variant="outline"
                     onClick={() => onEdit(product)}
                     aria-label="Edit product"
+                    className="list-product-action-button"
                   >
                     Edit
                   </Button>
@@ -177,6 +178,7 @@ const ListProductTable = ({
                     variant="danger"
                     onClick={() => onDelete(product._id)}
                     aria-label="Delete product"
+                    className="list-product-action-button"
                   >
                     Delete
                   </Button>
@@ -284,6 +286,7 @@ const ListProductTable = ({
                     variant="outline"
                     onClick={() => onEdit(product)}
                     aria-label="Edit product"
+                    className="list-product-action-button"
                   >
                     Edit
                   </Button>
@@ -292,6 +295,7 @@ const ListProductTable = ({
                     variant="danger"
                     onClick={() => onDelete(product._id)}
                     aria-label="Delete product"
+                    className="list-product-action-button"
                   >
                     Delete
                   </Button>

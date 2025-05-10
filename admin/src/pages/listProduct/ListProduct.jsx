@@ -199,8 +199,8 @@ const ListProduct = () => {
   if (error) {
     return (
       <div className="list-product-error">
-        <h2>Error loading products</h2>
-        <p>{error.message}</p>
+        <h2 className="list-product-error-title">Error loading products</h2>
+        <p className="list-product-error-message">{error.message}</p>
         <Button onClick={fetchProducts}>Try Again</Button>
       </div>
     );
@@ -209,7 +209,7 @@ const ListProduct = () => {
   return (
     <div className="list-product-container">
       <div className="list-product-header">
-        <h1>Products</h1>
+        <h1 className="list-product-header-title">Products</h1>
       </div>
 
       <div className="list-product-filter-section">

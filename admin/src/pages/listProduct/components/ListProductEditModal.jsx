@@ -314,8 +314,8 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
           <form onSubmit={handleSubmit} className="list-product-edit-form">
             <div className="list-product-form-row">
               <div className="list-product-form-group">
+                <label className="list-product-form-label">Product Name</label>
                 <Input
-                  label="Product Name"
                   type="text"
                   name="name"
                   value={formData.name}
@@ -328,8 +328,10 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
 
             <div className="list-product-form-row">
               <div className="list-product-form-group">
+                <label className="list-product-form-label">
+                  Short Description
+                </label>
                 <Input
-                  label="Short Description"
                   type="text"
                   name="shortDescription"
                   value={formData.shortDescription}
@@ -343,7 +345,9 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
 
             <div className="list-product-form-row">
               <div className="list-product-form-group">
-                <label>Long Description</label>
+                <label className="list-product-form-label">
+                  Long Description
+                </label>
                 <textarea
                   name="longDescription"
                   value={formData.longDescription}
@@ -364,8 +368,8 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
 
             <div className="list-product-form-row two-column">
               <div className="list-product-form-group">
+                <label className="list-product-form-label">Category</label>
                 <Select
-                  label="Category"
                   name="category"
                   value={formData.category}
                   options={categoryOptions}
@@ -386,6 +390,7 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
                       name="available"
                       checked={formData.available}
                       onChange={handleChange}
+                      className="list-product-checkbox-input"
                     />
                     <span>Product Available</span>
                   </label>
@@ -395,8 +400,10 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
 
             <div className="list-product-form-row">
               <div className="list-product-form-group">
+                <label className="list-product-form-label">
+                  Original Price ($)
+                </label>
                 <Input
-                  label="Original Price ($)"
                   type="number"
                   name="old_price"
                   value={formData.old_price}
@@ -418,6 +425,7 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
                       name="hasDiscount"
                       checked={hasDiscount}
                       onChange={handleDiscountChange}
+                      className="list-product-checkbox-input"
                     />
                     <span>Apply Discount</span>
                   </label>
@@ -428,8 +436,10 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
             {hasDiscount && (
               <div className="list-product-form-row">
                 <div className="list-product-form-group">
+                  <label className="list-product-form-label">
+                    Discounted Price ($)
+                  </label>
                   <Input
-                    label="Discounted Price ($)"
                     type="number"
                     name="new_price"
                     value={formData.new_price}
@@ -452,7 +462,7 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
 
             <div className="list-product-form-row">
               <div className="list-product-form-group">
-                <label>Sizes</label>
+                <label className="list-product-form-label">Sizes</label>
                 <div className="list-product-checkbox-group">
                   {sizeOptions.map((option) => (
                     <label
@@ -475,6 +485,7 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
                                 ),
                           }));
                         }}
+                        className="list-product-checkbox-input"
                       />
                       <span>{option.label}</span>
                     </label>
@@ -485,7 +496,7 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
 
             <div className="list-product-form-row">
               <div className="list-product-form-group">
-                <label>Product Tags</label>
+                <label className="list-product-form-label">Product Tags</label>
                 <div className="list-product-checkbox-group">
                   {tagOptions.map((option) => (
                     <label
@@ -506,6 +517,7 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
                               : prev.tags.filter((tag) => tag !== option.value),
                           }));
                         }}
+                        className="list-product-checkbox-input"
                       />
                       <span>{option.label}</span>
                     </label>
@@ -516,7 +528,7 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
 
             <div className="list-product-form-row">
               <div className="list-product-form-group">
-                <label>Product Type</label>
+                <label className="list-product-form-label">Product Type</label>
                 <div className="list-product-checkbox-group">
                   {typeOptions.map((option) => (
                     <label
@@ -539,6 +551,7 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
                                 ),
                           }));
                         }}
+                        className="list-product-checkbox-input"
                       />
                       <span>{option.label}</span>
                     </label>
@@ -550,14 +563,14 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
             {/* Image management section */}
             <div className="list-product-form-row">
               <div className="list-product-form-group">
-                <label>Product Images</label>
+                <label className="list-product-form-label">
+                  Product Images
+                </label>
                 <ImageGalleryDisplay
                   images={formData.images || []}
+                  mainImageIndex={formData.mainImageIndex}
                   onImagesChange={(newImages) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      images: newImages,
-                    }))
+                    setFormData((prev) => ({ ...prev, images: newImages }))
                   }
                   onMainImageChange={(newIndex) =>
                     setFormData((prev) => ({
@@ -565,12 +578,11 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
                       mainImageIndex: newIndex,
                     }))
                   }
-                  mainImageIndex={formData.mainImageIndex}
-                  maxImages={5}
-                  onImageUpload={handleImageUpload}
-                  isUploading={isUploading}
                   onCleanupImages={cleanupUploadedImages}
                   newlyUploadedImages={newlyUploadedImages}
+                  onImageUpload={handleImageUpload}
+                  isUploading={isUploading}
+                  maxImages={5}
                 />
               </div>
             </div>

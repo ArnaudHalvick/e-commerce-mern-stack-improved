@@ -12,7 +12,7 @@
   margin-bottom: var(--spacing-5);
 }
 
-.list-product-header h1 {
+.list-product-header-title {
   font-size: var(--font-size-xl);
   margin: 0;
   color: var(--admin-text-primary);
@@ -102,7 +102,7 @@
     padding: var(--spacing-3);
   }
 
-  .list-product-header h1 {
+  .list-product-header-title {
     font-size: var(--font-size-lg);
   }
 
@@ -161,12 +161,12 @@
   margin: var(--spacing-5) 0;
 }
 
-.list-product-error h2 {
+.list-product-error-title {
   margin-top: 0;
   color: var(--color-danger);
 }
 
-.list-product-error p {
+.list-product-error-message {
   margin-bottom: var(--spacing-5);
   color: var(--admin-text-secondary);
 }

@@ -21,7 +21,7 @@
   box-shadow: var(--shadow-sm);
 }
 
-.list-product-table-empty p {
+.list-product-table-empty-text {
   color: var(--admin-text-secondary);
   font-size: var(--font-size-base);
 }
@@ -204,7 +204,7 @@
     height: 36px;
   }
 
-  .list-product-actions button {
+  .list-product-action-button {
     width: 100%;
     padding: var(--spacing-1) var(--spacing-2);
     font-size: var(--font-size-xs);
