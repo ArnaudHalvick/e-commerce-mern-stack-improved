@@ -28,6 +28,7 @@
   max-height: 90vh;
   z-index: var(--z-index-modal);
   animation: adminModalSlideIn 0.3s ease-out;
+  overflow: hidden;
 }
 
 .admin-modal-centered {
@@ -97,6 +98,8 @@
   padding: var(--spacing-6);
   flex: 1;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 .admin-modal-footer {
