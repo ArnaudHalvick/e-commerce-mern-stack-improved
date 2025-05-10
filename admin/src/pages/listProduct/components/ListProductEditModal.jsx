@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import Modal from "../../../../components/ui/modal/Modal";
-import Button from "../../../../components/ui/button/Button";
-import Input from "../../../../components/ui/input/Input";
-import Select from "../../../../components/ui/select/Select";
-import { useToast } from "../../../../components/ui/errorHandling/toast/ToastHooks";
-import { getImageUrl } from "../../../../utils/apiUtils";
-import productsService from "../../../../api/services/products";
+import Modal from "../../../components/ui/modal/Modal";
+import Button from "../../../components/ui/button/Button";
+import Input from "../../../components/ui/input/Input";
+import Select from "../../../components/ui/select/Select";
+import { useToast } from "../../../components/ui/errorHandling/toast/ToastHooks";
+import { getImageUrl } from "../../../utils/apiUtils";
+import productsService from "../../../api/services/products";
 import ImageGalleryModal from "./ImageGalleryModal";
 import "../styles/ListProductEditModal.css";
 
