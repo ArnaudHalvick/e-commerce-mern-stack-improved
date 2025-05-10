@@ -14,6 +14,12 @@
   gap: var(--spacing-5);
 }
 
+.list-product-form-row.three-column {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--spacing-5);
+}
+
 .list-product-form-group {
   display: flex;
   flex-direction: column;
@@ -64,7 +70,7 @@
 
 .list-product-checkbox-group {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: var(--spacing-2);
   margin-top: var(--spacing-2);
 }
@@ -182,20 +188,20 @@
 }
 
 /* Confirmation modal styles */
-.admin-modal.admin-modal-small p {
+.confirm-discard-modal p {
   margin: 0 0 var(--spacing-4);
   font-size: var(--font-size-base);
   line-height: var(--line-height-normal);
   color: var(--admin-text-primary);
 }
 
-.admin-modal.admin-modal-small .admin-modal-footer {
+.confirm-discard-modal .admin-modal-footer {
   display: flex;
   justify-content: flex-end;
   gap: var(--spacing-3);
 }
 
-.admin-modal.admin-modal-small .admin-modal-header {
+.confirm-discard-modal .admin-modal-header {
   color: var(--color-danger);
   font-weight: var(--font-weight-semibold);
 }
