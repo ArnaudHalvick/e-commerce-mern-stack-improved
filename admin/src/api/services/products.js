@@ -142,6 +142,18 @@ const uploadProductImages = async (imageFiles) => {
 };
 
 /**
+ * Delete uploaded images that were not saved with a product
+ * @param {string[]} imagePaths - Array of image paths to delete
+ * @returns {Promise} Promise with deletion status
+ */
+const deleteUploadedImages = async (imagePaths) => {
+  const response = await apiClient.delete("/api/admin/products/images", {
+    data: { imagePaths },
+  });
+  return response.data;
+};
+
+/**
  * Checks if a product exists by a specific field (like name or slug)
  * @param {string} field - Field to check (e.g., "name", "slug")
  * @param {string} value - Value to check for
@@ -170,6 +182,7 @@ const productsService = {
   restoreProduct,
   toggleAvailability,
   uploadProductImages,
+  deleteUploadedImages,
   checkProductExists,
 };
 

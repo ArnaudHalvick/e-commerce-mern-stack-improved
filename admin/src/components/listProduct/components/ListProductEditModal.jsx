@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Modal from "../../ui/modal/Modal";
 import Button from "../../ui/button/Button";
 import Input from "../../ui/input/Input";
@@ -7,6 +7,33 @@ import { useToast } from "../../ui/errorHandling/toast/ToastHooks";
 import { getImageUrl } from "../../../utils/apiUtils";
 import productsService from "../../../api/services/products";
 import "../styles/ListProductEditModal.css";
+
+const ConfirmationModal = ({ isOpen, onConfirm, onCancel, title, message }) => {
+  return (
+    <Modal
+      isOpen={isOpen}
+      onClose={onCancel}
+      size="small"
+      closeOnOverlayClick={false}
+      closeOnEscape={false}
+      centered={true}
+      className="confirm-discard-modal"
+    >
+      <Modal.Header onClose={onCancel}>{title}</Modal.Header>
+      <Modal.Body>
+        <p>{message}</p>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={onCancel}>
+          No, Keep Editing
+        </Button>
+        <Button variant="danger" onClick={onConfirm}>
+          Yes, Discard Changes
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
+};
 
 const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
   const { showToast } = useToast();
@@ -29,6 +56,8 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
   const [hasDiscount, setHasDiscount] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [originalFormData, setOriginalFormData] = useState(null);
+  const [newlyUploadedImages, setNewlyUploadedImages] = useState([]);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
   // Category options
   const categoryOptions = [
@@ -97,6 +126,8 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
       // Store the original form data for potential cancellation
       setOriginalFormData(JSON.parse(JSON.stringify(productData)));
       setHasDiscount(hasDiscountValue);
+      // Reset newly uploaded images when opening a new product
+      setNewlyUploadedImages([]);
     }
   }, [product]);
 
@@ -167,6 +198,10 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
       };
 
       await onSave(updatedData);
+
+      // After successful save, clear the newly uploaded images array
+      // as they are now part of the product
+      setNewlyUploadedImages([]);
     } catch (error) {
       console.error("Error saving product:", error);
     } finally {
@@ -185,8 +220,12 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
       const response = await productsService.uploadProductImages(files);
 
       if (response && response.data) {
+        // Track newly uploaded images for potential cleanup
+        const uploadedPaths = response.data;
+        setNewlyUploadedImages((prev) => [...prev, ...uploadedPaths]);
+
         // Update the form data with the new images
-        const newImages = [...formData.images, ...response.data];
+        const newImages = [...formData.images, ...uploadedPaths];
 
         setFormData((prev) => ({
           ...prev,
@@ -213,367 +252,461 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
     }
   };
 
-  const handleModalClose = () => {
-    // If there are unsaved changes, ask for confirmation
-    if (JSON.stringify(formData) !== JSON.stringify(originalFormData)) {
-      const confirmDiscard = window.confirm(
-        "You have unsaved changes. Are you sure you want to discard them?"
-      );
+  const cleanupUploadedImages = async (imagesToDelete) => {
+    if (imagesToDelete.length === 0) return;
 
-      if (!confirmDiscard) {
-        return; // Stay in the modal if user cancels
+    try {
+      console.log("Attempting to delete images:", imagesToDelete);
+      const response = await productsService.deleteUploadedImages(
+        imagesToDelete
+      );
+      console.log("Cleanup response:", response);
+
+      if (response.failed && response.failed.length > 0) {
+        console.warn("Some images failed to delete:", response.failed);
       }
+    } catch (error) {
+      console.error("Error cleaning up images:", error);
+    }
+  };
+
+  const handleModalClose = () => {
+    // If there are unsaved changes, show confirmation modal
+    if (JSON.stringify(formData) !== JSON.stringify(originalFormData)) {
+      setIsConfirmModalOpen(true);
+    } else {
+      // No changes, just close
+      onClose();
+    }
+  };
+
+  // Generate the confirmation message based on what changes would be discarded
+  const getConfirmationMessage = () => {
+    let message =
+      "You have unsaved changes. Are you sure you want to discard them?";
+
+    // Add information about newly uploaded images
+    if (newlyUploadedImages.length > 0) {
+      message += ` ${newlyUploadedImages.length} newly uploaded image${
+        newlyUploadedImages.length > 1 ? "s" : ""
+      } will be deleted.`;
     }
 
-    // Call the parent's onClose function
+    return message;
+  };
+
+  const handleConfirmDiscard = () => {
+    // User confirmed discarding changes, so clean up any images that were uploaded
+    if (newlyUploadedImages.length > 0) {
+      console.log(
+        "Discarding changes and cleaning up images:",
+        newlyUploadedImages
+      );
+      cleanupUploadedImages(newlyUploadedImages);
+    } else {
+      console.log("No newly uploaded images to clean up");
+    }
+
+    // Close confirmation modal and main edit modal
+    setIsConfirmModalOpen(false);
     onClose();
   };
 
+  const handleCancelDiscard = () => {
+    // User canceled discarding changes, just close the confirmation modal
+    setIsConfirmModalOpen(false);
+  };
+
   return (
-    <Modal isOpen={isOpen} onClose={handleModalClose} size="large">
-      <Modal.Header onClose={handleModalClose}>
-        Edit Product: {product?.name}
-      </Modal.Header>
+    <>
+      <Modal isOpen={isOpen} onClose={handleModalClose} size="large">
+        <Modal.Header onClose={handleModalClose}>
+          Edit Product: {product?.name}
+        </Modal.Header>
 
-      <Modal.Body>
-        <form onSubmit={handleSubmit} className="list-product-edit-form">
-          <div className="list-product-form-row">
-            <div className="list-product-form-group">
-              <Input
-                label="Product Name"
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                error={errors.name}
-                required
-              />
-            </div>
-          </div>
-
-          <div className="list-product-form-row">
-            <div className="list-product-form-group">
-              <Input
-                label="Short Description"
-                type="text"
-                name="shortDescription"
-                value={formData.shortDescription}
-                onChange={handleChange}
-                error={errors.shortDescription}
-                required
-                maxLength={200}
-              />
-            </div>
-          </div>
-
-          <div className="list-product-form-row">
-            <div className="list-product-form-group">
-              <label>Long Description</label>
-              <textarea
-                name="longDescription"
-                value={formData.longDescription}
-                onChange={handleChange}
-                className={`list-product-textarea-input ${
-                  errors.longDescription ? "error" : ""
-                }`}
-                rows={5}
-                required
-              />
-              {errors.longDescription && (
-                <div className="list-product-input-error">
-                  {errors.longDescription}
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className="list-product-form-row two-column">
-            <div className="list-product-form-group">
-              <Select
-                label="Category"
-                name="category"
-                value={formData.category}
-                options={categoryOptions}
-                onChange={(e) =>
-                  handleChange({
-                    target: { name: "category", value: e.target.value },
-                  })
-                }
-                error={errors.category}
-                required
-              />
-            </div>
-            <div className="list-product-form-group">
-              <div className="list-product-checkbox-container">
-                <label className="list-product-checkbox-label">
-                  <input
-                    type="checkbox"
-                    name="available"
-                    checked={formData.available}
-                    onChange={handleChange}
-                  />
-                  <span>Product Available</span>
-                </label>
-              </div>
-            </div>
-          </div>
-
-          <div className="list-product-form-row">
-            <div className="list-product-form-group">
-              <Input
-                label="Original Price ($)"
-                type="number"
-                name="old_price"
-                value={formData.old_price}
-                onChange={handleChange}
-                error={errors.old_price}
-                min={0.01}
-                step={0.01}
-                required
-              />
-            </div>
-          </div>
-
-          <div className="list-product-form-row">
-            <div className="list-product-form-group">
-              <div className="list-product-checkbox-container discount">
-                <label className="list-product-checkbox-label">
-                  <input
-                    type="checkbox"
-                    name="hasDiscount"
-                    checked={hasDiscount}
-                    onChange={handleDiscountChange}
-                  />
-                  <span>Apply Discount</span>
-                </label>
-              </div>
-            </div>
-          </div>
-
-          {hasDiscount && (
+        <Modal.Body>
+          <form onSubmit={handleSubmit} className="list-product-edit-form">
             <div className="list-product-form-row">
               <div className="list-product-form-group">
                 <Input
-                  label="Discounted Price ($)"
-                  type="number"
-                  name="new_price"
-                  value={formData.new_price}
+                  label="Product Name"
+                  type="text"
+                  name="name"
+                  value={formData.name}
                   onChange={handleChange}
-                  error={errors.new_price}
-                  min={0.01}
-                  max={formData.old_price - 0.01}
-                  step={0.01}
-                  required={hasDiscount}
-                  disabled={!hasDiscount}
+                  error={errors.name}
+                  required
                 />
-                {formData.new_price >= formData.old_price && hasDiscount && (
+              </div>
+            </div>
+
+            <div className="list-product-form-row">
+              <div className="list-product-form-group">
+                <Input
+                  label="Short Description"
+                  type="text"
+                  name="shortDescription"
+                  value={formData.shortDescription}
+                  onChange={handleChange}
+                  error={errors.shortDescription}
+                  required
+                  maxLength={200}
+                />
+              </div>
+            </div>
+
+            <div className="list-product-form-row">
+              <div className="list-product-form-group">
+                <label>Long Description</label>
+                <textarea
+                  name="longDescription"
+                  value={formData.longDescription}
+                  onChange={handleChange}
+                  className={`list-product-textarea-input ${
+                    errors.longDescription ? "error" : ""
+                  }`}
+                  rows={5}
+                  required
+                />
+                {errors.longDescription && (
                   <div className="list-product-input-error">
-                    Discounted price must be less than original price
+                    {errors.longDescription}
                   </div>
                 )}
               </div>
             </div>
-          )}
 
-          <div className="list-product-form-row">
-            <div className="list-product-form-group">
-              <label>Sizes</label>
-              <div className="list-product-checkbox-group">
-                {sizeOptions.map((option) => (
-                  <label
-                    key={option.value}
-                    className="list-product-checkbox-label"
-                  >
+            <div className="list-product-form-row two-column">
+              <div className="list-product-form-group">
+                <Select
+                  label="Category"
+                  name="category"
+                  value={formData.category}
+                  options={categoryOptions}
+                  onChange={(e) =>
+                    handleChange({
+                      target: { name: "category", value: e.target.value },
+                    })
+                  }
+                  error={errors.category}
+                  required
+                />
+              </div>
+              <div className="list-product-form-group">
+                <div className="list-product-checkbox-container">
+                  <label className="list-product-checkbox-label">
                     <input
                       type="checkbox"
-                      name="sizes"
-                      value={option.value}
-                      checked={formData.sizes.includes(option.value)}
-                      onChange={(e) => {
-                        const isChecked = e.target.checked;
-                        setFormData((prev) => ({
-                          ...prev,
-                          sizes: isChecked
-                            ? [...prev.sizes, option.value]
-                            : prev.sizes.filter(
-                                (size) => size !== option.value
-                              ),
-                        }));
-                      }}
+                      name="available"
+                      checked={formData.available}
+                      onChange={handleChange}
                     />
-                    <span>{option.label}</span>
+                    <span>Product Available</span>
                   </label>
-                ))}
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="list-product-form-row">
-            <div className="list-product-form-group">
-              <label>Product Tags</label>
-              <div className="list-product-checkbox-group">
-                {tagOptions.map((option) => (
-                  <label
-                    key={option.value}
-                    className="list-product-checkbox-label"
-                  >
+            <div className="list-product-form-row">
+              <div className="list-product-form-group">
+                <Input
+                  label="Original Price ($)"
+                  type="number"
+                  name="old_price"
+                  value={formData.old_price}
+                  onChange={handleChange}
+                  error={errors.old_price}
+                  min={0.01}
+                  step={0.01}
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="list-product-form-row">
+              <div className="list-product-form-group">
+                <div className="list-product-checkbox-container discount">
+                  <label className="list-product-checkbox-label">
                     <input
                       type="checkbox"
-                      name="tags"
-                      value={option.value}
-                      checked={formData.tags.includes(option.value)}
-                      onChange={(e) => {
-                        const isChecked = e.target.checked;
-                        setFormData((prev) => ({
-                          ...prev,
-                          tags: isChecked
-                            ? [...prev.tags, option.value]
-                            : prev.tags.filter((tag) => tag !== option.value),
-                        }));
-                      }}
+                      name="hasDiscount"
+                      checked={hasDiscount}
+                      onChange={handleDiscountChange}
                     />
-                    <span>{option.label}</span>
+                    <span>Apply Discount</span>
                   </label>
-                ))}
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="list-product-form-row">
-            <div className="list-product-form-group">
-              <label>Product Type</label>
-              <div className="list-product-checkbox-group">
-                {typeOptions.map((option) => (
-                  <label
-                    key={option.value}
-                    className="list-product-checkbox-label"
-                  >
-                    <input
-                      type="checkbox"
-                      name="types"
-                      value={option.value}
-                      checked={formData.types.includes(option.value)}
-                      onChange={(e) => {
-                        const isChecked = e.target.checked;
-                        setFormData((prev) => ({
-                          ...prev,
-                          types: isChecked
-                            ? [...prev.types, option.value]
-                            : prev.types.filter(
-                                (type) => type !== option.value
-                              ),
-                        }));
-                      }}
-                    />
-                    <span>{option.label}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Image management section */}
-          <div className="list-product-form-row">
-            <div className="list-product-form-group">
-              <label>Product Images</label>
-              <div className="list-product-image-preview-container">
-                {formData.images &&
-                  formData.images.map((image, index) => (
-                    <div key={index} className="list-product-image-preview">
-                      <img
-                        src={getImageUrl(image)}
-                        alt={`Product ${index + 1}`}
-                      />
-                      <div className="list-product-image-preview-actions">
-                        <button
-                          type="button"
-                          className="list-product-image-action-btn"
-                          onClick={() => {
-                            // Handle set as main image
-                            setFormData((prev) => ({
-                              ...prev,
-                              mainImageIndex: index,
-                            }));
-                          }}
-                          disabled={formData.mainImageIndex === index}
-                        >
-                          {formData.mainImageIndex === index
-                            ? "Main Image"
-                            : "Set as Main"}
-                        </button>
-                        <button
-                          type="button"
-                          className="list-product-image-action-btn remove"
-                          onClick={() => {
-                            // Handle remove image
-                            const newImages = [...formData.images];
-                            newImages.splice(index, 1);
-
-                            let newMainIndex = formData.mainImageIndex;
-                            if (index === formData.mainImageIndex) {
-                              newMainIndex = 0; // Reset to first image if main was removed
-                            } else if (index < formData.mainImageIndex) {
-                              newMainIndex--; // Adjust index if removed image was before main
-                            }
-
-                            setFormData((prev) => ({
-                              ...prev,
-                              images: newImages,
-                              mainImageIndex: newMainIndex,
-                            }));
-                          }}
-                        >
-                          Remove
-                        </button>
-                      </div>
+            {hasDiscount && (
+              <div className="list-product-form-row">
+                <div className="list-product-form-group">
+                  <Input
+                    label="Discounted Price ($)"
+                    type="number"
+                    name="new_price"
+                    value={formData.new_price}
+                    onChange={handleChange}
+                    error={errors.new_price}
+                    min={0.01}
+                    max={formData.old_price - 0.01}
+                    step={0.01}
+                    required={hasDiscount}
+                    disabled={!hasDiscount}
+                  />
+                  {formData.new_price >= formData.old_price && hasDiscount && (
+                    <div className="list-product-input-error">
+                      Discounted price must be less than original price
                     </div>
-                  ))}
+                  )}
+                </div>
+              </div>
+            )}
 
-                {(!formData.images || formData.images.length < 5) && (
-                  <div className="list-product-image-upload-placeholder">
-                    {isUploading ? (
-                      <span>Uploading...</span>
-                    ) : (
-                      <>
-                        <span>Add Image</span>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={handleImageUpload}
-                          disabled={isUploading}
-                          multiple
+            <div className="list-product-form-row">
+              <div className="list-product-form-group">
+                <label>Sizes</label>
+                <div className="list-product-checkbox-group">
+                  {sizeOptions.map((option) => (
+                    <label
+                      key={option.value}
+                      className="list-product-checkbox-label"
+                    >
+                      <input
+                        type="checkbox"
+                        name="sizes"
+                        value={option.value}
+                        checked={formData.sizes.includes(option.value)}
+                        onChange={(e) => {
+                          const isChecked = e.target.checked;
+                          setFormData((prev) => ({
+                            ...prev,
+                            sizes: isChecked
+                              ? [...prev.sizes, option.value]
+                              : prev.sizes.filter(
+                                  (size) => size !== option.value
+                                ),
+                          }));
+                        }}
+                      />
+                      <span>{option.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="list-product-form-row">
+              <div className="list-product-form-group">
+                <label>Product Tags</label>
+                <div className="list-product-checkbox-group">
+                  {tagOptions.map((option) => (
+                    <label
+                      key={option.value}
+                      className="list-product-checkbox-label"
+                    >
+                      <input
+                        type="checkbox"
+                        name="tags"
+                        value={option.value}
+                        checked={formData.tags.includes(option.value)}
+                        onChange={(e) => {
+                          const isChecked = e.target.checked;
+                          setFormData((prev) => ({
+                            ...prev,
+                            tags: isChecked
+                              ? [...prev.tags, option.value]
+                              : prev.tags.filter((tag) => tag !== option.value),
+                          }));
+                        }}
+                      />
+                      <span>{option.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="list-product-form-row">
+              <div className="list-product-form-group">
+                <label>Product Type</label>
+                <div className="list-product-checkbox-group">
+                  {typeOptions.map((option) => (
+                    <label
+                      key={option.value}
+                      className="list-product-checkbox-label"
+                    >
+                      <input
+                        type="checkbox"
+                        name="types"
+                        value={option.value}
+                        checked={formData.types.includes(option.value)}
+                        onChange={(e) => {
+                          const isChecked = e.target.checked;
+                          setFormData((prev) => ({
+                            ...prev,
+                            types: isChecked
+                              ? [...prev.types, option.value]
+                              : prev.types.filter(
+                                  (type) => type !== option.value
+                                ),
+                          }));
+                        }}
+                      />
+                      <span>{option.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Image management section */}
+            <div className="list-product-form-row">
+              <div className="list-product-form-group">
+                <label>Product Images</label>
+                <div className="list-product-image-preview-container">
+                  {formData.images &&
+                    formData.images.map((image, index) => (
+                      <div key={index} className="list-product-image-preview">
+                        <img
+                          src={getImageUrl(image)}
+                          alt={`Product ${index + 1}`}
                         />
-                      </>
-                    )}
+                        <div className="list-product-image-preview-actions">
+                          <button
+                            type="button"
+                            className="list-product-image-action-btn"
+                            onClick={() => {
+                              // Handle set as main image
+                              setFormData((prev) => ({
+                                ...prev,
+                                mainImageIndex: index,
+                              }));
+                            }}
+                            disabled={formData.mainImageIndex === index}
+                          >
+                            {formData.mainImageIndex === index
+                              ? "Main Image"
+                              : "Set as Main"}
+                          </button>
+                          <button
+                            type="button"
+                            className="list-product-image-action-btn remove"
+                            onClick={() => {
+                              // Handle remove image
+                              const imageToRemove = formData.images[index];
+                              const newImages = [...formData.images];
+                              newImages.splice(index, 1);
+
+                              let newMainIndex = formData.mainImageIndex;
+                              if (index === formData.mainImageIndex) {
+                                newMainIndex = 0; // Reset to first image if main was removed
+                              } else if (index < formData.mainImageIndex) {
+                                newMainIndex--; // Adjust index if removed image was before main
+                              }
+
+                              // Check if the removed image was newly uploaded
+                              if (newlyUploadedImages.includes(imageToRemove)) {
+                                // Remove from new uploads and clean it up on the server immediately
+                                console.log(
+                                  "Removing newly uploaded image:",
+                                  imageToRemove
+                                );
+                                cleanupUploadedImages([imageToRemove]);
+                                setNewlyUploadedImages((prev) =>
+                                  prev.filter((img) => img !== imageToRemove)
+                                );
+                              }
+
+                              setFormData((prev) => ({
+                                ...prev,
+                                images: newImages,
+                                mainImageIndex: newMainIndex,
+                              }));
+                            }}
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+
+                  {(!formData.images || formData.images.length < 5) && (
+                    <div className="list-product-image-upload-placeholder">
+                      {isUploading ? (
+                        <span>Uploading...</span>
+                      ) : (
+                        <>
+                          <span>Add Image</span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageUpload}
+                            disabled={isUploading}
+                            multiple
+                          />
+                        </>
+                      )}
+                    </div>
+                  )}
+                </div>
+                <div className="list-product-image-help-text">
+                  You can upload up to 5 images. The first image will be used as
+                  the main product image.
+                </div>
+
+                {/* Debug button for testing image deletion */}
+                {import.meta.env.DEV && newlyUploadedImages.length > 0 && (
+                  <div className="debug-section">
+                    <p className="debug-info">
+                      Debug: {newlyUploadedImages.length} new images
+                    </p>
+                    <Button
+                      variant="danger"
+                      size="small"
+                      onClick={() => {
+                        console.log("Manual cleanup triggered");
+                        cleanupUploadedImages([...newlyUploadedImages]);
+                      }}
+                      className="debug-button"
+                    >
+                      Test Image Deletion
+                    </Button>
                   </div>
                 )}
               </div>
-              <div className="list-product-image-help-text">
-                You can upload up to 5 images. The first image will be used as
-                the main product image.
-              </div>
             </div>
-          </div>
-        </form>
-      </Modal.Body>
+          </form>
+        </Modal.Body>
 
-      <Modal.Footer>
-        <Button
-          variant="secondary"
-          onClick={handleModalClose}
-          disabled={isSubmitting || isUploading}
-        >
-          Cancel
-        </Button>
-        <Button
-          variant="primary"
-          onClick={handleSubmit}
-          disabled={isSubmitting || isUploading}
-        >
-          {isSubmitting ? "Saving..." : "Save Changes"}
-        </Button>
-      </Modal.Footer>
-    </Modal>
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={handleModalClose}
+            disabled={isSubmitting || isUploading}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="primary"
+            onClick={handleSubmit}
+            disabled={isSubmitting || isUploading}
+          >
+            {isSubmitting ? "Saving..." : "Save Changes"}
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Confirmation modal for discarding changes */}
+      <ConfirmationModal
+        isOpen={isConfirmModalOpen}
+        onConfirm={handleConfirmDiscard}
+        onCancel={handleCancelDiscard}
+        title="Discard Changes"
+        message={getConfirmationMessage()}
+      />
+    </>
   );
 };
 

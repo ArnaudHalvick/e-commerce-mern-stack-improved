@@ -328,6 +328,105 @@ const uploadProductImages = catchAsync(async (req, res, next) => {
   });
 });
 
+/**
+ * Delete uploaded product images that weren't saved
+ * @route DELETE /api/admin/products/images
+ * @access Private (requires authentication)
+ */
+const deleteUploadedImages = catchAsync(async (req, res, next) => {
+  const { imagePaths } = req.body;
+
+  console.log("Received image paths for deletion:", imagePaths);
+  console.log("Current directory:", __dirname);
+  console.log(
+    "Resolved upload dir:",
+    path.resolve(__dirname, "../upload/images")
+  );
+
+  try {
+    // Check if upload directory exists
+    const uploadDir = path.resolve(__dirname, "../upload/images");
+    if (!fs.existsSync(uploadDir)) {
+      console.error(`Upload directory does not exist: ${uploadDir}`);
+      return next(
+        AppError.createAndLogError("Upload directory not found", 500)
+      );
+    } else {
+      console.log(`Upload directory exists: ${uploadDir}`);
+      // List files in upload directory for debugging
+      const files = fs.readdirSync(uploadDir);
+      console.log(
+        `Files in upload directory (${files.length}):`,
+        files.slice(0, 5)
+      ); // Show first 5 files
+    }
+  } catch (dirError) {
+    console.error("Error checking upload directory:", dirError);
+  }
+
+  if (!imagePaths || !Array.isArray(imagePaths) || imagePaths.length === 0) {
+    return next(AppError.createAndLogError("No image paths provided", 400));
+  }
+
+  const deletedImages = [];
+  const failedImages = [];
+
+  for (const imagePath of imagePaths) {
+    try {
+      // Extract filename from the path - handle both /images/filename and just filename
+      const filename = imagePath.includes("/")
+        ? imagePath.split("/").pop()
+        : imagePath;
+
+      if (!filename) {
+        failedImages.push({ path: imagePath, reason: "Invalid file path" });
+        continue;
+      }
+
+      console.log(`Attempting to delete: ${filename} from path ${imagePath}`);
+
+      // Create the full path
+      const fullPath = path.join(__dirname, "../upload/images", filename);
+      console.log(`Full resolved path: ${fullPath}`);
+
+      // Check if file exists before trying to delete
+      if (fs.existsSync(fullPath)) {
+        await unlinkAsync(fullPath);
+        console.log(`Successfully deleted: ${fullPath}`);
+        deletedImages.push(imagePath);
+      } else {
+        console.log(`File not found: ${fullPath}`);
+
+        // Try alternative path format as fallback
+        const altPath = path.resolve(__dirname, "..", imagePath);
+        console.log(`Trying alternative path: ${altPath}`);
+
+        if (fs.existsSync(altPath)) {
+          await unlinkAsync(altPath);
+          console.log(`Successfully deleted from alternative path: ${altPath}`);
+          deletedImages.push(imagePath);
+        } else {
+          failedImages.push({ path: imagePath, reason: "File not found" });
+        }
+      }
+    } catch (error) {
+      console.error(`Error deleting file ${imagePath}:`, error);
+      failedImages.push({ path: imagePath, reason: error.message });
+    }
+  }
+
+  console.log(
+    `Deletion summary: ${deletedImages.length} deleted, ${failedImages.length} failed`
+  );
+
+  res.status(200).json({
+    success: true,
+    message: `Deleted ${deletedImages.length} images`,
+    deleted: deletedImages,
+    failed: failedImages,
+  });
+});
+
 module.exports = {
   createProduct,
   getAllProducts,
@@ -338,4 +437,5 @@ module.exports = {
   restoreProduct,
   toggleAvailability,
   permanentDeleteProduct,
+  deleteUploadedImages,
 };

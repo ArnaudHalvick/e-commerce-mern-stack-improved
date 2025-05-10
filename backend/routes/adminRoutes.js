@@ -17,6 +17,7 @@ const {
   restoreProduct,
   toggleAvailability,
   permanentDeleteProduct,
+  deleteUploadedImages,
 } = require("../controllers/adminController");
 
 // Set up multer for file storage
@@ -60,32 +61,35 @@ router.use(isAdmin);
 // Get all products (includes query params for filtering deleted products)
 router.get("/products", getAllProducts);
 
-// Get single product
-router.get("/products/:id", getProductById);
-
 // Create new product
 router.post("/products", createProduct);
 
-// Update product
-router.put("/products/:id", updateProduct);
-
-// Soft delete product (mark as deleted)
-router.delete("/products/:id", deleteProduct);
-
-// Permanently delete product (use with caution)
-router.delete("/products/:id/permanent", permanentDeleteProduct);
-
-// Restore deleted product
-router.post("/products/:id/restore", restoreProduct);
-
-// Toggle product availability
-router.patch("/products/:id/toggle-availability", toggleAvailability);
-
-// Upload product images
+// Upload product images - specific routes before dynamic routes
 router.post(
   "/products/upload",
   upload.array("images", 5), // Allow up to 5 images
   uploadProductImages
 );
+
+// Delete uploaded images - specific routes before dynamic routes
+router.delete("/products/images", deleteUploadedImages);
+
+// Get single product - dynamic route with ID
+router.get("/products/:id", getProductById);
+
+// Update product - dynamic route with ID
+router.put("/products/:id", updateProduct);
+
+// Soft delete product - dynamic route with ID
+router.delete("/products/:id", deleteProduct);
+
+// Permanently delete product - dynamic route with ID
+router.delete("/products/:id/permanent", permanentDeleteProduct);
+
+// Restore deleted product - dynamic route with ID
+router.post("/products/:id/restore", restoreProduct);
+
+// Toggle product availability - dynamic route with ID
+router.patch("/products/:id/toggle-availability", toggleAvailability);
 
 module.exports = router;
