@@ -20,7 +20,7 @@ The ListProduct component is a comprehensive product management interface for th
   - Price
   - Status
 - **Product Management**:
-  - Edit product details through a modal interface
+  - Edit product details through the reusable ProductEditModal component
   - Toggle product availability (activate/deactivate)
   - Delete products with confirmation
 - **Error Handling**: Graceful error displays with retry options
@@ -82,7 +82,9 @@ Custom hook that provides:
 ### UI Components
 
 - **ListProductTable**: Displays products with sorting and action buttons
-- **ProductEditModal**: Reusable component from /components/productEditModal for updating product information
+- **Reusable Components**:
+  - ProductEditModal from `/components/productEditModal` for updating product information
+  - ImageGallery from `/components/imageGallery` for managing product images
 
 ## Dependencies
 
@@ -90,7 +92,17 @@ Custom hook that provides:
 - UI components (Button, Input, Select)
 - Toast notifications for user feedback
 - ProductEditModal from shared components
+- ImageGallery from shared components
 
 ## Performance Considerations
 
 The component implements optimistic UI updates for a responsive feel while maintaining data integrity with actual server responses.
+
+## Recent Refactoring
+
+The product editing functionality and image management has been moved to reusable components:
+
+1. **ProductEditModal**: Handles all product editing functionality including form validation and submission
+2. **ImageGallery**: Manages product image uploading, selection, and arrangement
+
+This refactoring improves code reusability and maintainability by centralizing these common functionalities into dedicated components that can be used throughout the admin interface.
