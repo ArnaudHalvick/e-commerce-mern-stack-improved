@@ -1,9 +1,9 @@
 import React from "react";
-import Table from "../../ui/table/Table";
-import Button from "../../ui/button/Button";
-import Badge from "../../ui/badge/Badge";
-import Spinner from "../../ui/spinner/Spinner";
-import { getImageUrl } from "../../../utils/apiUtils";
+import Table from "../../../../components/ui/table/Table";
+import Button from "../../../../components/ui/button/Button";
+import Badge from "../../../../components/ui/badge/Badge";
+import Spinner from "../../../../components/ui/spinner/Spinner";
+import { getImageUrl } from "../../../../utils/apiUtils";
 import "../styles/ListProductTable.css";
 
 const ListProductTable = ({

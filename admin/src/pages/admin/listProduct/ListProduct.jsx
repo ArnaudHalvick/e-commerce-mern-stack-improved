@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import ListProductTable from "./components/ListProductTable";
 import ListProductEditModal from "./components/ListProductEditModal";
 import { useProductList } from "./hooks/useProductList";
-import Button from "../ui/button/Button";
-import Input from "../ui/input/Input";
-import Select from "../ui/select/Select";
-import { useToast } from "../ui/errorHandling/toast/ToastHooks";
+import Button from "../../../components/ui/button/Button";
+import Input from "../../../components/ui/input/Input";
+import Select from "../../../components/ui/select/Select";
+import { useToast } from "../../../components/ui/errorHandling/toast/ToastHooks";
 import "./styles/ListProduct.css";
 
 const ListProduct = () => {

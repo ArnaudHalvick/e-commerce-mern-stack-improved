@@ -2,7 +2,7 @@
 import "./Admin.css";
 import { Routes, Route } from "react-router-dom";
 import AddProduct from "../../components/addProduct/AddProduct";
-import ListProduct from "../../components/listProduct/ListProduct";
+import ListProduct from "./listProduct";
 
 const Dashboard = () => {
   const stats = [

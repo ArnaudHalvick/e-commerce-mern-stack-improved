@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react";
-import Modal from "../../ui/modal/Modal";
-import Button from "../../ui/button/Button";
-import productsService from "../../../api/services/products";
-import { useToast } from "../../ui/errorHandling/toast/ToastHooks";
-import { getImageUrl } from "../../../utils/apiUtils";
+import Modal from "../../../../components/ui/modal/Modal";
+import Button from "../../../../components/ui/button/Button";
+import productsService from "../../../../api/services/products";
+import { useToast } from "../../../../components/ui/errorHandling/toast/ToastHooks";
+import { getImageUrl } from "../../../../utils/apiUtils";
 import "../styles/ImageGalleryModal.css";
 
 /**

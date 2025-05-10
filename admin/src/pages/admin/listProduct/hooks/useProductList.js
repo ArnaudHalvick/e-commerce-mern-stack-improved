@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import api from "../../../api";
+import api from "../../../../api";
 
 /**
  * Hook for managing product list operations
