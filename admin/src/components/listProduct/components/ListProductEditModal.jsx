@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import Modal from "../../ui/modal/Modal";
 import Button from "../../ui/button/Button";
 import Input from "../../ui/input/Input";
@@ -652,7 +652,7 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
 
                   {(!formData.images || formData.images.length < 5) && (
                     <>
-                      <div className="list-product-image-upload-placeholder">
+                      <div className="list-product-image-upload-placeholder list-product-image-gallery-btn-red">
                         {isUploading ? (
                           <span>Uploading...</span>
                         ) : (

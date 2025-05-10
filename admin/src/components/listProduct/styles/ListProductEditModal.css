@@ -1,17 +1,17 @@
 /* ListProductEditModal.css */
 
 .list-product-edit-form {
-  padding: 10px;
+  padding: var(--spacing-4);
 }
 
 .list-product-form-row {
-  margin-bottom: 20px;
+  margin-bottom: var(--spacing-5);
 }
 
 .list-product-form-row.two-column {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  gap: var(--spacing-5);
 }
 
 .list-product-form-group {
@@ -20,53 +20,53 @@
 }
 
 .list-product-form-group label {
-  font-weight: 500;
-  margin-bottom: 8px;
-  color: #2c3e50;
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--spacing-2);
+  color: var(--admin-text-primary);
 }
 
 .list-product-textarea-input {
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
+  padding: var(--spacing-4);
+  border: var(--border-width-thin) solid var(--admin-border);
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-sm);
   font-family: inherit;
   width: 100%;
   resize: vertical;
-  transition: border-color 0.2s;
+  transition: border-color var(--transition-duration-fast);
 }
 
 .list-product-textarea-input:focus {
   outline: none;
-  border-color: #3498db;
+  border-color: var(--admin-primary);
   box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
 }
 
 .list-product-textarea-input.error {
-  border-color: #e74c3c;
+  border-color: var(--color-danger);
 }
 
 .list-product-input-error {
-  color: #e74c3c;
-  font-size: 12px;
-  margin-top: 4px;
+  color: var(--color-danger);
+  font-size: var(--font-size-xs);
+  margin-top: var(--spacing-1);
 }
 
 .list-product-checkbox-container {
-  margin-top: 25px;
+  margin-top: var(--spacing-6);
 }
 
 /* Styles for the discount checkbox container */
 .list-product-checkbox-container.discount {
   margin-top: 0;
-  margin-bottom: 5px;
+  margin-bottom: var(--spacing-1);
 }
 
 .list-product-checkbox-group {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 8px;
-  margin-top: 8px;
+  gap: var(--spacing-2);
+  margin-top: var(--spacing-2);
 }
 
 .list-product-checkbox-label {
@@ -76,21 +76,21 @@
 }
 
 .list-product-checkbox-label input {
-  margin-right: 8px;
+  margin-right: var(--spacing-2);
 }
 
 .list-product-image-preview-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 15px;
-  margin-top: 10px;
+  gap: var(--spacing-4);
+  margin-top: var(--spacing-3);
 }
 
 .list-product-image-preview {
   width: 100px;
   position: relative;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  border: var(--border-width-thin) solid var(--admin-border);
+  border-radius: var(--border-radius-md);
   overflow: hidden;
 }
 
@@ -102,30 +102,30 @@
 }
 
 .list-product-image-preview-actions {
-  padding: 5px;
+  padding: var(--spacing-1);
   background-color: rgba(255, 255, 255, 0.9);
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: var(--spacing-1);
 }
 
 .list-product-image-action-btn {
-  font-size: 12px;
-  padding: 3px 5px;
-  background-color: #3498db;
+  font-size: var(--font-size-xs);
+  padding: var(--spacing-1) var(--spacing-2);
+  background-color: var(--admin-primary);
   color: white;
   border: none;
-  border-radius: 3px;
+  border-radius: var(--border-radius-sm);
   cursor: pointer;
 }
 
 .list-product-image-action-btn:disabled {
-  background-color: #95a5a6;
+  background-color: var(--admin-text-disabled);
   cursor: not-allowed;
 }
 
 .list-product-image-action-btn.remove {
-  background-color: #e74c3c;
+  background-color: var(--color-danger);
 }
 
 .list-product-image-upload-placeholder {
@@ -135,24 +135,34 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border: 2px dashed #ddd;
-  border-radius: 4px;
-  color: #7f8c8d;
-  font-size: 13px;
+  border: var(--border-width-medium) dashed var(--admin-border);
+  border-radius: var(--border-radius-md);
+  color: var(--admin-text-secondary);
+  font-size: var(--font-size-xs);
   cursor: pointer;
   position: relative;
 }
 
 .list-product-image-gallery-btn {
-  background-color: #f8f9fa;
-  border: 2px dashed #3498db;
-  transition: all 0.2s ease;
+  background-color: var(--color-background-light);
+  border: var(--border-width-medium) dashed var(--admin-primary);
+  transition: all var(--transition-duration-fast) var(--transition-timing-ease);
 }
 
 .list-product-image-gallery-btn:hover {
-  background-color: #ebf5fb;
   transform: translateY(-3px);
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
+}
+
+.list-product-image-gallery-btn-red {
+  background-color: var(--color-background-light);
+  border: var(--border-width-medium) dashed var(--color-primary);
+  transition: all var(--transition-duration-fast) var(--transition-timing-ease);
+}
+
+.list-product-image-gallery-btn-red:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
 }
 
 .list-product-image-upload-placeholder input {
@@ -166,26 +176,26 @@
 }
 
 .list-product-image-help-text {
-  margin-top: 10px;
-  font-size: 12px;
-  color: #7f8c8d;
+  margin-top: var(--spacing-3);
+  font-size: var(--font-size-xs);
+  color: var(--admin-text-secondary);
 }
 
 /* Confirmation modal styles */
 .admin-modal.admin-modal-small p {
-  margin: 0 0 15px;
-  font-size: 16px;
-  line-height: 1.5;
-  color: #2c3e50;
+  margin: 0 0 var(--spacing-4);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  color: var(--admin-text-primary);
 }
 
 .admin-modal.admin-modal-small .admin-modal-footer {
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
+  gap: var(--spacing-3);
 }
 
 .admin-modal.admin-modal-small .admin-modal-header {
-  color: #e74c3c;
-  font-weight: 600;
+  color: var(--color-danger);
+  font-weight: var(--font-weight-semibold);
 }
