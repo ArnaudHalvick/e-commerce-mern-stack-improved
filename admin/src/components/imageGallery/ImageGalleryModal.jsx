@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useCallback } from "react";
-import Modal from "../../../components/ui/modal/Modal";
-import Button from "../../../components/ui/button/Button";
-import productsService from "../../../api/services/products";
-import { useToast } from "../../../components/ui/errorHandling/toast/ToastHooks";
-import { getImageUrl } from "../../../utils/apiUtils";
-import "../styles/ImageGalleryModal.css";
+import Modal from "../../components/ui/modal/Modal";
+import Button from "../../components/ui/button/Button";
+import productsService from "../../api/services/products";
+import { useToast } from "../../components/ui/errorHandling/toast/ToastHooks";
+import { getImageUrl } from "../../utils/apiUtils";
+import "./ImageGalleryModal.css";
 
 /**
- * Modal for selecting from already uploaded images
+ * Reusable Modal component for selecting from already uploaded images
  */
 const ImageGalleryModal = ({
   isOpen,
@@ -112,6 +112,16 @@ const ImageGalleryModal = ({
                   selectedImages.includes(image) ? "selected" : ""
                 }`}
                 onClick={() => handleImageClick(image)}
+                tabIndex="0"
+                aria-label={`Gallery image ${index + 1}${
+                  selectedImages.includes(image) ? ", selected" : ""
+                }`}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    handleImageClick(image);
+                  }
+                }}
               >
                 <img src={getImageUrl(image)} alt={`Gallery image ${index}`} />
                 {selectedImages.includes(image) && (

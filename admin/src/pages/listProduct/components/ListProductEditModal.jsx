@@ -4,9 +4,8 @@ import Button from "../../../components/ui/button/Button";
 import Input from "../../../components/ui/input/Input";
 import Select from "../../../components/ui/select/Select";
 import { useToast } from "../../../components/ui/errorHandling/toast/ToastHooks";
-import { getImageUrl } from "../../../utils/apiUtils";
 import productsService from "../../../api/services/products";
-import ImageGalleryModal from "./ImageGalleryModal";
+import { ImageGalleryDisplay } from "../../../components/imageGallery";
 import "../styles/ListProductEditModal.css";
 
 const ConfirmationModal = ({ isOpen, onConfirm, onCancel, title, message }) => {
@@ -59,7 +58,6 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
   const [originalFormData, setOriginalFormData] = useState(null);
   const [newlyUploadedImages, setNewlyUploadedImages] = useState([]);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const [isGalleryModalOpen, setIsGalleryModalOpen] = useState(false);
 
   // Category options
   const categoryOptions = [
@@ -303,40 +301,6 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
   const handleCancelDiscard = () => {
     // User canceled discarding changes, just close the confirmation modal
     setIsConfirmModalOpen(false);
-  };
-
-  // Handle images selected from the gallery
-  const handleGalleryImagesSelected = (selectedImages) => {
-    // Calculate how many more images we can add
-    const currentImageCount = formData.images.length;
-    const maxImages = 5;
-    const remainingSlots = maxImages - currentImageCount;
-
-    if (remainingSlots <= 0) {
-      showToast({
-        type: "error",
-        message: "You can only have up to 5 images per product",
-      });
-      return;
-    }
-
-    // Only add up to the remaining slots
-    const imagesToAdd = selectedImages.slice(0, remainingSlots);
-
-    // Add selected images to the form
-    const newImages = [...formData.images, ...imagesToAdd];
-
-    setFormData((prev) => ({
-      ...prev,
-      images: newImages,
-      // If this is the first image, set it as main
-      mainImageIndex: prev.images.length === 0 ? 0 : prev.mainImageIndex,
-    }));
-
-    showToast({
-      type: "success",
-      message: `Added ${imagesToAdd.length} image(s) to product`,
-    });
   };
 
   return (
@@ -587,100 +551,27 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
             <div className="list-product-form-row">
               <div className="list-product-form-group">
                 <label>Product Images</label>
-                <div className="list-product-image-preview-container">
-                  {formData.images &&
-                    formData.images.map((image, index) => (
-                      <div key={index} className="list-product-image-preview">
-                        <img
-                          src={getImageUrl(image)}
-                          alt={`Product ${index + 1}`}
-                        />
-                        <div className="list-product-image-preview-actions">
-                          <button
-                            type="button"
-                            className="list-product-image-action-btn"
-                            onClick={() => {
-                              // Handle set as main image
-                              setFormData((prev) => ({
-                                ...prev,
-                                mainImageIndex: index,
-                              }));
-                            }}
-                            disabled={formData.mainImageIndex === index}
-                          >
-                            {formData.mainImageIndex === index
-                              ? "Main Image"
-                              : "Set as Main"}
-                          </button>
-                          <button
-                            type="button"
-                            className="list-product-image-action-btn remove"
-                            onClick={() => {
-                              // Handle remove image
-                              const imageToRemove = formData.images[index];
-                              const newImages = [...formData.images];
-                              newImages.splice(index, 1);
-
-                              let newMainIndex = formData.mainImageIndex;
-                              if (index === formData.mainImageIndex) {
-                                newMainIndex = 0; // Reset to first image if main was removed
-                              } else if (index < formData.mainImageIndex) {
-                                newMainIndex--; // Adjust index if removed image was before main
-                              }
-
-                              // Check if the removed image was newly uploaded
-                              if (newlyUploadedImages.includes(imageToRemove)) {
-                                // Remove from new uploads and clean it up on the server immediately
-                                cleanupUploadedImages([imageToRemove]);
-                                setNewlyUploadedImages((prev) =>
-                                  prev.filter((img) => img !== imageToRemove)
-                                );
-                              }
-
-                              setFormData((prev) => ({
-                                ...prev,
-                                images: newImages,
-                                mainImageIndex: newMainIndex,
-                              }));
-                            }}
-                          >
-                            Remove
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-
-                  {(!formData.images || formData.images.length < 5) && (
-                    <>
-                      <div className="list-product-image-upload-placeholder list-product-image-gallery-btn-red">
-                        {isUploading ? (
-                          <span>Uploading...</span>
-                        ) : (
-                          <>
-                            <span>Upload New</span>
-                            <input
-                              type="file"
-                              accept="image/*"
-                              onChange={handleImageUpload}
-                              disabled={isUploading}
-                              multiple
-                            />
-                          </>
-                        )}
-                      </div>
-                      <div
-                        className="list-product-image-upload-placeholder list-product-image-gallery-btn"
-                        onClick={() => setIsGalleryModalOpen(true)}
-                      >
-                        <span>Select Existing</span>
-                      </div>
-                    </>
-                  )}
-                </div>
-                <div className="list-product-image-help-text">
-                  You can upload up to 5 images. The first image will be used as
-                  the main product image.
-                </div>
+                <ImageGalleryDisplay
+                  images={formData.images || []}
+                  onImagesChange={(newImages) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      images: newImages,
+                    }))
+                  }
+                  onMainImageChange={(newIndex) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      mainImageIndex: newIndex,
+                    }))
+                  }
+                  mainImageIndex={formData.mainImageIndex}
+                  maxImages={5}
+                  onImageUpload={handleImageUpload}
+                  isUploading={isUploading}
+                  onCleanupImages={cleanupUploadedImages}
+                  newlyUploadedImages={newlyUploadedImages}
+                />
               </div>
             </div>
           </form>
@@ -711,14 +602,6 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
         onCancel={handleCancelDiscard}
         title="Discard Changes"
         message={getConfirmationMessage()}
-      />
-
-      {/* Image Gallery modal for selecting existing images */}
-      <ImageGalleryModal
-        isOpen={isGalleryModalOpen}
-        onClose={() => setIsGalleryModalOpen(false)}
-        onSelectImages={handleGalleryImagesSelected}
-        maxSelect={5 - (formData.images?.length || 0)}
       />
     </>
   );

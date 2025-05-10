@@ -1,0 +1,141 @@
+import React, { useState } from "react";
+import { getImageUrl } from "../../utils/apiUtils";
+import Button from "../ui/button/Button";
+import ImageGalleryModal from "./ImageGalleryModal";
+import "./ImageGalleryDisplay.css";
+
+/**
+ * Reusable component for displaying and managing product images
+ */
+const ImageGalleryDisplay = ({
+  images = [],
+  onImagesChange,
+  onMainImageChange,
+  mainImageIndex = 0,
+  maxImages = 5,
+  onImageUpload,
+  isUploading = false,
+  onCleanupImages,
+  newlyUploadedImages = [],
+}) => {
+  const [isGalleryModalOpen, setIsGalleryModalOpen] = useState(false);
+
+  const handleRemoveImage = (index) => {
+    const imageToRemove = images[index];
+    const newImages = [...images];
+    newImages.splice(index, 1);
+
+    // Adjust main image index if necessary
+    let newMainIndex = mainImageIndex;
+    if (index === mainImageIndex) {
+      newMainIndex = newImages.length > 0 ? 0 : -1; // Reset to first image if main was removed
+    } else if (index < mainImageIndex) {
+      newMainIndex--; // Adjust index if removed image was before main
+    }
+
+    // Check if the removed image was newly uploaded (if tracking is enabled)
+    if (
+      newlyUploadedImages &&
+      newlyUploadedImages.includes(imageToRemove) &&
+      onCleanupImages
+    ) {
+      onCleanupImages([imageToRemove]);
+    }
+
+    onImagesChange(newImages);
+    onMainImageChange(newMainIndex);
+  };
+
+  const handleSetMainImage = (index) => {
+    onMainImageChange(index);
+  };
+
+  const handleGalleryImagesSelected = (selectedImages) => {
+    const updatedImages = [...images, ...selectedImages].slice(0, maxImages);
+    onImagesChange(updatedImages);
+    // If there was no main image before, set first image as main
+    if (mainImageIndex === -1 && updatedImages.length > 0) {
+      onMainImageChange(0);
+    }
+  };
+
+  return (
+    <div className="image-gallery-display">
+      <div className="image-gallery-preview-container">
+        {images.map((image, index) => (
+          <div key={index} className="image-gallery-preview">
+            <img src={getImageUrl(image)} alt={`Product ${index + 1}`} />
+            <div className="image-gallery-preview-actions">
+              <Button
+                type="button"
+                size="small"
+                variant={mainImageIndex === index ? "primary" : "secondary"}
+                onClick={() => handleSetMainImage(index)}
+                disabled={mainImageIndex === index}
+              >
+                {mainImageIndex === index ? "Main Image" : "Set as Main"}
+              </Button>
+              <Button
+                type="button"
+                size="small"
+                variant="danger"
+                onClick={() => handleRemoveImage(index)}
+              >
+                Remove
+              </Button>
+            </div>
+          </div>
+        ))}
+
+        {images.length < maxImages && (
+          <div className="image-gallery-actions">
+            <div className="image-gallery-upload-placeholder">
+              {isUploading ? (
+                <span>Uploading...</span>
+              ) : (
+                <>
+                  <span>Upload New</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={onImageUpload}
+                    disabled={isUploading}
+                    multiple
+                  />
+                </>
+              )}
+            </div>
+            <div
+              className="image-gallery-upload-placeholder select-existing"
+              onClick={() => setIsGalleryModalOpen(true)}
+              tabIndex="0"
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  setIsGalleryModalOpen(true);
+                }
+              }}
+              aria-label="Select existing images"
+            >
+              <span>Select Existing</span>
+            </div>
+          </div>
+        )}
+      </div>
+      <div className="image-gallery-help-text">
+        You can upload up to {maxImages} images. The first image will be used as
+        the main product image.
+      </div>
+
+      {/* Image Gallery modal for selecting existing images */}
+      <ImageGalleryModal
+        isOpen={isGalleryModalOpen}
+        onClose={() => setIsGalleryModalOpen(false)}
+        onSelectImages={handleGalleryImagesSelected}
+        maxSelect={maxImages - images.length}
+      />
+    </div>
+  );
+};
+
+export default ImageGalleryDisplay;
