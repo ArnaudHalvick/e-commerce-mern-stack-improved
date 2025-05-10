@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import ListProductTable from "./components/ListProductTable";
-import ListProductEditModal from "./components/ListProductEditModal";
 import { useProductList } from "./hooks/useProductList";
 import Button from "../../components/ui/button/Button";
 import Input from "../../components/ui/input/Input";
 import Select from "../../components/ui/select/Select";
 import { useToast } from "../../components/ui/errorHandling/toast/ToastHooks";
+import { ProductEditModal } from "../../components/productEditModal";
 import "./styles/ListProduct.css";
 
 const ListProduct = () => {
@@ -253,67 +253,74 @@ const ListProduct = () => {
 
           <Select
             size="small"
-            placeholder="Discount Status"
+            placeholder="Discount"
             value={filters.discount}
             onChange={(e) => handleFilterChange("discount", e.target.value)}
             options={[
               { value: "", label: "All Products" },
               { value: "discounted", label: "Discounted" },
-              { value: "regular", label: "Not Discounted" },
+              { value: "regular", label: "Regular Price" },
             ]}
             className="list-product-filter-select"
           />
         </div>
 
         <div className="list-product-sort">
+          <label htmlFor="sort-select" className="list-product-sort-label">
+            Sort by:
+          </label>
           <Select
+            id="sort-select"
             size="small"
-            placeholder="Sort By"
             value={sortOption}
             onChange={handleSortChange}
             options={[
-              { value: "name", label: "Sort by Name" },
-              { value: "id", label: "Sort by ID" },
-              { value: "category", label: "Sort by Category" },
-              { value: "price", label: "Sort by Price" },
-              { value: "status", label: "Sort by Status" },
-              { value: "date", label: "Sort by Date" },
+              { value: "date", label: "Date" },
+              { value: "name", label: "Name" },
+              { value: "id", label: "ID" },
+              { value: "price", label: "Price" },
+              { value: "category", label: "Category" },
+              { value: "status", label: "Status" },
             ]}
-            className="list-product-filter-select"
+            className="list-product-sort-select"
           />
           <Button
-            size="medium"
-            variant="outline"
+            variant="text"
+            size="small"
             onClick={() =>
               setSortDirection(sortDirection === "asc" ? "desc" : "asc")
             }
             className="list-product-sort-direction"
-            aria-label={`Sort ${
-              sortDirection === "asc" ? "ascending" : "descending"
-            }`}
           >
-            {sortDirection === "asc" ? "↑ Ascending" : "↓ Descending"}
+            {sortDirection === "asc" ? "↑" : "↓"}
           </Button>
         </div>
       </div>
 
-      <ListProductTable
-        products={filteredProducts}
-        loading={loading}
-        onEdit={handleEditClick}
-        onDelete={handleDeleteProduct}
-        onToggleAvailability={handleToggleAvailability}
-        onHeaderClick={handleHeaderClick}
-        sortOption={sortOption}
-        sortDirection={sortDirection}
-      />
+      <div className="list-product-table-container">
+        {loading ? (
+          <div className="list-product-loading">Loading products...</div>
+        ) : (
+          <ListProductTable
+            products={filteredProducts}
+            onEdit={handleEditClick}
+            onDelete={handleDeleteProduct}
+            onToggleAvailability={handleToggleAvailability}
+            sortOption={sortOption}
+            sortDirection={sortDirection}
+            onHeaderClick={handleHeaderClick}
+          />
+        )}
+      </div>
 
+      {/* Product Edit Modal */}
       {selectedProduct && (
-        <ListProductEditModal
+        <ProductEditModal
           isOpen={isEditModalOpen}
           onClose={handleModalClose}
           product={selectedProduct}
           onSave={handleSaveProduct}
+          title={`Edit Product: ${selectedProduct.name}`}
         />
       )}
     </div>

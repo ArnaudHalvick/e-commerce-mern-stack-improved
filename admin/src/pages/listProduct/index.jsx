@@ -5,8 +5,7 @@
 
 import ListProduct from "./ListProduct";
 import ListProductTable from "./components/ListProductTable";
-import ListProductEditModal from "./components/ListProductEditModal";
 
-export { ListProductTable, ListProductEditModal };
+export { ListProductTable };
 
 export default ListProduct;

@@ -1,37 +1,37 @@
-/* ListProductEditModal.css */
+/* ProductEditModal.css */
 
-.list-product-edit-form {
+.product-edit-modal-form {
   padding: var(--spacing-4);
 }
 
-.list-product-form-row {
+.product-edit-modal-form-row {
   margin-bottom: var(--spacing-5);
 }
 
-.list-product-form-row.two-column {
+.product-edit-modal-form-row.two-column {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--spacing-5);
 }
 
-.list-product-form-row.three-column {
+.product-edit-modal-form-row.three-column {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: var(--spacing-5);
 }
 
-.list-product-form-group {
+.product-edit-modal-form-group {
   display: flex;
   flex-direction: column;
 }
 
-.list-product-form-label {
+.product-edit-modal-form-label {
   font-weight: var(--font-weight-medium);
   margin-bottom: var(--spacing-2);
   color: var(--admin-text-primary);
 }
 
-.list-product-textarea-input {
+.product-edit-modal-textarea {
   padding: var(--spacing-4);
   border: var(--border-width-thin) solid var(--admin-border);
   border-radius: var(--border-radius-md);
@@ -42,57 +42,57 @@
   transition: border-color var(--transition-duration-fast);
 }
 
-.list-product-textarea-input:focus {
+.product-edit-modal-textarea:focus {
   outline: none;
   border-color: var(--admin-primary);
   box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
 }
 
-.list-product-textarea-input.error {
+.product-edit-modal-textarea.error {
   border-color: var(--color-danger);
 }
 
-.list-product-input-error {
+.product-edit-modal-input-error {
   color: var(--color-danger);
   font-size: var(--font-size-xs);
   margin-top: var(--spacing-1);
 }
 
-.list-product-checkbox-container {
+.product-edit-modal-checkbox-container {
   margin-top: var(--spacing-6);
 }
 
 /* Styles for the discount checkbox container */
-.list-product-checkbox-container.discount {
+.product-edit-modal-checkbox-container.discount {
   margin-top: 0;
   margin-bottom: var(--spacing-1);
 }
 
-.list-product-checkbox-group {
+.product-edit-modal-checkbox-group {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: var(--spacing-2);
   margin-top: var(--spacing-2);
 }
 
-.list-product-checkbox-label {
+.product-edit-modal-checkbox-label {
   display: flex;
   align-items: center;
   cursor: pointer;
 }
 
-.list-product-checkbox-input {
+.product-edit-modal-checkbox-input {
   margin-right: var(--spacing-2);
 }
 
-.list-product-image-preview-container {
+.product-edit-modal-image-preview-container {
   display: flex;
   flex-wrap: wrap;
   gap: var(--spacing-4);
   margin-top: var(--spacing-3);
 }
 
-.list-product-image-preview {
+.product-edit-modal-image-preview {
   width: 100px;
   position: relative;
   border: var(--border-width-thin) solid var(--admin-border);
@@ -100,14 +100,14 @@
   overflow: hidden;
 }
 
-.list-product-preview-image {
+.product-edit-modal-preview-image {
   width: 100%;
   height: 100px;
   object-fit: cover;
   display: block;
 }
 
-.list-product-image-preview-actions {
+.product-edit-modal-image-preview-actions {
   padding: var(--spacing-1);
   background-color: rgba(255, 255, 255, 0.9);
   display: flex;
@@ -115,7 +115,7 @@
   gap: var(--spacing-1);
 }
 
-.list-product-image-action-btn {
+.product-edit-modal-image-action-btn {
   font-size: var(--font-size-xs);
   padding: var(--spacing-1) var(--spacing-2);
   background-color: var(--admin-primary);
@@ -125,16 +125,16 @@
   cursor: pointer;
 }
 
-.list-product-image-action-btn:disabled {
+.product-edit-modal-image-action-btn:disabled {
   background-color: var(--admin-text-disabled);
   cursor: not-allowed;
 }
 
-.list-product-image-action-btn.remove {
+.product-edit-modal-image-action-btn.remove {
   background-color: var(--color-danger);
 }
 
-.list-product-image-upload-placeholder {
+.product-edit-modal-image-upload-placeholder {
   width: 100px;
   height: 100px;
   display: flex;
@@ -149,7 +149,7 @@
   position: relative;
 }
 
-.list-product-upload-input {
+.product-edit-modal-upload-input {
   opacity: 0;
   position: absolute;
   top: 0;
@@ -159,49 +159,50 @@
   cursor: pointer;
 }
 
-.list-product-image-gallery-btn {
+.product-edit-modal-image-gallery-btn {
   background-color: var(--color-background-light);
   border: var(--border-width-medium) dashed var(--admin-primary);
   transition: all var(--transition-duration-fast) var(--transition-timing-ease);
 }
 
-.list-product-image-gallery-btn:hover {
+.product-edit-modal-image-gallery-btn:hover {
   transform: translateY(-3px);
   box-shadow: var(--shadow-md);
 }
 
-.list-product-image-gallery-btn-red {
+.product-edit-modal-image-gallery-btn-red {
   background-color: var(--color-background-light);
   border: var(--border-width-medium) dashed var(--color-primary);
   transition: all var(--transition-duration-fast) var(--transition-timing-ease);
 }
 
-.list-product-image-gallery-btn-red:hover {
+.product-edit-modal-image-gallery-btn-red:hover {
   transform: translateY(-3px);
   box-shadow: var(--shadow-md);
 }
 
-.list-product-image-help-text {
+.product-edit-modal-image-help-text {
   margin-top: var(--spacing-3);
   font-size: var(--font-size-xs);
   color: var(--admin-text-secondary);
 }
 
 /* Confirmation modal styles */
-.confirm-discard-modal p {
+
+.product-edit-modal-confirm-discard-text {
   margin: 0 0 var(--spacing-4);
   font-size: var(--font-size-base);
   line-height: var(--line-height-normal);
   color: var(--admin-text-primary);
 }
 
-.confirm-discard-modal .admin-modal-footer {
+.product-edit-modal-confirm-discard-footer {
   display: flex;
   justify-content: flex-end;
   gap: var(--spacing-3);
 }
 
-.confirm-discard-modal .admin-modal-header {
+.product-edit-modal-confirm-discard-header {
   color: var(--color-danger);
   font-weight: var(--font-weight-semibold);
 }

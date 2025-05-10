@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import Modal from "../../../components/ui/modal/Modal";
-import Button from "../../../components/ui/button/Button";
-import Input from "../../../components/ui/input/Input";
-import Select from "../../../components/ui/select/Select";
-import { useToast } from "../../../components/ui/errorHandling/toast/ToastHooks";
-import productsService from "../../../api/services/products";
-import { ImageGalleryDisplay } from "../../../components/imageGallery";
-import "../styles/ListProductEditModal.css";
+import Modal from "../ui/modal/Modal";
+import Button from "../ui/button/Button";
+import Input from "../ui/input/Input";
+import Select from "../ui/select/Select";
+import { useToast } from "../ui/errorHandling/toast/ToastHooks";
+import productsService from "../../api/services/products";
+import { ImageGalleryDisplay } from "../imageGallery";
+import "./ProductEditModal.css";
 
 const ConfirmationModal = ({ isOpen, onConfirm, onCancel, title, message }) => {
   return (
@@ -17,13 +17,18 @@ const ConfirmationModal = ({ isOpen, onConfirm, onCancel, title, message }) => {
       closeOnOverlayClick={false}
       closeOnEscape={false}
       centered={true}
-      className="confirm-discard-modal"
+      className="product-edit-modal-confirm-discard"
     >
-      <Modal.Header onClose={onCancel}>{title}</Modal.Header>
+      <Modal.Header
+        onClose={onCancel}
+        className="product-edit-modal-confirm-discard-header"
+      >
+        {title}
+      </Modal.Header>
       <Modal.Body>
-        <p>{message}</p>
+        <p className="product-edit-modal-confirm-discard-text">{message}</p>
       </Modal.Body>
-      <Modal.Footer>
+      <Modal.Footer className="product-edit-modal-confirm-discard-footer">
         <Button variant="secondary" onClick={onCancel}>
           No, Keep Editing
         </Button>
@@ -35,7 +40,7 @@ const ConfirmationModal = ({ isOpen, onConfirm, onCancel, title, message }) => {
   );
 };
 
-const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
+const ProductEditModal = ({ isOpen, onClose, product, onSave, title }) => {
   const { showToast } = useToast();
   const [formData, setFormData] = useState({
     name: "",
@@ -193,7 +198,7 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
       // If discount is disabled, ensure new_price is set to 0
       const updatedData = {
         ...formData,
-        _id: product._id, // Ensure ID is preserved
+        _id: product?._id, // Ensure ID is preserved if it exists
         new_price: hasDiscount ? formData.new_price : 0,
       };
 
@@ -307,14 +312,17 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
     <>
       <Modal isOpen={isOpen} onClose={handleModalClose} size="large">
         <Modal.Header onClose={handleModalClose}>
-          Edit Product: {product?.name}
+          {title ||
+            `${product ? "Edit" : "Add"} Product: ${product?.name || ""}`}
         </Modal.Header>
 
         <Modal.Body>
-          <form onSubmit={handleSubmit} className="list-product-edit-form">
-            <div className="list-product-form-row">
-              <div className="list-product-form-group">
-                <label className="list-product-form-label">Product Name</label>
+          <form onSubmit={handleSubmit} className="product-edit-modal-form">
+            <div className="product-edit-modal-form-row">
+              <div className="product-edit-modal-form-group">
+                <label className="product-edit-modal-form-label">
+                  Product Name
+                </label>
                 <Input
                   type="text"
                   name="name"
@@ -326,9 +334,9 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
               </div>
             </div>
 
-            <div className="list-product-form-row">
-              <div className="list-product-form-group">
-                <label className="list-product-form-label">
+            <div className="product-edit-modal-form-row">
+              <div className="product-edit-modal-form-group">
+                <label className="product-edit-modal-form-label">
                   Short Description
                 </label>
                 <Input
@@ -343,32 +351,34 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
               </div>
             </div>
 
-            <div className="list-product-form-row">
-              <div className="list-product-form-group">
-                <label className="list-product-form-label">
+            <div className="product-edit-modal-form-row">
+              <div className="product-edit-modal-form-group">
+                <label className="product-edit-modal-form-label">
                   Long Description
                 </label>
                 <textarea
                   name="longDescription"
                   value={formData.longDescription}
                   onChange={handleChange}
-                  className={`list-product-textarea-input ${
+                  className={`product-edit-modal-textarea ${
                     errors.longDescription ? "error" : ""
                   }`}
                   rows={5}
                   required
                 />
                 {errors.longDescription && (
-                  <div className="list-product-input-error">
+                  <div className="product-edit-modal-input-error">
                     {errors.longDescription}
                   </div>
                 )}
               </div>
             </div>
 
-            <div className="list-product-form-row two-column">
-              <div className="list-product-form-group">
-                <label className="list-product-form-label">Category</label>
+            <div className="product-edit-modal-form-row two-column">
+              <div className="product-edit-modal-form-group">
+                <label className="product-edit-modal-form-label">
+                  Category
+                </label>
                 <Select
                   name="category"
                   value={formData.category}
@@ -382,15 +392,15 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
                   required
                 />
               </div>
-              <div className="list-product-form-group">
-                <div className="list-product-checkbox-container">
-                  <label className="list-product-checkbox-label">
+              <div className="product-edit-modal-form-group">
+                <div className="product-edit-modal-checkbox-container">
+                  <label className="product-edit-modal-checkbox-label">
                     <input
                       type="checkbox"
                       name="available"
                       checked={formData.available}
                       onChange={handleChange}
-                      className="list-product-checkbox-input"
+                      className="product-edit-modal-checkbox-input"
                     />
                     <span>Product Available</span>
                   </label>
@@ -398,9 +408,9 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
               </div>
             </div>
 
-            <div className="list-product-form-row">
-              <div className="list-product-form-group">
-                <label className="list-product-form-label">
+            <div className="product-edit-modal-form-row">
+              <div className="product-edit-modal-form-group">
+                <label className="product-edit-modal-form-label">
                   Original Price ($)
                 </label>
                 <Input
@@ -416,16 +426,16 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
               </div>
             </div>
 
-            <div className="list-product-form-row">
-              <div className="list-product-form-group">
-                <div className="list-product-checkbox-container discount">
-                  <label className="list-product-checkbox-label">
+            <div className="product-edit-modal-form-row">
+              <div className="product-edit-modal-form-group">
+                <div className="product-edit-modal-checkbox-container discount">
+                  <label className="product-edit-modal-checkbox-label">
                     <input
                       type="checkbox"
                       name="hasDiscount"
                       checked={hasDiscount}
                       onChange={handleDiscountChange}
-                      className="list-product-checkbox-input"
+                      className="product-edit-modal-checkbox-input"
                     />
                     <span>Apply Discount</span>
                   </label>
@@ -434,9 +444,9 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
             </div>
 
             {hasDiscount && (
-              <div className="list-product-form-row">
-                <div className="list-product-form-group">
-                  <label className="list-product-form-label">
+              <div className="product-edit-modal-form-row">
+                <div className="product-edit-modal-form-group">
+                  <label className="product-edit-modal-form-label">
                     Discounted Price ($)
                   </label>
                   <Input
@@ -452,7 +462,7 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
                     disabled={!hasDiscount}
                   />
                   {formData.new_price >= formData.old_price && hasDiscount && (
-                    <div className="list-product-input-error">
+                    <div className="product-edit-modal-input-error">
                       Discounted price must be less than original price
                     </div>
                   )}
@@ -460,14 +470,14 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
               </div>
             )}
 
-            <div className="list-product-form-row">
-              <div className="list-product-form-group">
-                <label className="list-product-form-label">Sizes</label>
-                <div className="list-product-checkbox-group">
+            <div className="product-edit-modal-form-row">
+              <div className="product-edit-modal-form-group">
+                <label className="product-edit-modal-form-label">Sizes</label>
+                <div className="product-edit-modal-checkbox-group">
                   {sizeOptions.map((option) => (
                     <label
                       key={option.value}
-                      className="list-product-checkbox-label"
+                      className="product-edit-modal-checkbox-label"
                     >
                       <input
                         type="checkbox"
@@ -485,7 +495,7 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
                                 ),
                           }));
                         }}
-                        className="list-product-checkbox-input"
+                        className="product-edit-modal-checkbox-input"
                       />
                       <span>{option.label}</span>
                     </label>
@@ -494,14 +504,16 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
               </div>
             </div>
 
-            <div className="list-product-form-row">
-              <div className="list-product-form-group">
-                <label className="list-product-form-label">Product Tags</label>
-                <div className="list-product-checkbox-group">
+            <div className="product-edit-modal-form-row">
+              <div className="product-edit-modal-form-group">
+                <label className="product-edit-modal-form-label">
+                  Product Tags
+                </label>
+                <div className="product-edit-modal-checkbox-group">
                   {tagOptions.map((option) => (
                     <label
                       key={option.value}
-                      className="list-product-checkbox-label"
+                      className="product-edit-modal-checkbox-label"
                     >
                       <input
                         type="checkbox"
@@ -517,7 +529,7 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
                               : prev.tags.filter((tag) => tag !== option.value),
                           }));
                         }}
-                        className="list-product-checkbox-input"
+                        className="product-edit-modal-checkbox-input"
                       />
                       <span>{option.label}</span>
                     </label>
@@ -526,14 +538,16 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
               </div>
             </div>
 
-            <div className="list-product-form-row">
-              <div className="list-product-form-group">
-                <label className="list-product-form-label">Product Type</label>
-                <div className="list-product-checkbox-group">
+            <div className="product-edit-modal-form-row">
+              <div className="product-edit-modal-form-group">
+                <label className="product-edit-modal-form-label">
+                  Product Type
+                </label>
+                <div className="product-edit-modal-checkbox-group">
                   {typeOptions.map((option) => (
                     <label
                       key={option.value}
-                      className="list-product-checkbox-label"
+                      className="product-edit-modal-checkbox-label"
                     >
                       <input
                         type="checkbox"
@@ -551,7 +565,7 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
                                 ),
                           }));
                         }}
-                        className="list-product-checkbox-input"
+                        className="product-edit-modal-checkbox-input"
                       />
                       <span>{option.label}</span>
                     </label>
@@ -561,9 +575,9 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
             </div>
 
             {/* Image management section */}
-            <div className="list-product-form-row">
-              <div className="list-product-form-group">
-                <label className="list-product-form-label">
+            <div className="product-edit-modal-form-row">
+              <div className="product-edit-modal-form-group">
+                <label className="product-edit-modal-form-label">
                   Product Images
                 </label>
                 <ImageGalleryDisplay
@@ -619,4 +633,4 @@ const ListProductEditModal = ({ isOpen, onClose, product, onSave }) => {
   );
 };
 
-export default ListProductEditModal;
+export default ProductEditModal;

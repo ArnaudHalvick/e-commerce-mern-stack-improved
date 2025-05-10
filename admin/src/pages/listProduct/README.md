@@ -31,8 +31,6 @@ The ListProduct component is a comprehensive product management interface for th
 ```
 listProduct/
 ├── components/
-│   ├── ImageGalleryModal.jsx  - Modal for viewing product images
-│   ├── ListProductEditModal.jsx - Modal for editing product details
 │   └── ListProductTable.jsx - Table component for product listing
 ├── hooks/
 │   └── useProductList.js - Custom hook for product data operations
@@ -84,14 +82,14 @@ Custom hook that provides:
 ### UI Components
 
 - **ListProductTable**: Displays products with sorting and action buttons
-- **ListProductEditModal**: Form interface for updating product information
-- **ImageGalleryModal**: Allows viewing and managing product images
+- **ProductEditModal**: Reusable component from /components/productEditModal for updating product information
 
 ## Dependencies
 
 - React
 - UI components (Button, Input, Select)
 - Toast notifications for user feedback
+- ProductEditModal from shared components
 
 ## Performance Considerations
 
