@@ -48,6 +48,12 @@ const useProductActions = ({ fetchProducts }) => {
       if (validateProduct(product)) {
         // Make a deep copy of the product to avoid reference issues
         const productCopy = JSON.parse(JSON.stringify(product));
+
+        // Ensure ID is present
+        if (!productCopy._id && product._id) {
+          productCopy._id = product._id;
+        }
+
         console.log("Validated product for editing:", productCopy);
 
         // Now call the actual edit function
@@ -67,9 +73,12 @@ const useProductActions = ({ fetchProducts }) => {
     handleDeleteProduct,
     handleToggleAvailability,
   } = useProductManagement({
-    onProductUpdated: () => {
+    onProductUpdated: (updatedProduct) => {
       // Refresh the product list after any update
-      console.log("Product updated, refreshing list");
+      console.log(
+        "Product updated, refreshing list",
+        updatedProduct?.name || "unnamed"
+      );
       fetchProducts();
     },
   });
@@ -80,8 +89,8 @@ const useProductActions = ({ fetchProducts }) => {
     handleEditClick: handleProductEdit, // Use our validated version
     handleModalClose,
     handleSaveProduct,
-    handleToggleAvailability,
     handleDeleteProduct,
+    handleToggleAvailability,
   };
 };
 

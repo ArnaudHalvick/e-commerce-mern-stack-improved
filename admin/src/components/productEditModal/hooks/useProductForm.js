@@ -39,6 +39,7 @@ const useProductForm = (product) => {
     const hasDiscountValue = product.new_price > 0;
     const productData = {
       ...product,
+      _id: product._id, // Explicitly set _id to ensure it's preserved
       sizes: product.sizes || [],
       tags: product.tags || [],
       types: product.types || [],
@@ -61,6 +62,17 @@ const useProductForm = (product) => {
       );
     }
   }, [formData, originalFormData]);
+
+  // Debug and fix any lost ID
+  useEffect(() => {
+    if (!isNewProduct && product?._id && !formData._id) {
+      console.log("Detected ID missing from form data, restoring...");
+      setFormData((prev) => ({
+        ...prev,
+        _id: product._id,
+      }));
+    }
+  }, [formData._id, isNewProduct, product, product?._id]);
 
   const validateForm = () => {
     const newErrors = {};
@@ -144,22 +156,46 @@ const useProductForm = (product) => {
   };
 
   const prepareFormDataForSubmission = () => {
-    // Create a copy of the form data for submission
-    const preparedData = {
-      ...formData,
-      new_price: hasDiscount ? formData.new_price : 0,
-    };
+    // Create a deep copy of the form data for submission
+    const preparedData = JSON.parse(JSON.stringify(formData));
 
-    // Only include _id if it's an existing product (not a new one)
-    if (!isNewProduct && product && product._id) {
+    // Handle discount pricing
+    preparedData.new_price = hasDiscount ? preparedData.new_price : 0;
+
+    // Enhanced ID preservation logic - first try to use the product ID
+    if (product && product._id) {
+      // This ensures we're getting the ID directly from the original product
       preparedData._id = product._id;
+      console.log("Preserving original product ID for update:", product._id);
+    } else if (formData._id) {
+      // Fallback to formData._id if somehow product._id is missing
+      console.log("Using formData ID as fallback:", formData._id);
+    } else if (isNewProduct) {
+      // We're explicitly creating a new product, make sure there's no ID
+      delete preparedData._id;
+      console.log("Creating new product, removing _id if exists");
+    } else {
+      console.warn("Warning: Editing product but no ID found!");
     }
+
+    // Ensure name is properly set
+    if (!preparedData.name && product && product.name) {
+      preparedData.name = product.name;
+      console.log("Restored missing name from original product");
+    }
+
+    console.log("Final prepared data:", {
+      id: preparedData._id || "none",
+      isNewProduct,
+      name: preparedData.name || "unnamed",
+    });
 
     return preparedData;
   };
 
   return {
     formData,
+    setFormData,
     errors,
     hasDiscount,
     isFormDirty,

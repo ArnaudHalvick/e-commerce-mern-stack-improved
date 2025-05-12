@@ -33,8 +33,31 @@ const useProductManagement = ({ onProductUpdated, onProductCreated }) => {
       }
 
       console.log("Opening modal to edit product:", product._id);
-      setSelectedProduct(product);
-      setIsModalOpen(true);
+
+      try {
+        // Create a deep copy to avoid reference issues and ensure ID is preserved
+        const productCopy = JSON.parse(JSON.stringify(product));
+
+        // Double-check the ID is preserved
+        if (!productCopy._id && product._id) {
+          productCopy._id = product._id;
+          console.log("Restored missing ID during deep copy");
+        }
+
+        console.log("Product prepared for edit modal:", {
+          id: productCopy._id,
+          name: productCopy.name,
+        });
+
+        setSelectedProduct(productCopy);
+        setIsModalOpen(true);
+      } catch (error) {
+        console.error("Error preparing product for edit:", error);
+        showToast({
+          type: "error",
+          message: "Error preparing product data for editing",
+        });
+      }
     },
     [showToast]
   );
@@ -50,23 +73,39 @@ const useProductManagement = ({ onProductUpdated, onProductCreated }) => {
     async (productData) => {
       setIsLoading(true);
 
-      console.log("Saving product data:", {
+      // Diagnose issue with product ID
+      console.log("handleSaveProduct received:", {
         hasId: !!productData._id,
-        isNewProduct: !productData._id,
-        data: productData,
+        originalId: selectedProduct?._id || "none",
+        isNewProduct: !productData._id && !selectedProduct?._id,
+        keys: Object.keys(productData).join(", "),
       });
+
+      // Ensure we have a proper copy to avoid modifications to the source
+      const productToSave = JSON.parse(JSON.stringify(productData));
+
+      // If we have a selected product with an ID but productData doesn't have one,
+      // something went wrong, so let's fix it
+      if (selectedProduct && selectedProduct._id && !productToSave._id) {
+        console.warn(
+          "Product data missing ID but selected product has ID - fixing"
+        );
+        productToSave._id = selectedProduct._id;
+      }
 
       try {
         let result;
 
         // Determine whether to create or update based on presence of _id
-        if (!productData._id) {
+        if (!productToSave._id) {
           // Create a new product - no ID means it's new
           console.log("Creating new product via useProductManagement");
-          result = await productsService.createProduct(productData);
+          result = await productsService.createProduct(productToSave);
           showToast({
             type: "success",
-            message: `Product "${result.name}" created successfully`,
+            message: `Product "${
+              result?.name || "New product"
+            }" created successfully`,
           });
 
           // Call the success callback if provided
@@ -77,20 +116,28 @@ const useProductManagement = ({ onProductUpdated, onProductCreated }) => {
           // Update an existing product - has ID means it exists
           console.log(
             "Updating existing product via useProductManagement:",
-            productData._id
+            productToSave._id
           );
+
+          // Save the product name before sending to API in case response is incomplete
+          const productName = productToSave.name || "Product";
+
           result = await productsService.updateProduct(
-            productData._id,
-            productData
+            productToSave._id,
+            productToSave
           );
+
+          // Use result name if available, otherwise fall back to the saved name
+          const displayName = result && result.name ? result.name : productName;
+
           showToast({
             type: "success",
-            message: `Product "${result.name}" updated successfully`,
+            message: `Product "${displayName}" updated successfully`,
           });
 
           // Call the success callback if provided
           if (onProductUpdated) {
-            onProductUpdated(result);
+            onProductUpdated(result || productToSave);
           }
         }
 
@@ -108,7 +155,13 @@ const useProductManagement = ({ onProductUpdated, onProductCreated }) => {
         setIsLoading(false);
       }
     },
-    [showToast, handleCloseModal, onProductCreated, onProductUpdated]
+    [
+      showToast,
+      handleCloseModal,
+      onProductCreated,
+      onProductUpdated,
+      selectedProduct,
+    ]
   );
 
   // Handle deleting a product

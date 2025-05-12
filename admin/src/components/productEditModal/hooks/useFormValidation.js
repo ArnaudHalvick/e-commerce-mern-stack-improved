@@ -31,34 +31,48 @@ const useFormValidation = (
       try {
         const preparedData = prepareFormDataForSubmission();
 
-        // Debug info for troubleshooting
+        // Better debug logging
         console.log("Form data prepared for submission:", {
-          isNewProduct,
+          isNewProductFlag: isNewProduct,
           hasId: !!preparedData._id,
+          productId: preparedData._id || "none",
           data: preparedData,
         });
 
         let result;
 
-        // Determine whether to create or update the product based on _id
+        // Improved logic to determine create vs update
+        // We prioritize the presence of an ID over the isNewProduct flag
         if (!preparedData._id) {
-          // No ID means we're creating a new product
-          console.log("Creating new product");
+          // No ID means we need to create a new product
+          console.log("Creating new product - no ID present");
+
+          // Save original product name in case the API response doesn't include it
+          const productName = preparedData.name || "New product";
+
           result = await productsService.createProduct(preparedData);
           showToast({
             type: "success",
-            message: `Product "${result.name}" created successfully`,
+            message: `Product "${
+              result?.name || productName
+            }" created successfully`,
           });
         } else {
           // Having an ID means we're updating an existing product
           console.log("Updating existing product with ID:", preparedData._id);
+
+          // Save original product name in case the API response doesn't include it
+          const productName = preparedData.name || "Product";
+
           result = await productsService.updateProduct(
             preparedData._id,
             preparedData
           );
           showToast({
             type: "success",
-            message: `Product "${result.name}" updated successfully`,
+            message: `Product "${
+              result?.name || productName
+            }" updated successfully`,
           });
         }
 

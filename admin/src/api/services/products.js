@@ -54,10 +54,30 @@ const createProduct = async (productData) => {
  * @returns {Promise} Promise with updated product data
  */
 const updateProduct = async (productId, productData) => {
+  console.log("API updateProduct called with:", {
+    productId,
+    productName: productData.name || "unknown",
+  });
+
   const response = await apiClient.put(
     `/api/admin/products/${productId}`,
     productData
   );
+
+  // Debug response
+  console.log("API update response:", {
+    status: response.status,
+    hasData: !!response.data,
+    hasProductName: response.data && !!response.data.name,
+    productName: response.data?.name || "undefined",
+  });
+
+  // If response doesn't contain complete product data, merge with the sent data
+  if (response.data && !response.data.name && productData.name) {
+    console.log("Incomplete response data, merging with original data");
+    return { ...productData, ...response.data };
+  }
+
   return response.data;
 };
 
