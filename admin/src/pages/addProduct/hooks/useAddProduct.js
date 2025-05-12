@@ -5,6 +5,7 @@ import ErrorContext from "../../../context/error/ErrorContext";
 
 /**
  * Custom hook for Add Product page functionality
+ * Leverages the shared useProductManagement hook for consistent behavior
  *
  * @returns {Object} Hook methods and state
  */
@@ -17,9 +18,9 @@ const useAddProduct = () => {
   const {
     isModalOpen,
     isLoading,
-    handleCreateProduct: openModal,
+    handleCreateProduct,
     handleCloseModal,
-    handleSaveProduct: saveProduct,
+    handleSaveProduct,
   } = useProductManagement({
     onProductCreated: (product) => {
       setRecentlyCreatedProduct(product);
@@ -30,32 +31,11 @@ const useAddProduct = () => {
     },
   });
 
-  // New product template with default values
-  const newProductTemplate = null; // Using null tells the modal to use default values
-
-  // Handle opening the modal
+  // Handle opening the modal with error clearing
   const handleOpenModal = useCallback(() => {
-    errorContext.clearErrors();
-    openModal();
-  }, [openModal, errorContext]);
-
-  // Handle saving a product
-  const handleSaveProduct = useCallback(
-    async (productData) => {
-      errorContext.setLoading("addProduct");
-
-      try {
-        const result = await saveProduct(productData);
-        return result;
-      } catch (error) {
-        errorContext.handleApiError(error, "Failed to create product");
-        return null;
-      } finally {
-        errorContext.clearLoading("addProduct");
-      }
-    },
-    [saveProduct, errorContext]
-  );
+    errorContext.clearError();
+    handleCreateProduct();
+  }, [handleCreateProduct, errorContext]);
 
   // Handle viewing a newly created product
   const handleViewProduct = useCallback(() => {
@@ -74,7 +54,6 @@ const useAddProduct = () => {
     isModalOpen,
     isLoading,
     recentlyCreatedProduct,
-    newProductTemplate,
     handleOpenModal,
     handleCloseModal,
     handleSaveProduct,

@@ -6,7 +6,7 @@ import "../styles/AddProductPage.css";
 
 /**
  * Add Product Page
- * Allows admins to create new products
+ * Allows admins to create new products using the unified ProductEditModal
  *
  * @returns {JSX.Element}
  */
@@ -15,7 +15,6 @@ const AddProductPage = () => {
     isModalOpen,
     isLoading,
     recentlyCreatedProduct,
-    newProductTemplate,
     handleOpenModal,
     handleCloseModal,
     handleSaveProduct,
@@ -43,7 +42,7 @@ const AddProductPage = () => {
       <ProductEditModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
-        product={newProductTemplate}
+        product={null}
         onSave={handleSaveProduct}
         title="Create New Product"
       />
