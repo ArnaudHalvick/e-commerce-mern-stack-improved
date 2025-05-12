@@ -31,6 +31,7 @@ const useFormValidation = (
         showToast({
           type: "error",
           message: "Please fix the form errors before submitting",
+          duration: 3000 + Math.random() * 100,
         });
         return;
       }
@@ -67,6 +68,7 @@ const useFormValidation = (
             message: `Product "${
               result?.name || productName
             }" created successfully`,
+            duration: 3000 + Math.random() * 100,
           });
         } else {
           // Having an ID means we're updating an existing product
@@ -84,6 +86,7 @@ const useFormValidation = (
             message: `Product "${
               result?.name || productName
             }" updated successfully`,
+            duration: 3000 + Math.random() * 100,
           });
         }
 
@@ -109,6 +112,7 @@ const useFormValidation = (
         showToast({
           type: "error",
           message: `Failed to save product: ${error.message}`,
+          duration: 3000 + Math.random() * 100,
         });
         return null;
       } finally {

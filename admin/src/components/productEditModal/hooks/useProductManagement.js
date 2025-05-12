@@ -28,6 +28,7 @@ const useProductManagement = ({ onProductUpdated, onProductCreated }) => {
         showToast({
           type: "error",
           message: "Cannot edit product: Invalid product data",
+          duration: 3000 + Math.random() * 100,
         });
         return;
       }
@@ -56,6 +57,7 @@ const useProductManagement = ({ onProductUpdated, onProductCreated }) => {
         showToast({
           type: "error",
           message: "Error preparing product data for editing",
+          duration: 3000 + Math.random() * 100,
         });
       }
     },
@@ -137,6 +139,7 @@ const useProductManagement = ({ onProductUpdated, onProductCreated }) => {
             message: `Product "${
               result?.name || "New product"
             }" created successfully`,
+            duration: 3000 + Math.random() * 100,
           });
 
           // Call the success callback if provided
@@ -164,6 +167,7 @@ const useProductManagement = ({ onProductUpdated, onProductCreated }) => {
           showToast({
             type: "success",
             message: `Product "${displayName}" updated successfully`,
+            duration: 3000 + Math.random() * 100,
           });
 
           // Call the success callback if provided
@@ -180,6 +184,7 @@ const useProductManagement = ({ onProductUpdated, onProductCreated }) => {
         showToast({
           type: "error",
           message: `Failed to save product: ${error.message}`,
+          duration: 3000 + Math.random() * 100,
         });
         return null;
       } finally {
@@ -209,6 +214,7 @@ const useProductManagement = ({ onProductUpdated, onProductCreated }) => {
         showToast({
           type: "success",
           message: "Product deleted successfully",
+          duration: 3000 + Math.random() * 100,
         });
 
         // Call the update callback to refresh the product list
@@ -222,6 +228,7 @@ const useProductManagement = ({ onProductUpdated, onProductCreated }) => {
         showToast({
           type: "error",
           message: `Failed to delete product: ${error.message}`,
+          duration: 3000 + Math.random() * 100,
         });
         return false;
       } finally {
@@ -243,6 +250,7 @@ const useProductManagement = ({ onProductUpdated, onProductCreated }) => {
           message: `Product ${
             !currentStatus ? "activated" : "deactivated"
           } successfully`,
+          duration: 3000 + Math.random() * 100,
         });
 
         // Call the update callback to refresh the product list
@@ -256,6 +264,7 @@ const useProductManagement = ({ onProductUpdated, onProductCreated }) => {
         showToast({
           type: "error",
           message: `Failed to update availability: ${error.message}`,
+          duration: 3000 + Math.random() * 100,
         });
         return false;
       } finally {

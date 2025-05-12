@@ -21,7 +21,8 @@ const ToastProvider = ({ children, position = "top-right", maxToasts = 5 }) => {
       duration = 3000,
       position: toastPosition,
     }) => {
-      const id = Date.now().toString();
+      // Create a unique ID using timestamp + random number to avoid duplicate keys
+      const id = `${Date.now()}-${Math.floor(Math.random() * 10000)}`;
 
       setToasts((prevToasts) => {
         // Remove oldest toasts if we exceed maxToasts
