@@ -122,10 +122,6 @@ const ImageGalleryDisplay = ({
           </div>
         )}
       </div>
-      <div className="admin-image-gallery-help-text">
-        You can upload up to {maxImages} images. The first image will be used as
-        the main product image.
-      </div>
 
       {/* Image Gallery modal for selecting existing images */}
       <ImageGalleryModal

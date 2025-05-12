@@ -90,12 +90,6 @@
   background-color: var(--admin-background-light);
 }
 
-.admin-image-gallery-help-text {
-  color: var(--admin-text-secondary);
-  font-size: var(--font-size-sm);
-  margin-top: var(--spacing-1-5);
-}
-
 @media (max-width: 768px) {
   .admin-image-gallery-preview-container {
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
