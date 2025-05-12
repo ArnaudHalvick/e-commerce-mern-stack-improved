@@ -36,7 +36,6 @@
   font-size: var(--font-size-xl);
   font-weight: var(--font-weight-bold);
   color: var(--admin-text-primary);
-  margin-bottom: var(--spacing-6);
 }
 
 .admin-page-row {
@@ -333,7 +332,6 @@
 
   .admin-page-title {
     font-size: var(--font-size-lg);
-    margin-bottom: var(--spacing-4);
   }
 }
 

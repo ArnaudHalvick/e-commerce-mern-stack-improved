@@ -12,13 +12,6 @@
   margin-bottom: var(--spacing-5);
 }
 
-.list-product-header-title {
-  font-size: var(--font-size-xl);
-  margin: 0;
-  color: var(--admin-text-primary);
-  font-weight: var(--font-weight-semibold);
-}
-
 /* Filter section styles */
 .list-product-filter-section {
   display: flex;
@@ -114,10 +107,6 @@
 @media screen and (max-width: 480px) {
   .list-product-container {
     padding: var(--spacing-3);
-  }
-
-  .list-product-header-title {
-    font-size: var(--font-size-lg);
   }
 
   .list-product-filter-section {

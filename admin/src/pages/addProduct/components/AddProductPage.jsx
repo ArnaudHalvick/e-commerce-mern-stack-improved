@@ -25,7 +25,7 @@ const AddProductPage = () => {
 
   return (
     <div className="add-product-container">
-      <h1 className="add-product-title">Add New Product</h1>
+      <h1 className="admin-page-title">Add New Product</h1>
 
       {!recentlyCreatedProduct ? (
         <CreateProductCard

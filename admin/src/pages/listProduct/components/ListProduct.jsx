@@ -72,7 +72,7 @@ const ListProduct = () => {
   return (
     <div className="list-product-container">
       <div className="list-product-header">
-        <h1 className="list-product-header-title">Products</h1>
+        <h1 className="admin-page-title">Products</h1>
       </div>
 
       <div className="list-product-filter-section">
