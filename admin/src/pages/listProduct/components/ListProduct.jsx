@@ -13,6 +13,16 @@ const ListProduct = () => {
   // Fetch products using the product list hook
   const { products, loading, error, fetchProducts } = useProductList();
 
+  // Debug log products when they change
+  useEffect(() => {
+    console.log("Products loaded:", products.length);
+    // Check if any products are missing IDs
+    const missingIds = products.filter((p) => !p._id);
+    if (missingIds.length > 0) {
+      console.warn("Products missing IDs:", missingIds);
+    }
+  }, [products]);
+
   // Filter and sort products
   const {
     searchTerm,
@@ -41,6 +51,21 @@ const ListProduct = () => {
   } = useProductActions({
     fetchProducts,
   });
+
+  // Debug log when selectedProduct changes
+  useEffect(() => {
+    if (selectedProduct) {
+      console.log("Selected product for editing:", {
+        id: selectedProduct._id,
+        name: selectedProduct.name,
+        hasAllFields:
+          !!selectedProduct.name &&
+          !!selectedProduct.shortDescription &&
+          !!selectedProduct.longDescription &&
+          !!selectedProduct.category,
+      });
+    }
+  }, [selectedProduct]);
 
   // Fetch products on component mount
   useEffect(() => {
@@ -173,13 +198,15 @@ const ListProduct = () => {
       </div>
 
       {/* Product Edit Modal */}
-      <ProductEditModal
-        isOpen={isEditModalOpen}
-        onClose={handleModalClose}
-        product={selectedProduct}
-        onSave={handleSaveProduct}
-        title={selectedProduct ? `Edit Product: ${selectedProduct.name}` : null}
-      />
+      {selectedProduct && (
+        <ProductEditModal
+          isOpen={isEditModalOpen}
+          onClose={handleModalClose}
+          product={selectedProduct}
+          onSave={handleSaveProduct}
+          title={`Edit Product: ${selectedProduct.name}`}
+        />
+      )}
     </div>
   );
 };

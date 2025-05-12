@@ -18,10 +18,26 @@ const useProductManagement = ({ onProductUpdated, onProductCreated }) => {
   }, []);
 
   // Open the modal for editing an existing product
-  const handleEditProduct = useCallback((product) => {
-    setSelectedProduct(product);
-    setIsModalOpen(true);
-  }, []);
+  const handleEditProduct = useCallback(
+    (product) => {
+      if (!product || !product._id) {
+        console.error(
+          "Attempted to edit a product without a valid ID:",
+          product
+        );
+        showToast({
+          type: "error",
+          message: "Cannot edit product: Invalid product data",
+        });
+        return;
+      }
+
+      console.log("Opening modal to edit product:", product._id);
+      setSelectedProduct(product);
+      setIsModalOpen(true);
+    },
+    [showToast]
+  );
 
   // Close the modal
   const handleCloseModal = useCallback(() => {
@@ -34,12 +50,19 @@ const useProductManagement = ({ onProductUpdated, onProductCreated }) => {
     async (productData) => {
       setIsLoading(true);
 
+      console.log("Saving product data:", {
+        hasId: !!productData._id,
+        isNewProduct: !productData._id,
+        data: productData,
+      });
+
       try {
         let result;
 
-        // Determine whether to create or update
+        // Determine whether to create or update based on presence of _id
         if (!productData._id) {
-          // Create a new product
+          // Create a new product - no ID means it's new
+          console.log("Creating new product via useProductManagement");
           result = await productsService.createProduct(productData);
           showToast({
             type: "success",
@@ -51,7 +74,11 @@ const useProductManagement = ({ onProductUpdated, onProductCreated }) => {
             onProductCreated(result);
           }
         } else {
-          // Update an existing product
+          // Update an existing product - has ID means it exists
+          console.log(
+            "Updating existing product via useProductManagement:",
+            productData._id
+          );
           result = await productsService.updateProduct(
             productData._id,
             productData

@@ -31,18 +31,27 @@ const useFormValidation = (
       try {
         const preparedData = prepareFormDataForSubmission();
 
+        // Debug info for troubleshooting
+        console.log("Form data prepared for submission:", {
+          isNewProduct,
+          hasId: !!preparedData._id,
+          data: preparedData,
+        });
+
         let result;
 
-        // Determine whether to create or update the product
-        if (isNewProduct) {
-          // Create new product
+        // Determine whether to create or update the product based on _id
+        if (!preparedData._id) {
+          // No ID means we're creating a new product
+          console.log("Creating new product");
           result = await productsService.createProduct(preparedData);
           showToast({
             type: "success",
             message: `Product "${result.name}" created successfully`,
           });
         } else {
-          // Update existing product
+          // Having an ID means we're updating an existing product
+          console.log("Updating existing product with ID:", preparedData._id);
           result = await productsService.updateProduct(
             preparedData._id,
             preparedData

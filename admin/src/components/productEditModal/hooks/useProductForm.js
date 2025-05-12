@@ -144,11 +144,18 @@ const useProductForm = (product) => {
   };
 
   const prepareFormDataForSubmission = () => {
-    return {
+    // Create a copy of the form data for submission
+    const preparedData = {
       ...formData,
-      _id: product?._id, // Ensure ID is preserved if it exists
       new_price: hasDiscount ? formData.new_price : 0,
     };
+
+    // Only include _id if it's an existing product (not a new one)
+    if (!isNewProduct && product && product._id) {
+      preparedData._id = product._id;
+    }
+
+    return preparedData;
   };
 
   return {

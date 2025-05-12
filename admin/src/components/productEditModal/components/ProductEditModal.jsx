@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Modal from "../../ui/modal/Modal";
 import Button from "../../ui/button/Button";
 import BasicInfoFields from "./BasicInfoFields";
@@ -14,6 +14,17 @@ import useModalManagement from "../hooks/useModalManagement";
 import "../styles/common.css";
 
 const ProductEditModal = ({ isOpen, onClose, product, onSave, title }) => {
+  // Debug logging
+  useEffect(() => {
+    if (isOpen) {
+      console.log("ProductEditModal opened with product:", {
+        hasProduct: !!product,
+        productId: product?._id,
+        productData: product,
+      });
+    }
+  }, [isOpen, product]);
+
   // Product form state and handlers
   const {
     formData,
@@ -29,6 +40,17 @@ const ProductEditModal = ({ isOpen, onClose, product, onSave, title }) => {
     handleMainImageChange,
     prepareFormDataForSubmission,
   } = useProductForm(product);
+
+  // Debug log form state
+  useEffect(() => {
+    if (isOpen) {
+      console.log("Form state:", {
+        isNewProduct,
+        formHasId: !!formData._id,
+        formData,
+      });
+    }
+  }, [isOpen, isNewProduct, formData]);
 
   // Image upload state and handlers
   const {
