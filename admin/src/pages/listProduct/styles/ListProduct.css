@@ -49,6 +49,14 @@
   min-width: 150px;
 }
 
+.list-product-clear-filters {
+  min-width: fit-content;
+  font-weight: var(--font-weight-medium);
+  background-color: var(--admin-primary);
+  color: white;
+  transition: all var(--transition-duration-normal) ease;
+}
+
 .list-product-sort {
   display: flex;
   justify-content: flex-end;
@@ -95,6 +103,11 @@
   .list-product-filter-select {
     width: 100%;
     min-width: 100%;
+  }
+
+  .list-product-clear-filters {
+    width: fit-content;
+    align-self: flex-start;
   }
 }
 

@@ -34,6 +34,7 @@ const ListProduct = () => {
     handleSortChange,
     handleHeaderClick,
     toggleSortDirection,
+    clearFilters,
   } = useProductFilters(products);
 
   // Product actions (edit, delete, toggle availability)
@@ -125,6 +126,15 @@ const ListProduct = () => {
             ]}
             className="list-product-filter-select"
           />
+
+          <Button
+            variant="outline"
+            size="small"
+            onClick={clearFilters}
+            className="list-product-clear-filters"
+          >
+            Clear Filters
+          </Button>
         </div>
 
         <div className="list-product-sort">

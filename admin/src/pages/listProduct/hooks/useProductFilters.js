@@ -172,6 +172,18 @@ const useProductFilters = (products = []) => {
     setSortDirection(sortDirection === "asc" ? "desc" : "asc");
   };
 
+  /**
+   * Clears all filters but keeps sort settings
+   */
+  const clearFilters = useCallback(() => {
+    setSearchTerm("");
+    setFilters({
+      category: "",
+      status: "",
+      discount: "",
+    });
+  }, []);
+
   return {
     searchTerm,
     filters,
@@ -184,6 +196,7 @@ const useProductFilters = (products = []) => {
     handleSortChange,
     handleHeaderClick,
     toggleSortDirection,
+    clearFilters,
   };
 };
 
