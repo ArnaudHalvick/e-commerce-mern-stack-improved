@@ -64,10 +64,6 @@
     var(--transition-timing-ease);
 }
 
-.add-product-success-image-item:hover img {
-  transform: scale(1.05);
-}
-
 .add-product-success-details {
   display: flex;
   flex-direction: column;
