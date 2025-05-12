@@ -1,14 +1,14 @@
 /* Common styles for Add Product page */
 
 .add-product-container {
-  padding: 24px;
-  max-width: 1200px;
+  padding: var(--spacing-6);
+  max-width: var(--container-xl);
   margin: 0 auto;
 }
 
 /* Responsive adjustments for common elements */
 @media (max-width: 768px) {
   .add-product-container {
-    padding: 16px;
+    padding: var(--spacing-4);
   }
 }

@@ -1,17 +1,17 @@
 /* CreateProductCard component styles */
 
 .add-product-card {
-  padding: 32px;
-  margin-bottom: 24px;
-  margin-top: 24px;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  padding: var(--spacing-8);
+  margin-bottom: var(--spacing-6);
+  margin-top: var(--spacing-6);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
 }
 
 .add-product-content {
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: var(--spacing-8);
 }
 
 .add-product-intro {
@@ -21,33 +21,33 @@
 }
 
 .add-product-subtitle {
-  font-size: 24px;
-  font-weight: 500;
-  margin-bottom: 16px;
-  color: #333;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--spacing-4);
+  color: var(--admin-text-primary);
 }
 
 .add-product-description {
-  font-size: 16px;
-  color: #666;
-  line-height: 1.5;
+  font-size: var(--font-size-base);
+  color: var(--admin-text-secondary);
+  line-height: var(--line-height-normal);
 }
 
 .add-product-actions {
   display: flex;
   justify-content: center;
-  margin-top: 16px;
+  margin-top: var(--spacing-4);
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .add-product-card {
-    padding: 24px 16px;
+    padding: var(--spacing-6) var(--spacing-4);
   }
 }
 
 @media (max-width: 480px) {
   .add-product-subtitle {
-    font-size: 20px;
+    font-size: var(--font-size-lg);
   }
 }

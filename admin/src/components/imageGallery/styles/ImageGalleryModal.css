@@ -1,5 +1,5 @@
 .admin-image-gallery-modal .admin-modal-body {
-  padding: 20px;
+  padding: var(--spacing-5);
   overflow-y: auto;
   max-height: 70vh;
 }
@@ -10,34 +10,34 @@
   justify-content: center;
   align-items: center;
   min-height: 200px;
-  font-size: 16px;
-  color: #7f8c8d;
+  font-size: var(--font-size-base);
+  color: var(--admin-text-secondary);
 }
 
 .admin-image-gallery-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 16px;
-  padding: 10px 0;
+  gap: var(--spacing-4);
+  padding: var(--spacing-2-5) 0;
 }
 
 .admin-image-gallery-item {
   position: relative;
   cursor: pointer;
-  border: 2px solid transparent;
-  border-radius: 4px;
+  border: var(--border-width-medium) solid transparent;
+  border-radius: var(--border-radius-sm);
   overflow: hidden;
-  transition: all 0.2s ease;
+  transition: all var(--transition-duration-fast) var(--transition-timing-ease);
   aspect-ratio: 1;
 }
 
 .admin-image-gallery-item:hover {
   transform: translateY(-3px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
 }
 
 .admin-image-gallery-item.selected {
-  border-color: #3498db;
+  border-color: var(--color-secondary);
 }
 
 .admin-image-gallery-item img {
@@ -52,19 +52,19 @@
   position: absolute;
   top: 0;
   right: 0;
-  background-color: #3498db;
-  color: white;
-  width: 24px;
-  height: 24px;
+  background-color: var(--color-secondary);
+  color: var(--color-background);
+  width: var(--spacing-6);
+  height: var(--spacing-6);
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 0 0 0 4px;
+  border-radius: 0 0 0 var(--border-radius-sm);
 }
 
 .admin-image-gallery-selected-indicator span {
-  font-size: 14px;
-  font-weight: bold;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
 }
 
 .admin-image-gallery-modal {
@@ -75,17 +75,17 @@
 @media (max-width: 768px) {
   .admin-image-gallery-grid {
     grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-    gap: 12px;
+    gap: var(--spacing-3);
   }
 }
 
 @media (max-width: 480px) {
   .admin-image-gallery-grid {
     grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-    gap: 10px;
+    gap: var(--spacing-2-5);
   }
 
   .admin-image-gallery-modal .admin-modal-body {
-    padding: 12px;
+    padding: var(--spacing-3);
   }
 }
