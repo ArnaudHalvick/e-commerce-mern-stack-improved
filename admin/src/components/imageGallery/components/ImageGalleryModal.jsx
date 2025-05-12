@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useCallback } from "react";
-import Modal from "../../components/ui/modal/Modal";
-import Button from "../../components/ui/button/Button";
-import productsService from "../../api/services/products";
-import { useToast } from "../../components/ui/errorHandling/toast/ToastHooks";
-import { getImageUrl } from "../../utils/apiUtils";
-import "./ImageGalleryModal.css";
+import React from "react";
+import Modal from "../../../components/ui/modal/Modal";
+import Button from "../../../components/ui/button/Button";
+import { getImageUrl } from "../../../utils/apiUtils";
+import { useToast } from "../../../components/ui/errorHandling/toast/ToastHooks";
+import { useGalleryImages, useImageSelection } from "../hooks";
+import "../styles/ImageGalleryModal.css";
 
 /**
  * Reusable Modal component for selecting from already uploaded images
@@ -15,63 +15,12 @@ const ImageGalleryModal = ({
   onSelectImages,
   maxSelect = 5,
 }) => {
-  const [images, setImages] = useState([]);
-  const [selectedImages, setSelectedImages] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const { images, isLoading } = useGalleryImages(isOpen);
+  const { selectedImages, handleImageClick } = useImageSelection(
+    isOpen,
+    maxSelect
+  );
   const { showToast } = useToast();
-
-  const fetchImages = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const response = await productsService.getAllUploadedImages();
-      if (response && response.data) {
-        setImages(response.data);
-      }
-    } catch (error) {
-      console.error("Error fetching images:", error);
-      showToast({
-        type: "error",
-        message: `Failed to load images: ${error.message}`,
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  }, [showToast]);
-
-  // Fetch all images when modal opens
-  useEffect(() => {
-    if (isOpen) {
-      fetchImages();
-    }
-  }, [isOpen, fetchImages]);
-
-  // Reset selection when modal closes
-  useEffect(() => {
-    if (!isOpen) {
-      setSelectedImages([]);
-    }
-  }, [isOpen]);
-
-  const handleImageClick = (imagePath) => {
-    setSelectedImages((prev) => {
-      // If already selected, remove it
-      if (prev.includes(imagePath)) {
-        return prev.filter((path) => path !== imagePath);
-      }
-
-      // If max selection reached, show error toast
-      if (prev.length >= maxSelect) {
-        showToast({
-          type: "error",
-          message: `You can only select up to ${maxSelect} images`,
-        });
-        return prev;
-      }
-
-      // Add to selection
-      return [...prev, imagePath];
-    });
-  };
 
   const handleConfirm = () => {
     if (selectedImages.length === 0) {

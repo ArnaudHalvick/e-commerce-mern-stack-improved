@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { getImageUrl } from "../../utils/apiUtils";
-import Button from "../ui/button/Button";
+import { getImageUrl } from "../../../utils/apiUtils";
+import Button from "../../ui/button/Button";
 import ImageGalleryModal from "./ImageGalleryModal";
-import "./ImageGalleryDisplay.css";
+import "../styles/ImageGalleryDisplay.css";
 
 /**
  * Reusable component for displaying and managing product images

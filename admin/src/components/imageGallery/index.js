@@ -1,5 +1,5 @@
-import ImageGalleryDisplay from "./ImageGalleryDisplay";
-import ImageGalleryModal from "./ImageGalleryModal";
+import { ImageGalleryDisplay, ImageGalleryModal } from "./components";
+import "./styles";
 
 export { ImageGalleryDisplay, ImageGalleryModal };
 export default ImageGalleryDisplay;
