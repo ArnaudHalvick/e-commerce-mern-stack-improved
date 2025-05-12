@@ -10,10 +10,9 @@ import "../styles/ProductCreatedSuccess.css";
  * @param {Object} props
  * @param {Object} props.product - Created product data
  * @param {Function} props.onCreateAnother - Handler for "Create Another" button
- * @param {Function} props.onViewProduct - Handler for "View Product" button
  * @returns {JSX.Element}
  */
-const ProductCreatedSuccess = ({ product, onCreateAnother, onViewProduct }) => {
+const ProductCreatedSuccess = ({ product, onCreateAnother }) => {
   if (!product) return null;
 
   // Ensure values exist before using toFixed
@@ -45,6 +44,10 @@ const ProductCreatedSuccess = ({ product, onCreateAnother, onViewProduct }) => {
         )}
 
         <div className="add-product-success-details">
+          <div className="add-product-success-detail">
+            <span className="add-product-success-label">Product ID:</span>
+            <span className="add-product-success-value">{product._id}</span>
+          </div>
           <div className="add-product-success-detail">
             <span className="add-product-success-label">Name:</span>
             <span className="add-product-success-value">{product.name}</span>
@@ -83,14 +86,19 @@ const ProductCreatedSuccess = ({ product, onCreateAnother, onViewProduct }) => {
               </span>
             </div>
           )}
+          {product.description && (
+            <div className="add-product-success-detail">
+              <span className="add-product-success-label">Description:</span>
+              <span className="add-product-success-value">
+                {product.description}
+              </span>
+            </div>
+          )}
         </div>
 
         <div className="add-product-success-actions">
           <Button variant="secondary" onClick={onCreateAnother}>
             Create Another Product
-          </Button>
-          <Button variant="primary" onClick={onViewProduct}>
-            View Product Details
           </Button>
         </div>
       </div>

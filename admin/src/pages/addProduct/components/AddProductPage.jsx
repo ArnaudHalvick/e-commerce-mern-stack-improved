@@ -18,7 +18,6 @@ const AddProductPage = () => {
     handleOpenModal,
     handleCloseModal,
     handleSaveProduct,
-    handleViewProduct,
     handleCreateAnother,
   } = useAddProduct();
 
@@ -35,7 +34,6 @@ const AddProductPage = () => {
         <ProductCreatedSuccess
           product={recentlyCreatedProduct}
           onCreateAnother={handleCreateAnother}
-          onViewProduct={handleViewProduct}
         />
       )}
 

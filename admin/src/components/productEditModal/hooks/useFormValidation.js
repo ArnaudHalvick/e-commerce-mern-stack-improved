@@ -92,6 +92,9 @@ const useFormValidation = (
 
         // Reset any image upload tracking
         if (resetImageUpload) {
+          console.log(
+            "Resetting image upload state after successful submission"
+          );
           resetImageUpload();
         }
 
@@ -103,6 +106,9 @@ const useFormValidation = (
 
         // Call the parent component's save handler with formatted result
         if (onSave) {
+          console.log(
+            "Calling onSave with formatted result and resetting form"
+          );
           onSave(formattedResult);
         }
 

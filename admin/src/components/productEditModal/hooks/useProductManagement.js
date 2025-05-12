@@ -64,10 +64,19 @@ const useProductManagement = ({ onProductUpdated, onProductCreated }) => {
     [showToast]
   );
 
-  // Close the modal
+  // Close the modal and ensure all fields are reset
   const handleCloseModal = useCallback(() => {
+    // First close the modal
     setIsModalOpen(false);
-    setSelectedProduct(null);
+
+    // Use a small delay to ensure animations complete before resetting state
+    // This prevents visual glitches during modal close animation
+    setTimeout(() => {
+      // Reset selected product to null to trigger form reset in useProductForm
+      setSelectedProduct(null);
+
+      console.log("Modal closed, all fields have been reset");
+    }, 300); // Short delay for modal close animation
   }, []);
 
   // Handle saving a product (either create or update)

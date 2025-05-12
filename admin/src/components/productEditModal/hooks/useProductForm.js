@@ -27,11 +27,18 @@ const useProductForm = (product) => {
   useEffect(() => {
     // If product is null or undefined, we're creating a new product
     if (!product || Object.keys(product).length === 0) {
-      setFormData({ ...DEFAULT_PRODUCT_TEMPLATE });
-      setOriginalFormData({ ...DEFAULT_PRODUCT_TEMPLATE });
+      console.log("Resetting form to default template");
+      // Create fresh copies to ensure no references are kept
+      const defaultTemplate = JSON.parse(
+        JSON.stringify(DEFAULT_PRODUCT_TEMPLATE)
+      );
+      setFormData(defaultTemplate);
+      setOriginalFormData(defaultTemplate);
       setHasDiscount(false);
       setIsFormDirty(false);
       setIsNewProduct(true);
+      // Clear any previous errors
+      setErrors({});
       return;
     }
 
@@ -47,6 +54,7 @@ const useProductForm = (product) => {
       mainImageIndex: product.mainImageIndex || 0,
     };
 
+    console.log("Setting form data from product:", productData.name);
     setFormData(productData);
     setOriginalFormData(JSON.parse(JSON.stringify(productData)));
     setHasDiscount(hasDiscountValue);
@@ -171,6 +179,20 @@ const useProductForm = (product) => {
     }));
   };
 
+  // Reset form function that can be called explicitly
+  const resetForm = () => {
+    console.log("Explicitly resetting form to default template");
+    const defaultTemplate = JSON.parse(
+      JSON.stringify(DEFAULT_PRODUCT_TEMPLATE)
+    );
+    setFormData(defaultTemplate);
+    setOriginalFormData(defaultTemplate);
+    setHasDiscount(false);
+    setIsFormDirty(false);
+    setIsNewProduct(true);
+    setErrors({});
+  };
+
   const prepareFormDataForSubmission = () => {
     // Create a deep copy of the form data for submission
     const preparedData = JSON.parse(JSON.stringify(formData));
@@ -224,6 +246,7 @@ const useProductForm = (product) => {
     handleImageChange,
     handleMainImageChange,
     prepareFormDataForSubmission,
+    resetForm,
   };
 };
 
