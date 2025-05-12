@@ -58,7 +58,7 @@ const ModalFooter = ({ children, className = "", ...rest }) => {
  * @param {Function} props.onClose - Function to call when modal should close
  * @param {React.ReactNode} props.children - Modal content
  * @param {string} [props.size='medium'] - Modal size: 'small', 'medium', 'large', 'full'
- * @param {boolean} [props.closeOnOverlayClick=true] - Whether to close modal when overlay is clicked
+ * @param {boolean} [props.closeOnOverlayClick=false] - Whether to close modal when overlay is clicked
  * @param {boolean} [props.closeOnEscape=true] - Whether to close modal when escape key is pressed
  * @param {boolean} [props.centered=false] - Whether to center modal vertically
  * @param {string} [props.className] - Additional CSS classes
@@ -68,7 +68,7 @@ const Modal = ({
   onClose,
   children,
   size = "medium",
-  closeOnOverlayClick = true,
+  closeOnOverlayClick = false,
   closeOnEscape = true,
   centered = false,
   className = "",

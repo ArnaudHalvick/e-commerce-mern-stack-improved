@@ -221,7 +221,12 @@ const ProductEditModal = ({ isOpen, onClose, product, onSave, title }) => {
 
   return (
     <>
-      <Modal isOpen={isOpen} onClose={handleModalClose} size="large">
+      <Modal
+        isOpen={isOpen}
+        onClose={handleModalClose}
+        size="large"
+        closeOnOverlayClick={false}
+      >
         <Modal.Header onClose={handleModalClose}>{modalTitle}</Modal.Header>
 
         <Modal.Body>
@@ -304,7 +309,7 @@ const ProductEditModal = ({ isOpen, onClose, product, onSave, title }) => {
         isOpen={isConfirmModalOpen}
         onConfirm={handleConfirmDiscard}
         onCancel={handleCancelDiscard}
-        title="Discard Changes"
+        title="Discard Changes?"
         message={getConfirmationMessage()}
       />
     </>
