@@ -48,6 +48,11 @@
   max-width: 1000px;
 }
 
+.admin-modal-xl {
+  max-width: 1200px;
+  width: 85%;
+}
+
 .admin-modal-full {
   max-width: 100%;
   height: 100%;

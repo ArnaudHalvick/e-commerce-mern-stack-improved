@@ -39,7 +39,7 @@ const ImageGalleryModal = ({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      size="large"
+      size="xl"
       className="admin-image-gallery-modal"
     >
       <Modal.Header onClose={onClose}>

@@ -72,12 +72,39 @@ import { ImageGalleryModal } from "../components/imageGallery";
 | onSelectImages | Function | Yes      | -       | Callback when images are selected: (selectedImagePaths) => void |
 | maxSelect      | Number   | No       | 5       | Maximum number of images that can be selected                   |
 
+## Directory Structure
+
+```
+/imageGallery
+  /components
+    ImageGalleryDisplay.jsx  # Main gallery display component
+    ImageGalleryModal.jsx    # Modal for selecting existing images
+    index.js                # Export file for components
+  /hooks
+    useGalleryImages.jsx    # Hook for fetching gallery images
+    useImageSelection.jsx   # Hook for managing image selection state
+    index.js                # Export file for hooks
+  /styles
+    ImageGalleryDisplay.css # Styles for gallery display
+    ImageGalleryModal.css   # Styles for gallery modal
+    index.js                # Style imports
+  index.js                  # Main export file
+  README.md                 # This documentation
+```
+
 ## Features
 
 ### Responsive Grid Layout
 
 - Both components use CSS Grid to create a responsive layout that adapts to different screen sizes
 - Images maintain proper aspect ratio and scale appropriately
+- The image gallery modal now uses an extra-large size for better visibility of images
+
+### Image Display Features
+
+- Object position ensures the tops of images are always visible
+- Images are displayed at a larger size to improve usability
+- The modal takes up more screen space for a better selection experience
 
 ### Main Image Selection
 
