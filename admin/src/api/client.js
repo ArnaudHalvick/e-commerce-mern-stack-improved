@@ -119,6 +119,8 @@ apiClient.interceptors.response.use(
 
       // Redirect to login page if not already there
       if (!window.location.pathname.includes("/login")) {
+        // In the admin panel context, we should redirect to /login
+        // which will be handled by the router with the proper basename
         window.location.href = "/login";
       }
 

@@ -16,7 +16,7 @@ export default defineConfig(({ mode }) => {
       outDir: "dist",
       emptyOutDir: true,
     },
-    base: env.VITE_BASE_PATH || "/admin-panel/",
+    base: env.VITE_BASE_PATH || "/admin/",
     resolve: {
       alias: {
         "@": "/src",

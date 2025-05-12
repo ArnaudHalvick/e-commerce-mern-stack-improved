@@ -7,7 +7,7 @@ import "./StripeProvider.css";
 const initializeStripe = () => {
   try {
     // Use the REACT_APP_ prefixed environment variable
-    const key = "REACT_APP_STRIPE_PUBLISHABLE_KEY_PLACEHOLDER";
+    const key = process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY;
 
     if (!key) {
       return null;
