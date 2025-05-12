@@ -25,6 +25,8 @@ The ProductEditModal is a comprehensive, reusable modal component for creating a
 - **Unsaved Changes Detection**: Warns users before discarding unsaved changes
 - **Automatic Image Cleanup**: Handles cleanup of unused uploaded images
 - **Responsive Design**: Works on all device sizes with appropriate layouts
+- **Unified Product Interface**: The same interface is used for both product creation and editing
+- **Consistent State Management**: Shared hooks for product operations across admin pages
 
 ## Component Structure
 
@@ -69,7 +71,7 @@ const [selectedProduct, setSelectedProduct] = useState(null);
   onClose={() => setIsEditModalOpen(false)}
   product={selectedProduct} // Pass null for new product
   onSave={handleSaveProduct}
-  title="Edit Product"
+  title={selectedProduct ? "Edit Product" : "Create New Product"}
 />;
 ```
 
@@ -119,6 +121,23 @@ const {
   title={selectedProduct ? `Edit Product: ${selectedProduct.name}` : "Add New Product"}
 />
 ```
+
+## Integration in Admin Pages
+
+The ProductEditModal is now fully integrated into both the product listing page for editing and the add product page for creation:
+
+1. **Add Product Page**:
+
+   - Uses ProductEditModal with null product value
+   - Leverages useProductManagement for consistent state handling
+   - Provides success feedback and navigation options after creation
+
+2. **List Product Page**:
+   - Uses ProductEditModal for editing existing products
+   - Shares the same component and hooks for consistent experience
+   - Allows for quick product updates through the same interface
+
+This unified approach ensures consistency across the admin interface and reduces code duplication.
 
 ## Available Hooks
 
