@@ -100,9 +100,23 @@ The component implements optimistic UI updates for a responsive feel while maint
 
 ## Recent Refactoring
 
+### Recent UI Component Refactoring
+
 The product editing functionality and image management has been moved to reusable components:
 
 1. **ProductEditModal**: Handles all product editing functionality including form validation and submission
 2. **ImageGallery**: Manages product image uploading, selection, and arrangement
 
 This refactoring improves code reusability and maintainability by centralizing these common functionalities into dedicated components that can be used throughout the admin interface.
+
+### Code Structure Improvements
+
+The ListProduct component has been refactored to improve code organization and readability:
+
+1. **Extracted Filter Logic**: Separated filter logic into dedicated functions (`matchesSearchTerm`, `matchesCategoryFilter`, `matchesStatusFilter`, `matchesDiscountFilter`)
+2. **Improved Sorting**: Extracted sorting logic into a standalone `sortProducts` function
+3. **Early Returns**: Implemented early returns for cleaner conditional logic
+4. **Cleaner Function Structure**: Improved function structure and documentation with JSDoc comments
+5. **Better Readability**: Enhanced code readability with more declarative function names and structure
+
+These improvements make the component more maintainable, easier to understand for new developers, and more modular for future enhancements.

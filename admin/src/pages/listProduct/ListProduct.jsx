@@ -34,70 +34,100 @@ const ListProduct = () => {
   // Extract unique categories from products
   const categories = [...new Set(products.map((product) => product.category))];
 
-  // Filter products based on search term and filters
+  /**
+   * Checks if a product matches the current search term
+   */
+  const matchesSearchTerm = (product) => {
+    if (!searchTerm) return true;
+
+    const searchLower = searchTerm.toLowerCase();
+    return (
+      product?.name?.toLowerCase().includes(searchLower) ||
+      product?._id?.toLowerCase().includes(searchLower) ||
+      product?.category?.toLowerCase().includes(searchLower)
+    );
+  };
+
+  /**
+   * Checks if a product matches the category filter
+   */
+  const matchesCategoryFilter = (product) => {
+    if (!filters.category) return true;
+    return product.category === filters.category;
+  };
+
+  /**
+   * Checks if a product matches the status filter
+   */
+  const matchesStatusFilter = (product) => {
+    if (!filters.status) return true;
+
+    return (
+      (filters.status === "active" && product.available) ||
+      (filters.status === "inactive" && !product.available)
+    );
+  };
+
+  /**
+   * Checks if a product matches the discount filter
+   */
+  const matchesDiscountFilter = (product) => {
+    if (!filters.discount) return true;
+
+    const hasDiscount =
+      product.new_price &&
+      product.new_price > 0 &&
+      product.new_price < product.old_price;
+
+    return (
+      (filters.discount === "discounted" && hasDiscount) ||
+      (filters.discount === "regular" && !hasDiscount)
+    );
+  };
+
+  /**
+   * Sort comparator function for products
+   */
+  const sortProducts = (a, b) => {
+    let result = 0;
+
+    switch (sortOption) {
+      case "name":
+        result = a.name.localeCompare(b.name);
+        break;
+      case "id":
+        result = a._id.localeCompare(b._id);
+        break;
+      case "date":
+        result = new Date(a.date) - new Date(b.date);
+        break;
+      case "category":
+        result = a.category.localeCompare(b.category);
+        break;
+      case "price":
+        result = (a.new_price || a.old_price) - (b.new_price || b.old_price);
+        break;
+      case "status":
+        result = a.available === b.available ? 0 : a.available ? 1 : -1;
+        break;
+      default:
+        result = a.name.localeCompare(b.name);
+    }
+
+    // Apply sort direction
+    return sortDirection === "asc" ? result : -result;
+  };
+
+  // Filter and sort products
   const filteredProducts = products
-    .filter((product) => {
-      // Search term filter - now includes product ID
-      const matchesSearch =
-        searchTerm === "" ||
-        product?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product?._id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product?.category?.toLowerCase().includes(searchTerm.toLowerCase());
-
-      // Category filter
-      const matchesCategory =
-        filters.category === "" || product.category === filters.category;
-
-      // Status filter
-      const matchesStatus =
-        filters.status === "" ||
-        (filters.status === "active" && product.available) ||
-        (filters.status === "inactive" && !product.available);
-
-      // Discount filter
-      const hasDiscount =
-        product.new_price &&
-        product.new_price > 0 &&
-        product.new_price < product.old_price;
-      const matchesDiscount =
-        filters.discount === "" ||
-        (filters.discount === "discounted" && hasDiscount) ||
-        (filters.discount === "regular" && !hasDiscount);
-
-      return (
-        matchesSearch && matchesCategory && matchesStatus && matchesDiscount
-      );
-    })
-    .sort((a, b) => {
-      // Sort based on selected option and direction
-      let result = 0;
-
-      switch (sortOption) {
-        case "name":
-          result = a.name.localeCompare(b.name);
-          break;
-        case "id":
-          result = a._id.localeCompare(b._id);
-          break;
-        case "date":
-          result = new Date(a.date) - new Date(b.date);
-          break;
-        case "category":
-          result = a.category.localeCompare(b.category);
-          break;
-        case "price":
-          result = (a.new_price || a.old_price) - (b.new_price || b.old_price);
-          break;
-        case "status":
-          result = a.available === b.available ? 0 : a.available ? 1 : -1;
-          break;
-        default:
-          result = a.name.localeCompare(b.name);
-      }
-
-      // Apply sort direction
-      return sortDirection === "asc" ? result : -result;
-    });
+    .filter(
+      (product) =>
+        matchesSearchTerm(product) &&
+        matchesCategoryFilter(product) &&
+        matchesStatusFilter(product) &&
+        matchesDiscountFilter(product)
+    )
+    .sort(sortProducts);
 
   useEffect(() => {
     fetchProducts();
@@ -180,19 +210,20 @@ const ListProduct = () => {
   };
 
   const handleDeleteProduct = async (productId) => {
-    if (window.confirm("Are you sure you want to delete this product?")) {
-      try {
-        await deleteProduct(productId);
-        showToast({
-          type: "success",
-          message: "Product deleted successfully",
-        });
-      } catch (error) {
-        showToast({
-          type: "error",
-          message: `Failed to delete product: ${error.message}`,
-        });
-      }
+    if (!window.confirm("Are you sure you want to delete this product?"))
+      return;
+
+    try {
+      await deleteProduct(productId);
+      showToast({
+        type: "success",
+        message: "Product deleted successfully",
+      });
+    } catch (error) {
+      showToast({
+        type: "error",
+        message: `Failed to delete product: ${error.message}`,
+      });
     }
   };
 
