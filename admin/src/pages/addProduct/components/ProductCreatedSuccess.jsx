@@ -1,8 +1,29 @@
 import React from "react";
 import Button from "../../../components/ui/button/Button";
 import Card from "../../../components/ui/card/Card";
-import { ImageGalleryDisplay } from "../../../components/imageGallery";
+import { getImageUrl } from "../../../api/config";
 import "../styles/ProductCreatedSuccess.css";
+
+/**
+ * Simple component to display product images in a grid
+ */
+const SimpleImageDisplay = ({ images }) => {
+  if (!images || images.length === 0) return null;
+
+  return (
+    <div className="add-product-success-image-grid">
+      {images.map((image, index) => (
+        <div key={index} className="add-product-success-image-item">
+          <img
+            src={getImageUrl(image)}
+            alt={`Product view ${index + 1}`}
+            loading="lazy"
+          />
+        </div>
+      ))}
+    </div>
+  );
+};
 
 /**
  * Component displayed after successful product creation
@@ -35,11 +56,7 @@ const ProductCreatedSuccess = ({ product, onCreateAnother }) => {
 
         {product.images && product.images.length > 0 && (
           <div className="add-product-success-image">
-            <ImageGalleryDisplay
-              images={product.images}
-              mainImageIndex={product.mainImageIndex || 0}
-              size="medium"
-            />
+            <SimpleImageDisplay images={product.images} />
           </div>
         )}
 

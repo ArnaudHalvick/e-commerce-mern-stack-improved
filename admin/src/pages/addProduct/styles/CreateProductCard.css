@@ -6,6 +6,7 @@
   margin-top: var(--spacing-6);
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-md);
+  background-color: var(--admin-background);
 }
 
 .add-product-content {
