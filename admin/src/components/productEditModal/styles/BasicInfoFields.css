@@ -1,0 +1,43 @@
+/* BasicInfoFields.css */
+
+.basic-info-form-row {
+  margin-bottom: var(--spacing-5);
+}
+
+.basic-info-form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.basic-info-form-label {
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--spacing-2);
+  color: var(--admin-text-primary);
+}
+
+.basic-info-textarea {
+  padding: var(--spacing-4);
+  border: var(--border-width-thin) solid var(--admin-border);
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-sm);
+  font-family: inherit;
+  width: 100%;
+  resize: vertical;
+  transition: border-color var(--transition-duration-fast);
+}
+
+.basic-info-textarea:focus {
+  outline: none;
+  border-color: var(--admin-primary);
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.basic-info-textarea.error {
+  border-color: var(--color-danger);
+}
+
+.basic-info-input-error {
+  color: var(--color-danger);
+  font-size: var(--font-size-xs);
+  margin-top: var(--spacing-1);
+}

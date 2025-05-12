@@ -1,0 +1,42 @@
+/* PriceSection.css */
+
+.price-section-form-row {
+  margin-bottom: var(--spacing-5);
+}
+
+.price-section-form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.price-section-form-label {
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--spacing-2);
+  color: var(--admin-text-primary);
+}
+
+.price-section-checkbox-container {
+  margin-top: var(--spacing-6);
+}
+
+/* Styles for the discount checkbox container */
+.price-section-checkbox-container.discount {
+  margin-top: 0;
+  margin-bottom: var(--spacing-1);
+}
+
+.price-section-checkbox-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.price-section-checkbox-input {
+  margin-right: var(--spacing-2);
+}
+
+.price-section-input-error {
+  color: var(--color-danger);
+  font-size: var(--font-size-xs);
+  margin-top: var(--spacing-1);
+}

@@ -1,0 +1,36 @@
+/* CategorySection.css */
+
+.category-section-form-row {
+  margin-bottom: var(--spacing-5);
+}
+
+.category-section-form-row.two-column {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-5);
+}
+
+.category-section-form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.category-section-form-label {
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--spacing-2);
+  color: var(--admin-text-primary);
+}
+
+.category-section-checkbox-container {
+  margin-top: var(--spacing-6);
+}
+
+.category-section-checkbox-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.category-section-checkbox-input {
+  margin-right: var(--spacing-2);
+}

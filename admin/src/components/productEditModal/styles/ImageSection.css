@@ -1,0 +1,29 @@
+/* ImageSection.css */
+
+.image-section-form-row {
+  margin-bottom: var(--spacing-5);
+}
+
+.image-section-form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.image-section-form-label {
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--spacing-2);
+  color: var(--admin-text-primary);
+}
+
+.image-section-image-preview-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-4);
+  margin-top: var(--spacing-3);
+}
+
+.image-section-image-help-text {
+  margin-top: var(--spacing-3);
+  font-size: var(--font-size-xs);
+  color: var(--admin-text-secondary);
+}

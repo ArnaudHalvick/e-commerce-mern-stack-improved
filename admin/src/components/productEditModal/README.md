@@ -4,6 +4,16 @@
 
 The ProductEditModal is a comprehensive, reusable modal component for creating and editing product information in the admin dashboard. It provides a complete form interface for all product data, including basic information, pricing, categorization, and image management.
 
+## Refactoring Journey
+
+This component began as a monolithic implementation with a single JSX file (ProductEditModal.jsx) and a single CSS file (ProductEditModal.css). Through extensive refactoring, it has been transformed into a modular, maintainable architecture with:
+
+- Clear separation of concerns
+- Component decomposition
+- Extracted business logic into custom hooks
+- Centralized styling
+- Improved readability and maintainability
+
 ## Features
 
 - **Complete Product Form**: Edit all product attributes including:
@@ -26,8 +36,21 @@ The ProductEditModal is a comprehensive, reusable modal component for creating a
 
 ```
 productEditModal/
-├── ProductEditModal.jsx - Main component implementation
-├── ProductEditModal.css - Component styling
+├── components/
+│   ├── AttributesSection.jsx - Component for sizes, tags, and types
+│   ├── BasicInfoFields.jsx - Component for name and descriptions
+│   ├── CategorySection.jsx - Component for category and availability
+│   ├── ConfirmationModal.jsx - Modal for unsaved changes confirmation
+│   ├── ImageSection.jsx - Component for image management
+│   ├── PriceSection.jsx - Component for price management
+│   ├── ProductEditModal.jsx - Main component that composes all sections
+├── hooks/
+│   ├── useFormValidation.js - Hook for form validation and submission
+│   ├── useImageUpload.js - Hook for handling image uploads
+│   ├── useModalManagement.js - Hook for modal state and confirmation
+│   └── useProductForm.js - Hook for form state management
+├── styles/
+│   └── common.css - Common styles shared across all components
 ├── index.js - Component exports
 └── README.md - This documentation
 ```
@@ -81,6 +104,44 @@ const handleSaveProduct = async (updatedProduct) => {
 | product | Object   | Yes      | -              | Product data to edit (null for new product)       |
 | onSave  | Function | Yes      | -              | Callback when product is saved: (product) => void |
 | title   | String   | No       | "Edit Product" | Modal title text                                  |
+
+## Design Approach
+
+The component has been split into smaller, more maintainable parts:
+
+1. **Custom Hooks**: Separate business logic from UI components
+
+   - `useProductForm`: Manages form state and validation
+   - `useImageUpload`: Handles image upload and management
+   - `useFormValidation`: Manages form submission and validation
+   - `useModalManagement`: Handles modal state and confirmation
+
+2. **Component Composition**: UI broken down into smaller, focused components
+
+   - `BasicInfoFields`: Handles name and descriptions
+   - `CategorySection`: Manages category and availability
+   - `PriceSection`: Manages pricing information
+   - `AttributesSection`: Handles sizes, tags, and types
+   - `ImageSection`: Manages image uploads and selection
+   - `ConfirmationModal`: Handles unsaved changes confirmation
+
+3. **CSS Organization**:
+   - All styles are consolidated in a single `common.css` file in the styles folder
+   - CSS classes follow a consistent naming convention with the `product-edit-modal-` prefix
+   - Components import styles from the central CSS file
+
+This modular approach makes the code more maintainable, testable, and easier to understand.
+
+## Refactoring Benefits
+
+The refactoring of this component has yielded several important benefits:
+
+1. **Improved Readability**: Each component and hook has a single responsibility
+2. **Enhanced Maintainability**: Easier to update, fix bugs, and extend functionality
+3. **Better Testability**: Smaller, focused components and isolated logic are easier to test
+4. **Reusable Patterns**: The patterns used can be applied to other complex components
+5. **Consistent Styling**: Centralized CSS with predictable, scoped class names
+6. **Reduced Cognitive Load**: Developers can focus on smaller, manageable pieces of code
 
 ## Form Field Validation
 

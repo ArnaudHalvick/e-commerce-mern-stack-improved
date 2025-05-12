@@ -1,0 +1,19 @@
+/* ConfirmationModal.css */
+
+.confirmation-modal-text {
+  margin: 0 0 var(--spacing-4);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  color: var(--admin-text-primary);
+}
+
+.confirmation-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-3);
+}
+
+.confirmation-modal-header {
+  color: var(--color-danger);
+  font-weight: var(--font-weight-semibold);
+}

@@ -1,0 +1,33 @@
+/* AttributesSection.css */
+
+.attributes-section-form-row {
+  margin-bottom: var(--spacing-5);
+}
+
+.attributes-section-form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.attributes-section-form-label {
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--spacing-2);
+  color: var(--admin-text-primary);
+}
+
+.attributes-section-checkbox-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: var(--spacing-2);
+  margin-top: var(--spacing-2);
+}
+
+.attributes-section-checkbox-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.attributes-section-checkbox-input {
+  margin-right: var(--spacing-2);
+}
