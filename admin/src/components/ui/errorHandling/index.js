@@ -1,9 +1,12 @@
-import Alert from "./Alert";
-import ErrorBoundary from "./ErrorBoundary";
-import Toast from "./toast/Toast";
-import ToastProvider from "./toast/ToastProvider";
-import { useToast } from "./toast/ToastHooks";
-import { ToastContext } from "./toast/ToastContext";
+import Alert from "./components/Alert";
+import ErrorBoundary from "./components/ErrorBoundary";
+import ErrorPage from "./components/ErrorPage";
+
+// Toast exports
+import Toast from "./toast/components/Toast";
+import ToastProvider from "./toast/components/ToastProvider";
+import { useToast } from "./toast/hooks/useToast";
+import { ToastContext } from "./toast/context/ToastContext";
 
 /**
  * Utility function to handle errors consistently
@@ -66,6 +69,7 @@ const createErrorThrower = (message = "This is a demo error") => {
 export {
   Alert,
   ErrorBoundary,
+  ErrorPage,
   Toast,
   ToastProvider,
   ToastContext,

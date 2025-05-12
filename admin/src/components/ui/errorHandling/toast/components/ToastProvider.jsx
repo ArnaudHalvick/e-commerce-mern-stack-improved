@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from "react";
 import Toast from "./Toast";
-import { ToastContext } from "./ToastContext";
+import { ToastContext } from "../context/ToastContext";
 
 /**
  * Toast Provider component to manage multiple toast notifications

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./ErrorBoundary.css";
+import "../styles/ErrorBoundary.css";
 
 /**
  * ErrorBoundary component that catches JavaScript errors in child components

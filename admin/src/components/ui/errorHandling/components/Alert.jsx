@@ -1,5 +1,5 @@
 import React from "react";
-import "./Alert.css";
+import "../styles/Alert.css";
 
 /**
  * Alert component for displaying inline notifications, warnings, and errors

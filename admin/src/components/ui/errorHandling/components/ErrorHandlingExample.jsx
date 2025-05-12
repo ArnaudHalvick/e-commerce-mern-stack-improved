@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import Alert from "./Alert";
 import ErrorBoundary from "./ErrorBoundary";
-import { useToast } from "./toast/ToastProvider";
+import { useToast } from "../toast/hooks/useToast";
 import ErrorPage from "./ErrorPage";
-import { handleError } from "./index";
-import "./ErrorHandlingExample.css";
+import useErrorHandler from "../hooks/useErrorHandler";
+import "../styles/ErrorHandlingExample.css";
 
 // Component that will throw an error for demonstration
 const ErrorThrower = () => {
@@ -19,6 +19,7 @@ const ErrorThrower = () => {
  */
 const ErrorHandlingExample = () => {
   const toast = useToast();
+  const { handleError } = useErrorHandler();
   const [showErrorThrower, setShowErrorThrower] = useState(false);
   const [alertVisible, setAlertVisible] = useState(true);
 
@@ -43,7 +44,7 @@ const ErrorHandlingExample = () => {
       // Simulate an API error
       throw new Error("API request failed with status 500");
     } catch (error) {
-      handleError(error, { showToast: toast.showToast });
+      handleError(error);
     }
   };
 

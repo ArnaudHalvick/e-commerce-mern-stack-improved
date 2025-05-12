@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { useError } from "../../../context/exports/hooks.js";
-import { Alert, ErrorBoundary } from "./index.js";
-import Spinner from "../spinner/Spinner.jsx";
+import { useError } from "../../../../context/exports/hooks.js";
+import { Alert, ErrorBoundary } from "../index.js";
+import Spinner from "../../spinner/Spinner.jsx";
 
 /**
  * Example component demonstrating the integration of Error Context with Error Handling components
