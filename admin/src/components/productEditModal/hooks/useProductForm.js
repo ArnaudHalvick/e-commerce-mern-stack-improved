@@ -1,43 +1,56 @@
 import { useState, useEffect } from "react";
 
+const DEFAULT_PRODUCT_TEMPLATE = {
+  name: "",
+  shortDescription: "",
+  longDescription: "",
+  category: "",
+  new_price: 0,
+  old_price: 0,
+  available: true,
+  sizes: [],
+  tags: [],
+  types: [],
+  images: [],
+  mainImageIndex: 0,
+};
+
 const useProductForm = (product) => {
-  const [formData, setFormData] = useState({
-    name: "",
-    shortDescription: "",
-    longDescription: "",
-    category: "",
-    new_price: 0,
-    old_price: 0,
-    available: true,
-    sizes: [],
-    tags: [],
-    types: [],
-    images: [],
-    mainImageIndex: 0,
-  });
+  const [formData, setFormData] = useState({ ...DEFAULT_PRODUCT_TEMPLATE });
   const [errors, setErrors] = useState({});
   const [hasDiscount, setHasDiscount] = useState(false);
   const [originalFormData, setOriginalFormData] = useState(null);
   const [isFormDirty, setIsFormDirty] = useState(false);
+  const [isNewProduct, setIsNewProduct] = useState(true);
 
   // Initialize form with product data when product changes
   useEffect(() => {
-    if (product) {
-      const hasDiscountValue = product.new_price > 0;
-      const productData = {
-        ...product,
-        sizes: product.sizes || [],
-        tags: product.tags || [],
-        types: product.types || [],
-        images: product.images || [],
-        mainImageIndex: product.mainImageIndex || 0,
-      };
-
-      setFormData(productData);
-      setOriginalFormData(JSON.parse(JSON.stringify(productData)));
-      setHasDiscount(hasDiscountValue);
+    // If product is null or undefined, we're creating a new product
+    if (!product || Object.keys(product).length === 0) {
+      setFormData({ ...DEFAULT_PRODUCT_TEMPLATE });
+      setOriginalFormData({ ...DEFAULT_PRODUCT_TEMPLATE });
+      setHasDiscount(false);
       setIsFormDirty(false);
+      setIsNewProduct(true);
+      return;
     }
+
+    // Otherwise, we're editing an existing product
+    const hasDiscountValue = product.new_price > 0;
+    const productData = {
+      ...product,
+      sizes: product.sizes || [],
+      tags: product.tags || [],
+      types: product.types || [],
+      images: product.images || [],
+      mainImageIndex: product.mainImageIndex || 0,
+    };
+
+    setFormData(productData);
+    setOriginalFormData(JSON.parse(JSON.stringify(productData)));
+    setHasDiscount(hasDiscountValue);
+    setIsFormDirty(false);
+    setIsNewProduct(false);
   }, [product]);
 
   // Update form dirty state when form data changes
@@ -143,6 +156,7 @@ const useProductForm = (product) => {
     errors,
     hasDiscount,
     isFormDirty,
+    isNewProduct,
     originalFormData,
     validateForm,
     handleChange,

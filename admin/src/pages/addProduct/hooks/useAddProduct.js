@@ -1,8 +1,7 @@
-import { useState, useContext, useCallback } from "react";
+import { useState, useCallback, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "../../../components/errorHandling/toast/hooks/useToast";
+import { useProductManagement } from "../../../components/productEditModal";
 import ErrorContext from "../../../context/error/ErrorContext";
-import productsService from "../../../api/services/products";
 
 /**
  * Custom hook for Add Product page functionality
@@ -10,74 +9,62 @@ import productsService from "../../../api/services/products";
  * @returns {Object} Hook methods and state
  */
 const useAddProduct = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [recentlyCreatedProduct, setRecentlyCreatedProduct] = useState(null);
-  const { showToast } = useToast();
   const errorContext = useContext(ErrorContext);
   const navigate = useNavigate();
 
-  // Empty product template with default values
-  const newProductTemplate = {
-    name: "",
-    shortDescription: "",
-    longDescription: "",
-    category: "",
-    new_price: 0,
-    old_price: 0,
-    available: true,
-    sizes: [],
-    tags: [],
-    types: [],
-    images: [],
-    mainImageIndex: 0,
-  };
+  // Use the shared product management hook
+  const {
+    isModalOpen,
+    isLoading,
+    handleCreateProduct: openModal,
+    handleCloseModal,
+    handleSaveProduct: saveProduct,
+  } = useProductManagement({
+    onProductCreated: (product) => {
+      setRecentlyCreatedProduct(product);
+      errorContext.setSuccess(
+        `Product "${product.name}" successfully created!`,
+        product
+      );
+    },
+  });
 
+  // New product template with default values
+  const newProductTemplate = null; // Using null tells the modal to use default values
+
+  // Handle opening the modal
   const handleOpenModal = useCallback(() => {
-    setIsModalOpen(true);
-  }, []);
+    errorContext.clearErrors();
+    openModal();
+  }, [openModal, errorContext]);
 
-  const handleCloseModal = useCallback(() => {
-    setIsModalOpen(false);
-  }, []);
-
+  // Handle saving a product
   const handleSaveProduct = useCallback(
     async (productData) => {
-      setIsLoading(true);
       errorContext.setLoading("addProduct");
 
       try {
-        const result = await productsService.createProduct(productData);
-
-        showToast({
-          type: "success",
-          message: `Product "${result.name}" successfully created!`,
-        });
-
-        errorContext.setSuccess(
-          `Product "${result.name}" successfully created!`,
-          result
-        );
-        setRecentlyCreatedProduct(result);
-        handleCloseModal();
+        const result = await saveProduct(productData);
         return result;
       } catch (error) {
         errorContext.handleApiError(error, "Failed to create product");
         return null;
       } finally {
-        setIsLoading(false);
         errorContext.clearLoading("addProduct");
       }
     },
-    [errorContext, showToast, handleCloseModal]
+    [saveProduct, errorContext]
   );
 
+  // Handle viewing a newly created product
   const handleViewProduct = useCallback(() => {
     if (recentlyCreatedProduct && recentlyCreatedProduct._id) {
       navigate(`/admin/products/${recentlyCreatedProduct._id}`);
     }
   }, [navigate, recentlyCreatedProduct]);
 
+  // Handle creating another product
   const handleCreateAnother = useCallback(() => {
     setRecentlyCreatedProduct(null);
     handleOpenModal();

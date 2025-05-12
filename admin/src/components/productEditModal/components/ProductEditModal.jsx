@@ -20,6 +20,7 @@ const ProductEditModal = ({ isOpen, onClose, product, onSave, title }) => {
     errors,
     hasDiscount,
     isFormDirty,
+    isNewProduct,
     validateForm,
     handleChange,
     handleDiscountChange,
@@ -43,7 +44,8 @@ const ProductEditModal = ({ isOpen, onClose, product, onSave, title }) => {
     validateForm,
     prepareFormDataForSubmission,
     onSave,
-    resetImageUpload
+    resetImageUpload,
+    isNewProduct
   );
 
   // Modal management handlers
@@ -60,13 +62,15 @@ const ProductEditModal = ({ isOpen, onClose, product, onSave, title }) => {
     newlyUploadedImages
   );
 
+  // Default title based on whether we're creating or editing
+  const modalTitle =
+    title ||
+    (isNewProduct ? "Add New Product" : `Edit Product: ${product?.name || ""}`);
+
   return (
     <>
       <Modal isOpen={isOpen} onClose={handleModalClose} size="large">
-        <Modal.Header onClose={handleModalClose}>
-          {title ||
-            `${product ? "Edit" : "Add"} Product: ${product?.name || ""}`}
-        </Modal.Header>
+        <Modal.Header onClose={handleModalClose}>{modalTitle}</Modal.Header>
 
         <Modal.Body>
           <form onSubmit={handleSubmit} className="product-edit-modal-form">
@@ -125,7 +129,11 @@ const ProductEditModal = ({ isOpen, onClose, product, onSave, title }) => {
             onClick={handleSubmit}
             disabled={isSubmitting || isUploading}
           >
-            {isSubmitting ? "Saving..." : "Save Changes"}
+            {isSubmitting
+              ? "Saving..."
+              : isNewProduct
+              ? "Create Product"
+              : "Save Changes"}
           </Button>
         </Modal.Footer>
       </Modal>

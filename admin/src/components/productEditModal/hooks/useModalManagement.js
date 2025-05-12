@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 
 const useModalManagement = (
   isFormDirty,
@@ -8,45 +8,43 @@ const useModalManagement = (
 ) => {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
-  const handleModalClose = () => {
-    // If there are unsaved changes, show confirmation modal
+  // Handle closing the modal - check for unsaved changes
+  const handleModalClose = useCallback(() => {
     if (isFormDirty) {
       setIsConfirmModalOpen(true);
     } else {
-      // No changes, just close
+      // If there are no unsaved changes but we have uploaded images, clean them up
+      if (newlyUploadedImages && newlyUploadedImages.length > 0) {
+        cleanupUploadedImages(newlyUploadedImages);
+      }
       onClose();
     }
-  };
+  }, [isFormDirty, onClose, cleanupUploadedImages, newlyUploadedImages]);
 
-  const getConfirmationMessage = () => {
-    let message =
-      "You have unsaved changes. Are you sure you want to discard them?";
-
-    // Add information about newly uploaded images
-    if (newlyUploadedImages.length > 0) {
-      message += ` ${newlyUploadedImages.length} newly uploaded image${
-        newlyUploadedImages.length > 1 ? "s" : ""
-      } will be deleted.`;
+  // Confirmation message for discard dialog
+  const getConfirmationMessage = useCallback(() => {
+    if (newlyUploadedImages && newlyUploadedImages.length > 0) {
+      return "You have unsaved changes and newly uploaded images. If you close without saving, these images will be deleted. Are you sure you want to discard your changes?";
     }
+    return "You have unsaved changes. Are you sure you want to discard them?";
+  }, [newlyUploadedImages]);
 
-    return message;
-  };
+  // Confirm discarding changes
+  const handleConfirmDiscard = useCallback(() => {
+    setIsConfirmModalOpen(false);
 
-  const handleConfirmDiscard = () => {
-    // User confirmed discarding changes, so clean up any images that were uploaded
-    if (newlyUploadedImages.length > 0) {
+    // Clean up any newly uploaded images before closing
+    if (newlyUploadedImages && newlyUploadedImages.length > 0) {
       cleanupUploadedImages(newlyUploadedImages);
     }
 
-    // Close confirmation modal and main edit modal
-    setIsConfirmModalOpen(false);
     onClose();
-  };
+  }, [onClose, cleanupUploadedImages, newlyUploadedImages]);
 
-  const handleCancelDiscard = () => {
-    // User canceled discarding changes, just close the confirmation modal
+  // Cancel discarding changes
+  const handleCancelDiscard = useCallback(() => {
     setIsConfirmModalOpen(false);
-  };
+  }, []);
 
   return {
     isConfirmModalOpen,

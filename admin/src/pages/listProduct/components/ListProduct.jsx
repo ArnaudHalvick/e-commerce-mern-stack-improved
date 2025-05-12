@@ -11,15 +11,7 @@ import "../styles/ListProduct.css";
 
 const ListProduct = () => {
   // Fetch products using the product list hook
-  const {
-    products,
-    loading,
-    error,
-    fetchProducts,
-    updateProduct,
-    deleteProduct,
-    toggleProductAvailability,
-  } = useProductList();
+  const { products, loading, error, fetchProducts } = useProductList();
 
   // Filter and sort products
   const {
@@ -37,7 +29,7 @@ const ListProduct = () => {
     clearFilters,
   } = useProductFilters(products);
 
-  // Product actions (edit, delete, toggle availability)
+  // Product actions (edit, delete, toggle availability) using our shared hook
   const {
     isEditModalOpen,
     selectedProduct,
@@ -47,9 +39,6 @@ const ListProduct = () => {
     handleToggleAvailability,
     handleDeleteProduct,
   } = useProductActions({
-    updateProduct,
-    deleteProduct,
-    toggleProductAvailability,
     fetchProducts,
   });
 
@@ -184,15 +173,13 @@ const ListProduct = () => {
       </div>
 
       {/* Product Edit Modal */}
-      {selectedProduct && (
-        <ProductEditModal
-          isOpen={isEditModalOpen}
-          onClose={handleModalClose}
-          product={selectedProduct}
-          onSave={handleSaveProduct}
-          title={`Edit Product: ${selectedProduct.name}`}
-        />
-      )}
+      <ProductEditModal
+        isOpen={isEditModalOpen}
+        onClose={handleModalClose}
+        product={selectedProduct}
+        onSave={handleSaveProduct}
+        title={selectedProduct ? `Edit Product: ${selectedProduct.name}` : null}
+      />
     </div>
   );
 };
