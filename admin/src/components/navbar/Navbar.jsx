@@ -1,13 +1,13 @@
 // Path: admin/src/components/navbar/Navbar.jsx
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect, useRef } from "react";
 import "./Navbar.css";
 import navlogo from "../../assets/admin_assets/nav-logo.svg";
-import navProfile from "../../assets/admin_assets/nav-profile.svg";
 import AuthContext from "../../context/auth/AuthContext";
 
 const NavBar = ({ toggleSidebar, sidebarOpen }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { user, logout } = useContext(AuthContext);
+  const dropdownRef = useRef(null);
 
   const handleToggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
@@ -27,6 +27,23 @@ const NavBar = ({ toggleSidebar, sidebarOpen }) => {
   const closeDropdown = () => {
     setDropdownOpen(false);
   };
+
+  // Handle clicking outside the dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    };
+
+    if (dropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [dropdownOpen]);
 
   return (
     <div className="admin-navbar">
@@ -58,7 +75,7 @@ const NavBar = ({ toggleSidebar, sidebarOpen }) => {
       </div>
 
       <div className="admin-navbar-right">
-        <div className="admin-navbar-profile">
+        <div className="admin-navbar-profile" ref={dropdownRef}>
           <div
             className="admin-navbar-avatar"
             onClick={handleToggleDropdown}
@@ -70,7 +87,7 @@ const NavBar = ({ toggleSidebar, sidebarOpen }) => {
             tabIndex="0"
             aria-label="Toggle profile dropdown"
           >
-            <img src={navProfile} alt="Profile" />
+            <div className="admin-navbar-user-icon">👤</div>
             {user && <span className="admin-navbar-name">{user.name}</span>}
           </div>
 
@@ -88,13 +105,13 @@ const NavBar = ({ toggleSidebar, sidebarOpen }) => {
                   </a>
                 </li>
                 <li>
-                  <button
-                    className="admin-navbar-logout"
+                  <a
+                    href="#"
+                    className="admin-navbar-menu-item"
                     onClick={handleLogout}
-                    tabIndex="0"
                   >
                     Logout
-                  </button>
+                  </a>
                 </li>
               </ul>
             </div>
