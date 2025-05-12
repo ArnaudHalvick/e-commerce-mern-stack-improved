@@ -1,0 +1,52 @@
+/* CreateProductCard component styles */
+
+.add-product-card {
+  padding: 32px;
+  margin-bottom: 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.add-product-content {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.add-product-intro {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.add-product-subtitle {
+  font-size: 24px;
+  font-weight: 500;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+.add-product-description {
+  font-size: 16px;
+  color: #666;
+  line-height: 1.5;
+}
+
+.add-product-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .add-product-card {
+    padding: 24px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .add-product-subtitle {
+    font-size: 20px;
+  }
+}

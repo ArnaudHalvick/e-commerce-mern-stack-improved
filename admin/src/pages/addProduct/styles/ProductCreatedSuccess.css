@@ -1,0 +1,106 @@
+/* Success card styles */
+.add-product-success-card {
+  padding: 32px;
+  margin-bottom: 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  background-color: #f8fbff;
+}
+
+.add-product-success-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.add-product-success-header {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.add-product-success-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #2c7be5;
+  margin-bottom: 12px;
+}
+
+.add-product-success-description {
+  font-size: 16px;
+  color: #495057;
+  line-height: 1.5;
+}
+
+.add-product-success-image {
+  margin: 0 auto;
+  max-width: 320px;
+}
+
+.add-product-success-details {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.add-product-success-detail {
+  display: flex;
+  align-items: center;
+}
+
+.add-product-success-label {
+  font-weight: 600;
+  width: 120px;
+  color: #495057;
+}
+
+.add-product-success-value {
+  color: #212529;
+}
+
+.add-product-success-discount {
+  color: #dc3545;
+  font-weight: 500;
+}
+
+.add-product-success-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .add-product-success-card {
+    padding: 24px 16px;
+  }
+
+  .add-product-success-actions {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .add-product-success-details {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .add-product-success-title {
+    font-size: 20px;
+  }
+
+  .add-product-success-detail {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .add-product-success-label {
+    width: 100%;
+  }
+}

@@ -1,0 +1,27 @@
+/* Common styles for Add Product page */
+
+.add-product-container {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.add-product-title {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  color: #333;
+}
+
+/* Responsive adjustments for common elements */
+@media (max-width: 768px) {
+  .add-product-container {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .add-product-title {
+    font-size: 24px;
+  }
+}

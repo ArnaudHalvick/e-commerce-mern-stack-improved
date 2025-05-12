@@ -147,8 +147,18 @@ const ProductEditModal = ({ isOpen, onClose, product, onSave, title }) => {
     if (!formData.category) newErrors.category = "Category is required";
     if (formData.old_price <= 0)
       newErrors.old_price = "Original price must be greater than 0";
-    if (hasDiscount && formData.new_price <= 0)
-      newErrors.new_price = "Discounted price must be greater than 0";
+
+    // Add validation for discounted price
+    if (hasDiscount) {
+      if (formData.new_price <= 0) {
+        newErrors.new_price = "Discounted price must be greater than 0";
+      } else if (
+        parseFloat(formData.new_price) >= parseFloat(formData.old_price)
+      ) {
+        newErrors.new_price =
+          "Discounted price must be lower than original price";
+      }
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -157,9 +167,15 @@ const ProductEditModal = ({ isOpen, onClose, product, onSave, title }) => {
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
 
+    // Convert price values to numbers
+    let convertedValue = value;
+    if (name === "old_price" || name === "new_price") {
+      convertedValue = value === "" ? 0 : parseFloat(value);
+    }
+
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: type === "checkbox" ? checked : convertedValue,
     }));
 
     // Clear error when field is edited
