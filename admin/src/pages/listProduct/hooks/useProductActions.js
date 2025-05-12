@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useToast } from "../../../components/ui/errorHandling/toast/ToastHooks";
+import { useToast } from "../../../components/errorHandling/toast/hooks/useToast";
 
 /**
  * Custom hook for managing product actions (edit, delete, toggle availability)

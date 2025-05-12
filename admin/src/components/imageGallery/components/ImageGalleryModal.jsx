@@ -2,7 +2,7 @@ import React from "react";
 import Modal from "../../../components/ui/modal/Modal";
 import Button from "../../../components/ui/button/Button";
 import { getImageUrl } from "../../../utils/apiUtils";
-import { useToast } from "../../../components/ui/errorHandling/toast/ToastHooks";
+import { useToast } from "../../../components/errorHandling/toast/hooks/useToast";
 import { useGalleryImages, useImageSelection } from "../hooks";
 import "../styles/ImageGalleryModal.css";
 

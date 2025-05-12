@@ -4,7 +4,7 @@ import AuthContext from "../../context/auth/AuthContext";
 import Button from "../../components/ui/button/Button";
 import Input from "../../components/ui/input/Input";
 import Spinner from "../../components/ui/spinner/Spinner";
-import Toast from "../../components/ui/errorHandling/toast/Toast";
+import Toast from "../../components/errorHandling/toast/components/Toast";
 import "./Login.css";
 
 const Login = () => {

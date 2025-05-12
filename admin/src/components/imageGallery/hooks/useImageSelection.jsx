@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useToast } from "../../../components/ui/errorHandling/toast/ToastHooks";
+import { useToast } from "../../../components/errorHandling/toast/hooks/useToast";
 
 const useImageSelection = (isOpen, maxSelect) => {
   const [selectedImages, setSelectedImages] = useState([]);

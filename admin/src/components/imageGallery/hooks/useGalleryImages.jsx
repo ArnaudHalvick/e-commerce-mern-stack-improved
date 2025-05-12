@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import productsService from "../../../api/services/products";
-import { useToast } from "../../../components/ui/errorHandling/toast/ToastHooks";
+import { useToast } from "../../../components/errorHandling/toast/hooks/useToast";
 
 const useGalleryImages = (isOpen) => {
   const [images, setImages] = useState([]);

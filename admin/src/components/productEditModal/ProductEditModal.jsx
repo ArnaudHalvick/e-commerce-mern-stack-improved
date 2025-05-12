@@ -3,7 +3,7 @@ import Modal from "../ui/modal/Modal";
 import Button from "../ui/button/Button";
 import Input from "../ui/input/Input";
 import Select from "../ui/select/Select";
-import { useToast } from "../ui/errorHandling/toast/ToastHooks";
+import { useToast } from "../errorHandling/toast/hooks/useToast";
 import productsService from "../../api/services/products";
 import { ImageGalleryDisplay } from "../imageGallery";
 import "./ProductEditModal.css";
