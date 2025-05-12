@@ -15,6 +15,7 @@ import "./Input.css";
  * @param {boolean} [props.fullWidth=false] - Whether input should take full width
  * @param {string} [props.placeholder] - Input placeholder
  * @param {string} [props.className] - Additional CSS classes
+ * @param {string} [props.autoComplete] - Autocomplete attribute for the input
  * @param {React.RefObject} ref - Forwarded ref
  */
 const Input = forwardRef(
@@ -31,6 +32,7 @@ const Input = forwardRef(
       placeholder,
       className = "",
       id,
+      autoComplete,
       ...rest
     },
     ref
@@ -77,6 +79,7 @@ const Input = forwardRef(
           placeholder={placeholder}
           disabled={disabled}
           aria-invalid={!!error}
+          autoComplete={autoComplete}
           aria-describedby={
             error
               ? `${inputId}-error`

@@ -66,6 +66,7 @@ const Login = () => {
             placeholder="Enter your email"
             required
             fullWidth
+            autoComplete="username"
           />
 
           <Input
@@ -76,6 +77,7 @@ const Login = () => {
             placeholder="Enter your password"
             required
             fullWidth
+            autoComplete="current-password"
           />
 
           <Button
