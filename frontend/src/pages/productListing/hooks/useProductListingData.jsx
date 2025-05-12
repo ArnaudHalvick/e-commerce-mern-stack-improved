@@ -248,14 +248,32 @@ const useProductListingData = ({ pageType, category }) => {
           // For offers/shop page, check if we need to load global products first
           if (!isInitialized && !offersLoadedRef.current) {
             offersLoadedRef.current = true; // Prevent infinite recursion
-            fetchGlobalProducts(); // Trigger global product loading
-            isRequestInProgress.current = false;
-            return; // We'll wait for context to update
-          }
+            const fetchedProducts = await fetchGlobalProducts(); // Call with await to get products right away
 
-          // Once global products are loaded, use all products (not just discounted)
-          if (all_product && all_product.length > 0) {
+            if (
+              fetchedProducts &&
+              Array.isArray(fetchedProducts) &&
+              fetchedProducts.length > 0
+            ) {
+              data = fetchedProducts; // Use the returned products
+            } else {
+              // If fetchGlobalProducts didn't return valid data, retry later when context updates
+              isRequestInProgress.current = false;
+              return;
+            }
+          } else if (all_product && all_product.length > 0) {
+            // If global products are already loaded, use them
             data = all_product;
+          } else {
+            // As a last resort, try direct API call for all products
+            try {
+              const response = await productsService.getAllProducts();
+              if (Array.isArray(response)) {
+                data = response;
+              }
+            } catch (err) {
+              console.error("Error fetching all products:", err);
+            }
           }
         }
 
@@ -282,6 +300,7 @@ const useProductListingData = ({ pageType, category }) => {
         }
       } catch (err) {
         if (isMounted.current) {
+          console.error("Error in fetchPageProducts:", err);
           setError("Failed to load products. Please try again later.");
           isRequestInProgress.current = false;
           setLoading(false);

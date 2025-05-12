@@ -23,6 +23,19 @@ export const getAllProducts = async (options = {}) => {
       Array.isArray(response.data.products)
     ) {
       return response.data.products;
+    } else if (
+      response.data &&
+      response.data.data &&
+      Array.isArray(response.data.data)
+    ) {
+      return response.data.data;
+    } else if (
+      response.data &&
+      response.data.success &&
+      response.data.data &&
+      Array.isArray(response.data.data)
+    ) {
+      return response.data.data;
     } else {
       return [];
     }

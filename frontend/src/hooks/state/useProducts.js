@@ -27,11 +27,16 @@ const useProducts = () => {
       // Use the productsService to get all products
       const response = await productsService.getAllProducts();
 
-      // Handle API response
+      // Handle API response - now with better response handling
       if (Array.isArray(response)) {
         setProducts(response);
         setIsInitialized(true);
         return response;
+      } else if (response && response.data && Array.isArray(response.data)) {
+        // Handle case where the API returns an object with a data property
+        setProducts(response.data);
+        setIsInitialized(true);
+        return response.data;
       } else {
         console.error("Invalid product data received:", response);
         setError("Failed to load products. Please try again later.");
