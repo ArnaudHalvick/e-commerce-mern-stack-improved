@@ -1,7 +1,7 @@
 // Path: admin/src/pages/admin/Admin.jsx
 import "./Admin.css";
 import { Routes, Route } from "react-router-dom";
-import AddProduct from "../../components/addProduct/AddProduct";
+import AddProduct from "../../pages/addProduct/AddProduct";
 import ListProduct from "../listProduct";
 
 const Dashboard = () => {
