@@ -37,7 +37,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--spacing-3);
-  align-items: flex-end;
+  align-items: baseline;
   flex: 1;
 }
 
@@ -52,6 +52,7 @@
 .list-product-sort {
   display: flex;
   justify-content: flex-end;
+  align-items: baseline;
   min-width: 200px;
   gap: var(--spacing-2);
 }

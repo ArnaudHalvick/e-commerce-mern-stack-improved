@@ -31,12 +31,14 @@ The ListProduct component is a comprehensive product management interface for th
 ```
 listProduct/
 ├── components/
+│   ├── ListProduct.jsx - Main component implementation
 │   └── ListProductTable.jsx - Table component for product listing
 ├── hooks/
-│   └── useProductList.js - Custom hook for product data operations
+│   ├── useProductList.js - Custom hook for product data operations
+│   ├── useProductFilters.js - Custom hook for filtering and sorting
+│   └── useProductActions.js - Custom hook for product CRUD actions
 ├── styles/
 │   └── ListProduct.css - Component styling
-├── ListProduct.jsx - Main component implementation
 ├── index.jsx - Component exports
 └── README.md - This documentation
 ```
@@ -46,7 +48,7 @@ listProduct/
 Import and use the ListProduct component in your admin routes:
 
 ```jsx
-import ListProduct from "./components/listProduct";
+import ListProduct from "./pages/listProduct";
 
 const AdminDashboard = () => {
   return (
@@ -60,16 +62,17 @@ const AdminDashboard = () => {
 
 ## Core Functionality
 
-### Main Component (ListProduct.jsx)
+### Main Component (components/ListProduct.jsx)
 
-The main component handles state management for:
+The main component composes multiple custom hooks to provide a clean, readable UI component that:
 
-- Product listing and filtering
-- Edit modal visibility
-- Search and filter states
-- Sorting preferences
+- Displays the product listing interface
+- Manages the UI for filtering, sorting, and interactions
+- Coordinates between data fetching, filtering, and actions
 
-### Data Management (useProductList.js)
+### Custom Hooks
+
+#### Data Management (useProductList.js)
 
 Custom hook that provides:
 
@@ -78,6 +81,25 @@ Custom hook that provides:
 - Delete functionality
 - Availability toggling
 - Loading and error states
+
+#### Filtering and Sorting (useProductFilters.js)
+
+Custom hook that provides:
+
+- Search and filter state management
+- Filter application logic
+- Sorting mechanisms
+- Category extraction
+- Filtered product list
+
+#### Product Actions (useProductActions.js)
+
+Custom hook that provides:
+
+- Edit modal visibility management
+- Product selection state
+- Handler functions for edit, save, delete and availability toggle
+- Toast notification integration
 
 ### UI Components
 
@@ -96,9 +118,24 @@ Custom hook that provides:
 
 ## Performance Considerations
 
-The component implements optimistic UI updates for a responsive feel while maintaining data integrity with actual server responses.
+The component implements:
+
+- Optimistic UI updates for a responsive feel while maintaining data integrity with actual server responses
+- Memoization via useMemo for expensive operations
+- Clean separation of concerns with custom hooks
 
 ## Recent Refactoring
+
+### Latest Component Structure Refactoring
+
+The component structure has been refactored to follow React best practices:
+
+1. **Proper Component Organization**: Moved UI component to the components folder
+2. **Custom Hooks Extraction**: Separated business logic into dedicated hooks:
+   - `useProductFilters` for filtering and sorting functionality
+   - `useProductActions` for product management actions
+3. **Separation of Concerns**: Each hook has a single responsibility and provides a clean API
+4. **Improved Maintainability**: Easier to understand, test, and extend each part of the functionality
 
 ### Recent UI Component Refactoring
 
@@ -107,14 +144,12 @@ The product editing functionality and image management has been moved to reusabl
 1. **ProductEditModal**: Handles all product editing functionality including form validation and submission
 2. **ImageGallery**: Manages product image uploading, selection, and arrangement
 
-This refactoring improves code reusability and maintainability by centralizing these common functionalities into dedicated components that can be used throughout the admin interface.
-
 ### Code Structure Improvements
 
 The ListProduct component has been refactored to improve code organization and readability:
 
-1. **Extracted Filter Logic**: Separated filter logic into dedicated functions (`matchesSearchTerm`, `matchesCategoryFilter`, `matchesStatusFilter`, `matchesDiscountFilter`)
-2. **Improved Sorting**: Extracted sorting logic into a standalone `sortProducts` function
+1. **Extracted Filter Logic**: Separated filter logic into dedicated functions
+2. **Improved Sorting**: Extracted sorting logic into a standalone function
 3. **Early Returns**: Implemented early returns for cleaner conditional logic
 4. **Cleaner Function Structure**: Improved function structure and documentation with JSDoc comments
 5. **Better Readability**: Enhanced code readability with more declarative function names and structure
