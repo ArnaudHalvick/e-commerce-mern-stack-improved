@@ -16,8 +16,7 @@ const ImageSection = ({
       <div className="product-edit-modal-form-group">
         <label className="product-edit-modal-form-label">Product Images</label>
         <p className="product-edit-modal-form-help">
-          Upload or select product images. You can upload up to 5 images. The
-          first image will be used as the main product image on the storefront.
+          Upload or select product images. You can upload up to 5 images.
         </p>
         <ImageGalleryDisplay
           images={formData.images || []}
