@@ -71,9 +71,9 @@
 }
 
 .admin-image-gallery-upload-placeholder:hover {
-  border-color: var(--color-secondary);
+  border-color: white;
   background-color: var(--color-secondary-light);
-  color: var(--color-secondary);
+  color: white;
 }
 
 .admin-image-gallery-upload-input {
@@ -84,10 +84,6 @@
   height: 100%;
   opacity: 0;
   cursor: pointer;
-}
-
-.admin-image-gallery-upload-placeholder.admin-select-existing {
-  background-color: var(--admin-background-light);
 }
 
 @media (max-width: 768px) {

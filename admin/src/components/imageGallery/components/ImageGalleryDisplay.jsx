@@ -113,7 +113,7 @@ const ImageGalleryDisplay = ({
               )}
             </div>
             <div
-              className="admin-image-gallery-upload-placeholder admin-select-existing"
+              className="admin-image-gallery-upload-placeholder"
               onClick={() => setIsGalleryModalOpen(true)}
               tabIndex="0"
               onKeyDown={(e) => {
