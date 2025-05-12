@@ -81,6 +81,37 @@ const useProductManagement = ({ onProductUpdated, onProductCreated }) => {
         keys: Object.keys(productData).join(", "),
       });
 
+      // Check if productData is just the API response (with only success, data properties)
+      // If it only contains API response properties, it's already been processed by useFormValidation
+      if (
+        productData &&
+        productData.success &&
+        productData.data &&
+        Object.keys(productData).length <= 3
+      ) {
+        console.log(
+          "Product already processed by useFormValidation, using data directly"
+        );
+
+        // Just handle the success callbacks
+        if (!productData.data._id) {
+          // It was a new product creation
+          if (onProductCreated) {
+            onProductCreated(productData.data);
+          }
+        } else {
+          // It was a product update
+          if (onProductUpdated) {
+            onProductUpdated(productData.data);
+          }
+        }
+
+        // Close modal and return
+        handleCloseModal();
+        setIsLoading(false);
+        return productData.data;
+      }
+
       // Ensure we have a proper copy to avoid modifications to the source
       const productToSave = JSON.parse(JSON.stringify(productData));
 

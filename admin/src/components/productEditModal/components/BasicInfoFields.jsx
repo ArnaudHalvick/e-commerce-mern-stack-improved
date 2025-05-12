@@ -15,6 +15,7 @@ const BasicInfoFields = ({ formData, errors, handleChange }) => {
             onChange={handleChange}
             error={errors.name}
             required
+            placeholder="Enter product name (required)"
           />
         </div>
       </div>
@@ -32,6 +33,7 @@ const BasicInfoFields = ({ formData, errors, handleChange }) => {
             error={errors.shortDescription}
             required
             maxLength={200}
+            placeholder="Enter short description (required)"
           />
         </div>
       </div>
@@ -50,6 +52,7 @@ const BasicInfoFields = ({ formData, errors, handleChange }) => {
             }`}
             rows={5}
             required
+            placeholder="Enter detailed product description (required)"
           />
           {errors.longDescription && (
             <div className="product-edit-modal-input-error">

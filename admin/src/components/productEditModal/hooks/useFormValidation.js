@@ -18,7 +18,16 @@ const useFormValidation = (
         e.preventDefault();
       }
 
-      if (!validateForm()) {
+      // Enhanced validation debugging
+      const isValid = validateForm();
+      if (!isValid) {
+        console.log("Form validation failed with errors:", {
+          fields: Object.keys(prepareFormDataForSubmission()),
+          errors: Object.entries(prepareFormDataForSubmission())
+            .filter(([key]) => !prepareFormDataForSubmission()[key])
+            .map(([key]) => `${key} is empty`),
+        });
+
         showToast({
           type: "error",
           message: "Please fix the form errors before submitting",
@@ -36,6 +45,8 @@ const useFormValidation = (
           isNewProductFlag: isNewProduct,
           hasId: !!preparedData._id,
           productId: preparedData._id || "none",
+          category: preparedData.category,
+          name: preparedData.name,
           data: preparedData,
         });
 
@@ -81,9 +92,15 @@ const useFormValidation = (
           resetImageUpload();
         }
 
-        // Call the parent component's save handler
+        // Package result in a consistent format
+        const formattedResult = {
+          success: true,
+          data: result,
+        };
+
+        // Call the parent component's save handler with formatted result
         if (onSave) {
-          onSave(result);
+          onSave(formattedResult);
         }
 
         return result;

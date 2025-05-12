@@ -23,10 +23,13 @@ const useAddProduct = () => {
     handleSaveProduct,
   } = useProductManagement({
     onProductCreated: (product) => {
-      setRecentlyCreatedProduct(product);
+      // Handle either raw product data or formatted response with data property
+      const productData = product.data ? product.data : product;
+
+      setRecentlyCreatedProduct(productData);
       errorContext.setSuccess(
-        `Product "${product.name}" successfully created!`,
-        product
+        `Product "${productData.name}" successfully created!`,
+        productData
       );
     },
   });

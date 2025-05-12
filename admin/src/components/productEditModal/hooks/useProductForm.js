@@ -4,7 +4,7 @@ const DEFAULT_PRODUCT_TEMPLATE = {
   name: "",
   shortDescription: "",
   longDescription: "",
-  category: "",
+  category: "men",
   new_price: 0,
   old_price: 0,
   available: true,
@@ -98,8 +98,24 @@ const useProductForm = (product) => {
       }
     }
 
+    // Log validation results
+    const hasErrors = Object.keys(newErrors).length > 0;
+    if (hasErrors) {
+      console.log("Form validation failed:", {
+        errors: newErrors,
+        formData: {
+          name: formData.name,
+          shortDescription: formData.shortDescription,
+          longDescription: formData.longDescription,
+          category: formData.category,
+          old_price: formData.old_price,
+          hasCategory: !!formData.category,
+        },
+      });
+    }
+
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    return !hasErrors;
   };
 
   const handleChange = (e) => {

@@ -17,7 +17,7 @@ const ProductEditModal = ({ isOpen, onClose, product, onSave, title }) => {
   // Reference to the form element
   const formRef = useRef(null);
 
-  // Debug logging
+  // Debug logging for product
   useEffect(() => {
     if (isOpen) {
       console.log("ProductEditModal opened with product:", {
@@ -45,6 +45,20 @@ const ProductEditModal = ({ isOpen, onClose, product, onSave, title }) => {
     prepareFormDataForSubmission,
     setFormData,
   } = useProductForm(product);
+
+  // Debug logging for formData - MOVED HERE AFTER formData IS INITIALIZED
+  useEffect(() => {
+    if (isOpen && formData) {
+      // Log initial form values for debugging
+      console.log("Initial form data:", {
+        name: formData.name,
+        shortDescription: formData.shortDescription,
+        category: formData.category,
+        hasCategory: !!formData.category,
+        oldPrice: formData.old_price,
+      });
+    }
+  }, [isOpen, formData]);
 
   // Debug log form state
   useEffect(() => {

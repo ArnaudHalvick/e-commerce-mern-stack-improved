@@ -43,8 +43,33 @@ const getProductById = async (productId) => {
  * @returns {Promise} Promise with created product data
  */
 const createProduct = async (productData) => {
-  const response = await apiClient.post("/api/admin/products", productData);
-  return response.data;
+  try {
+    // Log product data before sending to API
+    console.log("Creating product with data:", {
+      name: productData.name,
+      category: productData.category,
+      hasRequiredFields: !!(
+        productData.name &&
+        productData.shortDescription &&
+        productData.longDescription &&
+        productData.category
+      ),
+      fields: Object.keys(productData),
+    });
+
+    const response = await apiClient.post("/api/admin/products", productData);
+    return response.data;
+  } catch (error) {
+    console.error("Error saving product:", error);
+    // Enhance error message with form data information
+    const enhancedError = new Error(
+      error.message || "Failed to create product"
+    );
+    enhancedError.status = error.response?.status || 500;
+    enhancedError.data = error.response?.data;
+    enhancedError.originalError = error;
+    throw enhancedError;
+  }
 };
 
 /**
