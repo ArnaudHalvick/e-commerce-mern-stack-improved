@@ -72,10 +72,16 @@ const ImageGalleryModal = ({
                   }
                 }}
               >
-                <img src={getImageUrl(image)} alt={`Gallery image ${index}`} />
+                <img
+                  src={getImageUrl(image)}
+                  alt={`Gallery image ${index}`}
+                  className="admin-image-gallery-item-image"
+                />
                 {selectedImages.includes(image) && (
                   <div className="admin-image-gallery-selected-indicator">
-                    <span>✓</span>
+                    <span className="admin-image-gallery-indicator-check">
+                      ✓
+                    </span>
                   </div>
                 )}
               </div>

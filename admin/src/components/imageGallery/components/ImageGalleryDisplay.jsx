@@ -64,7 +64,11 @@ const ImageGalleryDisplay = ({
       <div className="admin-image-gallery-preview-container">
         {images.map((image, index) => (
           <div key={index} className="admin-image-gallery-preview">
-            <img src={getImageUrl(image)} alt={`Product ${index + 1}`} />
+            <img
+              src={getImageUrl(image)}
+              alt={`Product ${index + 1}`}
+              className="admin-image-gallery-preview-image"
+            />
             <div className="admin-image-gallery-preview-actions">
               <Button
                 type="button"
@@ -72,6 +76,7 @@ const ImageGalleryDisplay = ({
                 variant={mainImageIndex === index ? "primary" : "secondary"}
                 onClick={() => handleSetMainImage(index)}
                 disabled={mainImageIndex === index}
+                className="admin-image-gallery-preview-button"
               >
                 {mainImageIndex === index ? "Main Image" : "Set as Main"}
               </Button>
@@ -80,6 +85,7 @@ const ImageGalleryDisplay = ({
                 size="small"
                 variant="danger"
                 onClick={() => handleRemoveImage(index)}
+                className="admin-image-gallery-preview-button"
               >
                 Remove
               </Button>
@@ -101,6 +107,7 @@ const ImageGalleryDisplay = ({
                     onChange={onImageUpload}
                     disabled={isUploading}
                     multiple
+                    className="admin-image-gallery-upload-input"
                   />
                 </>
               )}

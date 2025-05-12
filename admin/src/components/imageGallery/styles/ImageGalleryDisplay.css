@@ -9,7 +9,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: var(--spacing-4);
-  margin-bottom: var(--spacing-2-5);
+  margin-bottom: var(--spacing-2);
 }
 
 .admin-image-gallery-preview {
@@ -22,13 +22,13 @@
   background-color: var(--admin-background);
 }
 
-.admin-image-gallery-preview img {
+.admin-image-gallery-preview-image {
   width: 100%;
   aspect-ratio: 1;
   object-fit: contain;
   display: block;
   background-color: var(--admin-background);
-  padding: var(--spacing-1-5);
+  padding: var(--spacing-2);
 }
 
 .admin-image-gallery-preview-actions {
@@ -37,15 +37,15 @@
   padding: var(--spacing-2);
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-1-5);
+  gap: var(--spacing-2);
   border-top: var(--border-width-thin) solid var(--admin-border);
 }
 
-.admin-image-gallery-preview-actions button {
+.admin-image-gallery-preview-button {
   width: 100%;
   text-align: center;
   font-size: var(--font-size-xs);
-  padding: var(--spacing-1-5);
+  padding: var(--spacing-2);
 }
 
 .admin-image-gallery-actions {
@@ -76,7 +76,7 @@
   color: var(--color-secondary);
 }
 
-.admin-image-gallery-upload-placeholder input[type="file"] {
+.admin-image-gallery-upload-input {
   position: absolute;
   top: 0;
   left: 0;
@@ -93,7 +93,7 @@
 @media (max-width: 768px) {
   .admin-image-gallery-preview-container {
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: var(--spacing-2-5);
+    gap: var(--spacing-2);
   }
 
   .admin-image-gallery-upload-placeholder {
