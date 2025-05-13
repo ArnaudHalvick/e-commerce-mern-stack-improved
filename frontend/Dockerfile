@@ -12,10 +12,18 @@ COPY . .
 # Use ARG to set environment at build time
 ARG REACT_APP_ENV=production
 ARG REACT_APP_API_URL
+ARG REACT_APP_STRIPE_PUBLISHABLE_KEY
 
 # Set environment variables from ARGs
 ENV REACT_APP_ENV=${REACT_APP_ENV}
 ENV REACT_APP_API_URL=${REACT_APP_API_URL}
+ENV REACT_APP_STRIPE_PUBLISHABLE_KEY=${REACT_APP_STRIPE_PUBLISHABLE_KEY}
+
+# Replace Stripe key with placeholder
+RUN if [ -n "$REACT_APP_STRIPE_PUBLISHABLE_KEY" ]; then \
+      echo "Setting Stripe key placeholder"; \
+      find src -type f -name "*.jsx" -o -name "*.js" | xargs sed -i "s|${REACT_APP_STRIPE_PUBLISHABLE_KEY}|REACT_APP_STRIPE_PUBLISHABLE_KEY_PLACEHOLDER|g"; \
+    fi
 
 # Build the app
 RUN npm run build
@@ -25,6 +33,7 @@ FROM nginx:stable-alpine
 
 # Create the cache directory for nginx
 RUN mkdir -p /var/cache/nginx/images
+RUN mkdir -p /var/cache/nginx/admin
 
 # Copy the built app
 COPY --from=build /app/build /usr/share/nginx/html
