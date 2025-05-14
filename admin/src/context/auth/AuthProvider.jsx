@@ -1,7 +1,7 @@
 import { useReducer, useEffect } from "react";
 import AuthContext from "./AuthContext";
 import AuthReducer from "./AuthReducer";
-import { auth } from "../../api/services";
+import authService from "../../api/services/authService";
 
 // Action types
 import {
@@ -30,14 +30,14 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     const loadUser = async () => {
       // If no token in localStorage, don't bother checking
-      if (!auth.isAuthenticated()) {
+      if (!authService.isAuthenticated()) {
         dispatch({ type: AUTH_ERROR });
         return;
       }
 
       try {
         // Verify the token is valid
-        const response = await auth.verifyAuth();
+        const response = await authService.verifyAuth();
 
         if (response.success) {
           dispatch({
@@ -63,7 +63,7 @@ const AuthProvider = ({ children }) => {
     dispatch({ type: AUTH_LOADING });
 
     try {
-      const response = await auth.login(formData);
+      const response = await authService.login(formData);
 
       dispatch({
         type: LOGIN_SUCCESS,
@@ -87,7 +87,7 @@ const AuthProvider = ({ children }) => {
   // Logout user
   const logout = async () => {
     try {
-      await auth.logout();
+      await authService.logout();
     } catch (error) {
       console.error("Error during logout:", error);
     }

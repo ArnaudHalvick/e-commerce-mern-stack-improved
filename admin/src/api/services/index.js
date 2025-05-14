@@ -2,9 +2,9 @@
 import authService from "./authService";
 import * as products from "./products";
 
-export { authService as auth, products };
+export { authService, products };
 
 export default {
-  auth: authService,
+  authService,
   products,
 };
