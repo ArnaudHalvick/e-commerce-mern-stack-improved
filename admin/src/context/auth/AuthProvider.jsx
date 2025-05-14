@@ -1,18 +1,22 @@
 import { useReducer, useEffect } from "react";
 import AuthContext from "./AuthContext";
 import AuthReducer from "./AuthReducer";
+import { auth } from "../../api/services";
+
+// Action types
 import {
   LOGIN_SUCCESS,
   LOGIN_FAIL,
-  AUTH_LOADING,
+  LOGOUT,
   AUTH_ERROR,
   CLEAR_AUTH_ERROR,
   USER_LOADED,
-  LOGOUT,
+  AUTH_LOADING,
+  REFRESH_TOKEN,
 } from "./AuthTypes";
-import authService from "../../api/services/authService";
 
 const AuthProvider = ({ children }) => {
+  // Initial state
   const initialState = {
     isAuthenticated: false,
     user: null,
@@ -22,17 +26,18 @@ const AuthProvider = ({ children }) => {
 
   const [state, dispatch] = useReducer(AuthReducer, initialState);
 
-  // Load user on initial render
+  // Check if user is authenticated on load
   useEffect(() => {
     const loadUser = async () => {
-      // Check if token exists in localStorage
-      if (!authService.isAuthenticated()) {
+      // If no token in localStorage, don't bother checking
+      if (!auth.isAuthenticated()) {
         dispatch({ type: AUTH_ERROR });
         return;
       }
 
       try {
-        const response = await authService.verifyAuth();
+        // Verify the token is valid
+        const response = await auth.verifyAuth();
 
         if (response.success) {
           dispatch({
@@ -42,10 +47,10 @@ const AuthProvider = ({ children }) => {
         } else {
           dispatch({ type: AUTH_ERROR });
         }
-      } catch (err) {
+      } catch (error) {
         dispatch({
           type: AUTH_ERROR,
-          payload: err.message || "Authentication failed",
+          payload: error.message || "Authentication failed",
         });
       }
     };
@@ -54,17 +59,17 @@ const AuthProvider = ({ children }) => {
   }, []);
 
   // Login user
-  const login = async (credentials) => {
+  const login = async (formData) => {
     dispatch({ type: AUTH_LOADING });
 
     try {
-      const data = await authService.login(credentials);
+      const response = await auth.login(formData);
 
       dispatch({
         type: LOGIN_SUCCESS,
         payload: {
-          user: data.user,
-          accessToken: data.accessToken,
+          user: response.user,
+          accessToken: response.accessToken,
         },
       });
 
@@ -82,12 +87,37 @@ const AuthProvider = ({ children }) => {
   // Logout user
   const logout = async () => {
     try {
-      await authService.logout();
+      await auth.logout();
     } catch (error) {
       console.error("Error during logout:", error);
     }
 
     dispatch({ type: LOGOUT });
+
+    // When using React Router with a basename, we need to respect the router's
+    // context for navigation. When logging out, we want to do a fresh page load
+    // to clear all state, so we use window.location.href.
+
+    // The URL structure should be:
+    // https://domain.com/admin/login
+    // where /admin is the basename and /login is the route
+
+    // Use window.location.origin to get the base URL
+    const origin = window.location.origin;
+
+    // Get basePath from runtime config or default to '/admin'
+    const basePath =
+      window.RUNTIME_CONFIG && window.RUNTIME_CONFIG.basePath
+        ? window.RUNTIME_CONFIG.basePath
+        : "/admin";
+
+    // Normalize the path to not have trailing slash
+    const normalizedBasePath = basePath.endsWith("/")
+      ? basePath.slice(0, -1)
+      : basePath;
+
+    // Redirect to login with proper fully qualified URL
+    window.location.href = `${origin}${normalizedBasePath}/login`;
   };
 
   // Clear errors

@@ -7,6 +7,7 @@ secrets
 *.sh
 docker-compose.dev.yml
 docker-compose.yml
+*.yml
 *.log
 *.pid
 *.pem
@@ -16,3 +17,4 @@ docker-compose.yml
 *.csr
 *.cnf
 .cursorrules
+backups

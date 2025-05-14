@@ -44,12 +44,15 @@ const Sidebar = ({ isOpen }) => {
   ];
 
   const isActive = (path) => {
-    return location.pathname === path;
+    if (path === "/") {
+      return location.pathname === path;
+    }
+    return location.pathname === path || location.pathname.endsWith(path);
   };
 
-  const handleKeyDown = (e, path) => {
+  const handleKeyDown = (e) => {
     if (e.key === "Enter" || e.key === " ") {
-      window.location.href = path;
+      e.preventDefault();
     }
   };
 
@@ -69,7 +72,7 @@ const Sidebar = ({ isOpen }) => {
                 isActive(item.path) ? "active" : ""
               }`}
               tabIndex="0"
-              onKeyDown={(e) => handleKeyDown(e, item.path)}
+              onKeyDown={handleKeyDown}
               aria-current={isActive(item.path) ? "page" : undefined}
             >
               <div className="admin-sidebar-icon">

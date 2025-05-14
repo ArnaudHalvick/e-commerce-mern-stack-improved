@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import AuthContext from "../../context/auth/AuthContext";
 import Button from "../../components/ui/button/Button";
 import Input from "../../components/ui/input/Input";
@@ -11,22 +11,37 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showError, setShowError] = useState(false);
+  const [redirectTarget, setRedirectTarget] = useState("/");
 
   const { login, isAuthenticated, loading, error, clearErrors } =
     useContext(AuthContext);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
-    // If already authenticated, redirect to dashboard
+    // Extract the referrer from URL if it exists (e.g., ?from=/admin/products)
+    const params = new URLSearchParams(location.search);
+    const from = params.get("from");
+
+    if (from) {
+      // If there's a referrer in the URL, use it for redirect
+      setRedirectTarget(from);
+    }
+
+    // Log current pathname for debugging
+    console.log("Login component at path:", location.pathname);
+
+    // If already authenticated, navigate to the dashboard within admin
     if (isAuthenticated) {
-      navigate("/");
+      console.log("User is authenticated, redirecting to:", redirectTarget);
+      navigate(redirectTarget);
     }
 
     // Show error toast if login fails
     if (error) {
       setShowError(true);
     }
-  }, [isAuthenticated, error, navigate]);
+  }, [isAuthenticated, error, navigate, location, redirectTarget]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -35,10 +50,12 @@ const Login = () => {
       return;
     }
 
+    console.log("Attempting login, will redirect to:", redirectTarget);
     const success = await login({ email, password });
 
     if (success) {
-      navigate("/");
+      // This ensures we stay within the /admin path context after login
+      navigate(redirectTarget);
     }
   };
 
