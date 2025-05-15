@@ -51,11 +51,14 @@ const ImageGalleryDisplay = ({
   };
 
   const handleGalleryImagesSelected = (selectedImages) => {
-    const updatedImages = [...images, ...selectedImages].slice(0, maxImages);
-    onImagesChange(updatedImages);
-    // If there was no main image before, set first image as main
-    if (mainImageIndex === -1 && updatedImages.length > 0) {
-      onMainImageChange(0);
+    // Only proceed if images were actually selected
+    if (selectedImages && selectedImages.length > 0) {
+      const updatedImages = [...images, ...selectedImages].slice(0, maxImages);
+      onImagesChange(updatedImages);
+      // If there was no main image before, set first image as main
+      if (mainImageIndex === -1 && updatedImages.length > 0) {
+        onMainImageChange(0);
+      }
     }
   };
 

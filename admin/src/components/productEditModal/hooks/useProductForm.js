@@ -201,6 +201,11 @@ const useProductForm = (product) => {
 
   const handleImageChange = (newImages) => {
     setFormData((prev) => ({ ...prev, images: newImages }));
+
+    // Clear error when at least one image is added
+    if (errors.images && newImages.length > 0) {
+      setErrors((prev) => ({ ...prev, images: undefined }));
+    }
   };
 
   const handleMainImageChange = (newIndex) => {
