@@ -38,6 +38,16 @@ const getProductById = async (productId) => {
 };
 
 /**
+ * Get a single product by slug
+ * @param {string} slug - Product slug
+ * @returns {Promise} Promise with product data
+ */
+const getProductBySlug = async (slug) => {
+  const response = await apiClient.get(`/api/admin/products/slug/${slug}`);
+  return response.data;
+};
+
+/**
  * Create a new product
  * @param {Object} productData - Product information
  * @returns {Promise} Promise with created product data
@@ -229,6 +239,7 @@ const checkProductExists = async (field, value) => {
 const productsService = {
   getAllProducts,
   getProductById,
+  getProductBySlug,
   createProduct,
   updateProduct,
   deleteProduct,

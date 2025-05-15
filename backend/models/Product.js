@@ -48,6 +48,11 @@ const ensureUniqueSlug = async function (baseSlug, productId) {
   return newSlug;
 };
 
+// Custom validators for minimum array length
+function minArrayLength(val) {
+  return val.length >= 1;
+}
+
 const ProductSchema = new mongoose.Schema({
   id: {
     type: Number,
@@ -104,7 +109,9 @@ const ProductSchema = new mongoose.Schema({
         enum: ["S", "M", "L", "XL", "XXL", "One Size"],
       },
     ],
-    default: ["S", "M", "L", "XL", "XXL", "One Size"], // By default, all sizes are available
+    default: ["S", "M", "L", "XL", "XXL", "One Size"],
+    validate: [minArrayLength, "At least one size is required"],
+    required: true,
   },
   tags: {
     type: [
@@ -127,6 +134,8 @@ const ProductSchema = new mongoose.Schema({
       },
     ],
     default: [],
+    validate: [minArrayLength, "At least one tag is required"],
+    required: true,
   },
   types: {
     type: [
@@ -149,6 +158,8 @@ const ProductSchema = new mongoose.Schema({
       },
     ],
     default: [],
+    validate: [minArrayLength, "At least one type is required"],
+    required: true,
   },
   reviews: [
     {

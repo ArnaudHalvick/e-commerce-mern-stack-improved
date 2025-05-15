@@ -11,6 +11,7 @@ const {
   createProduct,
   getAllProducts,
   getProductById,
+  getProductBySlug,
   updateProduct,
   deleteProduct,
   uploadProductImages,
@@ -77,6 +78,9 @@ router.get("/products/images", getAllUploadedImages);
 
 // Delete uploaded images - specific routes before dynamic routes
 router.delete("/products/images", deleteUploadedImages);
+
+// Get product by slug - specific routes before dynamic routes
+router.get("/products/slug/:slug", getProductBySlug);
 
 // Get single product - dynamic route with ID
 router.get("/products/:id", getProductById);

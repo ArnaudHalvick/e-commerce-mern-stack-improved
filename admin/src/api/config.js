@@ -37,6 +37,7 @@ export const AUTH_ENDPOINTS = {
 export const PRODUCT_ENDPOINTS = {
   GET_ALL: `${ADMIN_API_PATH}/products`,
   GET_BY_ID: (id) => `${ADMIN_API_PATH}/products/${id}`,
+  GET_BY_SLUG: (slug) => `${ADMIN_API_PATH}/products/slug/${slug}`,
   CREATE: `${ADMIN_API_PATH}/products`,
   UPDATE: (id) => `${ADMIN_API_PATH}/products/${id}`,
   DELETE: (id) => `${ADMIN_API_PATH}/products/${id}`,

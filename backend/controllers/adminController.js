@@ -28,6 +28,25 @@ const formatProductForResponse = (product) => {
   return productObj;
 };
 
+// Helper function to validate product arrays have at least one item
+const validateArrayFields = (body) => {
+  const errors = [];
+
+  if (!body.types || !Array.isArray(body.types) || body.types.length === 0) {
+    errors.push("At least one product type is required");
+  }
+
+  if (!body.tags || !Array.isArray(body.tags) || body.tags.length === 0) {
+    errors.push("At least one product tag is required");
+  }
+
+  if (!body.sizes || !Array.isArray(body.sizes) || body.sizes.length === 0) {
+    errors.push("At least one product size is required");
+  }
+
+  return errors;
+};
+
 /**
  * Create a new product
  * @route POST /api/admin/products
@@ -40,6 +59,17 @@ const createProduct = catchAsync(async (req, res, next) => {
   if (!req.body.name) {
     return next(
       AppError.createAndLogError("Product name is required", 400, {
+        providedFields: Object.keys(req.body),
+      })
+    );
+  }
+
+  // Validate array fields have at least one item
+  const validationErrors = validateArrayFields(req.body);
+
+  if (validationErrors.length > 0) {
+    return next(
+      AppError.createAndLogError(validationErrors.join(", "), 400, {
         providedFields: Object.keys(req.body),
       })
     );
@@ -120,6 +150,28 @@ const getProductById = catchAsync(async (req, res, next) => {
 });
 
 /**
+ * Get a single product by slug
+ * @route GET /api/admin/products/slug/:slug
+ * @access Private (requires authentication)
+ */
+const getProductBySlug = catchAsync(async (req, res, next) => {
+  const product = await Product.findOne({ slug: req.params.slug });
+
+  if (!product) {
+    return next(
+      AppError.createAndLogError("Product not found", 404, {
+        productSlug: req.params.slug,
+      })
+    );
+  }
+
+  res.status(200).json({
+    success: true,
+    data: formatProductForResponse(product),
+  });
+});
+
+/**
  * Update a product
  * @route PUT /api/admin/products/:id
  * @access Private (requires authentication)
@@ -133,6 +185,29 @@ const updateProduct = catchAsync(async (req, res, next) => {
         productId: req.params.id,
       })
     );
+  }
+
+  // Validate array fields if they are being updated
+  if (
+    req.body.types !== undefined ||
+    req.body.tags !== undefined ||
+    req.body.sizes !== undefined
+  ) {
+    const validationData = {
+      types: req.body.types !== undefined ? req.body.types : product.types,
+      tags: req.body.tags !== undefined ? req.body.tags : product.tags,
+      sizes: req.body.sizes !== undefined ? req.body.sizes : product.sizes,
+    };
+
+    const validationErrors = validateArrayFields(validationData);
+
+    if (validationErrors.length > 0) {
+      return next(
+        AppError.createAndLogError(validationErrors.join(", "), 400, {
+          providedFields: Object.keys(req.body),
+        })
+      );
+    }
   }
 
   const updatedProduct = await Product.findByIdAndUpdate(
@@ -414,6 +489,7 @@ module.exports = {
   createProduct,
   getAllProducts,
   getProductById,
+  getProductBySlug,
   updateProduct,
   deleteProduct,
   uploadProductImages,
