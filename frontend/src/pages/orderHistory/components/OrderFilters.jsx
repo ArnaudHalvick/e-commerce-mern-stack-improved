@@ -32,6 +32,10 @@ const OrderFilters = ({
         return "Price: High to Low";
       case "price-low":
         return "Price: Low to High";
+      case "alpha-asc":
+        return "Order ID: A to Z";
+      case "alpha-desc":
+        return "Order ID: Z to A";
       default:
         return "Sort By";
     }
@@ -255,6 +259,32 @@ const OrderFilters = ({
               aria-selected={sortBy === "price-low"}
             >
               Price: Low to High
+            </div>
+            <div
+              className="order-history-filter-sort-option"
+              onClick={() => {
+                handleSortChange("alpha-asc");
+                setShowSortOptions(false);
+              }}
+              onKeyDown={(e) => handleSortOptionKeyDown(e, "alpha-asc")}
+              tabIndex="0"
+              role="option"
+              aria-selected={sortBy === "alpha-asc"}
+            >
+              Order ID: A to Z
+            </div>
+            <div
+              className="order-history-filter-sort-option"
+              onClick={() => {
+                handleSortChange("alpha-desc");
+                setShowSortOptions(false);
+              }}
+              onKeyDown={(e) => handleSortOptionKeyDown(e, "alpha-desc")}
+              tabIndex="0"
+              role="option"
+              aria-selected={sortBy === "alpha-desc"}
+            >
+              Order ID: Z to A
             </div>
           </div>
         )}

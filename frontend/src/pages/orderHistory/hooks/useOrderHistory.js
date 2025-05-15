@@ -92,6 +92,10 @@ const useOrderHistory = () => {
           return (b?.totalAmount || 0) - (a?.totalAmount || 0);
         case "price-low":
           return (a?.totalAmount || 0) - (b?.totalAmount || 0);
+        case "alpha-asc":
+          return (a?._id || "").localeCompare(b?._id || "");
+        case "alpha-desc":
+          return (b?._id || "").localeCompare(a?._id || "");
         default:
           return new Date(b?.createdAt || 0) - new Date(a?.createdAt || 0);
       }

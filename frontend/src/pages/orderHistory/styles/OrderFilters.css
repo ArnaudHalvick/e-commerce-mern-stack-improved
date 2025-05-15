@@ -220,7 +220,6 @@
   box-shadow: var(--shadow-lg);
   z-index: var(--z-index-dropdown);
   min-width: 180px;
-  display: none;
 }
 
 .order-history-filter-sort-option {
