@@ -47,23 +47,6 @@ const ImageGallery = ({
     return reordered;
   }, [images, mainImageIndex]);
 
-  // Get the actual index in the original images array
-  const getOriginalIndex = useCallback(
-    (reorderedIndex) => {
-      if (!images || images.length === 0) return 0;
-      if (mainImageIndex === 0 || mainImageIndex >= images.length)
-        return reorderedIndex;
-
-      // If we're selecting the first item (main image moved to front)
-      if (reorderedIndex === 0) return mainImageIndex;
-
-      // For items after the main image, we need to adjust
-      if (reorderedIndex <= mainImageIndex) return reorderedIndex - 1;
-      return reorderedIndex;
-    },
-    [images, mainImageIndex]
-  );
-
   // Scroll thumbnails to center the selected one
   const scrollToSelectedThumbnail = useCallback(() => {
     if (
