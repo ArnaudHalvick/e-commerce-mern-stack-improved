@@ -118,7 +118,9 @@ const ListProductTable = ({
                     <img
                       src={
                         product.images && product.images.length > 0
-                          ? getImageUrl(product.images[0])
+                          ? getImageUrl(
+                              product.images[product.mainImageIndex || 0]
+                            )
                           : getImageUrl("/placeholder.jpg")
                       }
                       alt={product.name}
@@ -234,7 +236,9 @@ const ListProductTable = ({
                   <img
                     src={
                       product.images && product.images.length > 0
-                        ? getImageUrl(product.images[0])
+                        ? getImageUrl(
+                            product.images[product.mainImageIndex || 0]
+                          )
                         : getImageUrl("/placeholder.jpg")
                     }
                     alt={product.name}
