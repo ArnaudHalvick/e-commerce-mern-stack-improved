@@ -1,5 +1,7 @@
-// This file will be replaced at runtime with actual configuration values
+// Runtime configuration for admin panel development
 window.RUNTIME_CONFIG = {
-  apiUrl: "VITE_API_URL_PLACEHOLDER",
-  basePath: "/admin",
+  apiUrl: "http://localhost:4001",
+  hostUrl: "http://localhost:5173",
+  basePath: "/"
 };
+console.log("Development runtime config loaded:", window.RUNTIME_CONFIG);
