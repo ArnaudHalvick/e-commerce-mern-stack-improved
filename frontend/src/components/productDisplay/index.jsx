@@ -45,6 +45,7 @@ const ProductDisplay = ({ product }) => {
         images={product.images}
         selectedImageIndex={selectedImageIndex}
         setSelectedImageIndex={setSelectedImageIndex}
+        mainImageIndex={product.mainImageIndex || 0}
       />
 
       <div className="product-display-right">
