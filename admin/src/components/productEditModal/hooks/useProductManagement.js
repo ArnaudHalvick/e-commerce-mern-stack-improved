@@ -9,7 +9,7 @@ const useProductManagement = ({ onProductUpdated, onProductCreated }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { showToast, showErrorToast, showSuccessToast } = useToast();
+  const { showErrorToast, showSuccessToast } = useToast();
 
   // Open the modal for creating a new product
   const handleCreateProduct = useCallback(() => {
@@ -159,7 +159,7 @@ const useProductManagement = ({ onProductUpdated, onProductCreated }) => {
           );
 
           // Use result name if available, otherwise fall back to the saved name
-          const displayName = result && result.name ? result.name : productName;
+          const displayName = result?.name || productName || "Product";
 
           showSuccessToast(`Product "${displayName}" updated successfully`);
 
@@ -227,13 +227,9 @@ const useProductManagement = ({ onProductUpdated, onProductCreated }) => {
 
       try {
         await productsService.toggleAvailability(productId, !currentStatus);
-        showToast({
-          type: "success",
-          message: `Product ${
-            !currentStatus ? "activated" : "deactivated"
-          } successfully`,
-          duration: 3000 + Math.random() * 100,
-        });
+        showSuccessToast(
+          `Product ${!currentStatus ? "activated" : "deactivated"} successfully`
+        );
 
         // Call the update callback to refresh the product list
         if (onProductUpdated) {
@@ -243,17 +239,13 @@ const useProductManagement = ({ onProductUpdated, onProductCreated }) => {
         return true;
       } catch (error) {
         console.error("Error toggling availability:", error);
-        showToast({
-          type: "error",
-          message: `Failed to update availability: ${error.message}`,
-          duration: 3000 + Math.random() * 100,
-        });
+        showErrorToast(`Failed to update availability: ${error.message}`);
         return false;
       } finally {
         setIsLoading(false);
       }
     },
-    [showToast, onProductUpdated]
+    [showSuccessToast, showErrorToast, onProductUpdated]
   );
 
   return {

@@ -94,6 +94,11 @@ const useProductForm = (product) => {
     if (formData.old_price <= 0)
       newErrors.old_price = "Original price must be greater than 0";
 
+    // Add specific validation for images
+    if (!formData.images || formData.images.length === 0) {
+      newErrors.images = "At least one product image is required";
+    }
+
     // Add validation for discounted price
     if (hasDiscount) {
       if (formData.new_price <= 0) {
@@ -118,6 +123,7 @@ const useProductForm = (product) => {
           category: formData.category,
           old_price: formData.old_price,
           hasCategory: !!formData.category,
+          imagesCount: formData.images?.length || 0,
         },
       });
     }

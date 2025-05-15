@@ -39,10 +39,7 @@ const useAddProduct = () => {
 
         // Show success message only once here
         if (result && result.success) {
-          const productName = result.data?.name || productData.name;
-          errorContext.setSuccess(
-            `Product "${productName}" successfully created!`
-          );
+          errorContext.setSuccess(`New product successfully created!`);
         }
 
         return result;
