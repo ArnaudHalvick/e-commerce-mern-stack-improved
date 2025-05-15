@@ -9,7 +9,7 @@ const useProductManagement = ({ onProductUpdated, onProductCreated }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { showToast } = useToast();
+  const { showToast, showErrorToast, showSuccessToast } = useToast();
 
   // Open the modal for creating a new product
   const handleCreateProduct = useCallback(() => {
@@ -25,11 +25,7 @@ const useProductManagement = ({ onProductUpdated, onProductCreated }) => {
           "Attempted to edit a product without a valid ID:",
           product
         );
-        showToast({
-          type: "error",
-          message: "Cannot edit product: Invalid product data",
-          duration: 3000 + Math.random() * 100,
-        });
+        showErrorToast("Cannot edit product: Invalid product data");
         return;
       }
 
@@ -54,14 +50,10 @@ const useProductManagement = ({ onProductUpdated, onProductCreated }) => {
         setIsModalOpen(true);
       } catch (error) {
         console.error("Error preparing product for edit:", error);
-        showToast({
-          type: "error",
-          message: "Error preparing product data for editing",
-          duration: 3000 + Math.random() * 100,
-        });
+        showErrorToast("Error preparing product data for editing");
       }
     },
-    [showToast]
+    [showErrorToast]
   );
 
   // Close the modal and ensure all fields are reset
@@ -120,7 +112,7 @@ const useProductManagement = ({ onProductUpdated, onProductCreated }) => {
         // Close modal and return
         handleCloseModal();
         setIsLoading(false);
-        return productData.data;
+        return productData;
       }
 
       // Ensure we have a proper copy to avoid modifications to the source
@@ -143,13 +135,9 @@ const useProductManagement = ({ onProductUpdated, onProductCreated }) => {
           // Create a new product - no ID means it's new
           console.log("Creating new product via useProductManagement");
           result = await productsService.createProduct(productToSave);
-          showToast({
-            type: "success",
-            message: `Product "${
-              result?.name || "New product"
-            }" created successfully`,
-            duration: 3000 + Math.random() * 100,
-          });
+
+          // Don't show toast here - let the ErrorState context handle it
+          // to avoid duplicate messages
 
           // Call the success callback if provided
           if (onProductCreated) {
@@ -173,11 +161,7 @@ const useProductManagement = ({ onProductUpdated, onProductCreated }) => {
           // Use result name if available, otherwise fall back to the saved name
           const displayName = result && result.name ? result.name : productName;
 
-          showToast({
-            type: "success",
-            message: `Product "${displayName}" updated successfully`,
-            duration: 3000 + Math.random() * 100,
-          });
+          showSuccessToast(`Product "${displayName}" updated successfully`);
 
           // Call the success callback if provided
           if (onProductUpdated) {
@@ -187,21 +171,18 @@ const useProductManagement = ({ onProductUpdated, onProductCreated }) => {
 
         // Close the modal
         handleCloseModal();
-        return result;
+        return { success: true, data: result };
       } catch (error) {
         console.error("Error saving product:", error);
-        showToast({
-          type: "error",
-          message: `Failed to save product: ${error.message}`,
-          duration: 3000 + Math.random() * 100,
-        });
-        return null;
+        showErrorToast(`Failed to save product: ${error.message}`);
+        return { success: false, error };
       } finally {
         setIsLoading(false);
       }
     },
     [
-      showToast,
+      showSuccessToast,
+      showErrorToast,
       handleCloseModal,
       onProductCreated,
       onProductUpdated,
@@ -220,11 +201,7 @@ const useProductManagement = ({ onProductUpdated, onProductCreated }) => {
 
       try {
         await productsService.deleteProduct(productId);
-        showToast({
-          type: "success",
-          message: "Product deleted successfully",
-          duration: 3000 + Math.random() * 100,
-        });
+        showSuccessToast("Product deleted successfully");
 
         // Call the update callback to refresh the product list
         if (onProductUpdated) {
@@ -234,17 +211,13 @@ const useProductManagement = ({ onProductUpdated, onProductCreated }) => {
         return true;
       } catch (error) {
         console.error("Error deleting product:", error);
-        showToast({
-          type: "error",
-          message: `Failed to delete product: ${error.message}`,
-          duration: 3000 + Math.random() * 100,
-        });
+        showErrorToast(`Failed to delete product: ${error.message}`);
         return false;
       } finally {
         setIsLoading(false);
       }
     },
-    [showToast, onProductUpdated]
+    [showSuccessToast, showErrorToast, onProductUpdated]
   );
 
   // Handle toggling product availability
@@ -285,8 +258,8 @@ const useProductManagement = ({ onProductUpdated, onProductCreated }) => {
 
   return {
     isModalOpen,
-    selectedProduct,
     isLoading,
+    selectedProduct,
     handleCreateProduct,
     handleEditProduct,
     handleCloseModal,

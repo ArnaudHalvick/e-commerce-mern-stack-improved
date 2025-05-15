@@ -18,19 +18,41 @@ const useAddProduct = () => {
     isLoading,
     handleCreateProduct,
     handleCloseModal,
-    handleSaveProduct,
+    handleSaveProduct: originalHandleSaveProduct,
   } = useProductManagement({
     onProductCreated: (product) => {
       // Handle either raw product data or formatted response with data property
       const productData = product.data ? product.data : product;
 
       setRecentlyCreatedProduct(productData);
-      errorContext.setSuccess(
-        `Product "${productData.name}" successfully created!`,
-        productData
-      );
+      // The toast message will be shown in ErrorState context, no need for duplicates
     },
   });
+
+  // Custom save handler to show only one success toast
+  const handleSaveProduct = useCallback(
+    async (productData) => {
+      try {
+        // Clear any existing errors first
+        errorContext.clearError();
+        const result = await originalHandleSaveProduct(productData);
+
+        // Show success message only once here
+        if (result && result.success) {
+          const productName = result.data?.name || productData.name;
+          errorContext.setSuccess(
+            `Product "${productName}" successfully created!`
+          );
+        }
+
+        return result;
+      } catch (error) {
+        // Error handling is already managed by the hook and ErrorContext
+        return { success: false, error };
+      }
+    },
+    [originalHandleSaveProduct, errorContext]
+  );
 
   // Handle opening the modal with error clearing
   const handleOpenModal = useCallback(() => {

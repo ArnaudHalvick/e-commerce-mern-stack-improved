@@ -10,7 +10,7 @@ const useFormValidation = (
   isNewProduct
 ) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { showToast } = useToast();
+  const { showErrorToast, showSuccessToast } = useToast();
 
   const handleSubmit = useCallback(
     async (e) => {
@@ -28,11 +28,7 @@ const useFormValidation = (
             .map(([key]) => `${key} is empty`),
         });
 
-        showToast({
-          type: "error",
-          message: "Please fix the form errors before submitting",
-          duration: 3000 + Math.random() * 100,
-        });
+        showErrorToast("Please fix the form errors before submitting");
         return;
       }
 
@@ -59,17 +55,11 @@ const useFormValidation = (
           // No ID means we need to create a new product
           console.log("Creating new product - no ID present");
 
-          // Save original product name in case the API response doesn't include it
-          const productName = preparedData.name || "New product";
-
+          // Create the product without showing toast (handled by ErrorState)
           result = await productsService.createProduct(preparedData);
-          showToast({
-            type: "success",
-            message: `Product "${
-              result?.name || productName
-            }" created successfully`,
-            duration: 3000 + Math.random() * 100,
-          });
+
+          // Don't show toast here - let the ErrorState context handle it
+          // to avoid duplicate messages
         } else {
           // Having an ID means we're updating an existing product
           console.log("Updating existing product with ID:", preparedData._id);
@@ -81,13 +71,10 @@ const useFormValidation = (
             preparedData._id,
             preparedData
           );
-          showToast({
-            type: "success",
-            message: `Product "${
-              result?.name || productName
-            }" updated successfully`,
-            duration: 3000 + Math.random() * 100,
-          });
+
+          showSuccessToast(
+            `Product "${result?.name || productName}" updated successfully`
+          );
         }
 
         // Reset any image upload tracking
@@ -112,15 +99,11 @@ const useFormValidation = (
           onSave(formattedResult);
         }
 
-        return result;
+        return formattedResult;
       } catch (error) {
         console.error("Error saving product:", error);
-        showToast({
-          type: "error",
-          message: `Failed to save product: ${error.message}`,
-          duration: 3000 + Math.random() * 100,
-        });
-        return null;
+        showErrorToast(`Failed to save product: ${error.message}`);
+        return { success: false, error };
       } finally {
         setIsSubmitting(false);
       }
@@ -131,7 +114,8 @@ const useFormValidation = (
       onSave,
       resetImageUpload,
       isNewProduct,
-      showToast,
+      showSuccessToast,
+      showErrorToast,
     ]
   );
 
