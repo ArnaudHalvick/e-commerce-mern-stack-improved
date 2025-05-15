@@ -25,8 +25,6 @@ const ProductsContent = ({
   // Get current sort label based on sortBy value
   const getSortLabel = () => {
     switch (sortBy) {
-      case "newest":
-        return "Newest First";
       case "price-asc":
         return "Price: Low to High";
       case "price-desc":
@@ -158,16 +156,6 @@ const ProductsContent = ({
 
             {showSortOptions && (
               <div className="product-listing-sort-options" role="listbox">
-                <div
-                  className="product-listing-sort-option"
-                  onClick={() => handleSortChange("newest")}
-                  onKeyDown={(e) => handleSortOptionKeyDown(e, "newest")}
-                  tabIndex="0"
-                  role="option"
-                  aria-selected={sortBy === "newest"}
-                >
-                  Newest First
-                </div>
                 <div
                   className="product-listing-sort-option"
                   onClick={() => handleSortChange("price-asc")}

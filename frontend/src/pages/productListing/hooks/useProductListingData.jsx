@@ -37,8 +37,8 @@ const useProductListingData = ({ pageType, category }) => {
     types: [],
   });
 
-  // Sort state
-  const [sortBy, setSortBy] = useState("newest");
+  // Sort state - initialize with empty string (no default sorting)
+  const [sortBy, setSortBy] = useState("");
   const [showSortOptions, setShowSortOptions] = useState(false);
 
   // Pagination state
@@ -127,41 +127,40 @@ const useProductListingData = ({ pageType, category }) => {
         );
       }
 
-      // Apply sorting
-      switch (sortBy) {
-        case "newest":
-          filteredProducts.sort((a, b) => new Date(b.date) - new Date(a.date));
-          break;
-        case "price-asc":
-          filteredProducts.sort((a, b) => {
-            const priceA = a.new_price > 0 ? a.new_price : a.old_price;
-            const priceB = b.new_price > 0 ? b.new_price : b.old_price;
-            return priceA - priceB;
-          });
-          break;
-        case "price-desc":
-          filteredProducts.sort((a, b) => {
-            const priceA = a.new_price > 0 ? a.new_price : a.old_price;
-            const priceB = b.new_price > 0 ? b.new_price : b.old_price;
-            return priceB - priceA;
-          });
-          break;
-        case "discount":
-          filteredProducts.sort((a, b) => {
-            const discountA = a.old_price - (a.new_price || a.old_price);
-            const discountB = b.old_price - (b.new_price || b.old_price);
-            return discountB - discountA;
-          });
-          break;
-        case "rating":
-          filteredProducts.sort((a, b) => {
-            const ratingA = Number(a.rating || 0);
-            const ratingB = Number(b.rating || 0);
-            return ratingB - ratingA;
-          });
-          break;
-        default:
-          break;
+      // Apply sorting only if sortBy has a value
+      if (sortBy) {
+        switch (sortBy) {
+          case "price-asc":
+            filteredProducts.sort((a, b) => {
+              const priceA = a.new_price > 0 ? a.new_price : a.old_price;
+              const priceB = b.new_price > 0 ? b.new_price : b.old_price;
+              return priceA - priceB;
+            });
+            break;
+          case "price-desc":
+            filteredProducts.sort((a, b) => {
+              const priceA = a.new_price > 0 ? a.new_price : a.old_price;
+              const priceB = b.new_price > 0 ? b.new_price : b.old_price;
+              return priceB - priceA;
+            });
+            break;
+          case "discount":
+            filteredProducts.sort((a, b) => {
+              const discountA = a.old_price - (a.new_price || a.old_price);
+              const discountB = b.old_price - (b.new_price || b.old_price);
+              return discountB - discountA;
+            });
+            break;
+          case "rating":
+            filteredProducts.sort((a, b) => {
+              const ratingA = Number(a.rating || 0);
+              const ratingB = Number(b.rating || 0);
+              return ratingB - ratingA;
+            });
+            break;
+          default:
+            break;
+        }
       }
 
       // Set the total pages based on filtered products and items per page
@@ -208,7 +207,7 @@ const useProductListingData = ({ pageType, category }) => {
         tags: [],
         types: [],
       });
-      setSortBy("newest");
+      setSortBy("");
       setCurrentPage(1);
     }
 
@@ -459,7 +458,7 @@ const useProductListingData = ({ pageType, category }) => {
       tags: [],
       types: [],
     });
-    setSortBy("newest");
+    setSortBy("");
     setCurrentPage(1);
 
     // If we're on the offers page and have no products showing,
