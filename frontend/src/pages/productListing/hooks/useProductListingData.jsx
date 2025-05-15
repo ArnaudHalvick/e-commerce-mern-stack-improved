@@ -144,6 +144,50 @@ const useProductListingData = ({ pageType, category }) => {
               return priceB - priceA;
             });
             break;
+          case "date-newest":
+            console.log(
+              "Sorting by date-newest",
+              filteredProducts
+                .slice(0, 3)
+                .map((p) => ({ id: p._id, date: p.date }))
+            );
+            filteredProducts.sort((a, b) => {
+              // First try to use the date field, if not available use _id as a fallback
+              // MongoDB ObjectIds contain a timestamp as their first 4 bytes
+              if (a.date && b.date) {
+                const dateA = new Date(a.date);
+                const dateB = new Date(b.date);
+                return dateB - dateA; // Newest first (descending)
+              } else {
+                // Use _id as a rough timestamp - not ideal but better than nothing
+                // ObjectIds are 24 char hex strings with a timestamp in the first 8 chars
+                const idA = a._id || "";
+                const idB = b._id || "";
+                return idB.localeCompare(idA); // Newer IDs are "greater" alphabetically
+              }
+            });
+            break;
+          case "date-oldest":
+            console.log(
+              "Sorting by date-oldest",
+              filteredProducts
+                .slice(0, 3)
+                .map((p) => ({ id: p._id, date: p.date }))
+            );
+            filteredProducts.sort((a, b) => {
+              // First try to use the date field, if not available use _id as a fallback
+              if (a.date && b.date) {
+                const dateA = new Date(a.date);
+                const dateB = new Date(b.date);
+                return dateA - dateB; // Oldest first (ascending)
+              } else {
+                // Use _id as a rough timestamp - not ideal but better than nothing
+                const idA = a._id || "";
+                const idB = b._id || "";
+                return idA.localeCompare(idB); // Older IDs are "lesser" alphabetically
+              }
+            });
+            break;
           case "discount":
             filteredProducts.sort((a, b) => {
               const discountA = a.old_price - (a.new_price || a.old_price);
@@ -286,6 +330,15 @@ const useProductListingData = ({ pageType, category }) => {
         } else {
           if (isMounted.current) {
             setAllProducts(data);
+            // Log the first product and check if it has a date field
+            if (data && data.length > 0) {
+              console.log("Sample product:", {
+                id: data[0]._id,
+                name: data[0].name,
+                date: data[0].date,
+                hasDateField: "date" in data[0],
+              });
+            }
             setAvailableTags([
               ...new Set(data.flatMap((item) => item.tags || [])),
             ]);
@@ -423,6 +476,7 @@ const useProductListingData = ({ pageType, category }) => {
 
   // Handle sort change
   const handleSortChange = useCallback((sortOption) => {
+    console.log("handleSortChange called with option:", sortOption);
     setSortBy(sortOption);
     setShowSortOptions(false);
   }, []);

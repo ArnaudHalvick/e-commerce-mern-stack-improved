@@ -29,6 +29,10 @@ const ProductsContent = ({
         return "Price: Low to High";
       case "price-desc":
         return "Price: High to Low";
+      case "date-newest":
+        return "Date: Newest First";
+      case "date-oldest":
+        return "Date: Oldest First";
       case "discount":
         return "Biggest Discount";
       case "rating":
@@ -175,6 +179,32 @@ const ProductsContent = ({
                   aria-selected={sortBy === "price-desc"}
                 >
                   Price: High to Low
+                </div>
+                <div
+                  className="product-listing-sort-option"
+                  onClick={() => {
+                    console.log("Clicking date-newest sort option");
+                    handleSortChange("date-newest");
+                  }}
+                  onKeyDown={(e) => handleSortOptionKeyDown(e, "date-newest")}
+                  tabIndex="0"
+                  role="option"
+                  aria-selected={sortBy === "date-newest"}
+                >
+                  Date: Newest First
+                </div>
+                <div
+                  className="product-listing-sort-option"
+                  onClick={() => {
+                    console.log("Clicking date-oldest sort option");
+                    handleSortChange("date-oldest");
+                  }}
+                  onKeyDown={(e) => handleSortOptionKeyDown(e, "date-oldest")}
+                  tabIndex="0"
+                  role="option"
+                  aria-selected={sortBy === "date-oldest"}
+                >
+                  Date: Oldest First
                 </div>
                 <div
                   className="product-listing-sort-option"
