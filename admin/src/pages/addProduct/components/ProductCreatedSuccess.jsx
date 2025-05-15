@@ -103,6 +103,26 @@ const ProductCreatedSuccess = ({ product, onCreateAnother }) => {
               </span>
             </div>
           )}
+          {product.shortDescription && (
+            <div className="add-product-success-detail">
+              <span className="add-product-success-label">
+                Short Description:
+              </span>
+              <span className="add-product-success-value">
+                {product.shortDescription}
+              </span>
+            </div>
+          )}
+          {product.longDescription && (
+            <div className="add-product-success-detail">
+              <span className="add-product-success-label">
+                Long Description:
+              </span>
+              <span className="add-product-success-value">
+                {product.longDescription}
+              </span>
+            </div>
+          )}
           {product.description && (
             <div className="add-product-success-detail">
               <span className="add-product-success-label">Description:</span>

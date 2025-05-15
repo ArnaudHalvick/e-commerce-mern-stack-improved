@@ -81,7 +81,7 @@
 
 .add-product-success-label {
   font-weight: var(--font-weight-semibold);
-  width: 120px;
+  width: 9rem;
   color: var(--admin-text-secondary);
 }
 
