@@ -1,7 +1,7 @@
 import React from "react";
 import "../styles/common.css";
 
-const AttributesSection = ({ formData, handleArrayFieldChange }) => {
+const AttributesSection = ({ formData, handleArrayFieldChange, errors }) => {
   // Size options
   const sizeOptions = [
     { value: "S", label: "Small (S)" },
@@ -73,6 +73,9 @@ const AttributesSection = ({ formData, handleArrayFieldChange }) => {
               </label>
             ))}
           </div>
+          {errors && errors.sizes && (
+            <div className="admin-input-error-text">{errors.sizes}</div>
+          )}
         </div>
       </div>
 
@@ -103,6 +106,9 @@ const AttributesSection = ({ formData, handleArrayFieldChange }) => {
               </label>
             ))}
           </div>
+          {errors && errors.tags && (
+            <div className="admin-input-error-text">{errors.tags}</div>
+          )}
         </div>
       </div>
 
@@ -133,6 +139,9 @@ const AttributesSection = ({ formData, handleArrayFieldChange }) => {
               </label>
             ))}
           </div>
+          {errors && errors.types && (
+            <div className="admin-input-error-text">{errors.types}</div>
+          )}
         </div>
       </div>
     </>

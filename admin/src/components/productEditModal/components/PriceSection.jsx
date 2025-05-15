@@ -65,7 +65,7 @@ const PriceSection = ({
               disabled={!hasDiscount}
             />
             {formData.new_price >= formData.old_price && hasDiscount && (
-              <div className="product-edit-modal-input-error">
+              <div className="admin-input-error-text">
                 Discounted price must be less than original price
               </div>
             )}

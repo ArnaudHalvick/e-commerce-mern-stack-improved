@@ -54,12 +54,6 @@
   border-color: var(--color-danger);
 }
 
-.product-edit-modal-input-error {
-  color: var(--color-danger);
-  font-size: var(--font-size-xs);
-  margin-top: var(--spacing-1);
-}
-
 /* Checkbox styles */
 .product-edit-modal-checkbox-container {
   margin-top: var(--spacing-6);

@@ -55,7 +55,7 @@ const BasicInfoFields = ({ formData, errors, handleChange }) => {
             placeholder="Enter detailed product description (required)"
           />
           {errors.longDescription && (
-            <div className="product-edit-modal-input-error">
+            <div className="admin-input-error-text">
               {errors.longDescription}
             </div>
           )}

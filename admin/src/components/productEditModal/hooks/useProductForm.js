@@ -99,6 +99,19 @@ const useProductForm = (product) => {
       newErrors.images = "At least one product image is required";
     }
 
+    // Validate array fields (sizes, tags, types)
+    if (!formData.sizes || formData.sizes.length === 0) {
+      newErrors.sizes = "At least one size is required";
+    }
+
+    if (!formData.tags || formData.tags.length === 0) {
+      newErrors.tags = "At least one tag is required";
+    }
+
+    if (!formData.types || formData.types.length === 0) {
+      newErrors.types = "At least one product type is required";
+    }
+
     // Add validation for discounted price
     if (hasDiscount) {
       if (formData.new_price <= 0) {
@@ -124,6 +137,9 @@ const useProductForm = (product) => {
           old_price: formData.old_price,
           hasCategory: !!formData.category,
           imagesCount: formData.images?.length || 0,
+          sizesCount: formData.sizes?.length || 0,
+          tagsCount: formData.tags?.length || 0,
+          typesCount: formData.types?.length || 0,
         },
       });
     }
@@ -166,12 +182,21 @@ const useProductForm = (product) => {
   };
 
   const handleArrayFieldChange = (fieldName, itemValue, isChecked) => {
-    setFormData((prev) => ({
-      ...prev,
-      [fieldName]: isChecked
+    setFormData((prev) => {
+      const newArray = isChecked
         ? [...prev[fieldName], itemValue]
-        : prev[fieldName].filter((item) => item !== itemValue),
-    }));
+        : prev[fieldName].filter((item) => item !== itemValue);
+
+      // Clear error when field is edited and now has at least one item
+      if (errors[fieldName] && newArray.length > 0) {
+        setErrors((prevErrors) => ({ ...prevErrors, [fieldName]: undefined }));
+      }
+
+      return {
+        ...prev,
+        [fieldName]: newArray,
+      };
+    });
   };
 
   const handleImageChange = (newImages) => {

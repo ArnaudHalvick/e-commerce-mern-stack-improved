@@ -28,13 +28,8 @@ const useFormValidation = (
             .map(([key]) => `${key} is empty`),
         });
 
-        // Check for common validation failures and show specific messages
-        const preparedData = prepareFormDataForSubmission();
-        if (!preparedData.images || preparedData.images.length === 0) {
-          showErrorToast("Please add at least one image");
-        } else {
-          showErrorToast("Please fix the form errors");
-        }
+        // Show a generic message for all validation errors
+        showErrorToast("Please fix all required fields highlighted in red");
         return;
       }
 

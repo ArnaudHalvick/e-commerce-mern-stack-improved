@@ -267,6 +267,7 @@ const ProductEditModal = ({ isOpen, onClose, product, onSave, title }) => {
             <AttributesSection
               formData={formData}
               handleArrayFieldChange={handleArrayFieldChange}
+              errors={errors}
             />
 
             {/* Image management section */}
@@ -278,6 +279,7 @@ const ProductEditModal = ({ isOpen, onClose, product, onSave, title }) => {
               cleanupUploadedImages={cleanupUploadedImages}
               newlyUploadedImages={newlyUploadedImages}
               isUploading={isUploading}
+              errors={errors}
             />
           </form>
         </Modal.Body>

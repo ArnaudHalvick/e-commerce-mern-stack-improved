@@ -10,6 +10,7 @@ const ImageSection = ({
   cleanupUploadedImages,
   newlyUploadedImages,
   isUploading,
+  errors,
 }) => {
   return (
     <div className="product-edit-modal-form-row">
@@ -29,6 +30,9 @@ const ImageSection = ({
           isUploading={isUploading}
           maxImages={5}
         />
+        {errors && errors.images && (
+          <div className="admin-input-error-text">{errors.images}</div>
+        )}
       </div>
     </div>
   );

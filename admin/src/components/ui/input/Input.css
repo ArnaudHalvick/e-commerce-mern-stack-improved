@@ -82,13 +82,13 @@
 .admin-input-error-text {
   margin-top: var(--spacing-2);
   color: var(--color-danger);
-  font-size: var(--font-size-xs);
+  font-size: var(--font-size-sm);
 }
 
 .admin-input-helper-text {
   margin-top: var(--spacing-2);
   color: var(--admin-text-secondary);
-  font-size: var(--font-size-xs);
+  font-size: var(--font-size-sm);
 }
 
 /* Textarea */
