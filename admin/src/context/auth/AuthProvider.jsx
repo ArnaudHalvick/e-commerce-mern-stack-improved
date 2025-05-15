@@ -92,32 +92,18 @@ const AuthProvider = ({ children }) => {
       console.error("Error during logout:", error);
     }
 
+    // Dispatch logout action to clear auth state
     dispatch({ type: LOGOUT });
 
-    // When using React Router with a basename, we need to respect the router's
-    // context for navigation. When logging out, we want to do a fresh page load
-    // to clear all state, so we use window.location.href.
+    // Construct the login page URL
+    const loginPath = "/login";
 
-    // The URL structure should be:
-    // https://domain.com/admin/login
-    // where /admin is the basename and /login is the route
+    // Log the action
+    console.log(`Logging out, redirecting to: ${loginPath}`);
 
-    // Use window.location.origin to get the base URL
-    const origin = window.location.origin;
-
-    // Get basePath from runtime config or default to '/admin'
-    const basePath =
-      window.RUNTIME_CONFIG && window.RUNTIME_CONFIG.basePath
-        ? window.RUNTIME_CONFIG.basePath
-        : "/admin";
-
-    // Normalize the path to not have trailing slash
-    const normalizedBasePath = basePath.endsWith("/")
-      ? basePath.slice(0, -1)
-      : basePath;
-
-    // Redirect to login with proper fully qualified URL
-    window.location.href = `${origin}${normalizedBasePath}/login`;
+    // Use replace instead of href to avoid adding to history
+    // This helps prevent redirect loops
+    window.location.replace(loginPath);
   };
 
   // Clear errors

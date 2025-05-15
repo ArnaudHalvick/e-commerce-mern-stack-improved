@@ -1,0 +1,120 @@
+/* NotFound.css - Styling for 404/error/empty state pages */
+
+.admin-not-found {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+  text-align: center;
+  background-color: #f8f9fa;
+}
+
+.admin-not-found-content {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 2.5rem;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.admin-not-found-illustration {
+  margin-bottom: 2rem;
+  color: var(--primary-color, #4a6cf7);
+}
+
+.admin-not-found-404 {
+  display: flex;
+  justify-content: center;
+  font-size: 4rem;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 1rem;
+}
+
+.admin-not-found-404 span {
+  display: inline-block;
+  margin: 0 0.2rem;
+  animation: bounce 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  animation-delay: calc(var(--i, 0) * 0.1s);
+}
+
+.admin-not-found-404 span:nth-child(1) {
+  --i: 1;
+}
+
+.admin-not-found-404 span:nth-child(2) {
+  --i: 2;
+}
+
+.admin-not-found-404 span:nth-child(3) {
+  --i: 3;
+}
+
+.admin-not-found-empty svg,
+.admin-not-found-error svg {
+  opacity: 0.75;
+}
+
+.admin-not-found-title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #343a40;
+  margin-bottom: 1rem;
+}
+
+.admin-not-found-message {
+  font-size: 1.075rem;
+  color: #6c757d;
+  margin-bottom: 2rem;
+  line-height: 1.5;
+}
+
+.admin-not-found-button {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--primary-color, #4a6cf7);
+  color: white;
+  font-weight: 500;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.admin-not-found-button:hover {
+  background-color: var(--primary-color-dark, #3a5cd7);
+  transform: translateY(-1px);
+}
+
+.admin-not-found-button:active {
+  transform: translateY(1px);
+}
+
+@keyframes bounce {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+  .admin-not-found-content {
+    padding: 2rem 1.5rem;
+  }
+
+  .admin-not-found-404 {
+    font-size: 3.5rem;
+  }
+
+  .admin-not-found-title {
+    font-size: 1.5rem;
+  }
+}

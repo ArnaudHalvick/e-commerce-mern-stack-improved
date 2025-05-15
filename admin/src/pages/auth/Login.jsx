@@ -19,6 +19,20 @@ const Login = () => {
   const location = useLocation();
 
   useEffect(() => {
+    // Check for infinite redirect loops in URL (multiple /login segments)
+    const currentPath = window.location.pathname;
+    const loginPattern = /\/login/g;
+    const matches = currentPath.match(loginPattern) || [];
+
+    if (matches.length > 1) {
+      // More than one /login in the URL - fix it by setting the correct path
+      console.log("Detected duplicate login segments in URL, fixing...");
+      const fixedPath = "/login";
+
+      // Use replaceState to update the URL without triggering a navigation
+      window.history.replaceState(null, "", fixedPath);
+    }
+
     // Extract the referrer from URL if it exists (e.g., ?from=/admin/products)
     const params = new URLSearchParams(location.search);
     const from = params.get("from");

@@ -5,6 +5,7 @@ import NavBar from "./components/navbar/Navbar";
 import Sidebar from "./components/sidebar/Sidebar";
 import Admin from "./pages/admin/Admin";
 import Login from "./pages/auth/Login";
+import NotFound from "./components/ui/notFound/NotFound";
 import ProtectedRoute from "./components/authGuard/ProtectedRoute";
 import AuthProvider from "./context/auth/AuthProvider";
 import { ErrorState } from "./context/index.jsx";
@@ -64,6 +65,16 @@ const AdminLayout = ({ children }) => {
   );
 };
 
+// A separate 404 component that doesn't use the admin layout
+const PageNotFound = () => (
+  <NotFound
+    title="Page Not Found"
+    message="The page you are looking for doesn't exist or has been moved."
+    backTo="/login"
+    backText="Go to Login"
+  />
+);
+
 function App() {
   return (
     <ErrorState>
@@ -72,7 +83,10 @@ function App() {
           {/* Public Routes */}
           <Route path="/login" element={<Login />} />
 
-          {/* Protected Routes - Any path within /* requires authentication */}
+          {/* 404 Page - Public, doesn't require auth */}
+          <Route path="/not-found" element={<PageNotFound />} />
+
+          {/* Protected Routes - With proper wildcard pattern to allow nested routes */}
           <Route
             path="/*"
             element={
@@ -84,8 +98,8 @@ function App() {
             }
           />
 
-          {/* Redirect to dashboard if no route matches */}
-          <Route path="*" element={<Navigate to="/" replace />} />
+          {/* All other unknown routes - redirect to not-found page */}
+          <Route path="*" element={<Navigate to="/not-found" replace />} />
         </Routes>
       </AuthProvider>
     </ErrorState>

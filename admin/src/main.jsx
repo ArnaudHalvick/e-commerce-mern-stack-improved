@@ -22,14 +22,20 @@ const normalizedBasePath = basePath.endsWith("/")
   ? basePath.slice(0, -1)
   : basePath;
 
+// Only use a non-empty basename when it's not just "/"
+// This prevents issues with empty basenames in React Router
+const routerBasename =
+  normalizedBasePath && normalizedBasePath !== "/" ? normalizedBasePath : "";
+
 console.log("Admin app starting with:");
 console.log("- normalized basename:", normalizedBasePath);
+console.log("- router basename:", routerBasename);
 console.log("- BASE_URL:", import.meta.env.BASE_URL);
 console.log("- VITE_BASE_PATH:", import.meta.env.VITE_BASE_PATH);
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <BrowserRouter basename={normalizedBasePath}>
+    <BrowserRouter basename={routerBasename}>
       <App />
     </BrowserRouter>
   </StrictMode>
