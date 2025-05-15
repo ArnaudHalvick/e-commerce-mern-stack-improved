@@ -3,15 +3,29 @@
  * Contains all API-related configuration for the admin dashboard
  */
 
-// Get API URL from environment variables
-export const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+// Check for runtime config first (from Docker container)
+const RUNTIME_CONFIG =
+  typeof window !== "undefined" ? window.RUNTIME_CONFIG : null;
+
+// Get API URL from runtime config, environment variables, or local default
+export const API_URL =
+  RUNTIME_CONFIG?.apiUrl ||
+  import.meta.env.VITE_API_URL ||
+  "http://localhost:4000";
+
+// Get host location
+export const HOST_URL =
+  typeof window !== "undefined"
+    ? window.location.origin
+    : RUNTIME_CONFIG?.hostUrl || API_URL;
+
 export const ADMIN_API_PATH =
   import.meta.env.VITE_ADMIN_API_PATH || "/api/admin";
 
 // Construct full API base URL
 export const API_BASE_URL = API_URL;
 
-// Authentication endpoints
+// Authentication endpoints - use same domain to avoid CORS
 export const AUTH_ENDPOINTS = {
   LOGIN: `${ADMIN_API_PATH}/auth/login`,
   LOGOUT: `${ADMIN_API_PATH}/auth/logout`,

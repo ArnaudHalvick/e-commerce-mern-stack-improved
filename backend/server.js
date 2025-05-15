@@ -42,32 +42,26 @@ const app = express();
 const port = process.env.PORT || 4000;
 const httpsPort = process.env.HTTPS_PORT || 4443;
 
-// Middleware
+// List of allowed origins for CORS
 const allowedOrigins = [
-  // Production URLs - read from environment variables
-  process.env.FRONTEND_URL || "https://mernappshopper.xyz",
-  "https://www.mernappshopper.xyz",
-  "https://mernappshopper.xyz",
-  // Only use HTTPS for remote hosts
-  "https://159.65.230.12",
-  "https://159.65.230.12:8080",
-  "https://159.65.230.12:3000",
-  // For local development, support both HTTP and HTTPS
-  ...(process.env.NODE_ENV === "development"
-    ? [
-        "http://localhost:3000",
-        "http://localhost",
-        "http://localhost:8080",
-        "http://127.0.0.1:3000",
-        "http://127.0.0.1:8080",
-      ]
-    : []),
-  // Always include HTTPS versions for localhost
+  process.env.FRONTEND_URL,
+  process.env.ADMIN_URL, // Add admin subdomain URL
+  "http://localhost:3000",
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "http://localhost:8080",
+  "http://127.0.0.1:3000",
+  "http://127.0.0.1:5173",
+  "http://127.0.0.1:8080",
   "https://localhost:3000",
-  "https://localhost",
+  "https://localhost:5173",
   "https://localhost:8080",
   "https://127.0.0.1:3000",
+  "https://127.0.0.1:5173",
   "https://127.0.0.1:8080",
+  "https://mernappshopper.xyz",
+  "https://www.mernappshopper.xyz",
+  "https://admin.mernappshopper.xyz", // Add admin subdomain explicitly
 ];
 
 // Configure Morgan for HTTP request logging
@@ -81,6 +75,28 @@ app.use((req, res, next) => {
   // Log the request origin for debugging
   logger.info(`Request from origin: ${origin}`);
 
+  // Avoid setting headers more than once
+  const headersSet = {};
+
+  // Function to set headers only if not already set
+  const safeSetHeader = (name, value) => {
+    if (!headersSet[name]) {
+      res.setHeader(name, value);
+      headersSet[name] = true;
+    }
+  };
+
+  // Special handling for admin subdomain - let nginx handle CORS for this domain
+  if (
+    origin === "https://admin.mernappshopper.xyz" &&
+    req.headers["x-forwarded-host"] === "admin.mernappshopper.xyz"
+  ) {
+    // Skip setting CORS headers for admin subdomain as they're set by nginx
+    logger.info(`Admin request detected - CORS headers will be set by nginx`);
+    next();
+    return;
+  }
+
   // Only set CORS headers if the origin is present (not for same-origin requests)
   if (origin) {
     // Check if the origin is allowed
@@ -89,27 +105,31 @@ app.use((req, res, next) => {
       allowedOrigins.some((allowed) => origin.startsWith(allowed))
     ) {
       // Set the exact origin that made the request as the allowed origin
-      res.setHeader("Access-Control-Allow-Origin", origin);
+      safeSetHeader("Access-Control-Allow-Origin", origin);
+
+      // Add Vary header to indicate that response varies based on Origin
+      safeSetHeader("Vary", "Origin");
     } else {
       // In production, log but still allow temporarily for debugging
       logger.warn(`CORS: Allowing non-whitelisted origin: ${origin}`);
-      res.setHeader("Access-Control-Allow-Origin", origin);
+      safeSetHeader("Access-Control-Allow-Origin", origin);
+      safeSetHeader("Vary", "Origin");
     }
 
     // Set other CORS headers
-    res.setHeader(
+    safeSetHeader(
       "Access-Control-Allow-Methods",
       "GET, POST, PUT, PATCH, DELETE, OPTIONS"
     );
-    res.setHeader(
+    safeSetHeader(
       "Access-Control-Allow-Headers",
-      "Content-Type, Authorization, X-Requested-With, auth-token"
+      "Content-Type, Authorization, X-Requested-With, If-Modified-Since, Cache-Control, Range, auth-token"
     );
-    res.setHeader("Access-Control-Allow-Credentials", "true");
+    safeSetHeader("Access-Control-Allow-Credentials", "true");
 
     // Handle preflight requests
     if (req.method === "OPTIONS") {
-      res.setHeader("Access-Control-Max-Age", "86400"); // 24 hours
+      safeSetHeader("Access-Control-Max-Age", "86400"); // 24 hours
       return res.status(204).end();
     }
   }
@@ -193,17 +213,54 @@ if (!fs.existsSync(placeholdersDir)) {
 app.use(
   "/images",
   (req, res, next) => {
-    // Allow CORS for images from any origin
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Methods", "GET, OPTIONS");
-    res.header("Access-Control-Allow-Headers", "Content-Type, auth-token");
+    // Get the origin from the request
+    const origin = req.headers.origin;
+
+    // Special handling for admin subdomain - let nginx handle CORS for this domain
+    if (
+      origin === "https://admin.mernappshopper.xyz" &&
+      req.headers["x-forwarded-host"] === "admin.mernappshopper.xyz"
+    ) {
+      // Skip setting CORS headers for admin subdomain as they're set by nginx
+      logger.info(
+        `Admin image request detected - CORS headers will be set by nginx`
+      );
+      return next();
+    }
+
+    // Avoid setting headers more than once
+    const headersSet = {};
+
+    // Function to set headers only if not already set
+    const safeSetHeader = (name, value) => {
+      if (!headersSet[name]) {
+        res.header(name, value);
+        headersSet[name] = true;
+      }
+    };
+
+    // If we have an origin and it's in our allowed list, use that specific origin
+    if (
+      origin &&
+      (allowedOrigins.includes(origin) ||
+        allowedOrigins.some((allowed) => origin.startsWith(allowed)))
+    ) {
+      safeSetHeader("Access-Control-Allow-Origin", origin);
+    } else {
+      // Otherwise, allow any origin for images only
+      safeSetHeader("Access-Control-Allow-Origin", "*");
+    }
+
+    safeSetHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
+    safeSetHeader("Access-Control-Allow-Headers", "Content-Type, auth-token");
 
     // Add Cross-Origin Resource Policy header to allow loading from different origins
-    res.header("Cross-Origin-Resource-Policy", "cross-origin");
+    safeSetHeader("Cross-Origin-Resource-Policy", "cross-origin");
 
     // Add cache control headers
-    res.header("Cache-Control", "public, max-age=604800"); // 7 days
-    res.header("Expires", new Date(Date.now() + 604800000).toUTCString());
+    safeSetHeader("Cache-Control", "public, max-age=604800"); // 7 days
+    safeSetHeader("Expires", new Date(Date.now() + 604800000).toUTCString());
+    safeSetHeader("Vary", "Origin");
 
     // Handle OPTIONS request for CORS preflight
     if (req.method === "OPTIONS") {

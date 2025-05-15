@@ -9,6 +9,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "NODE_ENV=development DEBUG=dotenv nodemon server.js",
+    "dev:docker": "NODE_ENV=development nodemon server.js",
     "prod": "NODE_ENV=production node server.js",
     "fix-image-urls": "node scripts/fixImageUrls.js",
     "webhook": "node scripts/setupStripeWebhook.js",

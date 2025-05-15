@@ -4,7 +4,7 @@
  */
 
 import axios from "axios";
-import { API_BASE_URL, AUTH_ENDPOINTS } from "./config";
+import { API_BASE_URL, AUTH_ENDPOINTS, HOST_URL } from "./config";
 
 // Create axios instance with default config
 const apiClient = axios.create({
@@ -52,6 +52,22 @@ apiClient.interceptors.request.use(
     // Ensure URLs have proper prefix
     if (config.url) {
       config.url = ensureApiPrefix(config.url);
+
+      // Always use same-origin for all API requests to avoid CORS issues
+      if (typeof window !== "undefined") {
+        // Override the baseURL to use same origin for all requests
+        config.baseURL = window.location.origin;
+
+        // Only log auth requests for debugging
+        if (
+          config.url.includes("/auth/login") ||
+          config.url.includes("/auth/logout") ||
+          config.url.includes("/auth/verify") ||
+          config.url.includes("/auth/refresh-token")
+        ) {
+          console.log("Using same origin for auth request:", config.url);
+        }
+      }
     }
 
     // Add authorization token if available

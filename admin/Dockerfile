@@ -12,7 +12,7 @@ COPY . .
 # Use ARG to set environment at build time
 ARG VITE_ENV=production
 ARG VITE_API_URL
-ARG VITE_BASE_PATH=/admin/
+ARG VITE_BASE_PATH=/
 
 # Set environment variables from ARGs
 ENV VITE_ENV=${VITE_ENV}
@@ -28,8 +28,30 @@ RUN if [ -n "$VITE_API_URL" ]; then \
 # Build the app
 RUN npm run build
 
-# Create volume mount point
-VOLUME /app/dist
+# Production stage
+FROM nginx:stable-alpine
 
-# Command just to keep container running if needed for development
-CMD ["tail", "-f", "/dev/null"] 
+# Copy the built app
+COPY --from=build /app/dist /usr/share/nginx/html
+
+# Copy nginx configuration
+COPY admin-nginx.conf /etc/nginx/conf.d/default.conf
+
+# Copy entrypoint script
+COPY docker-entrypoint.sh /
+RUN chmod +x /docker-entrypoint.sh
+
+# Add a directory for secrets
+RUN mkdir -p /run/secrets
+
+# Create volume mount point
+VOLUME /usr/share/nginx/html
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+  CMD wget -qO- http://localhost/health || exit 1
+
+EXPOSE 80
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["nginx", "-g", "daemon off;"] 

@@ -15,6 +15,11 @@ import { AUTH_ENDPOINTS } from "../config";
  */
 export const login = async (credentials) => {
   try {
+    console.log(
+      "Attempting login, will redirect to: " + (credentials.redirectUrl || "/")
+    );
+
+    // Use the same-origin for auth requests to avoid CORS
     const response = await apiClient.post(AUTH_ENDPOINTS.LOGIN, credentials);
 
     if (response.data.accessToken) {
@@ -24,7 +29,7 @@ export const login = async (credentials) => {
 
     return response.data;
   } catch (error) {
-    console.error("Login error:", error);
+    console.log("Login error:", error);
     throw error;
   }
 };

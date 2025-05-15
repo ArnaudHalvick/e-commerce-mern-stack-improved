@@ -8,9 +8,9 @@ export default defineConfig(({ mode }) => {
   // Load env file based on mode
   const env = loadEnv(mode, ".");
 
-  // Normalize the base path
-  let basePath = env.VITE_BASE_PATH || "/admin";
-  if (!basePath.endsWith("/")) {
+  // Normalize the base path - when using subdomain, base path should be '/'
+  let basePath = env.VITE_BASE_PATH || "/";
+  if (!basePath.endsWith("/") && basePath !== "/") {
     basePath += "/";
   }
 
