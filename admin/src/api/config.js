@@ -7,11 +7,24 @@
 const RUNTIME_CONFIG =
   typeof window !== "undefined" ? window.RUNTIME_CONFIG : null;
 
+// Log API configuration for debugging
+if (typeof window !== "undefined") {
+  console.log("Admin panel using API URL:", import.meta.env.VITE_API_URL);
+  console.log("Default protocol:", window.location.protocol);
+}
+
+// Determine if we're running in a Docker container (only for local development)
+const IS_LOCAL_DOCKER =
+  import.meta.env.DEV && import.meta.env.VITE_IS_DOCKER === "true";
+
 // Get API URL from runtime config, environment variables, or local default
 export const API_URL =
+  // Use runtime config first (for production)
   RUNTIME_CONFIG?.apiUrl ||
+  // Then environment variable
   import.meta.env.VITE_API_URL ||
-  "http://localhost:4000";
+  // Default fallback
+  "http://localhost:4001";
 
 // Get host location
 export const HOST_URL =
@@ -71,6 +84,16 @@ export const USER_ENDPOINTS = {
  * Used for assets like images
  */
 export const getBaseUrl = () => {
+  // In local Docker container dev environment, use the full VITE_API_URL for images
+  if (IS_LOCAL_DOCKER) {
+    return import.meta.env.VITE_API_URL;
+  }
+
+  // In browser, always use current origin
+  if (typeof window !== "undefined") {
+    return window.location.origin;
+  }
+
   // Remove any "/api" suffix
   let baseUrl = API_BASE_URL.replace(/\/api$/, "");
 

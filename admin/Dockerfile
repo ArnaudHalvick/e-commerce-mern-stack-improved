@@ -18,6 +18,8 @@ ARG VITE_BASE_PATH=/
 ENV VITE_ENV=${VITE_ENV}
 ENV VITE_API_URL=${VITE_API_URL}
 ENV VITE_BASE_PATH=${VITE_BASE_PATH}
+# Make sure IS_DOCKER is explicitly false for production builds
+ENV VITE_IS_DOCKER=false
 
 # Replace API URL with placeholder for runtime configuration
 RUN if [ -n "$VITE_API_URL" ]; then \

@@ -22,9 +22,8 @@ RUN chmod +x /docker-entrypoint.sh
 # Copy source code with proper ownership
 COPY --chown=node:node . .
 
-# Copy docker env file to local env
-RUN cp .env.docker .env.local && \
-    chown -R node:node /app
+# Ensure permissions are correct
+RUN chown -R node:node /app
 
 # Set environment variables
 ENV NODE_ENV=development \

@@ -4,7 +4,7 @@
  */
 
 import axios from "axios";
-import { API_BASE_URL, AUTH_ENDPOINTS, HOST_URL } from "./config";
+import { API_BASE_URL, AUTH_ENDPOINTS } from "./config";
 
 // Create axios instance with default config
 const apiClient = axios.create({
@@ -15,6 +15,34 @@ const apiClient = axios.create({
     "Content-Type": "application/json",
   },
 });
+
+// Check if we're in a Docker container using the environment variable
+// Only for local development
+const IS_LOCAL_DOCKER =
+  import.meta.env.DEV && import.meta.env.VITE_IS_DOCKER === "true";
+
+// Check if we're on the admin subdomain in production
+const IS_ADMIN_SUBDOMAIN =
+  typeof window !== "undefined" &&
+  window.location.hostname.includes("admin.") &&
+  !import.meta.env.DEV;
+
+// Always use same-origin in browser to avoid CORS issues
+// Except when explicitly in local Docker environment
+const USE_SAME_ORIGIN = typeof window !== "undefined" && !IS_LOCAL_DOCKER;
+
+// Log for debugging
+if (typeof window !== "undefined") {
+  console.log(`API client config - API_BASE_URL: ${API_BASE_URL}`);
+  console.log(`API client config - Using same origin: ${USE_SAME_ORIGIN}`);
+  console.log(`API client config - In local Docker: ${IS_LOCAL_DOCKER}`);
+  console.log(`API client config - Is admin subdomain: ${IS_ADMIN_SUBDOMAIN}`);
+  console.log(
+    `API client config - Environment: ${
+      import.meta.env.DEV ? "development" : "production"
+    }`
+  );
+}
 
 // Track active requests for cancellation
 let cancelTokenSource = axios.CancelToken.source();
@@ -53,8 +81,8 @@ apiClient.interceptors.request.use(
     if (config.url) {
       config.url = ensureApiPrefix(config.url);
 
-      // Always use same-origin for all API requests to avoid CORS issues
-      if (typeof window !== "undefined") {
+      // Use same-origin for API requests except in local Docker
+      if (USE_SAME_ORIGIN) {
         // Override the baseURL to use same origin for all requests
         config.baseURL = window.location.origin;
 
