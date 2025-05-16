@@ -3,9 +3,12 @@ import ListProductTable from "./ListProductTable";
 import { useProductList } from "../hooks/useProductList";
 import useProductFilters from "../hooks/useProductFilters";
 import useProductActions from "../hooks/useProductActions";
-import Button from "../../../components/ui/button/Button";
-import Input from "../../../components/ui/input/Input";
-import Select from "../../../components/ui/select/Select";
+import {
+  Button,
+  Input,
+  Select,
+  DeleteProductModal,
+} from "../../../components/ui";
 import { ProductEditModal } from "../../../components/productEditModal";
 import "../styles/ListProduct.css";
 
@@ -41,13 +44,21 @@ const ListProduct = () => {
 
   // Product actions (edit, delete, toggle availability) using our shared hook
   const {
+    // Edit modal
     isEditModalOpen,
     selectedProduct,
     handleEditClick,
     handleModalClose,
     handleSaveProduct,
     handleToggleAvailability,
-    handleDeleteProduct,
+
+    // Delete modal
+    isDeleteModalOpen,
+    productToDelete,
+    isDeleting,
+    handleOpenDeleteModal,
+    handleCloseDeleteModal,
+    handleConfirmDelete,
   } = useProductActions({
     fetchProducts,
   });
@@ -188,7 +199,7 @@ const ListProduct = () => {
           <ListProductTable
             products={filteredProducts}
             onEdit={handleEditClick}
-            onDelete={handleDeleteProduct}
+            onDelete={handleOpenDeleteModal}
             onToggleAvailability={handleToggleAvailability}
             sortOption={sortOption}
             sortDirection={sortDirection}
@@ -207,6 +218,15 @@ const ListProduct = () => {
           title={`Edit Product: ${selectedProduct.name}`}
         />
       )}
+
+      {/* Delete Product Modal */}
+      <DeleteProductModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+        productName={productToDelete?.name}
+        isProcessing={isDeleting}
+      />
     </div>
   );
 };

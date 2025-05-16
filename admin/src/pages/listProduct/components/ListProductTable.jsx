@@ -178,7 +178,7 @@ const ListProductTable = ({
                   <Button
                     size="small"
                     variant="danger"
-                    onClick={() => onDelete(product._id)}
+                    onClick={() => onDelete(product)}
                     aria-label="Delete product"
                     className="list-product-action-button"
                   >
@@ -297,7 +297,7 @@ const ListProductTable = ({
                   <Button
                     size="small"
                     variant="danger"
-                    onClick={() => onDelete(product._id)}
+                    onClick={() => onDelete(product)}
                     aria-label="Delete product"
                     className="list-product-action-button"
                   >

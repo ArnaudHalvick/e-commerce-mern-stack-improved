@@ -1,6 +1,7 @@
-import { useCallback } from "react";
+import { useState, useCallback } from "react";
 import { useProductManagement } from "../../../components/productEditModal";
 import { useToast } from "../../../components/errorHandling/toast/hooks/useToast";
+import productsService from "../../../api/services/products";
 
 /**
  * Custom hook for managing product actions (edit, delete, toggle availability)
@@ -9,6 +10,9 @@ import { useToast } from "../../../components/errorHandling/toast/hooks/useToast
  */
 const useProductActions = ({ fetchProducts }) => {
   const { showToast } = useToast();
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [productToDelete, setProductToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Ensure we have a valid product before editing
   const validateProduct = useCallback(
@@ -60,8 +64,56 @@ const useProductActions = ({ fetchProducts }) => {
         handleEditClick(productCopy);
       }
     },
-    [validateProduct]
+    [validateProduct, handleEditClick]
   );
+
+  // Open delete confirmation modal
+  const handleOpenDeleteModal = useCallback((product) => {
+    setProductToDelete(product);
+    setIsDeleteModalOpen(true);
+  }, []);
+
+  // Close delete confirmation modal
+  const handleCloseDeleteModal = useCallback(() => {
+    setIsDeleteModalOpen(false);
+    setProductToDelete(null);
+  }, []);
+
+  // Confirm product deletion
+  const handleConfirmDelete = useCallback(async () => {
+    if (!productToDelete || !productToDelete._id) {
+      showToast({
+        type: "error",
+        message: "Error: Cannot delete product (invalid product data)",
+      });
+      handleCloseDeleteModal();
+      return;
+    }
+
+    setIsDeleting(true);
+
+    try {
+      await productsService.deleteProduct(productToDelete._id);
+      showToast({
+        type: "success",
+        message: `Product "${productToDelete.name}" successfully deleted`,
+      });
+
+      // Refresh the product list
+      fetchProducts();
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      showToast({
+        type: "error",
+        message: `Failed to delete product: ${
+          error.message || "Unknown error"
+        }`,
+      });
+    } finally {
+      setIsDeleting(false);
+      handleCloseDeleteModal();
+    }
+  }, [productToDelete, showToast, handleCloseDeleteModal, fetchProducts]);
 
   // Use the shared product management hook for consistent product operations
   const {
@@ -70,7 +122,6 @@ const useProductActions = ({ fetchProducts }) => {
     handleEditProduct: handleEditClick,
     handleCloseModal: handleModalClose,
     handleSaveProduct,
-    handleDeleteProduct,
     handleToggleAvailability,
   } = useProductManagement({
     onProductUpdated: (updatedProduct) => {
@@ -89,8 +140,15 @@ const useProductActions = ({ fetchProducts }) => {
     handleEditClick: handleProductEdit, // Use our validated version
     handleModalClose,
     handleSaveProduct,
-    handleDeleteProduct,
     handleToggleAvailability,
+
+    // Delete-related properties and methods
+    isDeleteModalOpen,
+    productToDelete,
+    isDeleting,
+    handleOpenDeleteModal,
+    handleCloseDeleteModal,
+    handleConfirmDelete,
   };
 };
 

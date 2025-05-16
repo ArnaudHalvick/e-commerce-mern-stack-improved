@@ -6,5 +6,6 @@ import Card from "./card/Card";
 import Table from "./table/Table";
 import Badge from "./badge/Badge";
 import Modal from "./modal/Modal";
+import DeleteProductModal from "./modal/DeleteProductModal";
 
-export { Button, Input, Select, Card, Table, Badge, Modal };
+export { Button, Input, Select, Card, Table, Badge, Modal, DeleteProductModal };
