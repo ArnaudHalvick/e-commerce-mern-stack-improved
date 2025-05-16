@@ -11,6 +11,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [redirectTarget, setRedirectTarget] = useState("/");
 
   const { login, isAuthenticated, loading, error, clearErrors } =
@@ -48,6 +49,7 @@ const Login = () => {
 
     // Show error toast if login fails
     if (error) {
+      setErrorMessage(error);
       setShowError(true);
     }
   }, [isAuthenticated, error, navigate, location, redirectTarget]);
@@ -56,6 +58,8 @@ const Login = () => {
     e.preventDefault();
 
     if (!email || !password) {
+      setErrorMessage("Please enter both email and password");
+      setShowError(true);
       return;
     }
 
@@ -119,7 +123,7 @@ const Login = () => {
 
       {showError && (
         <Toast
-          message={error}
+          message={errorMessage || "Login failed. Please try again."}
           variant="error"
           isVisible={showError}
           onClose={handleCloseError}

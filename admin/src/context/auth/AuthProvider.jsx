@@ -75,9 +75,17 @@ const AuthProvider = ({ children }) => {
 
       return true;
     } catch (error) {
+      // Use the server's error message if available, which will now contain
+      // the generic "Invalid email or password" message for auth failures
+      // Fall back to a default message if no response from server
+      const errorMessage = error.message || "Invalid email or password";
+
+      // Log the error for debugging (can be removed in production)
+      console.error("Login error:", errorMessage);
+
       dispatch({
         type: LOGIN_FAIL,
-        payload: error.message || "Invalid email or password",
+        payload: errorMessage,
       });
 
       return false;

@@ -135,7 +135,26 @@ apiClient.interceptors.response.use(
 
     // Handle authentication errors
     if (error.response && error.response.status === 401) {
-      // Clear token if unauthorized
+      // Check if this is a login error, which should be handled differently
+      const isLoginAttempt =
+        error.config &&
+        (error.config.url.includes(AUTH_ENDPOINTS.LOGIN) ||
+          error.config.url.includes("/api/admin/auth/login"));
+
+      if (isLoginAttempt) {
+        // Get error message from server response, or use a generic error
+        const serverMessage = error.response.data?.message;
+        const errorMessage = serverMessage || "Invalid email or password";
+
+        return Promise.reject({
+          message: errorMessage,
+          status: 401,
+          originalError: error,
+          isLoginError: true,
+        });
+      }
+
+      // For other 401 errors (not during login), clear token and redirect
       localStorage.removeItem("admin-auth-token");
 
       // Redirect to login page if not already there

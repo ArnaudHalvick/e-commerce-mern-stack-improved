@@ -19,15 +19,21 @@ const loginAdmin = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return next(new AppError("Please provide email and password", 400));
+    return next(new AppError("Please provide both email and password", 400));
   }
 
   // Find user by email
   const normalizedEmail = normalizeEmail(email);
   const user = await User.findOne({ normalizedEmail }).select("+password");
 
+  // For security, use the same error message for all authentication failures
+  // This prevents revealing whether an email exists, is admin, or if password is incorrect
+  const genericErrorMessage = "Invalid email or password";
+
+  // If no user found, log and return generic error
   if (!user) {
-    return next(new AppError("Invalid email or password", 401));
+    logger.warn(`Admin login attempt with non-existent email: ${email}`);
+    return next(new AppError(genericErrorMessage, 401));
   }
 
   // Check if user is an admin
@@ -35,7 +41,7 @@ const loginAdmin = catchAsync(async (req, res, next) => {
     logger.warn(
       `Non-admin user attempted to login to admin panel: ${user._id}`
     );
-    return next(new AppError("Invalid email or password", 401));
+    return next(new AppError(genericErrorMessage, 401));
   }
 
   // Check if account is locked
@@ -64,6 +70,8 @@ const loginAdmin = catchAsync(async (req, res, next) => {
   if (!isPasswordValid) {
     // Handle failed login attempt
     const failedLoginResult = await handleFailedLogin(user);
+    // Replace the error message with our generic one
+    failedLoginResult.error.message = genericErrorMessage;
     return next(failedLoginResult.error);
   }
 
