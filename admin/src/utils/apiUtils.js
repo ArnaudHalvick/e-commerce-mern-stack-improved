@@ -9,9 +9,6 @@ const defaultProtocol = import.meta.env.VITE_DEFAULT_PROTOCOL || "https";
 export const API_BASE_URL =
   import.meta.env.VITE_API_URL || `${defaultProtocol}://localhost:4000/`;
 
-console.log(`Admin panel using API URL: ${API_BASE_URL}`);
-console.log(`Default protocol: ${defaultProtocol}`);
-
 /**
  * Gets the base URL without the /api suffix
  * @returns {string} The base URL for assets

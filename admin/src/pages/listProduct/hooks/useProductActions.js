@@ -23,12 +23,8 @@ const useProductActions = ({ fetchProducts }) => {
     handleSaveProduct,
     handleToggleAvailability,
   } = useProductManagement({
-    onProductUpdated: (updatedProduct) => {
+    onProductUpdated: () => {
       // Refresh the product list after any update
-      console.log(
-        "Product updated, refreshing list",
-        updatedProduct?.name || "unnamed"
-      );
       fetchProducts();
     },
   });
@@ -37,7 +33,6 @@ const useProductActions = ({ fetchProducts }) => {
   const validateProduct = useCallback(
     (product) => {
       if (!product) {
-        console.error("Cannot edit null product");
         showToast({
           type: "error",
           message: "Error: Cannot edit product (no product data)",
@@ -46,16 +41,11 @@ const useProductActions = ({ fetchProducts }) => {
       }
 
       if (!product._id) {
-        console.error("Product missing ID:", product);
         showToast({
           type: "error",
           message: "Error: Cannot edit product (missing ID)",
         });
         return false;
-      }
-
-      if (!product.name) {
-        console.warn("Product missing name:", product._id);
       }
 
       return true;
@@ -66,8 +56,6 @@ const useProductActions = ({ fetchProducts }) => {
   // Custom edit handler to validate product first
   const handleProductEdit = useCallback(
     (product) => {
-      console.log("Edit requested for product:", product?._id);
-
       if (validateProduct(product)) {
         // Make a deep copy of the product to avoid reference issues
         const productCopy = JSON.parse(JSON.stringify(product));
@@ -76,8 +64,6 @@ const useProductActions = ({ fetchProducts }) => {
         if (!productCopy._id && product._id) {
           productCopy._id = product._id;
         }
-
-        console.log("Validated product for editing:", productCopy);
 
         // Now call the actual edit function
         handleEditClick(productCopy);
@@ -121,7 +107,6 @@ const useProductActions = ({ fetchProducts }) => {
       // Refresh the product list
       fetchProducts();
     } catch (error) {
-      console.error("Error deleting product:", error);
       showToast({
         type: "error",
         message: `Failed to delete product: ${

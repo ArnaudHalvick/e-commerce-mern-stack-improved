@@ -88,8 +88,8 @@ const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       await authService.logout();
-    } catch (error) {
-      console.error("Error during logout:", error);
+    } catch {
+      // Error during logout, but we'll continue with the local logout process
     }
 
     // Dispatch logout action to clear auth state
@@ -97,9 +97,6 @@ const AuthProvider = ({ children }) => {
 
     // Construct the login page URL
     const loginPath = "/login";
-
-    // Log the action
-    console.log(`Logging out, redirecting to: ${loginPath}`);
 
     // Use replace instead of href to avoid adding to history
     // This helps prevent redirect loops

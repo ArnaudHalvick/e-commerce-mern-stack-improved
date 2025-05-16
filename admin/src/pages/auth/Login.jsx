@@ -26,7 +26,6 @@ const Login = () => {
 
     if (matches.length > 1) {
       // More than one /login in the URL - fix it by setting the correct path
-      console.log("Detected duplicate login segments in URL, fixing...");
       const fixedPath = "/login";
 
       // Use replaceState to update the URL without triggering a navigation
@@ -42,12 +41,8 @@ const Login = () => {
       setRedirectTarget(from);
     }
 
-    // Log current pathname for debugging
-    console.log("Login component at path:", location.pathname);
-
     // If already authenticated, navigate to the dashboard within admin
     if (isAuthenticated) {
-      console.log("User is authenticated, redirecting to:", redirectTarget);
       navigate(redirectTarget);
     }
 
@@ -64,7 +59,6 @@ const Login = () => {
       return;
     }
 
-    console.log("Attempting login, will redirect to:", redirectTarget);
     const success = await login({ email, password });
 
     if (success) {
