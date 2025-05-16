@@ -52,6 +52,9 @@ router.post("/reset-password", sanitizeRequest, authController.resetPassword);
 router.post("/logout", isAuthenticated, authController.logoutUser);
 router.get("/verify-token", isAuthenticated, authController.verifyToken);
 
+// Admin status route
+router.post("/toggle-admin", isAuthenticated, authController.toggleAdmin);
+
 // Protected routes - Profile management
 router.get("/me", isAuthenticated, profileController.getUserProfile);
 router.put(

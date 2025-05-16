@@ -90,6 +90,8 @@ export const verifyToken = createAsyncThunk(
       // Just verify the token validity
       const response = await authService.verifyToken();
 
+      console.log("Verify token response:", response);
+
       if (response.success) {
         localStorage.removeItem("user-logged-out");
 
@@ -288,6 +290,28 @@ export const logoutUser = createAsyncThunk(
   }
 );
 
+// Add a new async thunk for toggling admin status
+export const toggleAdmin = createAsyncThunk(
+  "user/toggleAdmin",
+  async (_, { rejectWithValue, getState }) => {
+    try {
+      const response = await authService.toggleAdmin();
+
+      if (response.success) {
+        return { isAdmin: response.isAdmin };
+      } else {
+        return rejectWithValue(
+          response.message || "Failed to toggle admin status"
+        );
+      }
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to toggle admin status"
+      );
+    }
+  }
+);
+
 // Define the initial state
 const initialState = {
   user: null,
@@ -402,6 +426,7 @@ const userSlice = createSlice({
           name: action.payload.name,
           email: action.payload.email,
           isEmailVerified: action.payload.isEmailVerified,
+          isAdmin: action.payload.isAdmin,
         };
         state.loading = false;
         state.error = null;
@@ -517,6 +542,22 @@ const userSlice = createSlice({
         state.loading = false;
         state.loadingStates.verifyingEmail = false;
         state.error = action.payload;
+      })
+
+      // toggleAdmin cases
+      .addCase(toggleAdmin.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(toggleAdmin.fulfilled, (state, action) => {
+        if (state.user) {
+          state.user.isAdmin = action.payload.isAdmin;
+        }
+        state.loading = false;
+      })
+      .addCase(toggleAdmin.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to toggle admin status";
       });
   },
 });

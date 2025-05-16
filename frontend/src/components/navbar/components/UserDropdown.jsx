@@ -9,9 +9,16 @@ import { InlineSpinner } from "../../../components/ui/spinner";
  * @param {Function} props.onClose - Function to close the dropdown
  * @param {Function} props.handleLogout - Function to handle logout
  * @param {boolean} props.inTransition - Whether the app is in a transition state
+ * @param {boolean} props.isAdmin - Whether the user is an admin
  * @returns {JSX.Element|null} UserDropdown component or null if not open
  */
-const UserDropdown = ({ isOpen, onClose, handleLogout, inTransition }) => {
+const UserDropdown = ({
+  isOpen,
+  onClose,
+  handleLogout,
+  inTransition,
+  isAdmin,
+}) => {
   if (!isOpen) return null;
 
   return (
@@ -28,6 +35,9 @@ const UserDropdown = ({ isOpen, onClose, handleLogout, inTransition }) => {
       </Link>
       <Link to="/cart" className="navbar-dropdown-link" onClick={onClose}>
         My Cart
+      </Link>
+      <Link to="/admin" className="navbar-dropdown-link" onClick={onClose}>
+        Admin
       </Link>
       <button
         className="navbar-dropdown-button"

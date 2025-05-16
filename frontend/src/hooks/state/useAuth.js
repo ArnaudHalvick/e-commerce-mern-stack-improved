@@ -138,6 +138,7 @@ const useAuth = () => {
     return {
       ...userData,
       username: userData.name || userData.username,
+      isAdmin: userData.isAdmin === true, // Explicitly convert to boolean
     };
   };
 
@@ -610,6 +611,32 @@ const useAuth = () => {
     return dispatch(updateUserProfile(userData));
   };
 
+  /**
+   * Update user data in state
+   * @param {Object} userData - User data to update
+   */
+  const updateUser = useCallback(
+    (userData) => {
+      if (!userData) return;
+
+      // Create a merged user object, ensuring isAdmin property is correctly handled as boolean
+      const updatedUser = {
+        ...userState.user,
+        ...userData,
+        isAdmin:
+          userData.isAdmin === true || userData.isAdmin === false
+            ? userData.isAdmin // Use the explicit boolean if provided
+            : userState.user?.isAdmin || false, // Fallback to current value or false
+      };
+
+      dispatch(setUser(updatedUser));
+
+      // Cache the updated user data
+      cacheUserData(updatedUser);
+    },
+    [dispatch, userState.user, cacheUserData]
+  );
+
   return {
     // User state
     user: userState.user,
@@ -638,6 +665,7 @@ const useAuth = () => {
     // User profile methods
     fetchUserProfile,
     updateProfile,
+    updateUser,
     changePassword: (passwordData) => dispatch(changePassword(passwordData)),
     disableAccount: (password) => dispatch(disableAccount(password)),
 

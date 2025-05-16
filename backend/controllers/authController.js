@@ -442,7 +442,37 @@ const verifyToken = catchAsync(async (req, res, next) => {
       name: req.user.name,
       email: req.user.email,
       isEmailVerified: req.user.isEmailVerified,
+      isAdmin: req.user.isAdmin === true,
     },
+  });
+});
+
+/**
+ * Toggle admin status for user
+ */
+const toggleAdmin = catchAsync(async (req, res, next) => {
+  // User is already authenticated in the middleware
+  const userId = req.user._id;
+
+  // Find the user
+  const user = await User.findById(userId);
+
+  if (!user) {
+    return next(new AppError("User not found", 404));
+  }
+
+  // Toggle admin status
+  user.isAdmin = !user.isAdmin;
+  await user.save({ validateBeforeSave: false });
+
+  logger.info(
+    `Admin status toggled for user ${user.email}. New status: ${user.isAdmin}`
+  );
+
+  res.status(200).json({
+    success: true,
+    isAdmin: user.isAdmin,
+    message: user.isAdmin ? "You are now an admin" : "Admin status removed",
   });
 });
 
@@ -456,4 +486,5 @@ module.exports = {
   requestVerification,
   verifyEmail,
   verifyToken,
+  toggleAdmin,
 };

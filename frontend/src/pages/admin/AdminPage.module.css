@@ -1,0 +1,113 @@
+.adminPage {
+  display: flex;
+  flex-direction: column;
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: var(--color-background-light);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.adminPage h1 {
+  color: var(--color-text-primary);
+  margin-bottom: 24px;
+  border-bottom: 2px solid var(--color-primary);
+  padding-bottom: 12px;
+}
+
+.adminInfo {
+  background-color: var(--color-background);
+  padding: 24px;
+  border-radius: var(--border-radius-md);
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.adminInfo p {
+  font-size: var(--font-size-lg);
+  margin-bottom: 20px;
+}
+
+.toggleButton {
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: background-color var(--transition-duration-fast)
+    var(--transition-timing-ease);
+}
+
+.toggleButton:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.toggleButton:disabled {
+  background-color: var(--color-text-light);
+  cursor: not-allowed;
+}
+
+.message {
+  margin-top: 16px;
+  padding: 12px;
+  border-radius: var(--border-radius-md);
+  font-weight: var(--font-weight-medium);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.adminPanel {
+  background-color: var(--color-background);
+  padding: 24px;
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.adminPanel h2 {
+  color: var(--color-text-primary);
+  margin-bottom: 16px;
+}
+
+.adminLink {
+  display: inline-block;
+  margin-top: 12px;
+  color: var(--color-secondary);
+  font-weight: var(--font-weight-semibold);
+  text-decoration: underline;
+  transition: color var(--transition-duration-fast)
+    var(--transition-timing-ease);
+}
+
+.adminLink:hover {
+  color: var(--color-secondary-hover);
+}
+
+@media screen and (max-width: 767.98px) {
+  .adminPage {
+    margin: 20px 16px;
+    padding: 16px;
+  }
+
+  .adminInfo,
+  .adminPanel {
+    padding: 16px;
+  }
+
+  .toggleButton {
+    width: 100%;
+  }
+}

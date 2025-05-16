@@ -26,6 +26,7 @@ import NotFound from "./pages/notFound";
 import ErrorDemoPage from "./pages/errorDemo/errorDemo";
 import { VerifyEmail, VerifyPending } from "./pages/verification";
 import Profile from "./pages/profile/index.jsx";
+import AdminPage from "./pages/admin";
 
 // Assets
 import men_banner from "./components/assets/banner_mens.png";
@@ -154,6 +155,9 @@ function App() {
 
           {/* Cart - Public */}
           <Route path="/cart" element={<Cart />} />
+
+          {/* Admin Page - Accessible to all users */}
+          <Route path="/admin" element={<AdminPage />} />
 
           {/* Auth Routes - Only when NOT authenticated */}
           <Route

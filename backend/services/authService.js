@@ -49,6 +49,7 @@ const sendTokens = (user, statusCode, res, additionalData = {}) => {
       name: user.name,
       email: user.email,
       isEmailVerified: user.isEmailVerified,
+      isAdmin: user.isAdmin === true,
     },
     accessToken,
     ...additionalData,

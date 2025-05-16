@@ -1,6 +1,7 @@
 import React from "react";
 import UserDropdown from "./UserDropdown";
 import user_icon from "../../assets/user_icon.png";
+import { useAuth } from "../../../hooks/state";
 
 /**
  * AuthenticatedUser Component
@@ -20,27 +21,33 @@ const AuthenticatedUser = ({
   userMenuRef,
   handleLogout,
   inTransition,
-}) => (
-  <div className="navbar-user-account" ref={userMenuRef}>
-    <div
-      className="navbar-user-trigger"
-      onClick={toggleUserMenu}
-      tabIndex={0}
-      aria-label="Open user menu"
-      aria-expanded={isUserMenuOpen}
-      role="button"
-      onKeyDown={(e) => e.key === "Enter" && toggleUserMenu()}
-    >
-      <span className="navbar-welcome-user">{displayName}</span>
-      <img src={user_icon} alt="User" className="navbar-user-icon" />
+}) => {
+  const { user } = useAuth();
+  const isAdmin = user?.isAdmin;
+
+  return (
+    <div className="navbar-user-account" ref={userMenuRef}>
+      <div
+        className="navbar-user-trigger"
+        onClick={toggleUserMenu}
+        tabIndex={0}
+        aria-label="Open user menu"
+        aria-expanded={isUserMenuOpen}
+        role="button"
+        onKeyDown={(e) => e.key === "Enter" && toggleUserMenu()}
+      >
+        <span className="navbar-welcome-user">{displayName}</span>
+        <img src={user_icon} alt="User" className="navbar-user-icon" />
+      </div>
+      <UserDropdown
+        isOpen={isUserMenuOpen}
+        onClose={() => toggleUserMenu(false)}
+        handleLogout={handleLogout}
+        inTransition={inTransition}
+        isAdmin={isAdmin}
+      />
     </div>
-    <UserDropdown
-      isOpen={isUserMenuOpen}
-      onClose={() => toggleUserMenu(false)}
-      handleLogout={handleLogout}
-      inTransition={inTransition}
-    />
-  </div>
-);
+  );
+};
 
 export default AuthenticatedUser;

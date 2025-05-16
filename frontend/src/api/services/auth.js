@@ -56,8 +56,10 @@ export const register = async (userData) => {
 export const getCurrentUser = async () => {
   try {
     const response = await apiClient.get("/api/users/me");
+    console.log("Current user response:", response.data); // Log for debugging
     return response.data;
   } catch (error) {
+    console.error("Error fetching user profile:", error);
     throw error;
   }
 };
@@ -215,6 +217,19 @@ export const disableAccount = async (data) => {
   }
 };
 
+/**
+ * Toggle admin status for current user
+ * @returns {Promise} Promise with toggle admin response
+ */
+export const toggleAdmin = async () => {
+  try {
+    const response = await apiClient.post("/api/users/toggle-admin");
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 // Export all functions as auth service
 const authService = {
   getAuthHeaders,
@@ -231,6 +246,7 @@ const authService = {
   logout,
   verifyToken,
   disableAccount,
+  toggleAdmin,
 };
 
 export default authService;

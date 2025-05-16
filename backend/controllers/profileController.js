@@ -1,13 +1,11 @@
 // backend/controllers/profileController.js
 
+const User = require("../models/User");
 const catchAsync = require("../utils/common/catchAsync");
 const AppError = require("../utils/errors/AppError");
 const logger = require("../utils/common/logger");
-const {
-  sendTokens,
-  sendVerificationEmail,
-  sendPasswordChangeNotification,
-} = require("../services/authService");
+const { normalizeEmail } = require("../utils/emails/emailNormalizer");
+const { sendPasswordChangeNotification } = require("../services/authService");
 const {
   getUserById,
   updateUserProfile,
@@ -19,15 +17,23 @@ const {
  * Get user profile
  */
 const getUserProfile = catchAsync(async (req, res, next) => {
-  const result = await getUserById(req.user.id);
+  const user = await User.findById(req.user._id);
 
-  if (!result.success) {
-    return next(result.error);
+  if (!user) {
+    return next(new AppError("User not found", 404));
   }
 
   res.status(200).json({
     success: true,
-    user: result.user,
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      phone: user.phone || "",
+      address: user.address || {},
+      isEmailVerified: user.isEmailVerified,
+      isAdmin: user.isAdmin === true, // Explicitly convert to boolean
+    },
   });
 });
 
@@ -35,34 +41,34 @@ const getUserProfile = catchAsync(async (req, res, next) => {
  * Update user profile
  */
 const updateProfile = catchAsync(async (req, res, next) => {
-  const { name, phone, address, profileImage } = req.body;
+  const { name, phone, address } = req.body;
 
-  // Log the incoming profile update request for debugging
-  logger.info(`Profile update request for user ${req.user.id}`, {
-    hasName: !!name,
-    hasPhone: phone !== undefined,
-    hasAddress: !!address,
-    addressFields: address ? Object.keys(address) : [],
+  const updateData = {};
+
+  if (name) updateData.name = name;
+  if (phone !== undefined) updateData.phone = phone;
+  if (address) updateData.address = address;
+
+  const user = await User.findByIdAndUpdate(req.user._id, updateData, {
+    new: true,
+    runValidators: true,
   });
 
-  const result = await updateUserProfile(req.user.id, {
-    name,
-    phone,
-    address,
-    profileImage,
-  });
-
-  if (!result.success) {
-    return next(result.error);
+  if (!user) {
+    return next(new AppError("User not found", 404));
   }
-
-  // Log the successful update
-  logger.info(`Profile updated successfully for user ${req.user.id}`);
 
   res.status(200).json({
     success: true,
-    user: result.user,
-    message: "Profile updated successfully",
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      phone: user.phone || "",
+      address: user.address || {},
+      isEmailVerified: user.isEmailVerified,
+      isAdmin: user.isAdmin === true, // Explicitly convert to boolean
+    },
   });
 });
 
@@ -70,29 +76,58 @@ const updateProfile = catchAsync(async (req, res, next) => {
  * Change password
  */
 const changePassword = catchAsync(async (req, res, next) => {
-  const { currentPassword, newPassword } = req.body;
+  const { currentPassword, newPassword, newPasswordConfirm } = req.body;
 
-  const result = await changeUserPassword(req.user.id, {
-    currentPassword,
-    newPassword,
-  });
-
-  if (!result.success) {
-    return next(result.error);
-  }
-
-  // Send password change notification
-  const notificationResult = await sendPasswordChangeNotification(result.user);
-
-  if (!notificationResult.success) {
-    // Log the error but don't block the password change process
-    logger.info(
-      `Failed to send password change notification: ${notificationResult.error.message}`
+  // Check if all required fields are provided
+  if (!currentPassword || !newPassword || !newPasswordConfirm) {
+    return next(
+      new AppError("Current password and new password are required", 400)
     );
   }
 
-  // Generate new tokens
-  sendTokens(result.user, 200, res, {
+  // Check if new password matches confirmation
+  if (newPassword !== newPasswordConfirm) {
+    return next(new AppError("New passwords do not match", 400));
+  }
+
+  // Find user with password
+  const user = await User.findById(req.user._id).select("+password");
+
+  if (!user) {
+    return next(new AppError("User not found", 404));
+  }
+
+  // Check if current password is correct
+  const isPasswordCorrect = await user.comparePassword(currentPassword);
+  if (!isPasswordCorrect) {
+    return next(new AppError("Current password is incorrect", 401));
+  }
+
+  // Check if new password is the same as the current one
+  const isSamePassword = await user.comparePassword(newPassword);
+  if (isSamePassword) {
+    return next(
+      new AppError("New password must be different from current password", 400)
+    );
+  }
+
+  // Set new password and save
+  user.password = newPassword;
+  await user.save();
+
+  // Send password change notification email
+  try {
+    await sendPasswordChangeNotification(user);
+  } catch (err) {
+    // Log error but don't block password change
+    logger.error("Failed to send password change notification", {
+      userId: user._id,
+      error: err.message,
+    });
+  }
+
+  res.status(200).json({
+    success: true,
     message: "Password changed successfully",
   });
 });
@@ -103,18 +138,33 @@ const changePassword = catchAsync(async (req, res, next) => {
 const disableAccount = catchAsync(async (req, res, next) => {
   const { password } = req.body;
 
-  const result = await disableUserAccount(req.user.id, { password });
-
-  if (!result.success) {
-    return next(result.error);
+  if (!password) {
+    return next(new AppError("Password is required", 400));
   }
 
-  // Clear cookies
+  // Find user with password
+  const user = await User.findById(req.user._id).select("+password");
+
+  if (!user) {
+    return next(new AppError("User not found", 404));
+  }
+
+  // Check if password is correct
+  const isPasswordCorrect = await user.comparePassword(password);
+  if (!isPasswordCorrect) {
+    return next(new AppError("Password is incorrect", 401));
+  }
+
+  // Disable account
+  user.disabled = true;
+  await user.save({ validateBeforeSave: false });
+
+  // Clear refresh token cookie
   res.clearCookie("refreshToken");
 
   res.status(200).json({
     success: true,
-    message: "Your account has been disabled",
+    message: "Account disabled successfully",
   });
 });
 
