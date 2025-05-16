@@ -24,7 +24,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "dev": "cp .env.dev .env.local && HOST=localhost WDS_SOCKET_PORT=0 CHOKIDAR_USEPOLLING=true DANGEROUSLY_DISABLE_HOST_CHECK=true REACT_APP_ENV=development react-scripts start",
+    "dev": "HOST=localhost WDS_SOCKET_PORT=0 CHOKIDAR_USEPOLLING=true DANGEROUSLY_DISABLE_HOST_CHECK=true REACT_APP_ENV=development react-scripts start",
     "dev:docker": "HOST=0.0.0.0 WDS_SOCKET_PORT=0 CHOKIDAR_USEPOLLING=true DANGEROUSLY_DISABLE_HOST_CHECK=true REACT_APP_ENV=development react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

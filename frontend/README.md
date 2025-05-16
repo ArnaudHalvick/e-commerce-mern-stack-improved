@@ -158,6 +158,29 @@ The frontend is configured for deployment with Docker:
 docker-compose up -d
 ```
 
+## Environment Configuration
+
+The frontend uses a simplified environment configuration:
+
+1. **`.env`** - Contains production configuration defaults
+
+   - Used for production builds
+   - Contains placeholders for sensitive information (e.g., Stripe keys)
+
+2. **`.env.local`** - Contains local development overrides
+   - Created automatically by development scripts
+   - Not committed to version control
+   - Takes precedence over `.env` when running locally
+
+### Docker Development
+
+When running in Docker, environment variables are injected directly through:
+
+- Docker Compose environment settings
+- The entrypoint script loads secrets (like Stripe keys)
+
+This approach simplifies configuration management while maintaining flexibility across environments.
+
 ---
 
 ## Portfolio Project Information

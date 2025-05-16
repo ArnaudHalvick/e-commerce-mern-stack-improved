@@ -22,8 +22,16 @@ RUN chmod +x /docker-entrypoint.sh
 # Copy source code with proper ownership
 COPY --chown=node:node . .
 
-# Copy docker env file to local env
-RUN cp .env.docker .env.local && \
+# Create development .env.local file with Docker-specific settings
+RUN echo "# Docker Development Environment\n\
+REACT_APP_API_URL=http://localhost:4001\n\
+REACT_APP_ENV=development\n\
+REACT_APP_DEFAULT_PROTOCOL=http\n\
+REACT_APP_USE_HTTPS=false\n\
+HOST=0.0.0.0\n\
+WDS_SOCKET_PORT=0\n\
+CHOKIDAR_USEPOLLING=true\n\
+DANGEROUSLY_DISABLE_HOST_CHECK=true" > .env.local && \
     chown -R node:node /app
 
 # Set environment variables
@@ -42,4 +50,4 @@ EXPOSE 3000
 
 # Start development server
 ENTRYPOINT ["/docker-entrypoint.sh"]
-CMD ["npm", "run", "dev:docker"] 
+CMD ["npm", "run", "dev:docker"]
