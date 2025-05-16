@@ -2,8 +2,8 @@
 
 // Load environment variables from the appropriate .env file
 if (process.env.NODE_ENV === "development") {
-  console.log("Loading development environment variables from .env.dev");
-  require("dotenv").config({ path: "./.env.dev" });
+  console.log("Loading development environment variables from .env.local");
+  require("dotenv").config({ path: "./.env.local" });
 } else {
   console.log("Loading production environment variables from .env");
   require("dotenv").config();
@@ -325,27 +325,37 @@ let server;
 // Check if HTTPS is enabled
 if (process.env.USE_HTTPS === "true") {
   try {
-    // Read SSL certificate files
-    const privateKey = fs.readFileSync(process.env.SSL_KEY_PATH, "utf8");
-    const certificate = fs.readFileSync(process.env.SSL_CERT_PATH, "utf8");
-    const credentials = { key: privateKey, cert: certificate };
+    // Check if SSL certificate files exist
+    const sslKeyPath = process.env.SSL_KEY_PATH;
+    const sslCertPath = process.env.SSL_CERT_PATH;
 
-    // Create HTTPS server
-    server = https.createServer(credentials, app);
+    if (fs.existsSync(sslKeyPath) && fs.existsSync(sslCertPath)) {
+      // Read SSL certificate files
+      const privateKey = fs.readFileSync(sslKeyPath, "utf8");
+      const certificate = fs.readFileSync(sslCertPath, "utf8");
+      const credentials = { key: privateKey, cert: certificate };
 
-    // Start HTTPS server
-    server.listen(httpsPort, () => {
-      logger.info(
-        `HTTPS Server running on port ${httpsPort} in ${process.env.NODE_ENV} mode`
+      // Create HTTPS server
+      server = https.createServer(credentials, app);
+
+      // Start HTTPS server
+      server.listen(httpsPort, () => {
+        logger.info(
+          `HTTPS Server running on port ${httpsPort} in ${process.env.NODE_ENV} mode`
+        );
+      });
+
+      // Also start HTTP server for redirection if needed
+      app.listen(port, () => {
+        logger.info(
+          `HTTP Server running on port ${port} in ${process.env.NODE_ENV} mode (consider redirecting to HTTPS)`
+        );
+      });
+    } else {
+      throw new Error(
+        `SSL certificate files not found at paths: ${sslKeyPath}, ${sslCertPath}`
       );
-    });
-
-    // Also start HTTP server for redirection if needed
-    app.listen(port, () => {
-      logger.info(
-        `HTTP Server running on port ${port} in ${process.env.NODE_ENV} mode (consider redirecting to HTTPS)`
-      );
-    });
+    }
   } catch (error) {
     logger.error(`Failed to start HTTPS server: ${error.message}`);
     logger.info("Falling back to HTTP server");
