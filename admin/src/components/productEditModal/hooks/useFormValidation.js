@@ -6,8 +6,7 @@ const useFormValidation = (
   validateForm,
   prepareFormDataForSubmission,
   onSave,
-  resetImageUpload,
-  isNewProduct
+  resetImageUpload
 ) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { showErrorToast, showSuccessToast } = useToast();
@@ -79,7 +78,6 @@ const useFormValidation = (
       prepareFormDataForSubmission,
       onSave,
       resetImageUpload,
-      isNewProduct,
       showSuccessToast,
       showErrorToast,
     ]
