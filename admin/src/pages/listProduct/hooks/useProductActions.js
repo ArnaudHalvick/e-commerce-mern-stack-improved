@@ -14,6 +14,25 @@ const useProductActions = ({ fetchProducts }) => {
   const [productToDelete, setProductToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
+  // Use the shared product management hook for consistent product operations
+  const {
+    isModalOpen: isEditModalOpen,
+    selectedProduct,
+    handleEditProduct: handleEditClick,
+    handleCloseModal: handleModalClose,
+    handleSaveProduct,
+    handleToggleAvailability,
+  } = useProductManagement({
+    onProductUpdated: (updatedProduct) => {
+      // Refresh the product list after any update
+      console.log(
+        "Product updated, refreshing list",
+        updatedProduct?.name || "unnamed"
+      );
+      fetchProducts();
+    },
+  });
+
   // Ensure we have a valid product before editing
   const validateProduct = useCallback(
     (product) => {
@@ -114,25 +133,6 @@ const useProductActions = ({ fetchProducts }) => {
       handleCloseDeleteModal();
     }
   }, [productToDelete, showToast, handleCloseDeleteModal, fetchProducts]);
-
-  // Use the shared product management hook for consistent product operations
-  const {
-    isModalOpen: isEditModalOpen,
-    selectedProduct,
-    handleEditProduct: handleEditClick,
-    handleCloseModal: handleModalClose,
-    handleSaveProduct,
-    handleToggleAvailability,
-  } = useProductManagement({
-    onProductUpdated: (updatedProduct) => {
-      // Refresh the product list after any update
-      console.log(
-        "Product updated, refreshing list",
-        updatedProduct?.name || "unnamed"
-      );
-      fetchProducts();
-    },
-  });
 
   return {
     isEditModalOpen,
