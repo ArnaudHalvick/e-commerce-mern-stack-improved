@@ -9,11 +9,9 @@ import { BrowserRouter } from "react-router-dom";
 let basePath;
 if (window.RUNTIME_CONFIG && window.RUNTIME_CONFIG.basePath) {
   basePath = window.RUNTIME_CONFIG.basePath;
-  console.log("Using basePath from runtime config:", basePath);
 } else {
   basePath =
     import.meta.env.VITE_BASE_PATH || import.meta.env.BASE_URL || "/admin";
-  console.log("Using basePath from environment:", basePath);
 }
 
 // Trim trailing slash for consistency with react-router-dom
@@ -26,12 +24,6 @@ const normalizedBasePath = basePath.endsWith("/")
 // This prevents issues with empty basenames in React Router
 const routerBasename =
   normalizedBasePath && normalizedBasePath !== "/" ? normalizedBasePath : "";
-
-console.log("Admin app starting with:");
-console.log("- normalized basename:", normalizedBasePath);
-console.log("- router basename:", routerBasename);
-console.log("- BASE_URL:", import.meta.env.BASE_URL);
-console.log("- VITE_BASE_PATH:", import.meta.env.VITE_BASE_PATH);
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>

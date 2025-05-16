@@ -27,7 +27,6 @@ const useProductForm = (product) => {
   useEffect(() => {
     // If product is null or undefined, we're creating a new product
     if (!product || Object.keys(product).length === 0) {
-      console.log("Resetting form to default template");
       // Create fresh copies to ensure no references are kept
       const defaultTemplate = JSON.parse(
         JSON.stringify(DEFAULT_PRODUCT_TEMPLATE)
@@ -54,7 +53,6 @@ const useProductForm = (product) => {
       mainImageIndex: product.mainImageIndex || 0,
     };
 
-    console.log("Setting form data from product:", productData.name);
     setFormData(productData);
     setOriginalFormData(JSON.parse(JSON.stringify(productData)));
     setHasDiscount(hasDiscountValue);
@@ -71,10 +69,9 @@ const useProductForm = (product) => {
     }
   }, [formData, originalFormData]);
 
-  // Debug and fix any lost ID
+  // Fix any lost ID
   useEffect(() => {
     if (!isNewProduct && product?._id && !formData._id) {
-      console.log("Detected ID missing from form data, restoring...");
       setFormData((prev) => ({
         ...prev,
         _id: product._id,
@@ -124,28 +121,8 @@ const useProductForm = (product) => {
       }
     }
 
-    // Log validation results
-    const hasErrors = Object.keys(newErrors).length > 0;
-    if (hasErrors) {
-      console.log("Form validation failed:", {
-        errors: newErrors,
-        formData: {
-          name: formData.name,
-          shortDescription: formData.shortDescription,
-          longDescription: formData.longDescription,
-          category: formData.category,
-          old_price: formData.old_price,
-          hasCategory: !!formData.category,
-          imagesCount: formData.images?.length || 0,
-          sizesCount: formData.sizes?.length || 0,
-          tagsCount: formData.tags?.length || 0,
-          typesCount: formData.types?.length || 0,
-        },
-      });
-    }
-
     setErrors(newErrors);
-    return !hasErrors;
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleChange = (e) => {
@@ -217,7 +194,6 @@ const useProductForm = (product) => {
 
   // Reset form function that can be called explicitly
   const resetForm = () => {
-    console.log("Explicitly resetting form to default template");
     const defaultTemplate = JSON.parse(
       JSON.stringify(DEFAULT_PRODUCT_TEMPLATE)
     );
@@ -240,29 +216,17 @@ const useProductForm = (product) => {
     if (product && product._id) {
       // This ensures we're getting the ID directly from the original product
       preparedData._id = product._id;
-      console.log("Preserving original product ID for update:", product._id);
     } else if (formData._id) {
       // Fallback to formData._id if somehow product._id is missing
-      console.log("Using formData ID as fallback:", formData._id);
     } else if (isNewProduct) {
       // We're explicitly creating a new product, make sure there's no ID
       delete preparedData._id;
-      console.log("Creating new product, removing _id if exists");
-    } else {
-      console.warn("Warning: Editing product but no ID found!");
     }
 
     // Ensure name is properly set
     if (!preparedData.name && product && product.name) {
       preparedData.name = product.name;
-      console.log("Restored missing name from original product");
     }
-
-    console.log("Final prepared data:", {
-      id: preparedData._id || "none",
-      isNewProduct,
-      name: preparedData.name || "unnamed",
-    });
 
     return preparedData;
   };

@@ -10,16 +10,6 @@ import ProtectedRoute from "./components/authGuard/ProtectedRoute";
 import AuthProvider from "./context/auth/AuthProvider";
 import { ErrorState } from "./context/index.jsx";
 
-// Log configuration for debugging
-console.log("=== Admin App Configuration ===");
-console.log("Base URL:", import.meta.env.BASE_URL);
-console.log("VITE_BASE_PATH:", import.meta.env.VITE_BASE_PATH);
-
-// Check for runtime config
-if (window.RUNTIME_CONFIG) {
-  console.log("Runtime config found:", window.RUNTIME_CONFIG);
-}
-
 const AdminLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 992);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 992);

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useCallback, useState } from "react";
+import React, { useRef, useCallback, useState } from "react";
 import Modal from "../../ui/modal/Modal";
 import Button from "../../ui/button/Button";
 import BasicInfoFields from "./BasicInfoFields";
@@ -15,18 +15,6 @@ import "../styles/common.css";
 const ProductEditModal = ({ isOpen, onClose, product, onSave, title }) => {
   // Reference to the form element
   const formRef = useRef(null);
-
-  // Debug logging for product
-  useEffect(() => {
-    if (isOpen) {
-      console.log("ProductEditModal opened with product:", {
-        hasProduct: !!product,
-        productId: product?._id || "none",
-        isNewProduct: !product || !product._id,
-        productData: product,
-      });
-    }
-  }, [isOpen, product]);
 
   // Product form state and handlers
   const {
@@ -46,44 +34,6 @@ const ProductEditModal = ({ isOpen, onClose, product, onSave, title }) => {
     resetForm,
   } = useProductForm(product);
 
-  // Debug logging for formData - MOVED HERE AFTER formData IS INITIALIZED
-  useEffect(() => {
-    if (isOpen && formData) {
-      // Log initial form values for debugging
-      console.log("Initial form data:", {
-        name: formData.name,
-        shortDescription: formData.shortDescription,
-        category: formData.category,
-        hasCategory: !!formData.category,
-        oldPrice: formData.old_price,
-      });
-    }
-  }, [isOpen, formData]);
-
-  // Debug log form state
-  useEffect(() => {
-    if (isOpen) {
-      // Check for discrepancy between isNewProduct flag and form ID
-      if (!isNewProduct && !formData._id && product?._id) {
-        console.warn(
-          "ID discrepancy detected: Form marked as edit but missing ID"
-        );
-        // Fix the discrepancy by setting the ID
-        setFormData((prev) => ({
-          ...prev,
-          _id: product._id,
-        }));
-      }
-
-      console.log("Form state:", {
-        isNewProduct,
-        formHasId: !!formData._id,
-        formDataId: formData._id || "none",
-        originalProductId: product?._id || "none",
-      });
-    }
-  }, [isOpen, isNewProduct, formData, product, setFormData]);
-
   // Image upload state and handlers
   const {
     isUploading,
@@ -96,8 +46,6 @@ const ProductEditModal = ({ isOpen, onClose, product, onSave, title }) => {
   // Handle successful form submission (explicitly reset the form)
   const handleSuccessfulSubmission = useCallback(
     (result) => {
-      console.log("Form submitted successfully, resetting form state");
-
       // First call the parent's onSave callback
       if (onSave) {
         onSave(result);
@@ -132,7 +80,6 @@ const ProductEditModal = ({ isOpen, onClose, product, onSave, title }) => {
 
     // Ensure ID is explicitly set if we're editing
     if (product && product._id && !formData._id) {
-      console.log("Fixing missing ID before submission");
       setFormData((prev) => ({
         ...prev,
         _id: product._id,
@@ -151,9 +98,6 @@ const ProductEditModal = ({ isOpen, onClose, product, onSave, title }) => {
       setIsConfirmModalOpen(true);
     } else {
       // If no unsaved changes, reset form and close immediately
-      console.log("Closing modal with no unsaved changes, resetting form");
-
-      // Reset form fields explicitly
       resetForm();
 
       // Reset image upload state
@@ -177,8 +121,6 @@ const ProductEditModal = ({ isOpen, onClose, product, onSave, title }) => {
   // Confirm discard changes
   const handleConfirmDiscard = useCallback(() => {
     setIsConfirmModalOpen(false);
-
-    console.log("Discarding changes and resetting form");
 
     // Reset form fields explicitly
     resetForm();

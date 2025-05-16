@@ -47,7 +47,6 @@ const useImageUpload = (formData, handleImageChange) => {
           });
         }
       } catch (error) {
-        console.error("Error uploading images:", error);
         showToast({
           type: "error",
           message: `Failed to upload images: ${error.message}`,
@@ -66,9 +65,7 @@ const useImageUpload = (formData, handleImageChange) => {
 
     try {
       await productsService.deleteUploadedImages(imagesToDelete);
-      console.log(`Cleaned up ${imagesToDelete.length} unused images`);
-    } catch (error) {
-      console.error("Error cleaning up images:", error);
+    } catch {
       // Don't show toast here since this is a background operation
     }
   }, []);
@@ -79,11 +76,8 @@ const useImageUpload = (formData, handleImageChange) => {
 
     try {
       await cleanupUploadedImages(newlyUploadedImages);
-      console.log(
-        `Cleaned up ${newlyUploadedImages.length} newly uploaded images`
-      );
-    } catch (error) {
-      console.error("Error cleaning up all images:", error);
+    } catch {
+      // Error handling is done in cleanupUploadedImages
     }
   }, [newlyUploadedImages, cleanupUploadedImages]);
 

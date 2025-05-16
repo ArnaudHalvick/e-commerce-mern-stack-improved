@@ -2,6 +2,5 @@
 window.RUNTIME_CONFIG = {
   apiUrl: "http://localhost:4001",
   hostUrl: "http://localhost:5173",
-  basePath: "/"
+  basePath: "/",
 };
-console.log("Development runtime config loaded:", window.RUNTIME_CONFIG);

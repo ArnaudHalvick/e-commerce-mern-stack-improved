@@ -21,15 +21,9 @@ const useProductManagement = ({ onProductUpdated, onProductCreated }) => {
   const handleEditProduct = useCallback(
     (product) => {
       if (!product || !product._id) {
-        console.error(
-          "Attempted to edit a product without a valid ID:",
-          product
-        );
         showErrorToast("Cannot edit product: Invalid product data");
         return;
       }
-
-      console.log("Opening modal to edit product:", product._id);
 
       try {
         // Create a deep copy to avoid reference issues and ensure ID is preserved
@@ -38,18 +32,11 @@ const useProductManagement = ({ onProductUpdated, onProductCreated }) => {
         // Double-check the ID is preserved
         if (!productCopy._id && product._id) {
           productCopy._id = product._id;
-          console.log("Restored missing ID during deep copy");
         }
-
-        console.log("Product prepared for edit modal:", {
-          id: productCopy._id,
-          name: productCopy.name,
-        });
 
         setSelectedProduct(productCopy);
         setIsModalOpen(true);
-      } catch (error) {
-        console.error("Error preparing product for edit:", error);
+      } catch {
         showErrorToast("Error preparing product data for editing");
       }
     },
@@ -66,8 +53,6 @@ const useProductManagement = ({ onProductUpdated, onProductCreated }) => {
     setTimeout(() => {
       // Reset selected product to null to trigger form reset in useProductForm
       setSelectedProduct(null);
-
-      console.log("Modal closed, all fields have been reset");
     }, 300); // Short delay for modal close animation
   }, []);
 
@@ -75,14 +60,6 @@ const useProductManagement = ({ onProductUpdated, onProductCreated }) => {
   const handleSaveProduct = useCallback(
     async (productData) => {
       setIsLoading(true);
-
-      // Diagnose issue with product ID
-      console.log("handleSaveProduct received:", {
-        hasId: !!productData._id,
-        originalId: selectedProduct?._id || "none",
-        isNewProduct: !productData._id && !selectedProduct?._id,
-        keys: Object.keys(productData).join(", "),
-      });
 
       // Check if productData is just the API response (with only success, data properties)
       // If it only contains API response properties, it's already been processed by useFormValidation
@@ -92,10 +69,6 @@ const useProductManagement = ({ onProductUpdated, onProductCreated }) => {
         productData.data &&
         Object.keys(productData).length <= 3
       ) {
-        console.log(
-          "Product already processed by useFormValidation, using data directly"
-        );
-
         // Just handle the success callbacks
         if (!productData.data._id) {
           // It was a new product creation
@@ -121,9 +94,6 @@ const useProductManagement = ({ onProductUpdated, onProductCreated }) => {
       // If we have a selected product with an ID but productData doesn't have one,
       // something went wrong, so let's fix it
       if (selectedProduct && selectedProduct._id && !productToSave._id) {
-        console.warn(
-          "Product data missing ID but selected product has ID - fixing"
-        );
         productToSave._id = selectedProduct._id;
       }
 
@@ -133,11 +103,7 @@ const useProductManagement = ({ onProductUpdated, onProductCreated }) => {
         // Determine whether to create or update based on presence of _id
         if (!productToSave._id) {
           // Create a new product - no ID means it's new
-          console.log("Creating new product via useProductManagement");
           result = await productsService.createProduct(productToSave);
-
-          // Don't show toast here - let the ErrorState context handle it
-          // to avoid duplicate messages
 
           // Call the success callback if provided
           if (onProductCreated) {
@@ -145,11 +111,6 @@ const useProductManagement = ({ onProductUpdated, onProductCreated }) => {
           }
         } else {
           // Update an existing product - has ID means it exists
-          console.log(
-            "Updating existing product via useProductManagement:",
-            productToSave._id
-          );
-
           // Save the product name before sending to API in case response is incomplete
           const productName = productToSave.name || "Product";
 
@@ -173,7 +134,6 @@ const useProductManagement = ({ onProductUpdated, onProductCreated }) => {
         handleCloseModal();
         return { success: true, data: result };
       } catch (error) {
-        console.error("Error saving product:", error);
         showErrorToast(`Failed to save product: ${error.message}`);
         return { success: false, error };
       } finally {
@@ -210,7 +170,6 @@ const useProductManagement = ({ onProductUpdated, onProductCreated }) => {
 
         return true;
       } catch (error) {
-        console.error("Error deleting product:", error);
         showErrorToast(`Failed to delete product: ${error.message}`);
         return false;
       } finally {
@@ -238,7 +197,6 @@ const useProductManagement = ({ onProductUpdated, onProductCreated }) => {
 
         return true;
       } catch (error) {
-        console.error("Error toggling availability:", error);
         showErrorToast(`Failed to update availability: ${error.message}`);
         return false;
       } finally {
