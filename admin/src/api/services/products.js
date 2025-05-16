@@ -54,23 +54,9 @@ const getProductBySlug = async (slug) => {
  */
 const createProduct = async (productData) => {
   try {
-    // Log product data before sending to API
-    console.log("Creating product with data:", {
-      name: productData.name,
-      category: productData.category,
-      hasRequiredFields: !!(
-        productData.name &&
-        productData.shortDescription &&
-        productData.longDescription &&
-        productData.category
-      ),
-      fields: Object.keys(productData),
-    });
-
     const response = await apiClient.post("/api/admin/products", productData);
     return response.data;
   } catch (error) {
-    console.error("Error saving product:", error);
     // Enhance error message with form data information
     const enhancedError = new Error(
       error.message || "Failed to create product"
@@ -89,27 +75,13 @@ const createProduct = async (productData) => {
  * @returns {Promise} Promise with updated product data
  */
 const updateProduct = async (productId, productData) => {
-  console.log("API updateProduct called with:", {
-    productId,
-    productName: productData.name || "unknown",
-  });
-
   const response = await apiClient.put(
     `/api/admin/products/${productId}`,
     productData
   );
 
-  // Debug response
-  console.log("API update response:", {
-    status: response.status,
-    hasData: !!response.data,
-    hasProductName: response.data && !!response.data.name,
-    productName: response.data?.name || "undefined",
-  });
-
   // If response doesn't contain complete product data, merge with the sent data
   if (response.data && !response.data.name && productData.name) {
-    console.log("Incomplete response data, merging with original data");
     return { ...productData, ...response.data };
   }
 

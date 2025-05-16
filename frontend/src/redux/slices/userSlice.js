@@ -90,8 +90,6 @@ export const verifyToken = createAsyncThunk(
       // Just verify the token validity
       const response = await authService.verifyToken();
 
-      console.log("Verify token response:", response);
-
       if (response.success) {
         localStorage.removeItem("user-logged-out");
 
@@ -110,7 +108,7 @@ export const verifyToken = createAsyncThunk(
             return response.user;
           }
         } catch (refreshError) {
-          console.error("Token refresh failed:", refreshError);
+          // Token refresh failed
         }
 
         localStorage.removeItem("auth-token");

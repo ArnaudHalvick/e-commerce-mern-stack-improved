@@ -14,24 +14,15 @@ import { AUTH_ENDPOINTS } from "../config";
  * @returns {Promise<Object>} Auth data with tokens
  */
 export const login = async (credentials) => {
-  try {
-    console.log(
-      "Attempting login, will redirect to: " + (credentials.redirectUrl || "/")
-    );
+  // Use the same-origin for auth requests to avoid CORS
+  const response = await apiClient.post(AUTH_ENDPOINTS.LOGIN, credentials);
 
-    // Use the same-origin for auth requests to avoid CORS
-    const response = await apiClient.post(AUTH_ENDPOINTS.LOGIN, credentials);
-
-    if (response.data.accessToken) {
-      // Store access token in localStorage
-      localStorage.setItem("admin-auth-token", response.data.accessToken);
-    }
-
-    return response.data;
-  } catch (error) {
-    console.log("Login error:", error);
-    throw error;
+  if (response.data.accessToken) {
+    // Store access token in localStorage
+    localStorage.setItem("admin-auth-token", response.data.accessToken);
   }
+
+  return response.data;
 };
 
 /**
@@ -49,7 +40,6 @@ export const logout = async () => {
   } catch (error) {
     // Still clear tokens even if the server call fails
     localStorage.removeItem("admin-auth-token");
-    console.error("Logout error:", error);
     throw error;
   }
 };
@@ -59,13 +49,8 @@ export const logout = async () => {
  * @returns {Promise<Object>} User data
  */
 export const verifyAuth = async () => {
-  try {
-    const response = await apiClient.get(AUTH_ENDPOINTS.VERIFY);
-    return response.data;
-  } catch (error) {
-    console.error("Auth verification error:", error);
-    throw error;
-  }
+  const response = await apiClient.get(AUTH_ENDPOINTS.VERIFY);
+  return response.data;
 };
 
 /**
@@ -73,18 +58,13 @@ export const verifyAuth = async () => {
  * @returns {Promise<Object>} New access token
  */
 export const refreshToken = async () => {
-  try {
-    const response = await apiClient.post(AUTH_ENDPOINTS.REFRESH_TOKEN);
+  const response = await apiClient.post(AUTH_ENDPOINTS.REFRESH_TOKEN);
 
-    if (response.data.accessToken) {
-      localStorage.setItem("admin-auth-token", response.data.accessToken);
-    }
-
-    return response.data;
-  } catch (error) {
-    console.error("Token refresh error:", error);
-    throw error;
+  if (response.data.accessToken) {
+    localStorage.setItem("admin-auth-token", response.data.accessToken);
   }
+
+  return response.data;
 };
 
 /**

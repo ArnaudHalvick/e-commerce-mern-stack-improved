@@ -31,9 +31,6 @@ const ProtectedRoute = ({ children, redirectTo = "/login" }) => {
 
   // Redirect to login if not authenticated
   if (!isAuthenticated) {
-    console.log(
-      `Protected route: not authenticated. Redirecting to ${redirectTo}`
-    );
     // Use Navigate component with replace to avoid browser history buildup
     return <Navigate to={getRedirectPath()} replace />;
   }

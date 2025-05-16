@@ -31,19 +31,6 @@ const IS_ADMIN_SUBDOMAIN =
 // Except when explicitly in local Docker environment
 const USE_SAME_ORIGIN = typeof window !== "undefined" && !IS_LOCAL_DOCKER;
 
-// Log for debugging
-if (typeof window !== "undefined") {
-  console.log(`API client config - API_BASE_URL: ${API_BASE_URL}`);
-  console.log(`API client config - Using same origin: ${USE_SAME_ORIGIN}`);
-  console.log(`API client config - In local Docker: ${IS_LOCAL_DOCKER}`);
-  console.log(`API client config - Is admin subdomain: ${IS_ADMIN_SUBDOMAIN}`);
-  console.log(
-    `API client config - Environment: ${
-      import.meta.env.DEV ? "development" : "production"
-    }`
-  );
-}
-
 // Track active requests for cancellation
 let cancelTokenSource = axios.CancelToken.source();
 
@@ -85,16 +72,6 @@ apiClient.interceptors.request.use(
       if (USE_SAME_ORIGIN) {
         // Override the baseURL to use same origin for all requests
         config.baseURL = window.location.origin;
-
-        // Only log auth requests for debugging
-        if (
-          config.url.includes("/auth/login") ||
-          config.url.includes("/auth/logout") ||
-          config.url.includes("/auth/verify") ||
-          config.url.includes("/auth/refresh-token")
-        ) {
-          console.log("Using same origin for auth request:", config.url);
-        }
       }
     }
 

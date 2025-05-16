@@ -7,12 +7,6 @@
 const RUNTIME_CONFIG =
   typeof window !== "undefined" ? window.RUNTIME_CONFIG : null;
 
-// Log API configuration for debugging
-if (typeof window !== "undefined") {
-  console.log("Admin panel using API URL:", import.meta.env.VITE_API_URL);
-  console.log("Default protocol:", window.location.protocol);
-}
-
 // Determine if we're running in a Docker container (only for local development)
 const IS_LOCAL_DOCKER =
   import.meta.env.DEV && import.meta.env.VITE_IS_DOCKER === "true";
