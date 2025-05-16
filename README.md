@@ -1,30 +1,83 @@
 # 🛍️ MERN E-Commerce Platform
 
-A full-stack e-commerce solution featuring a modern React frontend and a robust Node.js backend. This comprehensive project demonstrates advanced development patterns for building scalable, secure, and user-friendly web applications.
+A comprehensive full-stack e-commerce solution featuring a modern React customer frontend, a separate admin dashboard, and a robust Node.js backend. This project demonstrates advanced development patterns for building scalable, secure, and user-friendly web applications with a containerized deployment architecture.
 
 ![MERN Stack](https://img.shields.io/badge/MERN-Stack-green)
 ![React](https://img.shields.io/badge/React-v19.x-blue)
 ![Node.js](https://img.shields.io/badge/Node.js-v18.x-green)
 ![MongoDB](https://img.shields.io/badge/MongoDB-v5.x-green)
 ![Express](https://img.shields.io/badge/Express-v4.x-blue)
+![Docker](https://img.shields.io/badge/Docker-Containerized-blue)
+![Nginx](https://img.shields.io/badge/Nginx-Reverse_Proxy-yellow)
 
-**Live Demo:** [https://mernappshopper.xyz](https://mernappshopper.xyz)
+**Live Demo:** [https://mernappshopper.xyz](https://mernappshopper.xyz)  
+**Admin Dashboard:** [https://admin.mernappshopper.xyz](https://admin.mernappshopper.xyz)
+
+## 🏗️ System Architecture
+
+The application follows a modern microservices-inspired architecture with Docker containerization:
+
+```
+┌───────────────────────┐   ┌───────────────────────┐   ┌───────────────────────┐
+│                       │   │                       │   │                       │
+│   Customer Frontend   │   │   Admin Dashboard     │   │   Backend API Server  │
+│   (React + Redux)     │   │   (React + Context)   │   │   (Node.js + Express) │
+│                       │   │                       │   │                       │
+└───────────┬───────────┘   └───────────┬───────────┘   └───────────┬───────────┘
+            │                           │                           │
+            └───────────────┬───────────┴───────────────┬───────────┘
+                            │                           │
+                  ┌─────────┴──────────┐      ┌─────────┴──────────┐
+                  │   Nginx Reverse    │      │                    │
+                  │      Proxy         │─────►│     MongoDB        │
+                  │                    │      │                    │
+                  └────────────────────┘      └────────────────────┘
+```
+
+### Containerized Architecture
+
+The application is fully containerized using Docker:
+
+- **Frontend Container**: React customer storefront with Nginx for static file serving
+- **Admin Container**: React admin dashboard with its own Nginx configuration
+- **Backend Container**: Node.js API server with MongoDB connection
+- **Nginx Proxy**: Handles routing between containers and SSL termination
 
 ## ✨ Key Features
+
+- **Dual Frontend Architecture**
+
+  - Customer storefront for shopping experience
+  - Secure admin dashboard for inventory and order management
+  - Separate deployment and scaling for each frontend
 
 - **Complete E-Commerce Functionality**
 
   - Product catalog with categories, filtering, and search
-  - Shopping cart and wishlist management
-  - User accounts and profiles
-  - Order processing and history
+  - Shopping cart and checkout flow
+  - User accounts and order history
+  - Admin dashboard for product and order management
 
 - **Secure Authentication System**
 
   - JWT-based authentication with refresh tokens
   - Email verification flow
   - Password reset functionality
-  - Protected routes and resources
+  - Role-based access control for admin features
+
+- **Docker-Based Deployment**
+
+  - Production-ready Docker configuration
+  - Development Docker environment with hot-reloading
+  - Consistent environment across development and production
+  - Secret management via Docker volumes
+
+- **Reverse Proxy Architecture**
+
+  - Subdomain routing (admin.mernappshopper.xyz)
+  - SSL termination and certificate management
+  - Static asset caching and optimization
+  - API request routing to backend services
 
 - **Stripe Payment Integration**
 
@@ -33,69 +86,23 @@ A full-stack e-commerce solution featuring a modern React frontend and a robust 
   - Webhook integration for payment events
   - Comprehensive checkout flow
 
-- **Advanced Error Handling**
-
-  - Global error processing system
-  - Graceful frontend error boundaries
-  - Detailed logging and monitoring
-  - User-friendly error messages
-
-- **Responsive Design**
-  - Optimized for all device sizes
-  - Consistent user experience across platforms
-  - Accessible UI components
-
-## 🏗️ System Architecture
-
-The application follows a modern MERN stack architecture:
-
-```
-┌─────────────────┐       ┌─────────────────┐       ┌─────────────────┐
-│                 │       │                 │       │                 │
-│  React Frontend │◄─────►│  Node.js API    │◄─────►│  MongoDB        │
-│                 │       │                 │       │                 │
-└─────────────────┘       └─────────────────┘       └─────────────────┘
-        ▲                         ▲                         ▲
-        │                         │                         │
-        ▼                         ▼                         ▼
-┌─────────────────┐       ┌─────────────────┐       ┌─────────────────┐
-│                 │       │                 │       │                 │
-│  Redux          │       │  Express        │       │  Mongoose       │
-│  React Router   │       │  JWT Auth       │       │                 │
-│  Stripe Elements│       │  Middleware     │       │                 │
-│                 │       │                 │       │                 │
-└─────────────────┘       └─────────────────┘       └─────────────────┘
-```
-
-### Frontend Architecture
-
-The React frontend follows a component-based architecture:
-
-- **Component Library**: Reusable UI components
-- **Page Compositions**: Full page layouts using components
-- **Redux State**: Centralized application state
-- **Custom Hooks**: Shared logic and functionality
-- **Service Layer**: API communication abstraction
-
-### Backend Architecture
-
-The Node.js backend implements a layered architecture:
-
-- **API Routes**: RESTful endpoint definitions
-- **Controllers**: Request handling and response formation
-- **Services**: Business logic implementation
-- **Models**: Data structure and validation
-- **Middleware**: Request processing and authentication
-
 ## 🚀 Technology Stack
 
-### Frontend
+### Frontend (Customer)
 
 - **React**: UI component library
 - **Redux**: State management
 - **React Router**: Navigation and routing
 - **Stripe Elements**: Payment form integration
-- **Axios**: API communication
+- **Nginx**: Static file serving and caching
+
+### Admin Dashboard
+
+- **React**: UI component library
+- **Context API**: State management
+- **React Router**: Navigation and routing
+- **Vite**: Build tool and development server
+- **Nginx**: Static file serving and API routing
 
 ### Backend
 
@@ -113,144 +120,167 @@ The Node.js backend implements a layered architecture:
 - **Docker Compose**: Multi-container orchestration
 - **Nginx**: Reverse proxy and static serving
 - **Let's Encrypt**: SSL certificate management
+- **Digital Ocean**: Cloud hosting platform
 
 ## 📦 Project Structure
 
 ```
-e-commerce-mern-stack-improved/
-├── frontend/                 # React frontend application
+e-commerce-mern-stack/
+├── frontend/                 # Customer frontend application
 │   ├── src/                  # Source code
-│   │   ├── components/       # Reusable components
-│   │   ├── pages/            # Page components
-│   │   ├── redux/            # State management
-│   │   ├── hooks/            # Custom React hooks
-│   │   ├── api/              # API services
-│   │   └── utils/            # Utilities
-│   └── public/               # Static assets
+│   ├── Dockerfile            # Production container config
+│   ├── Dockerfile.dev        # Development container config
+│   └── nginx.conf            # Nginx configuration for frontend
+│
+├── admin/                    # Admin dashboard application
+│   ├── src/                  # Source code
+│   ├── Dockerfile            # Production container config
+│   ├── Dockerfile.dev        # Development container config
+│   └── admin-nginx.conf      # Nginx configuration for admin panel
 │
 ├── backend/                  # Node.js API server
 │   ├── controllers/          # Request handlers
 │   ├── models/               # Database models
 │   ├── routes/               # API routes
-│   ├── middleware/           # Custom middleware
-│   ├── services/             # Business logic
-│   ├── utils/                # Utility functions
-│   └── docs/                 # API documentation
+│   ├── Dockerfile            # Production container config
+│   └── Dockerfile.dev        # Development container config
 │
-├── admin/                    # Admin dashboard
-│
-├── docker-compose.yml        # Docker compose configuration
-├── docker-compose.dev.yml    # Development compose configuration
-└── deploy.sh                 # Deployment script
+├── docker-compose.yml        # Production Docker configuration
+├── docker-compose.dev.yml    # Development Docker configuration
+├── nginx-proxy.conf          # Main Nginx reverse proxy config
+└── deploy.sh                 # Deployment scripts
 ```
 
-## 🔧 Getting Started
+## 🔧 Development Workflow
 
-### Prerequisites
+The project supports both traditional local development and Docker-based development.
 
-- Node.js (v18.x or higher)
-- MongoDB (v5.x or higher)
-- Docker and Docker Compose (optional)
+### Docker Development Environment
 
-### Development Setup
-
-1. **Clone the repository**
+1. **Start the development environment:**
 
 ```bash
-git clone https://github.com/yourusername/e-commerce-mern-stack-improved.git
-cd e-commerce-mern-stack-improved
-```
-
-2. **Install dependencies**
-
-```bash
-# Install backend dependencies
-cd backend
-npm install
-
-# Install frontend dependencies
-cd ../frontend
-npm install
-```
-
-3. **Configure environment variables**
-
-```bash
-# Backend
-cd backend
-cp .env.dev .env
-
-# Frontend
-cd ../frontend
-cp .env.dev .env.local
-```
-
-4. **Start development servers**
-
-```bash
-# Start backend (from root directory)
-cd backend
-npm run dev
-
-# Start frontend (in another terminal, from root directory)
-cd frontend
-npm run dev
-```
-
-### Docker Development
-
-For Docker-based development:
-
-```bash
-# Start the entire stack
 ./dev-docker.sh
 ```
 
-## 🚀 Deployment
+This script uses `docker-compose.dev.yml` to start all services with development configurations:
 
-### Docker Deployment
+- **Frontend**: http://localhost:3000
+- **Admin**: http://localhost:5173
+- **Backend API**: http://localhost:4001
 
-The application can be deployed using Docker Compose:
+All containers are configured with hot-reloading for real-time development.
+
+### Environment Configuration
+
+The system uses Docker secrets for sensitive configuration:
+
+- API keys (Stripe, email services, etc.)
+- Database credentials
+- JWT secrets
+
+These are mounted into containers at runtime from the `secrets` directory.
+
+## 🚀 Deployment Architecture
+
+The application is deployed on Digital Ocean with a Docker-based architecture:
+
+1. **Automated Deployment:**
 
 ```bash
-# Build and deploy
-docker-compose up -d
+./deploy.sh
 ```
 
-### Manual Deployment
+This builds and deploys all containers with production configurations.
 
-Alternatively, the application can be deployed manually:
+### Domain Architecture
 
-```bash
-# Deploy both frontend and backend
-./update-both.sh
+- **Main storefront**: `https://mernappshopper.xyz`
+- **Admin dashboard**: `https://admin.mernappshopper.xyz`
+- **API endpoints**: `https://mernappshopper.xyz/api`
 
-# Deploy only backend
-./update-backend.sh
+### Nginx Reverse Proxy
 
-# Deploy only frontend
-./update-frontend.sh
-```
+The Nginx reverse proxy handles:
 
-## 📝 Future Enhancements
+- **Subdomain Routing**: Directs traffic to the appropriate container
+- **SSL Termination**: Manages HTTPS certificates
+- **Caching**: Optimizes static asset delivery
+- **API Routing**: Forwards API requests to the backend
 
-- **Internationalization**: Multi-language support
-- **Progressive Web App**: Offline functionality
-- **Advanced Analytics**: User behavior tracking
-- **AI Product Recommendations**: Smart product suggestions
-- **Multi-vendor Support**: Marketplace functionality
+## 📋 Individual Component Documentation
+
+- [Admin Dashboard Documentation](./admin/README.md)
+- [Backend API Documentation](./backend/README.md)
+- [Customer Frontend Documentation](./frontend/README.md)
+
+## 🔐 Security Implementation
+
+The application implements security at multiple levels:
+
+1. **Reverse Proxy Security**:
+
+   - SSL/TLS termination
+   - HTTP security headers
+   - Rate limiting
+
+2. **Container Isolation**:
+
+   - Separate containers for each service
+   - Minimal container permissions
+
+3. **Application Security**:
+   - JWT authentication
+   - Role-based access control
+   - Input validation and sanitization
+
+## 🚀 Deployment Instructions
+
+Detailed deployment instructions for Digital Ocean:
+
+1. **Provision a Droplet**:
+
+   - Ubuntu 22.04 LTS
+   - At least 2GB RAM
+
+2. **Install Docker and Docker Compose**:
+
+   ```bash
+   curl -fsSL https://get.docker.com | sh
+   sudo apt-get install docker-compose-plugin
+   ```
+
+3. **Clone the Repository**:
+
+   ```bash
+   git clone https://github.com/yourusername/e-commerce-mern-stack.git
+   cd e-commerce-mern-stack
+   ```
+
+4. **Configure Secrets**:
+
+   ```bash
+   mkdir -p secrets
+   # Add required secret files
+   ```
+
+5. **Deploy the Application**:
+   ```bash
+   ./deploy.sh
+   ```
 
 ## 👨‍💻 Portfolio Information
 
-This project was developed as a comprehensive demonstration of full-stack development capabilities, showcasing expertise in:
+This project demonstrates expertise in:
 
-- Building scalable web applications with modern technologies
-- Implementing secure authentication and payment systems
-- Creating responsive user interfaces with excellent UX
-- Applying best practices in software architecture
-- Implementing professional error handling and logging
+- **Microservices Architecture**: Separate frontend and admin applications
+- **Container Orchestration**: Docker and Docker Compose setup
+- **Reverse Proxy Configuration**: Nginx for routing and SSL termination
+- **Full-Stack Development**: MERN stack implementation
+- **Security Best Practices**: JWT, HTTPS, and container isolation
+- **DevOps Skills**: CI/CD, containerization, and cloud deployment
 
-The codebase follows industry best practices and demonstrates an understanding of production-ready application development.
+The implementation follows industry best practices and demonstrates the ability to create production-ready applications with consideration for security, scalability, and maintainability.
 
 ## 📄 License
 
