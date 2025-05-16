@@ -59,9 +59,6 @@ const MyComponent = () => {
     // User is logged in
   }
 
-  // Access user data
-  console.log(user.name, user.email);
-
   // Login user
   login({ email, password });
 

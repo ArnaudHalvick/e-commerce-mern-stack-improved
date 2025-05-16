@@ -127,12 +127,7 @@ const Component = () => (
       Your changes have been saved successfully.
     </Alert>
 
-    <Alert
-      variant="error"
-      title="Error!"
-      dismissible
-      onDismiss={() => console.log("dismissed")}
-    >
+    <Alert variant="error" title="Error!" dismissible>
       There was a problem processing your request.
     </Alert>
   </div>
