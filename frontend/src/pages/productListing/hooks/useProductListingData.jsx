@@ -145,12 +145,6 @@ const useProductListingData = ({ pageType, category }) => {
             });
             break;
           case "date-newest":
-            console.log(
-              "Sorting by date-newest",
-              filteredProducts
-                .slice(0, 3)
-                .map((p) => ({ id: p._id, date: p.date }))
-            );
             filteredProducts.sort((a, b) => {
               // First try to use the date field, if not available use _id as a fallback
               // MongoDB ObjectIds contain a timestamp as their first 4 bytes
@@ -168,12 +162,6 @@ const useProductListingData = ({ pageType, category }) => {
             });
             break;
           case "date-oldest":
-            console.log(
-              "Sorting by date-oldest",
-              filteredProducts
-                .slice(0, 3)
-                .map((p) => ({ id: p._id, date: p.date }))
-            );
             filteredProducts.sort((a, b) => {
               // First try to use the date field, if not available use _id as a fallback
               if (a.date && b.date) {
@@ -330,15 +318,6 @@ const useProductListingData = ({ pageType, category }) => {
         } else {
           if (isMounted.current) {
             setAllProducts(data);
-            // Log the first product and check if it has a date field
-            if (data && data.length > 0) {
-              console.log("Sample product:", {
-                id: data[0]._id,
-                name: data[0].name,
-                date: data[0].date,
-                hasDateField: "date" in data[0],
-              });
-            }
             setAvailableTags([
               ...new Set(data.flatMap((item) => item.tags || [])),
             ]);
@@ -476,7 +455,6 @@ const useProductListingData = ({ pageType, category }) => {
 
   // Handle sort change
   const handleSortChange = useCallback((sortOption) => {
-    console.log("handleSortChange called with option:", sortOption);
     setSortBy(sortOption);
     setShowSortOptions(false);
   }, []);

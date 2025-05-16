@@ -182,10 +182,7 @@ const ProductsContent = ({
                 </div>
                 <div
                   className="product-listing-sort-option"
-                  onClick={() => {
-                    console.log("Clicking date-newest sort option");
-                    handleSortChange("date-newest");
-                  }}
+                  onClick={() => handleSortChange("date-newest")}
                   onKeyDown={(e) => handleSortOptionKeyDown(e, "date-newest")}
                   tabIndex="0"
                   role="option"
@@ -195,10 +192,7 @@ const ProductsContent = ({
                 </div>
                 <div
                   className="product-listing-sort-option"
-                  onClick={() => {
-                    console.log("Clicking date-oldest sort option");
-                    handleSortChange("date-oldest");
-                  }}
+                  onClick={() => handleSortChange("date-oldest")}
                   onKeyDown={(e) => handleSortOptionKeyDown(e, "date-oldest")}
                   tabIndex="0"
                   role="option"
