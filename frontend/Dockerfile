@@ -19,11 +19,10 @@ ENV REACT_APP_ENV=${REACT_APP_ENV}
 ENV REACT_APP_API_URL=${REACT_APP_API_URL}
 ENV REACT_APP_STRIPE_PUBLISHABLE_KEY=${REACT_APP_STRIPE_PUBLISHABLE_KEY}
 
-# Replace Stripe key with placeholder
-RUN if [ -n "$REACT_APP_STRIPE_PUBLISHABLE_KEY" ]; then \
-      echo "Setting Stripe key placeholder"; \
-      find src -type f -name "*.jsx" -o -name "*.js" | xargs sed -i "s|${REACT_APP_STRIPE_PUBLISHABLE_KEY}|REACT_APP_STRIPE_PUBLISHABLE_KEY_PLACEHOLDER|g"; \
-    fi
+# Always set "STRIPE_PUBLISHABLE_KEY_PLACEHOLDER" in source files 
+# This ensures our entrypoint script can replace it at runtime
+RUN echo "Ensuring Stripe key placeholder in source files"
+RUN find src -type f -name "*.jsx" -o -name "*.js" | xargs grep -l "REACT_APP_STRIPE_PUBLISHABLE_KEY" | xargs sed -i "s|process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY|\"STRIPE_PUBLISHABLE_KEY_PLACEHOLDER\"|g"
 
 # Build the app
 RUN npm run build
