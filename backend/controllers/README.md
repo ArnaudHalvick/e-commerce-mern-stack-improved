@@ -16,6 +16,8 @@ Controllers follow the MVC (Model-View-Controller) architecture pattern and are 
 
 | Controller               | Description                                                                                                      |
 | ------------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| `adminController.js`     | Handles admin-specific product management operations including CRUD with soft delete functionality               |
+| `adminAuthController.js` | Manages admin authentication, authorization, and session management                                              |
 | `authController.js`      | Handles user authentication flows including registration, login, logout, password management, and token handling |
 | `cartController.js`      | Manages shopping cart operations like adding, removing, and updating items                                       |
 | `errorDemoController.js` | Demonstrates error handling patterns for development and testing                                                 |
@@ -34,6 +36,29 @@ All controllers use the following common patterns:
 4. **Authentication**: Leveraging middleware for authentication where required
 
 ## Detailed Controller Descriptions
+
+### adminController.js
+
+Handles admin-specific product management operations:
+
+- Creating new products with comprehensive validation
+- Retrieving products with options for deleted/active items
+- Updating product details with validation
+- Soft deletion of products
+- Managing product images and attributes
+- Product search by ID and slug
+- Bulk operations on products
+- Formatting product data for admin dashboard
+
+### adminAuthController.js
+
+Manages admin authentication and authorization:
+
+- Admin login with secure session management
+- Admin-specific token handling
+- Access control for admin routes
+- Admin session management
+- Security measures for admin operations
 
 ### authController.js
 

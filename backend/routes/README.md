@@ -15,6 +15,8 @@ Routes in this application follow RESTful API design principles and are organize
 
 | Route File           | Description                                           |
 | -------------------- | ----------------------------------------------------- |
+| `adminRoutes.js`     | Routes for admin product management and operations    |
+| `adminAuthRoutes.js` | Routes for admin authentication and authorization     |
 | `cartRoutes.js`      | Routes for shopping cart management                   |
 | `errorDemoRoutes.js` | Routes for demonstrating error handling patterns      |
 | `paymentRoutes.js`   | Routes for payment processing and order management    |
@@ -34,6 +36,56 @@ All route files follow these common patterns:
 5. **Consistent Structure**: Each route file exports an Express router
 
 ## Detailed Route Descriptions
+
+### adminRoutes.js
+
+Routes for admin product management, all requiring admin authentication:
+
+**Product Management:**
+
+- `GET /products` - Get all products (with filter options for deleted items)
+- `POST /products` - Create a new product
+- `GET /products/:id` - Get product by ID
+- `PUT /products/:id` - Update product
+- `DELETE /products/:id` - Soft delete product
+- `DELETE /products/:id/permanent` - Permanently delete product
+- `POST /products/:id/restore` - Restore a deleted product
+- `PATCH /products/:id/toggle-availability` - Toggle product availability
+
+**Image Management:**
+
+- `POST /products/upload` - Upload product images (up to 5)
+- `GET /products/images` - Get all uploaded images
+- `DELETE /products/images` - Delete uploaded images
+- `GET /products/slug/:slug` - Get product by slug
+
+All routes use multer for image upload handling with:
+
+- 5MB file size limit
+- Image file type validation
+- Unique filename generation
+- Secure file storage
+
+### adminAuthRoutes.js
+
+Routes for admin authentication and authorization:
+
+**Public Routes:**
+
+- `POST /login` - Admin login with rate limiting and request sanitization
+
+**Protected Routes (require admin authentication):**
+
+- `POST /logout` - Admin logout
+- `GET /verify` - Verify admin token
+- `POST /refresh-token` - Refresh admin access token
+
+All admin auth routes implement:
+
+- Rate limiting for login attempts
+- Request sanitization
+- JWT token verification
+- Admin-specific access control
 
 ### cartRoutes.js
 
