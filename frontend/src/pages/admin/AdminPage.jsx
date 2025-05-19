@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useAuth } from "../../hooks/state";
 import { toggleAdmin } from "../../redux/slices/userSlice";
@@ -9,7 +8,6 @@ const AdminPage = () => {
   const { user, isAuthenticated, loading: authLoading } = useAuth();
   const [isAdmin, setIsAdmin] = useState(user?.isAdmin || false);
   const [message, setMessage] = useState("");
-  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const adminUrl =
