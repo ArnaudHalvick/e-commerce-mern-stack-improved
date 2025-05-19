@@ -256,14 +256,12 @@
 }
 
 /* Responsive styles */
-@media screen and (max-width: 1536px) {
+@media screen and (max-width: 1200px) {
   .product-listing-item {
     flex: 0 0 calc((100% - var(--spacing-6) * 2) / 3);
     max-width: calc((100% - var(--spacing-6) * 2) / 3);
   }
-}
 
-@media screen and (max-width: 1200px) {
   .product-listing-controls {
     gap: var(--spacing-4);
   }
