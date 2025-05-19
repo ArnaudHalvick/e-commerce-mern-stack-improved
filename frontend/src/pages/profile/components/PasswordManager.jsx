@@ -111,7 +111,7 @@ const PasswordManager = ({
         <form
           onSubmit={handleSubmitForm}
           noValidate
-          className="profile-password-form"
+          className="password-manager-form"
         >
           <div className="profile-form-group">
             <FormInputField
@@ -143,29 +143,37 @@ const PasswordManager = ({
 
             <div
               id="newPassword-requirements"
-              className="profile-password-requirements"
+              className="password-manager-requirements"
             >
-              <h3>Password must:</h3>
-              <ul>
+              <h3 className="password-manager-requirements-text">
+                Password must:
+              </h3>
+              <ul className="password-manager-requirements-list">
                 <li
-                  className={passwordValidations.length ? "valid" : "invalid"}
+                  className={`password-manager-requirements-item ${
+                    passwordValidations.length ? "valid" : "invalid"
+                  }`}
                 >
                   Be at least 8 characters
                 </li>
                 <li
-                  className={
+                  className={`password-manager-requirements-item ${
                     passwordValidations.uppercase ? "valid" : "invalid"
-                  }
+                  }`}
                 >
                   Include at least 1 uppercase letter
                 </li>
                 <li
-                  className={passwordValidations.number ? "valid" : "invalid"}
+                  className={`password-manager-requirements-item ${
+                    passwordValidations.number ? "valid" : "invalid"
+                  }`}
                 >
                   Include at least 1 number
                 </li>
                 <li
-                  className={passwordValidations.special ? "valid" : "invalid"}
+                  className={`password-manager-requirements-item ${
+                    passwordValidations.special ? "valid" : "invalid"
+                  }`}
                 >
                   Include at least 1 special character
                 </li>
