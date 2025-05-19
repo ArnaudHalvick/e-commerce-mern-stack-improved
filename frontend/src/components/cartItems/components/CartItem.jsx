@@ -83,8 +83,18 @@ const CartItem = ({
   };
 
   const handleRemoveItemClick = () => {
-    // Only proceed if quantity is greater than 1
-    if (localQuantity > 1) {
+    // If quantity is 1, remove the item completely
+    if (localQuantity === 1) {
+      setIsPending(true);
+      pendingOperations.current += 1;
+
+      onRemoveAll(item.productId, item.size).finally(() => {
+        pendingOperations.current -= 1;
+        if (pendingOperations.current === 0) {
+          setIsPending(false);
+        }
+      });
+    } else {
       // Update local state immediately for better UX
       setLocalQuantity((prev) => prev - 1);
       setIsPending(true);
@@ -161,7 +171,7 @@ const CartItem = ({
                   onKeyDown={(e) => handleKeyDown(e, handleRemoveItemClick)}
                   aria-label="Decrease quantity"
                   tabIndex="0"
-                  disabled={localQuantity <= 1 || isPending}
+                  disabled={isPending}
                 >
                   -
                 </button>
@@ -199,7 +209,7 @@ const CartItem = ({
               onKeyDown={(e) => handleKeyDown(e, handleRemoveItemClick)}
               aria-label="Decrease quantity"
               tabIndex="0"
-              disabled={localQuantity <= 1 || isPending}
+              disabled={isPending}
             >
               -
             </button>
