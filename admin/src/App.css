@@ -1,0 +1,76 @@
+/* Main layout containers */
+.admin-page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.admin-page-main {
+  display: flex;
+  flex: 1;
+  min-height: calc(100vh - var(--admin-header-height));
+}
+
+.admin-page-content-area {
+  flex: 1;
+  padding: var(--spacing-8);
+  overflow-y: auto;
+}
+
+/* Title used across admin pages */
+.admin-page-title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--admin-text-primary);
+  margin-bottom: var(--spacing-6);
+}
+
+/* Admin container base styles */
+.admin-container {
+  display: flex;
+  flex-direction: row;
+  min-height: 100vh;
+  background-color: var(--admin-background);
+}
+
+/* Admin scrollbar styles */
+.admin-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.admin-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.admin-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--admin-text-disabled);
+  border-radius: var(--border-radius-full);
+}
+
+.admin-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--admin-text-secondary);
+}
+
+/* Responsive layout adjustments */
+@media screen and (max-width: 992px) {
+  .admin-container {
+    flex-direction: column;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .admin-page-content-area {
+    padding: var(--spacing-4);
+  }
+
+  .admin-page-title {
+    font-size: var(--font-size-lg);
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .admin-page-content-area {
+    padding: var(--spacing-3);
+  }
+}

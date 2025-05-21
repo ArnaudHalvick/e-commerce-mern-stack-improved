@@ -254,36 +254,3 @@ a {
   text-decoration: none;
   color: inherit;
 }
-
-/* Admin specific base styles */
-.admin-container {
-  display: flex;
-  flex-direction: row;
-  min-height: 100vh;
-  background-color: var(--admin-background);
-}
-
-@media screen and (max-width: 992px) {
-  .admin-container {
-    flex-direction: column;
-  }
-}
-
-/* Admin scrollbar styles */
-.admin-scrollbar::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-.admin-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.admin-scrollbar::-webkit-scrollbar-thumb {
-  background: var(--admin-text-disabled);
-  border-radius: var(--border-radius-full);
-}
-
-.admin-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: var(--admin-text-secondary);
-}
