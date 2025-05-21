@@ -4,11 +4,6 @@ node_modules/
 *.env_backups
 server.js.bak
 secrets
-deploy.sh
-dev-docker.sh
-update1-admin.sh
-update2-backend.sh
-update3-frontend.sh
 *.pid
 *.pem
 *.pfx
