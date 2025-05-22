@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 import { PageHeader, ProductsContent } from "./components";
 import FilterSidebar from "../../components/filterSidebar/";
 import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
+import SEO from "../../utils/SEO";
 
 // Import custom hook
 import { useProductListingData } from "./hooks";
@@ -104,16 +105,33 @@ const ProductListingPage = ({
     };
   }, [loading]);
 
-  // Manage page title and metadata
-  useEffect(() => {
+  // Get SEO metadata based on page type
+  const getSeoData = () => {
     if (isCategoryPage && category) {
-      document.title = `${
-        category.charAt(0).toUpperCase() + category.slice(1)
-      } Collection | Your E-Commerce Store`;
+      const categoryTitle =
+        category.charAt(0).toUpperCase() + category.slice(1);
+      return {
+        title: `${categoryTitle} Collection`,
+        description: `Shop our ${categoryTitle} collection. Find the latest trends and styles in ${categoryTitle} fashion at great prices with fast shipping.`,
+        keywords: `${category}, fashion, clothing, ${category} clothing, ${category} fashion, ${category} collection`,
+        url: `/${category}`,
+        image: banner || "/images/placeholders/category-default.jpg",
+      };
     } else {
-      document.title = "Special Offers & Deals | Your E-Commerce Store";
+      return {
+        title: "Special Offers & Deals",
+        description:
+          "Discover our special offers and deals. Shop discounted items and limited-time offers on clothing and accessories.",
+        keywords:
+          "special offers, deals, discounts, sale, clearance, fashion, clothing",
+        url: "/shop",
+        image: "/images/placeholders/offers-default.jpg",
+      };
     }
-  }, [isCategoryPage, category]);
+  };
+
+  // SEO data
+  const seoData = getSeoData();
 
   // Remove the effect that synchronizes URL to filter state, and replace it with a simpler
   // approach - only initialize the filter on first load
@@ -179,6 +197,7 @@ const ProductListingPage = ({
   if (showLoading) {
     return (
       <>
+        <SEO {...seoData} strategy="replace" />
         <Breadcrumb routes={getBreadcrumbRoutes()} />
         <div className="product-listing-container">
           {isCategoryPage && (
@@ -199,6 +218,7 @@ const ProductListingPage = ({
   if (error) {
     return (
       <>
+        <SEO {...seoData} strategy="replace" />
         <Breadcrumb routes={getBreadcrumbRoutes()} />
         <div className="product-listing-container">
           {isCategoryPage && (
@@ -228,6 +248,7 @@ const ProductListingPage = ({
 
   return (
     <>
+      <SEO {...seoData} strategy="replace" />
       <Breadcrumb routes={getBreadcrumbRoutes()} />
       <div className="product-listing-container">
         {/* Header - different based on page type */}

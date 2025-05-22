@@ -56,6 +56,10 @@ REACT_APP_ENV=development
 REACT_APP_DEFAULT_PROTOCOL=http
 REACT_APP_USE_HTTPS=false
 
+# Enable React 19 Document Metadata feature
+REACT_APP_USE_DOCUMENT_METADATA=true
+REACT_APP_META_MERGE_STRATEGY=replace
+
 # Development server settings
 HOST=localhost
 WDS_SOCKET_PORT=0
@@ -139,6 +143,8 @@ services:
       - REACT_APP_ENV=development
       - REACT_APP_DEFAULT_PROTOCOL=http
       - REACT_APP_USE_HTTPS=false
+      - REACT_APP_USE_DOCUMENT_METADATA=true
+      - REACT_APP_META_MERGE_STRATEGY=replace
       - HOST=0.0.0.0
       - WDS_SOCKET_PORT=0
       - CHOKIDAR_USEPOLLING=true

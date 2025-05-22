@@ -25,5 +25,11 @@ echo "NODE_ENV: $NODE_ENV"
 echo "REACT_APP_ENV: $REACT_APP_ENV"
 echo "REACT_APP_API_URL: $REACT_APP_API_URL"
 
+# Add React 19 Document Metadata configuration for development
+echo "Configuring React 19 Document Metadata feature for development environment"
+export REACT_APP_USE_DOCUMENT_METADATA=true
+# Set the merge strategy for document metadata
+export REACT_APP_META_MERGE_STRATEGY=replace
+
 # Execute the command provided as arguments
 exec "$@" 

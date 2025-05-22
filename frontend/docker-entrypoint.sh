@@ -72,6 +72,19 @@ if [ -n "$API_URL" ]; then
   fi
 fi
 
+# Verify the index.html has proper configuration for React 19's Document Metadata
+echo "Checking index.html for proper React 19 Document Metadata configuration..."
+INDEX_HTML="/usr/share/nginx/html/index.html"
+
+# Make sure the head section is clean of any static metadata that will conflict with React 19's dynamic metadata
+if grep -q '<title>' "$INDEX_HTML"; then
+  echo "⚠️ Found static title tag in index.html - React 19 will handle this dynamically"
+fi
+
+if grep -q '<meta name="description"' "$INDEX_HTML"; then
+  echo "⚠️ Found static description meta tag in index.html - React 19 will handle this dynamically"
+fi
+
 # Verify the final nginx config
 echo "Final nginx configuration:"
 cat /etc/nginx/conf.d/default.conf
