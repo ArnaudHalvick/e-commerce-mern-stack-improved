@@ -38,10 +38,17 @@ A modern, responsive, and feature-rich React frontend for the e-commerce platfor
   - Secure payment flow
 
 - **Advanced UI/UX Features**
+
   - Responsive design for all devices
   - Animated transitions and interactions
   - Form validation with error handling
   - Loading state management
+
+- **Native SEO Implementation**
+  - React 19's Document Metadata API
+  - Dynamic metadata updates
+  - Structured data for rich search results
+  - Social media sharing optimization
 
 ## 🏗️ Application Architecture
 
@@ -55,6 +62,7 @@ The frontend follows a structured, modular architecture:
 │   └── slices/       # Redux toolkit slices
 ├── api/              # API service layer
 ├── utils/            # Utility functions
+│   └── SEO.jsx       # SEO component using React 19's Document Metadata
 └── stripe/           # Payment integration
 ```
 
@@ -107,6 +115,41 @@ Seamless Stripe integration for payment processing:
 - **Payment Intent**: Server coordination for payment processing
 - **Order Creation**: Automatic order generation after payment
 - **Confirmation**: Real-time payment confirmation
+
+## 🔍 SEO Implementation
+
+The application uses React 19's native Document Metadata feature for SEO:
+
+- **Native Implementation**: No third-party libraries (like react-helmet)
+- **Dynamic Metadata**: Updates metadata based on page content
+- **Social Media Optimization**: Open Graph and Twitter Card tags
+- **Structured Data**: JSON-LD support for rich search results
+- **Canonical URLs**: Prevents duplicate content issues
+
+### SEO Component Usage
+
+```jsx
+// Example usage in a product page
+<SEO
+  title={product.name}
+  description={product.description}
+  keywords={product.tags.join(", ")}
+  image={product.image}
+  url={`/products/${product.slug}`}
+  type="product"
+  strategy="replace"
+>
+  {/* Optional JSON-LD structured data */}
+  <script type="application/ld+json">
+    {JSON.stringify({
+      "@context": "https://schema.org/",
+      "@type": "Product",
+      name: product.name,
+      // ...other product properties
+    })}
+  </script>
+</SEO>
+```
 
 ## 🚀 Getting Started
 
@@ -179,6 +222,13 @@ When running in Docker, environment variables are injected directly through:
 - Docker Compose environment settings
 - The entrypoint script loads secrets (like Stripe keys)
 
+The following environment variables control the SEO functionality:
+
+| Variable                          | Description                                       |
+| --------------------------------- | ------------------------------------------------- |
+| `REACT_APP_USE_DOCUMENT_METADATA` | Enables React 19's Document Metadata feature      |
+| `REACT_APP_META_MERGE_STRATEGY`   | Controls metadata strategy ("replace" or "merge") |
+
 This approach simplifies configuration management while maintaining flexibility across environments.
 
 ---
@@ -192,5 +242,6 @@ This frontend implementation demonstrates expertise in:
 - State management in complex applications
 - Secure payment processing integration
 - Authentication and authorization flows
+- SEO optimization with native React features
 
 The project follows best practices in component architecture, state management, and user experience design to create a performant, maintainable, and user-friendly e-commerce platform.

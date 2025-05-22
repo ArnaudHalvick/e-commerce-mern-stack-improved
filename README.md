@@ -87,6 +87,13 @@ The application is fully containerized using Docker:
   - Webhook integration for payment events
   - Comprehensive checkout flow
 
+- **Advanced SEO Implementation**
+
+  - React 19's native Document Metadata API
+  - Dynamic metadata management without third-party libraries
+  - Structured data for rich search results
+  - Social media optimization with Open Graph tags
+
 ## 🚀 Technology Stack
 
 ### Frontend (Customer)
@@ -96,6 +103,7 @@ The application is fully containerized using Docker:
 - **React Router**: Navigation and routing
 - **Stripe Elements**: Payment form integration
 - **Nginx**: Static file serving and caching
+- **React 19 Document Metadata**: Native SEO implementation
 
 ### Admin Dashboard
 
@@ -129,6 +137,8 @@ The application is fully containerized using Docker:
 e-commerce-mern-stack/
 ├── frontend/                 # Customer frontend application
 │   ├── src/                  # Source code
+│   │   └── utils/            # Utility functions
+│   │       └── SEO.jsx       # SEO component using React 19's Document Metadata
 │   ├── Dockerfile            # Production container config
 │   ├── Dockerfile.dev        # Development container config
 │   └── nginx.conf            # Nginx configuration for frontend
@@ -181,6 +191,15 @@ The system uses Docker secrets for sensitive configuration:
 - JWT secrets
 
 These are mounted into containers at runtime from the `secrets` directory.
+
+#### SEO Configuration
+
+The frontend uses React 19's Document Metadata feature, configured with environment variables:
+
+| Variable                          | Description                                       |
+| --------------------------------- | ------------------------------------------------- |
+| `REACT_APP_USE_DOCUMENT_METADATA` | Enables React 19's Document Metadata feature      |
+| `REACT_APP_META_MERGE_STRATEGY`   | Controls metadata strategy ("replace" or "merge") |
 
 ## 🚀 Deployment Architecture
 
@@ -280,6 +299,7 @@ This project demonstrates expertise in:
 - **Full-Stack Development**: MERN stack implementation
 - **Security Best Practices**: JWT, HTTPS, and container isolation
 - **DevOps Skills**: CI/CD, containerization, and cloud deployment
+- **Advanced SEO Techniques**: React 19's Document Metadata implementation
 
 The implementation follows industry best practices and demonstrates the ability to create production-ready applications with consideration for security, scalability, and maintainability.
 

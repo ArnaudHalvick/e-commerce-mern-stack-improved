@@ -229,3 +229,71 @@ try {
    - Handle scroll completion
    - Consider mobile viewports
    - Manage scroll timing
+
+## Utility Functions
+
+This directory contains reusable utility functions and helpers that are used throughout the application.
+
+### SEO Component
+
+The `SEO.jsx` component leverages React 19's native Document Metadata feature to manage SEO metadata without third-party libraries like react-helmet.
+
+```jsx
+import SEO from "../utils/SEO";
+
+// Usage in a component
+const ProductPage = ({ product }) => {
+  return (
+    <>
+      <SEO
+        title={product.name}
+        description={product.description}
+        keywords={product.tags.join(", ")}
+        image={product.image}
+        url={`/products/${product.slug}`}
+        type="product"
+        strategy="replace"
+      />
+      {/* Page content */}
+    </>
+  );
+};
+```
+
+#### Key Features
+
+- **Native React 19 Implementation**: Uses the built-in Document Metadata feature without external dependencies
+- **Dynamic Metadata**: Updates metadata based on page content and route changes
+- **Social Media Support**: Includes Open Graph and Twitter Card tags
+- **Structured Data**: Supports JSON-LD structured data for rich search results
+- **Configurable Strategy**: Supports different metadata merge strategies
+
+#### Configuration Options
+
+| Prop          | Type   | Default           | Description                                          |
+| ------------- | ------ | ----------------- | ---------------------------------------------------- |
+| `title`       | string | -                 | Page title (will be appended with site name)         |
+| `description` | string | -                 | Meta description for SEO and social sharing          |
+| `keywords`    | string | -                 | Meta keywords (comma-separated)                      |
+| `author`      | string | "MERN E-Commerce" | Content author                                       |
+| `type`        | string | "website"         | Content type (e.g., "website", "product", "article") |
+| `image`       | string | -                 | Image URL for social sharing (relative or absolute)  |
+| `url`         | string | -                 | Canonical URL (relative or absolute)                 |
+| `strategy`    | string | "replace"         | Metadata strategy: "replace" or "merge"              |
+
+#### Environment Variables
+
+| Variable                          | Description                                           |
+| --------------------------------- | ----------------------------------------------------- |
+| `REACT_APP_USE_DOCUMENT_METADATA` | Enables/disables React 19's Document Metadata feature |
+| `REACT_APP_META_MERGE_STRATEGY`   | Global strategy setting ("replace" or "merge")        |
+
+---
+
+### Other Utilities
+
+- **validation.js**: Form validation functions
+- **validationSchemas.js**: Validation schemas for various forms
+- **imageUtils.js**: Image handling and processing utilities
+- **scrollHelpers.js**: Scroll management and animation helpers
+- **errorHandling.js**: Error handling and formatting utilities
