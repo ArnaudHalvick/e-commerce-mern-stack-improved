@@ -1,16 +1,16 @@
 import React, { useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../../hooks/state";
+import { useAuth } from "../../../hooks/state";
 
 // Components
-import { LoginForm, SignupForm, AuthLayout } from "./components";
+import { LoginForm, SignupForm, AuthLayout } from "../components";
 
 // Hooks
-import { useAuthForm } from "./hooks";
-import useErrorRedux from "../../hooks/useErrorRedux";
+import { useAuthForm } from "../hooks";
+import useErrorRedux from "../../../hooks/useErrorRedux";
 
 // Styles
-import "./styles/index.css";
+import "../styles/index.css";
 
 /**
  * Auth component for handling user login and signup

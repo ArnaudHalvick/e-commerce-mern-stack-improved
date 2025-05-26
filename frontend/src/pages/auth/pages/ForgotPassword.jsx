@@ -1,9 +1,9 @@
 import React from "react";
-import { ForgotPasswordForm, AuthLayout } from "./components";
-import { usePasswordRecovery } from "./hooks";
+import { ForgotPasswordForm, AuthLayout } from "../components";
+import { usePasswordRecovery } from "../hooks";
 
 // Styles
-import "./styles/index.css";
+import "../styles/index.css";
 
 /**
  * Forgot Password page component

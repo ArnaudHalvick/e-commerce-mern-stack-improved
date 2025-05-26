@@ -1,12 +1,12 @@
 import React, { useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ResetPasswordForm, AuthLayout } from "./components";
-import { usePasswordRecovery } from "./hooks";
-import { usePasswordValidation } from "./hooks";
-import useErrorRedux from "../../hooks/useErrorRedux";
+import { ResetPasswordForm, AuthLayout } from "../components";
+import { usePasswordRecovery } from "../hooks";
+import { usePasswordValidation } from "../hooks";
+import useErrorRedux from "../../../hooks/useErrorRedux";
 
 // Styles
-import "./styles/index.css";
+import "../styles/index.css";
 
 /**
  * Reset Password page component

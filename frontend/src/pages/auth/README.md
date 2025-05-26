@@ -1,4 +1,4 @@
-# Auth Component
+# Auth Module
 
 A comprehensive authentication module for the e-commerce application that handles user login, registration, password recovery, and password reset functionality.
 
@@ -12,11 +12,16 @@ A comprehensive authentication module for the e-commerce application that handle
 - Protected routes with authentication redirects
 - Success/error message handling
 
-## Component Structure
+## Module Structure
 
 ```
 auth/
-├── components/                      # Sub-components
+├── pages/                           # Main page components
+│   ├── Auth.jsx                     # Login/Signup page
+│   ├── ForgotPassword.jsx           # Password recovery page
+│   ├── ResetPassword.jsx            # Password reset page
+│   └── index.js                     # Pages export file
+├── components/                      # Reusable UI components
 │   ├── AuthLayout.jsx               # Common layout for auth pages
 │   ├── ForgotPasswordForm.jsx       # Form for password recovery requests
 │   ├── LoginForm.jsx                # Login form component
@@ -36,10 +41,8 @@ auth/
 │   ├── index.css                    # Main stylesheet
 │   ├── layout.css                   # Layout styles
 │   └── password-validation.css      # Password validation styles
-├── Auth.jsx                         # Main login/signup component
-├── ForgotPassword.jsx               # Forgot password page
-├── ResetPassword.jsx                # Reset password page
-└── index.js                         # Module export file
+├── index.js                         # Main module export file
+└── README.md                        # This documentation
 ```
 
 ## Usage
@@ -95,6 +98,16 @@ Authentication state is managed through Redux, with the following key states:
 - `isAuthenticated`: Boolean indicating if user is logged in
 - `loading`: Boolean indicating if authentication is in progress
 - `user`: Object containing user information when authenticated
+
+## Architecture Benefits
+
+This structure provides:
+
+- **Clear separation of concerns**: Pages, components, hooks, and styles are organized separately
+- **Better maintainability**: Easy to locate and modify specific functionality
+- **Reusability**: Components and hooks can be easily reused across different pages
+- **Scalability**: New auth-related pages or components can be added without cluttering the structure
+- **Intuitive navigation**: Developers can quickly understand the module organization
 
 ## Related Components
 
