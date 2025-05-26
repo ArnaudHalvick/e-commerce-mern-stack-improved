@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { authService } from "../../../api";
 import useErrorRedux from "../../../hooks/useErrorRedux";
@@ -129,6 +129,7 @@ const useAuthForm = (formType = "login") => {
   // Use our common form handler
   const {
     formData,
+    setFormData,
     loading,
     setLoading,
     fieldErrors,

@@ -109,25 +109,27 @@ const Auth = ({ initialState }) => {
       errorMessage={formErrors.general}
       successMessage={successMessage}
     >
-      {authMode === "Login" ? (
-        <LoginForm
-          formData={formData}
-          handleChange={handleChange}
-          loading={isLoading}
-          errors={fieldErrors}
-          handleSubmit={handleSubmit}
-          handleBlur={handleBlur}
-        />
-      ) : (
-        <SignupForm
-          formData={formData}
-          handleChange={handleChange}
-          loading={isLoading}
-          errors={fieldErrors}
-          handleSubmit={handleSubmit}
-          handleBlur={handleBlur}
-        />
-      )}
+      <div key={authMode}>
+        {authMode === "Login" ? (
+          <LoginForm
+            formData={formData}
+            handleChange={handleChange}
+            loading={isLoading}
+            errors={fieldErrors}
+            handleSubmit={handleSubmit}
+            handleBlur={handleBlur}
+          />
+        ) : (
+          <SignupForm
+            formData={formData}
+            handleChange={handleChange}
+            loading={isLoading}
+            errors={fieldErrors}
+            handleSubmit={handleSubmit}
+            handleBlur={handleBlur}
+          />
+        )}
+      </div>
 
       <p className="auth-page__switch">
         {authMode === "Signup"
