@@ -49,7 +49,7 @@ const Button = ({
   };
 
   // Build class names
-  const baseClassName = "btn";
+  const baseClassName = "secondary-btn";
   const variantClass = `${baseClassName}--${variant}`;
   const sizeClass = `${baseClassName}--${size}`;
   const fullWidthClass = fullWidth ? `${baseClassName}--full-width` : "";
@@ -82,7 +82,7 @@ const Button = ({
     >
       {isLoading ? (
         <>
-          <span className="btn__spinner" aria-hidden="true"></span>
+          <span className="secondary-btn__spinner" aria-hidden="true"></span>
           <span>{loadingText}</span>
         </>
       ) : (
