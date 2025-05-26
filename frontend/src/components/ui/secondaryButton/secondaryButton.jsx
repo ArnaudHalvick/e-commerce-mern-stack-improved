@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import "./Button.css";
+import "./secondaryButton.css";
 
 /**
  * Button - A reusable button component with secondary styling and multiple variants
