@@ -1,5 +1,5 @@
 import React from "react";
-import { FormInputField } from "../../../components/form";
+import { FormInput } from "../../../components/ui";
 import { LoadingContainer } from "../../../components/ui/spinner";
 import "../styles/ShippingForm.css";
 
@@ -21,7 +21,7 @@ const ShippingForm = ({
         />
       ) : (
         <form className="checkout-shipping-form">
-          <FormInputField
+          <FormInput
             type="text"
             id="name"
             name="name"
@@ -32,7 +32,7 @@ const ShippingForm = ({
             required
           />
 
-          <FormInputField
+          <FormInput
             type="text"
             id="address"
             name="address"
@@ -44,7 +44,7 @@ const ShippingForm = ({
           />
 
           <div className="checkout-shipping-form-row">
-            <FormInputField
+            <FormInput
               type="text"
               id="city"
               name="city"
@@ -55,7 +55,7 @@ const ShippingForm = ({
               required
             />
 
-            <FormInputField
+            <FormInput
               type="text"
               id="state"
               name="state"
@@ -68,7 +68,7 @@ const ShippingForm = ({
           </div>
 
           <div className="checkout-shipping-form-row">
-            <FormInputField
+            <FormInput
               type="text"
               id="postalCode"
               name="postalCode"
@@ -79,7 +79,7 @@ const ShippingForm = ({
               required
             />
 
-            <FormInputField
+            <FormInput
               type="select"
               id="country"
               name="country"
@@ -96,7 +96,7 @@ const ShippingForm = ({
             />
           </div>
 
-          <FormInputField
+          <FormInput
             type="tel"
             id="phoneNumber"
             name="phoneNumber"

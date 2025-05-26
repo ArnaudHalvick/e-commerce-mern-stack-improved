@@ -7,7 +7,7 @@ import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
 import Spinner from "../../components/ui/spinner";
 import StatusMessage from "./components/StatusMessage";
 import ResendForm from "./components/ResendForm";
-import { FormSubmitButton } from "../../components/form";
+import { FormSubmitButton } from "../../components/ui";
 
 // Hooks
 import useEmailVerification from "./hooks/useEmailVerification";

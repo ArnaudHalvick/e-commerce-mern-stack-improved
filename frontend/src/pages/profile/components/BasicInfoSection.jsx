@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-import { FormInputField, FormSubmitButton } from "../../../components/form";
+import { FormInput, FormSubmitButton } from "../../../components/ui";
 import { debounce } from "lodash";
 import { validateName, validatePhone } from "../../../utils/validation";
 
@@ -206,7 +206,7 @@ const BasicInfoSection = ({
 
       {isEditingBasicInfo ? (
         <form onSubmit={handleBasicInfoSubmit} noValidate>
-          <FormInputField
+          <FormInput
             type="text"
             name="name"
             value={localFormData.name}
@@ -224,7 +224,7 @@ const BasicInfoSection = ({
             }
           />
 
-          <FormInputField
+          <FormInput
             type="tel"
             name="phone"
             value={localFormData.phone || ""}

@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useParams, useLocation, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import Spinner from "../../components/ui/spinner";
-import { FormSubmitButton } from "../../components/form";
+import { FormSubmitButton } from "../../components/ui";
 import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
 import { EmptyState } from "../../components/errorHandling";
 import { useOrderDetails } from "./hooks";

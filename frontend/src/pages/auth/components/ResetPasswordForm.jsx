@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
-import { FormInputField, FormSubmitButton } from "../../../components/form";
+import { FormInput, FormSubmitButton } from "../../../components/ui";
 import SchemaPasswordValidation from "./SchemaPasswordValidation";
 import { passwordSchema } from "../../../utils/validationSchemas";
 
@@ -55,7 +55,7 @@ const ResetPasswordForm = ({
       </div>
 
       <div className="auth-form__fields">
-        <FormInputField
+        <FormInput
           type="password"
           name="password"
           label="New Password"
@@ -72,7 +72,7 @@ const ResetPasswordForm = ({
           autocomplete="new-password"
         />
 
-        <FormInputField
+        <FormInput
           type="password"
           name="confirmPassword"
           label="Confirm Password"

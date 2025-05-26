@@ -1,5 +1,5 @@
 import React from "react";
-import { FormSubmitButton } from "../../../components/form";
+import { FormSubmitButton } from "../../../components/ui";
 
 const EmailManager = ({
   user,

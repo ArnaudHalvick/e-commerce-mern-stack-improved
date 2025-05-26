@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
-import { FormInputField, FormSubmitButton } from "../../../components/form";
+import { FormInput, FormSubmitButton } from "../../../components/ui";
 
 /**
  * Forgot Password form component
@@ -56,7 +56,7 @@ const ForgotPasswordForm = ({
       </div>
 
       <div className="auth-form__fields">
-        <FormInputField
+        <FormInput
           type="email"
           name="email"
           label="Email address"

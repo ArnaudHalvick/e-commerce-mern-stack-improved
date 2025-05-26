@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { debounce } from "lodash";
 import { validatePassword } from "../../../utils/validation";
-import { FormSubmitButton, FormInputField } from "../../../components/form";
+import { FormSubmitButton, FormInput } from "../../../components/ui";
 
 /**
  * PasswordManager component for handling password changes
@@ -114,7 +114,7 @@ const PasswordManager = ({
           className="password-manager-form"
         >
           <div className="profile-form-group">
-            <FormInputField
+            <FormInput
               type="password"
               name="currentPassword"
               label="Current Password"
@@ -128,7 +128,7 @@ const PasswordManager = ({
           </div>
 
           <div className="profile-form-group">
-            <FormInputField
+            <FormInput
               type="password"
               name="newPassword"
               label="New Password"
@@ -182,7 +182,7 @@ const PasswordManager = ({
           </div>
 
           <div className="profile-form-group">
-            <FormInputField
+            <FormInput
               type="password"
               name="confirmPassword"
               label="Confirm New Password"

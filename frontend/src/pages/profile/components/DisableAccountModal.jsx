@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import Modal from "../../../components/ui/modal";
-import { FormSubmitButton, FormInputField } from "../../../components/form";
+import { FormSubmitButton, FormInput } from "../../../components/ui";
 
 /**
  * Modal component for confirming account disabling with password verification
@@ -56,7 +56,7 @@ const DisableAccountModal = ({
 
       <form onSubmit={handleSubmit} className="disable-account-modal__form">
         <div className="disable-account-modal__form-group">
-          <FormInputField
+          <FormInput
             type="password"
             name="password"
             label="Please enter your password to confirm:"

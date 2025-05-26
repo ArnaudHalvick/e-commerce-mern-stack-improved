@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
-import { FormInputField, FormSubmitButton } from "../../../components/form";
+import { FormInput, FormSubmitButton } from "../../../components/ui";
 
 /**
  * ResendForm component for requesting a new verification email
@@ -54,7 +54,7 @@ const ResendForm = ({
       className="verification-form"
       aria-label="Email verification resend form"
     >
-      <FormInputField
+      <FormInput
         type="email"
         name="email"
         value={email}

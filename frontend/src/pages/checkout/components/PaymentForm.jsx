@@ -4,7 +4,7 @@ import {
   CardExpiryElement,
   CardCvcElement,
 } from "@stripe/react-stripe-js";
-import { FormSubmitButton } from "../../../components/form";
+import { FormSubmitButton } from "../../../components/ui";
 import "../styles/PaymentForm.css";
 
 const PaymentForm = ({

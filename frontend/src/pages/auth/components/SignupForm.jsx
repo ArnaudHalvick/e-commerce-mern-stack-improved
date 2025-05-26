@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { FormInputField, FormSubmitButton } from "../../../components/form";
+import { FormInput, FormSubmitButton } from "../../../components/ui";
 import SchemaPasswordValidation from "./SchemaPasswordValidation";
 import { passwordSchema } from "../../../utils/validationSchemas";
 
@@ -101,7 +101,7 @@ const SignupForm = ({
       name="signup"
     >
       <div className="auth-form__fields">
-        <FormInputField
+        <FormInput
           type="text"
           name="username"
           label="Your name"
@@ -117,7 +117,7 @@ const SignupForm = ({
           disabled={loading}
         />
 
-        <FormInputField
+        <FormInput
           type="email"
           name="email"
           label="Email address"
@@ -133,7 +133,7 @@ const SignupForm = ({
           disabled={loading}
         />
 
-        <FormInputField
+        <FormInput
           type="password"
           name="password"
           label="Password"
@@ -154,7 +154,7 @@ const SignupForm = ({
           disabled={loading}
         />
 
-        <FormInputField
+        <FormInput
           type="password"
           name="confirmPassword"
           label="Confirm Password"

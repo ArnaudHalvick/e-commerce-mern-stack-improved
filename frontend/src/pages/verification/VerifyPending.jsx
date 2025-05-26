@@ -7,7 +7,7 @@ import { useAuth } from "../../hooks/state";
 // Components
 import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
 import StatusIcon from "./components/StatusIcon";
-import { FormSubmitButton } from "../../components/form";
+import { FormSubmitButton } from "../../components/ui";
 
 // Styles
 import "./styles/Verification.css";

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-import { FormInputField, FormSubmitButton } from "../../../components/form";
+import { FormInput, FormSubmitButton } from "../../../components/ui";
 import { debounce } from "lodash";
 import { validateAddress } from "../../../utils/validation";
 import { COUNTRIES } from "../../../utils/validationSchemas";
@@ -372,7 +372,7 @@ const ShippingAddressSection = ({
           className="compact-address-form"
         >
           <div className="profile-form-group">
-            <FormInputField
+            <FormInput
               type="text"
               name="address.street"
               value={localFormData.address.street}
@@ -392,7 +392,7 @@ const ShippingAddressSection = ({
           </div>
 
           <div className="profile-compact-row">
-            <FormInputField
+            <FormInput
               type="text"
               name="address.city"
               value={localFormData.address.city}
@@ -410,7 +410,7 @@ const ShippingAddressSection = ({
               }
             />
 
-            <FormInputField
+            <FormInput
               type="text"
               name="address.state"
               value={localFormData.address.state}
@@ -428,7 +428,7 @@ const ShippingAddressSection = ({
               }
             />
 
-            <FormInputField
+            <FormInput
               type="text"
               name="address.zipCode"
               value={localFormData.address.zipCode}
@@ -448,7 +448,7 @@ const ShippingAddressSection = ({
           </div>
 
           <div className="profile-form-group">
-            <FormInputField
+            <FormInput
               type="select"
               name="address.country"
               value={localFormData.address.country || ""}

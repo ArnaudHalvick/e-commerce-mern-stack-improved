@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { FormInputField, FormSubmitButton } from "../../../components/form";
+import { FormInput, FormSubmitButton } from "../../../components/ui";
 import PropTypes from "prop-types";
 
 /**
@@ -31,7 +31,7 @@ const LoginForm = ({
       name="login"
     >
       <div className="auth-form__fields">
-        <FormInputField
+        <FormInput
           type="email"
           name="email"
           label="Email address"
@@ -47,7 +47,7 @@ const LoginForm = ({
           disabled={loading}
         />
 
-        <FormInputField
+        <FormInput
           type="password"
           name="password"
           label="Password"
