@@ -12,7 +12,7 @@ A comprehensive full-stack e-commerce solution featuring a modern React customer
 
 **Live Demo:** [https://mernappshopper.xyz](https://mernappshopper.xyz)  
 **Admin Dashboard:** [https://admin.mernappshopper.xyz](https://admin.mernappshopper.xyz)  
-**Video Presentation:** [Watch on YouTube](https://www.youtube.com/watch?v=H4rndG1Qr6w)
+**Video Presentation:** [Watch on YouTube](https://youtu.be/K1EnPEjhPIA)
 
 ## 🏗️ System Architecture
 
