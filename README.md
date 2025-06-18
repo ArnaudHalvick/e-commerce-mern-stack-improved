@@ -10,7 +10,6 @@ A comprehensive full-stack e-commerce solution featuring a modern React customer
 ![Docker](https://img.shields.io/badge/Docker-Containerized-blue)
 ![Nginx](https://img.shields.io/badge/Nginx-Reverse_Proxy-yellow)
 
-**Live Demo:** [https://mernappshopper.xyz](https://mernappshopper.xyz)  
 **Admin Dashboard:** [https://admin.mernappshopper.xyz](https://admin.mernappshopper.xyz)  
 **Video Presentation:** [Watch on YouTube](https://youtu.be/K1EnPEjhPIA)
 
