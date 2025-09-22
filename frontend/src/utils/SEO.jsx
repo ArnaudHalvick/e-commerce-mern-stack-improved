@@ -14,6 +14,7 @@ const SEO = ({
   url,
   children,
   strategy = "replace", // "replace" (default) or "merge"
+  robots,
 }) => {
   // Check if we should use the environment-specified strategy instead
   const envStrategy = process.env.REACT_APP_META_MERGE_STRATEGY;
@@ -52,6 +53,8 @@ const SEO = ({
           {title ? `${title} | MERN E-Commerce` : "MERN E-Commerce - Shop the Latest Fashion"}
         </title>
       )}
+      {/* Robots directives */}
+      {robots && <meta name="robots" content={robots} />}
       {shouldInclude(description) && (
         <meta
           name="description"

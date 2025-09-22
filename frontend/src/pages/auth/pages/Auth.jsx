@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import SEO from "../../../utils/SEO";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../hooks/state";
 
@@ -103,7 +104,14 @@ const Auth = ({ initialState }) => {
       : "";
 
   return (
-    <AuthLayout
+    <>
+      <SEO
+        title={title}
+        description={authMode === "Signup" ? "Create your account" : "Login to your account"}
+        url={authMode === "Signup" ? "/signup" : "/login"}
+        robots="noindex,follow"
+      />
+      <AuthLayout
       title={title}
       breadcrumbRoutes={[{ label: "Home", path: "/" }, { label: authMode }]}
       errorMessage={formErrors.general}
@@ -144,6 +152,7 @@ const Auth = ({ initialState }) => {
         </Link>
       </p>
     </AuthLayout>
+    </>
   );
 };
 

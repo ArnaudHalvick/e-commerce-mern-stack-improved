@@ -1,4 +1,5 @@
 import React from "react";
+import SEO from "../../utils/SEO";
 import { useSearchParams, Link } from "react-router-dom";
 import { useAuth } from "../../hooks/state";
 
@@ -34,6 +35,7 @@ const VerifyEmail = () => {
   if (verifyingToken) {
     return (
       <div className="verification-container">
+        <SEO title="Verify Email" description="Email verification" url="/verify-email" robots="noindex,follow" />
         <Breadcrumb
           routes={[{ label: "Home", path: "/" }, { label: "Verify Email" }]}
         />
@@ -51,6 +53,7 @@ const VerifyEmail = () => {
 
   return (
     <div className="verification-container">
+      <SEO title="Verify Email" description="Email verification" url="/verify-email" robots="noindex,follow" />
       <Breadcrumb
         routes={[{ label: "Home", path: "/" }, { label: "Verify Email" }]}
       />

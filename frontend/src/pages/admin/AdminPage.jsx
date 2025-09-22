@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import SEO from "../../utils/SEO";
 import { useDispatch } from "react-redux";
 import { useAuth } from "../../hooks/state";
 import { toggleAdmin } from "../../redux/slices/userSlice";
@@ -46,6 +47,7 @@ const AdminPage = () => {
 
   return (
     <div className={styles.adminPage}>
+      <SEO title="Admin Access" description="Admin access page" url="/admin" robots="noindex,nofollow" />
       <h1>Admin Access</h1>
 
       <div className={styles.adminInfo}>

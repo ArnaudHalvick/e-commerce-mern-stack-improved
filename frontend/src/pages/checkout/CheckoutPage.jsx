@@ -1,4 +1,5 @@
 import React from "react";
+import SEO from "../../utils/SEO";
 import {
   useShippingInfo,
   useCartSummary,
@@ -70,6 +71,7 @@ const CheckoutPage = () => {
   // Always show the checkout page, regardless of loading state
   return (
     <div>
+      <SEO title="Checkout" description="Secure checkout" url="/checkout" robots="noindex,follow" />
       <h1 className="checkout-title">Checkout</h1>
 
       {error && <div className="checkout-error">{error}</div>}

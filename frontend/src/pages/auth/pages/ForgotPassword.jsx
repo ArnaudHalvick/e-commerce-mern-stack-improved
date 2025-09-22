@@ -1,4 +1,5 @@
 import React from "react";
+import SEO from "../../../utils/SEO";
 import { ForgotPasswordForm, AuthLayout } from "../components";
 import { usePasswordRecovery } from "../hooks";
 
@@ -21,7 +22,9 @@ const ForgotPassword = () => {
   } = usePasswordRecovery("forgot");
 
   return (
-    <AuthLayout
+    <>
+      <SEO title="Forgot Password" description="Request a password reset link" url="/forgot-password" robots="noindex,follow" />
+      <AuthLayout
       title="Forgot Password"
       breadcrumbRoutes={[
         { label: "Home", path: "/" },
@@ -39,6 +42,7 @@ const ForgotPassword = () => {
         emailSent={success}
       />
     </AuthLayout>
+    </>
   );
 };
 

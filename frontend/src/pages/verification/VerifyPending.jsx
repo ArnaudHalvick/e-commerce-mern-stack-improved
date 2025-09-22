@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import SEO from "../../utils/SEO";
 import { Link, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { requestEmailVerification } from "../../redux/slices/userSlice";
@@ -64,6 +65,7 @@ const VerifyPending = () => {
 
   return (
     <>
+      <SEO title="Verify Account" description="Verify your account" url="/verify-pending" robots="noindex,follow" />
       <Breadcrumb
         routes={[{ label: "Home", path: "/" }, { label: "Verify Account" }]}
       />

@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import SEO from "../../utils/SEO";
 import { useParams, useLocation, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import Spinner from "../../components/ui/spinner";
@@ -38,6 +39,7 @@ const OrderConfirmationPage = () => {
   if (loading) {
     return (
       <div className="order-confirmation-page">
+        <SEO title="Order Confirmation" description="Order details" url="/order-confirmation" robots="noindex,follow" />
         <div className="order-confirmation-loading-spinner">
           <Spinner message="Loading order details..." size="large" />
         </div>
@@ -48,6 +50,7 @@ const OrderConfirmationPage = () => {
   if (error) {
     return (
       <div className="order-confirmation-page">
+        <SEO title="Order Error" description="Error loading order" url="/order-confirmation" robots="noindex,follow" />
         <EmptyState
           title="Error"
           message={error}
@@ -68,6 +71,7 @@ const OrderConfirmationPage = () => {
   if (!order) {
     return (
       <div className="order-confirmation-page">
+        <SEO title="Order Not Found" description="Order not found" url="/order-confirmation" robots="noindex,follow" />
         <EmptyState
           title="Order Not Found"
           message="The order you're looking for could not be found."
@@ -87,6 +91,7 @@ const OrderConfirmationPage = () => {
 
   return (
     <>
+      <SEO title="Order Confirmation" description="Order details" url="/order-confirmation" robots="noindex,follow" />
       <Breadcrumb
         routes={[
           { label: "Home", path: "/" },

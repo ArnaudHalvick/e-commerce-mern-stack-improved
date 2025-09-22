@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import SEO from "../../../utils/SEO";
 import { useParams, useNavigate } from "react-router-dom";
 import { ResetPasswordForm, AuthLayout } from "../components";
 import { usePasswordRecovery } from "../hooks";
@@ -47,7 +48,9 @@ const ResetPassword = () => {
   }
 
   return (
-    <AuthLayout
+    <>
+      <SEO title="Reset Password" description="Set a new password" url="/reset-password" robots="noindex,follow" />
+      <AuthLayout
       title="Reset Password"
       breadcrumbRoutes={[
         { label: "Home", path: "/" },
@@ -66,6 +69,7 @@ const ResetPassword = () => {
         passwordValidation={passwordValidation}
       />
     </AuthLayout>
+    </>
   );
 };
 

@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import SEO from "../../utils/SEO";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { createSelector } from "@reduxjs/toolkit";
@@ -118,6 +119,7 @@ const Profile = () => {
 
   return (
     <>
+      <SEO title="Profile" description="Manage your account" url="/profile" robots="noindex,follow" />
       <Breadcrumb routes={breadcrumbRoutes} />
       <div className="profile-page-container">
         <h1 className="profile-title">Profile</h1>

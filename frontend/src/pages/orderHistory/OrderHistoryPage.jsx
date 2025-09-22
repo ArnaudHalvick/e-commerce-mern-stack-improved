@@ -1,4 +1,5 @@
 import React from "react";
+import SEO from "../../utils/SEO";
 import Breadcrumb from "../../components/breadcrumbs/Breadcrumb";
 import { useOrderHistory } from "./hooks";
 import { OrderList, LoadingState, ErrorState } from "./components";
@@ -38,6 +39,7 @@ const OrderHistoryPage = () => {
 
   return (
     <>
+      <SEO title="Order History" description="Your past orders" url="/account/orders" robots="noindex,follow" />
       <Breadcrumb
         routes={[{ label: "Home", path: "/" }, { label: "Order History" }]}
       />
