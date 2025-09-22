@@ -7,6 +7,11 @@ import Newsletter from "../../components/newsLetter/NewsLetter";
 import SEO from "../../utils/SEO";
 
 const ShopPage = () => {
+  const envPublicUrl = process.env.REACT_APP_PUBLIC_URL || process.env.PUBLIC_URL;
+  const baseUrl = envPublicUrl && envPublicUrl.startsWith("http")
+    ? envPublicUrl.replace(/\/$/, "")
+    : "https://mernappshopper.xyz";
+
   return (
     <div>
       <SEO
@@ -23,8 +28,8 @@ const ShopPage = () => {
             "@context": "https://schema.org",
             "@type": "Organization",
             name: "MERN E-Commerce",
-            url: "https://mernappshopper.xyz",
-            logo: "https://mernappshopper.xyz/images/logo.png",
+            url: baseUrl,
+            logo: `${baseUrl}/images/logo.png`,
             contactPoint: {
               "@type": "ContactPoint",
               telephone: "+1-234-567-8901",
@@ -35,6 +40,15 @@ const ShopPage = () => {
               "https://twitter.com/mernecommerce",
               "https://instagram.com/mernecommerce",
             ],
+          })}
+        </script>
+        {/* Website structured data */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            name: "MERN E-Commerce",
+            url: baseUrl,
           })}
         </script>
       </SEO>

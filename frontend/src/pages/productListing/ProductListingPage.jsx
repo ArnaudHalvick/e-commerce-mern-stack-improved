@@ -132,6 +132,10 @@ const ProductListingPage = ({
 
   // SEO data
   const seoData = getSeoData();
+  const envPublicUrl = process.env.REACT_APP_PUBLIC_URL || process.env.PUBLIC_URL;
+  const baseUrl = envPublicUrl && envPublicUrl.startsWith("http")
+    ? envPublicUrl.replace(/\/$/, "")
+    : "https://mernappshopper.xyz";
 
   // Remove the effect that synchronizes URL to filter state, and replace it with a simpler
   // approach - only initialize the filter on first load
@@ -248,7 +252,35 @@ const ProductListingPage = ({
 
   return (
     <>
-      <SEO {...seoData} strategy="replace" />
+      <SEO {...seoData} strategy="replace">
+        {/* BreadcrumbList structured data */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: getBreadcrumbRoutes().map((route, index) => ({
+              "@type": "ListItem",
+              position: index + 1,
+              name: route.label,
+              item: route.path ? `${baseUrl}${route.path}` : undefined,
+            })),
+          })}
+        </script>
+        {/* ItemList structured data for listings */}
+        {Array.isArray(displayedProducts) && displayedProducts.length > 0 && (
+          <script type="application/ld+json">
+            {JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "ItemList",
+              itemListElement: displayedProducts.map((p, idx) => ({
+                "@type": "ListItem",
+                position: idx + 1 + (currentPage - 1) * itemsPerPage,
+                url: `${baseUrl}/products/${p.slug || p._id || p.id}`,
+              })),
+            })}
+          </script>
+        )}
+      </SEO>
       <Breadcrumb routes={getBreadcrumbRoutes()} />
       <div className="product-listing-container">
         {/* Header - different based on page type */}

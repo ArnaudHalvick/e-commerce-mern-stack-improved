@@ -21,6 +21,10 @@ const Product = () => {
   const { productId, productSlug } = useParams();
   const location = useLocation();
   const { product, loading, error } = useProductData(productId, productSlug);
+  const envPublicUrl = process.env.REACT_APP_PUBLIC_URL || process.env.PUBLIC_URL;
+  const baseUrl = envPublicUrl && envPublicUrl.startsWith("http")
+    ? envPublicUrl.replace(/\/$/, "")
+    : "https://mernappshopper.xyz";
 
   // Scroll product-display into view when product page is loaded or route changes
   useEffect(() => {
@@ -66,14 +70,14 @@ const Product = () => {
       }${product.description && product.description.length > 150 ? "..." : ""}`,
       keywords: keywordParts.join(", "),
       type: "product",
-      image: product.image,
+      image: product.image?.startsWith("http") ? product.image : `${baseUrl}${product.image || ""}`,
       url: `/products/${product.slug || productId}`,
       // Add structured data for product
       structuredData: {
         "@context": "https://schema.org/",
         "@type": "Product",
         name: product.name,
-        image: product.image,
+        image: product.image?.startsWith("http") ? product.image : `${baseUrl}${product.image || ""}`,
         description: product.description,
         brand: {
           "@type": "Brand",
@@ -81,13 +85,24 @@ const Product = () => {
         },
         offers: {
           "@type": "Offer",
-          url: `/products/${product.slug || productId}`,
+          url: `${baseUrl}/products/${product.slug || productId}`,
           priceCurrency: "USD",
           price: product.new_price || product.old_price,
           availability: product.in_stock
             ? "https://schema.org/InStock"
             : "https://schema.org/OutOfStock",
         },
+        ...(product.rating && product.rating > 0
+          ? {
+              aggregateRating: {
+                "@type": "AggregateRating",
+                ratingValue: product.rating,
+                reviewCount: Array.isArray(product.reviews)
+                  ? product.reviews.length
+                  : undefined,
+              },
+            }
+          : {}),
       },
     };
   };
