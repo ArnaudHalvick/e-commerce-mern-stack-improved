@@ -19,15 +19,15 @@ const SEO = ({
   const envStrategy = process.env.REACT_APP_META_MERGE_STRATEGY;
   const finalStrategy = envStrategy || strategy;
 
-  // Base URL for absolute paths
-  const baseUrl = "https://mernappshopper.xyz";
+  // Base URL for absolute paths (env-driven)
+  const envPublicUrl = process.env.REACT_APP_PUBLIC_URL || process.env.PUBLIC_URL;
+  const baseUrl =
+    envPublicUrl && envPublicUrl.startsWith("http")
+      ? envPublicUrl.replace(/\/$/, "")
+      : "https://mernappshopper.xyz";
 
   // If a relative URL is provided, make it absolute
-  const canonicalUrl = url
-    ? url.startsWith("http")
-      ? url
-      : `${baseUrl}${url}`
-    : baseUrl;
+  const canonicalUrl = url ? (url.startsWith("http") ? url : `${baseUrl}${url}`) : baseUrl;
 
   // If a relative image path is provided, make it absolute
   const ogImage = image
@@ -49,9 +49,7 @@ const SEO = ({
       {/* Standard metadata tags */}
       {shouldInclude(title) && (
         <title>
-          {title
-            ? `${title} | MERN E-Commerce`
-            : "MERN E-Commerce - Shop the Latest Fashion"}
+          {title ? `${title} | MERN E-Commerce` : "MERN E-Commerce - Shop the Latest Fashion"}
         </title>
       )}
       {shouldInclude(description) && (
@@ -70,9 +68,7 @@ const SEO = ({
       <link rel="canonical" href={canonicalUrl} />
 
       {/* Open Graph tags for social media */}
-      {shouldInclude(title) && (
-        <meta property="og:title" content={title || "MERN E-Commerce"} />
-      )}
+      {shouldInclude(title) && <meta property="og:title" content={title || "MERN E-Commerce"} />}
       {shouldInclude(description) && (
         <meta
           property="og:description"
@@ -89,9 +85,7 @@ const SEO = ({
 
       {/* Twitter card tags */}
       <meta name="twitter:card" content="summary_large_image" />
-      {shouldInclude(title) && (
-        <meta name="twitter:title" content={title || "MERN E-Commerce"} />
-      )}
+      {shouldInclude(title) && <meta name="twitter:title" content={title || "MERN E-Commerce"} />}
       {shouldInclude(description) && (
         <meta
           name="twitter:description"
