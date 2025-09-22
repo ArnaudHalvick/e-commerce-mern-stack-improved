@@ -35,6 +35,7 @@ const reviewRoutes = require("./routes/reviewRoutes");
 const errorDemoRoutes = require("./routes/errorDemoRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
 const adminRoutes = require("./routes/adminRoutes");
+const seoRoutes = require("./routes/seoRoutes");
 const adminAuthRoutes = require("./routes/adminAuthRoutes");
 
 // Initialize express app
@@ -306,6 +307,8 @@ app.use("/api/cart", cartRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/error-demo", errorDemoRoutes);
+// SEO and Sitemaps at root-level paths
+app.use("/", seoRoutes);
 
 // Admin routes - grouped under /api/admin
 app.use("/api/admin/auth", adminAuthRoutes);
