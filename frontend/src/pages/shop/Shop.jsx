@@ -9,9 +9,10 @@ import hero_image from "../../components/assets/hero_image.png";
 
 const ShopPage = () => {
   const envPublicUrl = process.env.REACT_APP_PUBLIC_URL || process.env.PUBLIC_URL;
-  const baseUrl = envPublicUrl && envPublicUrl.startsWith("http")
-    ? envPublicUrl.replace(/\/$/, "")
-    : "https://mernappshopper.xyz";
+  const baseUrl =
+    envPublicUrl && envPublicUrl.startsWith("http")
+      ? envPublicUrl.replace(/\/$/, "")
+      : "https://mernappshopper.xyz";
   const apiUrl = process.env.REACT_APP_API_URL || "";
   let apiOrigin = "";
   try {
@@ -28,9 +29,7 @@ const ShopPage = () => {
         url="/"
         strategy="replace"
       >
-        {apiOrigin && (
-          <link rel="preconnect" href={apiOrigin} crossOrigin="anonymous" />
-        )}
+        {apiOrigin && <link rel="preconnect" href={apiOrigin} crossOrigin="anonymous" />}
         {/* Preload LCP hero image */}
         <link rel="preload" as="image" href={hero_image} />
         {/* Organization structured data */}

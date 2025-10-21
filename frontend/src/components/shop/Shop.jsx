@@ -19,6 +19,10 @@ const Shop = () => {
           src={exclusive_image}
           alt="Exclusive offer"
           className="shop-product-image"
+          loading="lazy"
+          decoding="async"
+          width="600"
+          height="600"
         />
       </div>
     </div>

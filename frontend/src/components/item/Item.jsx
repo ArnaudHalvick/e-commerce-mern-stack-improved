@@ -45,23 +45,15 @@ const Item = (props) => {
           width="300"
           height="300"
         />
-        {hasDiscount && (
-          <div className="product-item-discount-tag">
-            -{discountPercentage}%
-          </div>
-        )}
+        {hasDiscount && <div className="product-item-discount-tag">-{discountPercentage}%</div>}
       </Link>
       <p className="product-item-name">{props.name}</p>
       <div className="product-item-prices">
         {hasNewPrice ? (
           <>
-            <div className="product-item-price-discounted">
-              ${props.new_price}
-            </div>
+            <div className="product-item-price-discounted">${props.new_price}</div>
             {props.old_price > 0 && (
-              <div className="product-item-price-previous">
-                ${props.old_price}
-              </div>
+              <div className="product-item-price-previous">${props.old_price}</div>
             )}
           </>
         ) : (

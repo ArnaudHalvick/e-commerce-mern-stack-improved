@@ -49,11 +49,7 @@ const ImageGallery = ({
 
   // Scroll thumbnails to center the selected one
   const scrollToSelectedThumbnail = useCallback(() => {
-    if (
-      thumbnailsContainerRef.current &&
-      orderedImages &&
-      orderedImages.length > 0
-    ) {
+    if (thumbnailsContainerRef.current && orderedImages && orderedImages.length > 0) {
       const container = thumbnailsContainerRef.current;
       const thumbnailWidth = 80; // Approximate width of thumbnail + gap
 
@@ -67,9 +63,7 @@ const ImageGallery = ({
       }
 
       const scrollPosition =
-        displayIndex * thumbnailWidth -
-        container.clientWidth / 2 +
-        thumbnailWidth / 2;
+        displayIndex * thumbnailWidth - container.clientWidth / 2 + thumbnailWidth / 2;
       container.scrollTo({ left: scrollPosition, behavior: "smooth" });
     }
   }, [selectedImageIndex, images, orderedImages]);
@@ -131,9 +125,7 @@ const ImageGallery = ({
           {orderedImages && orderedImages.length > 0 ? (
             orderedImages.map((img, reorderedIndex) => {
               // Find the original index this image corresponds to
-              const imgOriginalIndex = images.findIndex(
-                (orgImg) => orgImg === img
-              );
+              const imgOriginalIndex = images.findIndex((orgImg) => orgImg === img);
 
               return (
                 <img

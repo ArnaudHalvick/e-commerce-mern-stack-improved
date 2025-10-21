@@ -34,8 +34,7 @@ const PageHeader = ({ pageType, category, banner }) => {
       <div className="product-listing-header">
         <h1 className="product-listing-title">{categoryTitle}</h1>
         <p className="product-listing-subtitle">
-          Explore our latest {category} collection with the finest quality and
-          trends.
+          Explore our latest {category} collection with the finest quality and trends.
         </p>
       </div>
     );
