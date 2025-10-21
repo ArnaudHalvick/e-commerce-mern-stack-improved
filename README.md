@@ -247,6 +247,7 @@ Full plan and phase-by-phase docs live under `backend/docs/seo/`:
 - Phase 7: internal linking/content hygiene — [PHASE_7.md](./backend/docs/seo/PHASE_7.md)
 
 Quick local verification
+
 - Robots: open `http://localhost:3000/robots.txt` (disallows auth/checkout/profile/admin; allows `?page=` for pagination; sitemap line included)
 - Sitemaps (dev API): `http://localhost:4001/sitemap.xml` (and `/sitemap-products.xml`, etc.)
 - Canonicals on listings: visit `/shop?page=2` or `/men?page=2`; title and canonical should include `?page=2`
