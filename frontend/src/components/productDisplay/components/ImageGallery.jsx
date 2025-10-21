@@ -113,6 +113,10 @@ const ImageGallery = ({
           src={mainImage}
           alt={`Product ${selectedImageIndex + 1}`}
           className="product-display-main-img"
+          decoding="async"
+          fetchpriority="high"
+          width="800"
+          height="800"
         />
       </div>
 
@@ -147,6 +151,10 @@ const ImageGallery = ({
                       ? "product-display-thumbnail-img product-display-thumbnail-selected"
                       : "product-display-thumbnail-img"
                   }
+                  loading="lazy"
+                  decoding="async"
+                  width="120"
+                  height="120"
                 />
               );
             })

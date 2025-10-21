@@ -5,12 +5,18 @@ import Shop from "../../components/shop/Shop";
 import NewCollection from "../../components/newCollections/NewCollections";
 import Newsletter from "../../components/newsLetter/NewsLetter";
 import SEO from "../../utils/SEO";
+import hero_image from "../../components/assets/hero_image.png";
 
 const ShopPage = () => {
   const envPublicUrl = process.env.REACT_APP_PUBLIC_URL || process.env.PUBLIC_URL;
   const baseUrl = envPublicUrl && envPublicUrl.startsWith("http")
     ? envPublicUrl.replace(/\/$/, "")
     : "https://mernappshopper.xyz";
+  const apiUrl = process.env.REACT_APP_API_URL || "";
+  let apiOrigin = "";
+  try {
+    apiOrigin = new URL(apiUrl).origin;
+  } catch (_) {}
 
   return (
     <div>
@@ -22,6 +28,11 @@ const ShopPage = () => {
         url="/"
         strategy="replace"
       >
+        {apiOrigin && (
+          <link rel="preconnect" href={apiOrigin} crossOrigin="anonymous" />
+        )}
+        {/* Preload LCP hero image */}
+        <link rel="preload" as="image" href={hero_image} />
         {/* Organization structured data */}
         <script type="application/ld+json">
           {JSON.stringify({

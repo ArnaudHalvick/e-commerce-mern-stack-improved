@@ -22,7 +22,15 @@ const Hero = () => {
         </Link>
       </div>
       <div className="hero-section-right">
-        <img src={hero_image} alt="Hero" className="hero-image" />
+        <img
+          src={hero_image}
+          alt="Hero"
+          className="hero-image"
+          decoding="async"
+          fetchpriority="high"
+          width="800"
+          height="600"
+        />
       </div>
     </div>
   );

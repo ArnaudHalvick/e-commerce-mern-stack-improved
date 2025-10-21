@@ -36,7 +36,15 @@ const Item = (props) => {
   return (
     <div className="product-item">
       <Link to={productUrl} data-discover="true" className="product-image-link">
-        <img className="product-item-image" src={imageUrl} alt={props.name} />
+        <img
+          className="product-item-image"
+          src={imageUrl}
+          alt={props.name}
+          loading="lazy"
+          decoding="async"
+          width="300"
+          height="300"
+        />
         {hasDiscount && (
           <div className="product-item-discount-tag">
             -{discountPercentage}%

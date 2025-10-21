@@ -15,6 +15,10 @@ const PageHeader = ({ pageType, category, banner }) => {
           alt={`${category} collection`}
           className="product-listing-banner"
           loading="eager"
+          decoding="async"
+          fetchpriority="high"
+          width="1200"
+          height="400"
         />
       </div>
     );
