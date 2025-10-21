@@ -1,6 +1,7 @@
 // Path: frontend/src/components/footer/Footer.jsx
 import "./Footer.css";
 import footer_logo from "../assets/logo_big.png";
+import { Link } from "react-router-dom";
 import instagram_icon from "../assets/instagram_icon.png";
 import pinterest_icon from "../assets/pinterest_icon.png";
 import whatsapp_icon from "../assets/whatsapp_icon.png";
@@ -12,12 +13,32 @@ const Footer = () => {
         <img src={footer_logo} alt="" />
         <p>SHOPPER</p>
       </div>
-      <ul className="footer-navigation">
-        <li>Company</li>
-        <li>Products</li>
-        <li>Offices</li>
-        <li>About</li>
-        <li>Contact</li>
+      <ul className="footer-navigation" aria-label="Footer navigation">
+        <li>
+          <Link to="/shop" aria-label="Shop all products">
+            Products
+          </Link>
+        </li>
+        <li>
+          <Link to="/men" aria-label="Men collection">
+            Men
+          </Link>
+        </li>
+        <li>
+          <Link to="/women" aria-label="Women collection">
+            Women
+          </Link>
+        </li>
+        <li>
+          <Link to="/kids" aria-label="Kids collection">
+            Kids
+          </Link>
+        </li>
+        <li>
+          <Link to="/shop?discount=true" aria-label="Special offers">
+            Offers
+          </Link>
+        </li>
       </ul>
       <div className="footer-social-links">
         <div className="footer-icon-wrapper">
