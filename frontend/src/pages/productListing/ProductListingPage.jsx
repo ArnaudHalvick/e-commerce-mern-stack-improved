@@ -110,21 +110,23 @@ const ProductListingPage = ({
     if (isCategoryPage && category) {
       const categoryTitle =
         category.charAt(0).toUpperCase() + category.slice(1);
+      const pageSuffix = currentPage && currentPage > 1 ? ` – Page ${currentPage}` : "";
       return {
-        title: `${categoryTitle} Collection`,
+        title: `${categoryTitle} Collection${pageSuffix}`,
         description: `Shop our ${categoryTitle} collection. Find the latest trends and styles in ${categoryTitle} fashion at great prices with fast shipping.`,
         keywords: `${category}, fashion, clothing, ${category} clothing, ${category} fashion, ${category} collection`,
-        url: `/${category}`,
+        url: `/${category}${currentPage && currentPage > 1 ? `?page=${currentPage}` : ""}`,
         image: banner || "/images/placeholders/category-default.jpg",
       };
     } else {
+      const pageSuffix = currentPage && currentPage > 1 ? ` – Page ${currentPage}` : "";
       return {
-        title: "Special Offers & Deals",
+        title: `Special Offers & Deals${pageSuffix}`,
         description:
           "Discover our special offers and deals. Shop discounted items and limited-time offers on clothing and accessories.",
         keywords:
           "special offers, deals, discounts, sale, clearance, fashion, clothing",
-        url: "/shop",
+        url: `/shop${currentPage && currentPage > 1 ? `?page=${currentPage}` : ""}`,
         image: "/images/placeholders/offers-default.jpg",
       };
     }

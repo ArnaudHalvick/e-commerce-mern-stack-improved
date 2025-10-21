@@ -259,16 +259,21 @@ const ProductsContent = ({
       {/* Pagination */}
       {totalPages > 1 && (
         <div className="product-listing-pagination">
-          <button
+          <a
             className={`product-listing-page-btn ${
               currentPage === 1 ? "product-listing-disabled" : ""
             }`}
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
+            href={`${window.location.pathname}?page=${currentPage - 1}`}
+            onClick={(e) => {
+              if (currentPage === 1) return;
+              e.preventDefault();
+              handlePageChange(currentPage - 1);
+            }}
             aria-label="Previous page"
+            rel="prev"
           >
             Prev
-          </button>
+          </a>
 
           <div className="product-listing-page-numbers">
             {generatePaginationNumbers().map((page, index) =>
@@ -280,31 +285,40 @@ const ProductsContent = ({
                   ...
                 </span>
               ) : (
-                <button
+                <a
                   key={page}
                   className={`product-listing-page-number ${
                     currentPage === page ? "product-listing-active" : ""
                   }`}
-                  onClick={() => handlePageChange(page)}
+                  href={`${window.location.pathname}?page=${page}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handlePageChange(page);
+                  }}
                   aria-label={`Page ${page}`}
                   aria-current={currentPage === page ? "page" : undefined}
                 >
                   {page}
-                </button>
+                </a>
               )
             )}
           </div>
 
-          <button
+          <a
             className={`product-listing-page-btn ${
               currentPage === totalPages ? "product-listing-disabled" : ""
             }`}
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
+            href={`${window.location.pathname}?page=${currentPage + 1}`}
+            onClick={(e) => {
+              if (currentPage === totalPages) return;
+              e.preventDefault();
+              handlePageChange(currentPage + 1);
+            }}
             aria-label="Next page"
+            rel="next"
           >
             Next
-          </button>
+          </a>
         </div>
       )}
     </div>
