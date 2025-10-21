@@ -1,0 +1,640 @@
+[
+  {
+    "name": "Home",
+    "path": "/",
+    "success": true,
+    "issues": [
+      "Multiple H1 tags: 5"
+    ],
+    "seoData": {
+      "title": "Home | MERN E-Commerce",
+      "description": "Discover the latest fashion trends at our MERN E-Commerce store. Shop clothes, accessories, and more with fast shipping and great prices.",
+      "canonical": "https://mernappshopper.xyz/",
+      "robots": null,
+      "ogTitle": "Home",
+      "ogDescription": "Discover the latest fashion trends at our MERN E-Commerce store. Shop clothes, accessories, and more with fast shipping and great prices.",
+      "ogImage": "https://mernappshopper.xyz/images/default-og-image.jpg",
+      "ogUrl": "https://mernappshopper.xyz/",
+      "ogType": "website",
+      "twitterCard": "summary_large_image",
+      "twitterTitle": "Home",
+      "twitterDescription": "Discover the latest fashion trends at our MERN E-Commerce store. Shop clothes, accessories, and more with fast shipping and great prices.",
+      "twitterImage": "https://mernappshopper.xyz/images/default-og-image.jpg",
+      "h1": "Popular For Women",
+      "h1Count": 5,
+      "h2Count": 1,
+      "jsonLd": [
+        {
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "name": "MERN E-Commerce",
+          "url": "https://mernappshopper.xyz",
+          "logo": "https://mernappshopper.xyz/images/logo.png",
+          "contactPoint": {
+            "@type": "ContactPoint",
+            "telephone": "+1-234-567-8901",
+            "contactType": "customer service"
+          },
+          "sameAs": [
+            "https://facebook.com/mernecommerce",
+            "https://twitter.com/mernecommerce",
+            "https://instagram.com/mernecommerce"
+          ]
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          "name": "MERN E-Commerce",
+          "url": "https://mernappshopper.xyz"
+        }
+      ],
+      "imageCount": 20,
+      "imagesWithoutAlt": [],
+      "internalLinks": 27,
+      "externalLinks": 0,
+      "hasPreconnect": true,
+      "hasPreload": true,
+      "lazyImages": 13,
+      "eagerImages": 1
+    }
+  },
+  {
+    "name": "Men Category",
+    "path": "/men",
+    "success": true,
+    "issues": [
+      "Missing H1 tag"
+    ],
+    "seoData": {
+      "title": "Men Collection | MERN E-Commerce",
+      "description": "Shop our Men collection. Find the latest trends and styles in Men fashion at great prices with fast shipping.",
+      "canonical": "https://mernappshopper.xyz/men",
+      "robots": null,
+      "ogTitle": "Men Collection",
+      "ogDescription": "Shop our Men collection. Find the latest trends and styles in Men fashion at great prices with fast shipping.",
+      "ogImage": "https://mernappshopper.xyz/static/media/banner_mens.eed7197157196f319b17.png",
+      "ogUrl": "https://mernappshopper.xyz/men",
+      "ogType": "website",
+      "twitterCard": "summary_large_image",
+      "twitterTitle": "Men Collection",
+      "twitterDescription": "Shop our Men collection. Find the latest trends and styles in Men fashion at great prices with fast shipping.",
+      "twitterImage": "https://mernappshopper.xyz/static/media/banner_mens.eed7197157196f319b17.png",
+      "h1Count": 0,
+      "h2Count": 0,
+      "jsonLd": [
+        {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://mernappshopper.xyz/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Men"
+            }
+          ]
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "url": "https://mernappshopper.xyz/products/white-and-navy-colorblock-puffer-jacket"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "url": "https://mernappshopper.xyz/products/extreme-adventure-hooded-jacket"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "url": "https://mernappshopper.xyz/products/black-and-white-marble-print-bomber-jacket"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "url": "https://mernappshopper.xyz/products/puma-green-full-zip-hoodie"
+            },
+            {
+              "@type": "ListItem",
+              "position": 5,
+              "url": "https://mernappshopper.xyz/products/red-urban-street-hooded-jacket"
+            },
+            {
+              "@type": "ListItem",
+              "position": 6,
+              "url": "https://mernappshopper.xyz/products/white-and-black-sports-windbreaker"
+            },
+            {
+              "@type": "ListItem",
+              "position": 7,
+              "url": "https://mernappshopper.xyz/products/dark-green-utility-denim-jacket"
+            },
+            {
+              "@type": "ListItem",
+              "position": 8,
+              "url": "https://mernappshopper.xyz/products/black-quilted-leather-biker-jacket"
+            },
+            {
+              "@type": "ListItem",
+              "position": 9,
+              "url": "https://mernappshopper.xyz/products/classic-blue-denim-jacket"
+            },
+            {
+              "@type": "ListItem",
+              "position": 10,
+              "url": "https://mernappshopper.xyz/products/light-grey-full-zip-sports-jacket"
+            },
+            {
+              "@type": "ListItem",
+              "position": 11,
+              "url": "https://mernappshopper.xyz/products/navy-blue-zip-up-casual-jacket"
+            },
+            {
+              "@type": "ListItem",
+              "position": 12,
+              "url": "https://mernappshopper.xyz/products/all-white-quilted-hooded-jacket"
+            }
+          ]
+        }
+      ],
+      "imageCount": 20,
+      "imagesWithoutAlt": [],
+      "internalLinks": 26,
+      "externalLinks": 0,
+      "hasPreconnect": true,
+      "hasPreload": false,
+      "lazyImages": 12,
+      "eagerImages": 1
+    }
+  },
+  {
+    "name": "Women Category",
+    "path": "/women",
+    "success": true,
+    "issues": [
+      "Missing H1 tag"
+    ],
+    "seoData": {
+      "title": "Women Collection | MERN E-Commerce",
+      "description": "Shop our Women collection. Find the latest trends and styles in Women fashion at great prices with fast shipping.",
+      "canonical": "https://mernappshopper.xyz/women",
+      "robots": null,
+      "ogTitle": "Women Collection",
+      "ogDescription": "Shop our Women collection. Find the latest trends and styles in Women fashion at great prices with fast shipping.",
+      "ogImage": "https://mernappshopper.xyz/static/media/banner_women.5a27fc4e4533e57e4676.png",
+      "ogUrl": "https://mernappshopper.xyz/women",
+      "ogType": "website",
+      "twitterCard": "summary_large_image",
+      "twitterTitle": "Women Collection",
+      "twitterDescription": "Shop our Women collection. Find the latest trends and styles in Women fashion at great prices with fast shipping.",
+      "twitterImage": "https://mernappshopper.xyz/static/media/banner_women.5a27fc4e4533e57e4676.png",
+      "h1Count": 0,
+      "h2Count": 0,
+      "jsonLd": [
+        {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://mernappshopper.xyz/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Women"
+            }
+          ]
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "url": "https://mernappshopper.xyz/products/bohemian-pink-floral-dress"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "url": "https://mernappshopper.xyz/products/burgundy-cropped-hoodie-with-drawstrings"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "url": "https://mernappshopper.xyz/products/black-ribbed-cropped-tank-top"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "url": "https://mernappshopper.xyz/products/navy-blue-fitted-full-sleeve-top"
+            },
+            {
+              "@type": "ListItem",
+              "position": 5,
+              "url": "https://mernappshopper.xyz/products/nike-patchwork-cropped-tank-top"
+            },
+            {
+              "@type": "ListItem",
+              "position": 6,
+              "url": "https://mernappshopper.xyz/products/purple-glitter-puff-sleeve-crop-top"
+            },
+            {
+              "@type": "ListItem",
+              "position": 7,
+              "url": "https://mernappshopper.xyz/products/white-turtleneck-ribbed-sweater"
+            },
+            {
+              "@type": "ListItem",
+              "position": 8,
+              "url": "https://mernappshopper.xyz/products/chic-brown-hijab-with-black-hat"
+            },
+            {
+              "@type": "ListItem",
+              "position": 9,
+              "url": "https://mernappshopper.xyz/products/elegant-red-textured-dress"
+            },
+            {
+              "@type": "ListItem",
+              "position": 10,
+              "url": "https://mernappshopper.xyz/products/black-faux-fur-puffer-jacket"
+            },
+            {
+              "@type": "ListItem",
+              "position": 11,
+              "url": "https://mernappshopper.xyz/products/pink-ribbed-square-neck-fitted-t-shirt"
+            },
+            {
+              "@type": "ListItem",
+              "position": 12,
+              "url": "https://mernappshopper.xyz/products/black-and-white-floral-wrap-blouse"
+            }
+          ]
+        }
+      ],
+      "imageCount": 20,
+      "imagesWithoutAlt": [],
+      "internalLinks": 26,
+      "externalLinks": 0,
+      "hasPreconnect": true,
+      "hasPreload": false,
+      "lazyImages": 12,
+      "eagerImages": 1
+    }
+  },
+  {
+    "name": "Kids Category",
+    "path": "/kids",
+    "success": true,
+    "issues": [
+      "Missing H1 tag"
+    ],
+    "seoData": {
+      "title": "Kids Collection | MERN E-Commerce",
+      "description": "Shop our Kids collection. Find the latest trends and styles in Kids fashion at great prices with fast shipping.",
+      "canonical": "https://mernappshopper.xyz/kids",
+      "robots": null,
+      "ogTitle": "Kids Collection",
+      "ogDescription": "Shop our Kids collection. Find the latest trends and styles in Kids fashion at great prices with fast shipping.",
+      "ogImage": "https://mernappshopper.xyz/static/media/banner_kids.fff815a581793a7380fb.png",
+      "ogUrl": "https://mernappshopper.xyz/kids",
+      "ogType": "website",
+      "twitterCard": "summary_large_image",
+      "twitterTitle": "Kids Collection",
+      "twitterDescription": "Shop our Kids collection. Find the latest trends and styles in Kids fashion at great prices with fast shipping.",
+      "twitterImage": "https://mernappshopper.xyz/static/media/banner_kids.fff815a581793a7380fb.png",
+      "h1Count": 0,
+      "h2Count": 0,
+      "jsonLd": [
+        {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://mernappshopper.xyz/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Kids"
+            }
+          ]
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "url": "https://mernappshopper.xyz/products/kids-black-football-hoodie"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "url": "https://mernappshopper.xyz/products/kids-black-and-white-bomber-jacket"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "url": "https://mernappshopper.xyz/products/kids-striped-colorblock-hoodie"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "url": "https://mernappshopper.xyz/products/kids-quilted-olive-hooded-jacket"
+            },
+            {
+              "@type": "ListItem",
+              "position": 5,
+              "url": "https://mernappshopper.xyz/products/kids-blue-denim-bomber-jacket"
+            },
+            {
+              "@type": "ListItem",
+              "position": 6,
+              "url": "https://mernappshopper.xyz/products/kids-blue-skateboard-sweatshirt"
+            },
+            {
+              "@type": "ListItem",
+              "position": 7,
+              "url": "https://mernappshopper.xyz/products/kids-navy-zip-up-lightweight-jacket"
+            },
+            {
+              "@type": "ListItem",
+              "position": 8,
+              "url": "https://mernappshopper.xyz/products/puma-kids-black-and-orange-track-jacket"
+            },
+            {
+              "@type": "ListItem",
+              "position": 9,
+              "url": "https://mernappshopper.xyz/products/kids-green-and-navy-zip-up-jacket"
+            },
+            {
+              "@type": "ListItem",
+              "position": 10,
+              "url": "https://mernappshopper.xyz/products/kids-blue-lemon-graphic-hoodie"
+            },
+            {
+              "@type": "ListItem",
+              "position": 11,
+              "url": "https://mernappshopper.xyz/products/kids-green-dinosaur-sweatshirt"
+            },
+            {
+              "@type": "ListItem",
+              "position": 12,
+              "url": "https://mernappshopper.xyz/products/kids-navy-blue-logo-sweatshirt"
+            }
+          ]
+        }
+      ],
+      "imageCount": 20,
+      "imagesWithoutAlt": [],
+      "internalLinks": 26,
+      "externalLinks": 0,
+      "hasPreconnect": true,
+      "hasPreload": false,
+      "lazyImages": 12,
+      "eagerImages": 1
+    }
+  },
+  {
+    "name": "Shop/Offers",
+    "path": "/shop",
+    "success": false,
+    "error": "ENOENT: no such file or directory, open '/home/arnaud-halvick/Desktop/merns-only-cors/scripts/screenshots/shop/offers.png'",
+    "issues": [
+      "Page failed to load or render"
+    ]
+  },
+  {
+    "name": "Shop Page 2",
+    "path": "/shop?page=2",
+    "success": true,
+    "issues": [],
+    "seoData": {
+      "title": "Special Offers & Deals – Page 2 | MERN E-Commerce",
+      "description": "Discover our special offers and deals. Shop discounted items and limited-time offers on clothing and accessories.",
+      "canonical": "https://mernappshopper.xyz/shop?page=2",
+      "robots": null,
+      "ogTitle": "Special Offers & Deals – Page 2",
+      "ogDescription": "Discover our special offers and deals. Shop discounted items and limited-time offers on clothing and accessories.",
+      "ogImage": "https://mernappshopper.xyz/images/placeholders/offers-default.jpg",
+      "ogUrl": "https://mernappshopper.xyz/shop?page=2",
+      "ogType": "website",
+      "twitterCard": "summary_large_image",
+      "twitterTitle": "Special Offers & Deals – Page 2",
+      "twitterDescription": "Discover our special offers and deals. Shop discounted items and limited-time offers on clothing and accessories.",
+      "twitterImage": "https://mernappshopper.xyz/images/placeholders/offers-default.jpg",
+      "h1": "Special Offers & Deals",
+      "h1Count": 1,
+      "h2Count": 0,
+      "jsonLd": [
+        {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://mernappshopper.xyz/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Shop"
+            }
+          ]
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 13,
+              "url": "https://mernappshopper.xyz/products/kids-blue-skateboard-sweatshirt"
+            },
+            {
+              "@type": "ListItem",
+              "position": 14,
+              "url": "https://mernappshopper.xyz/products/kids-navy-zip-up-lightweight-jacket"
+            },
+            {
+              "@type": "ListItem",
+              "position": 15,
+              "url": "https://mernappshopper.xyz/products/puma-kids-black-and-orange-track-jacket"
+            },
+            {
+              "@type": "ListItem",
+              "position": 16,
+              "url": "https://mernappshopper.xyz/products/nike-patchwork-cropped-tank-top"
+            },
+            {
+              "@type": "ListItem",
+              "position": 17,
+              "url": "https://mernappshopper.xyz/products/purple-glitter-puff-sleeve-crop-top"
+            },
+            {
+              "@type": "ListItem",
+              "position": 18,
+              "url": "https://mernappshopper.xyz/products/puma-green-full-zip-hoodie"
+            },
+            {
+              "@type": "ListItem",
+              "position": 19,
+              "url": "https://mernappshopper.xyz/products/red-urban-street-hooded-jacket"
+            },
+            {
+              "@type": "ListItem",
+              "position": 20,
+              "url": "https://mernappshopper.xyz/products/white-and-black-sports-windbreaker"
+            },
+            {
+              "@type": "ListItem",
+              "position": 21,
+              "url": "https://mernappshopper.xyz/products/dark-green-utility-denim-jacket"
+            },
+            {
+              "@type": "ListItem",
+              "position": 22,
+              "url": "https://mernappshopper.xyz/products/black-quilted-leather-biker-jacket"
+            },
+            {
+              "@type": "ListItem",
+              "position": 23,
+              "url": "https://mernappshopper.xyz/products/kids-green-and-navy-zip-up-jacket"
+            },
+            {
+              "@type": "ListItem",
+              "position": 24,
+              "url": "https://mernappshopper.xyz/products/white-turtleneck-ribbed-sweater"
+            }
+          ]
+        }
+      ],
+      "imageCount": 19,
+      "imagesWithoutAlt": [],
+      "internalLinks": 31,
+      "externalLinks": 0,
+      "hasPreconnect": true,
+      "hasPreload": false,
+      "lazyImages": 12,
+      "eagerImages": 0
+    }
+  },
+  {
+    "name": "Cart",
+    "path": "/cart",
+    "success": true,
+    "issues": [],
+    "seoData": {
+      "title": "Cart | MERN E-Commerce",
+      "description": "Your shopping cart",
+      "canonical": "https://mernappshopper.xyz/cart",
+      "robots": "noindex,follow",
+      "ogTitle": "Cart",
+      "ogDescription": "Your shopping cart",
+      "ogImage": "https://mernappshopper.xyz/images/default-og-image.jpg",
+      "ogUrl": "https://mernappshopper.xyz/cart",
+      "ogType": "website",
+      "twitterCard": "summary_large_image",
+      "twitterTitle": "Cart",
+      "twitterDescription": "Your shopping cart",
+      "twitterImage": "https://mernappshopper.xyz/images/default-og-image.jpg",
+      "h1": "Your Shopping Cart",
+      "h1Count": 1,
+      "h2Count": 1,
+      "jsonLd": [],
+      "imageCount": 6,
+      "imagesWithoutAlt": [],
+      "internalLinks": 16,
+      "externalLinks": 0,
+      "hasPreconnect": true,
+      "hasPreload": false,
+      "lazyImages": 0,
+      "eagerImages": 0
+    }
+  },
+  {
+    "name": "Login",
+    "path": "/login",
+    "success": true,
+    "issues": [],
+    "seoData": {
+      "title": "Login | MERN E-Commerce",
+      "description": "Login to your account",
+      "canonical": "https://mernappshopper.xyz/login",
+      "robots": "noindex,follow",
+      "ogTitle": "Login",
+      "ogDescription": "Login to your account",
+      "ogImage": "https://mernappshopper.xyz/images/default-og-image.jpg",
+      "ogUrl": "https://mernappshopper.xyz/login",
+      "ogType": "website",
+      "twitterCard": "summary_large_image",
+      "twitterTitle": "Login",
+      "twitterDescription": "Login to your account",
+      "twitterImage": "https://mernappshopper.xyz/images/default-og-image.jpg",
+      "h1": "Login",
+      "h1Count": 1,
+      "h2Count": 0,
+      "jsonLd": [],
+      "imageCount": 6,
+      "imagesWithoutAlt": [],
+      "internalLinks": 16,
+      "externalLinks": 0,
+      "hasPreconnect": true,
+      "hasPreload": false,
+      "lazyImages": 0,
+      "eagerImages": 0
+    }
+  },
+  {
+    "name": "Profile",
+    "path": "/profile",
+    "success": true,
+    "issues": [],
+    "seoData": {
+      "title": "Login | MERN E-Commerce",
+      "description": "Login to your account",
+      "canonical": "https://mernappshopper.xyz/login",
+      "robots": "noindex,follow",
+      "ogTitle": "Login",
+      "ogDescription": "Login to your account",
+      "ogImage": "https://mernappshopper.xyz/images/default-og-image.jpg",
+      "ogUrl": "https://mernappshopper.xyz/login",
+      "ogType": "website",
+      "twitterCard": "summary_large_image",
+      "twitterTitle": "Login",
+      "twitterDescription": "Login to your account",
+      "twitterImage": "https://mernappshopper.xyz/images/default-og-image.jpg",
+      "h1": "Login",
+      "h1Count": 1,
+      "h2Count": 0,
+      "jsonLd": [],
+      "imageCount": 6,
+      "imagesWithoutAlt": [],
+      "internalLinks": 16,
+      "externalLinks": 0,
+      "hasPreconnect": true,
+      "hasPreload": false,
+      "lazyImages": 0,
+      "eagerImages": 0
+    }
+  }
+]
