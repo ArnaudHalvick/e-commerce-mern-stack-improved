@@ -233,6 +233,26 @@ The Nginx reverse proxy handles:
 - [Backend API Documentation](./backend/README.md)
 - [Customer Frontend Documentation](./frontend/README.md)
 
+## 🔍 SEO Implementation
+
+Full plan and phase-by-phase docs live under `backend/docs/seo/`:
+
+- Plan: [backend/docs/seo/PLAN.md](./backend/docs/seo/PLAN.md)
+- Phase 1: foundations (robots, admin noindex, env base URL) — [PHASE_1.md](./backend/docs/seo/PHASE_1.md)
+- Phase 2: per-route metadata and robots — [PHASE_2.md](./backend/docs/seo/PHASE_2.md)
+- Phase 3: structured data (JSON‑LD) — [PHASE_3.md](./backend/docs/seo/PHASE_3.md)
+- Phase 4: dynamic sitemaps + proxy routing — [PHASE_4.md](./backend/docs/seo/PHASE_4.md)
+- Phase 5: crawlable pagination + canonicals — [PHASE_5.md](./backend/docs/seo/PHASE_5.md)
+- Phase 6: Core Web Vitals (LCP/CLS/INP) — [PHASE_6.md](./backend/docs/seo/PHASE_6.md)
+- Phase 7: internal linking/content hygiene — [PHASE_7.md](./backend/docs/seo/PHASE_7.md)
+
+Quick local verification
+- Robots: open `http://localhost:3000/robots.txt` (disallows auth/checkout/profile/admin; allows `?page=` for pagination; sitemap line included)
+- Sitemaps (dev API): `http://localhost:4001/sitemap.xml` (and `/sitemap-products.xml`, etc.)
+- Canonicals on listings: visit `/shop?page=2` or `/men?page=2`; title and canonical should include `?page=2`
+- JSON‑LD: inspect `<head>` on Home, Listings, and Product pages; validate with Google Rich Results Test
+- CWV: run Lighthouse; hero/banner/product images are prioritized and sized to avoid CLS
+
 ## 🔐 Security Implementation
 
 The application implements security at multiple levels:
