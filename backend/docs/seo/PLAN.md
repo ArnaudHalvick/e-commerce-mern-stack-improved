@@ -11,6 +11,7 @@ Scope: storefront only; admin excluded from indexing.
 - Phase 7: Content + internal linking improvements (ongoing)
 
 Notes
+
 - rel=prev/next is ignored by Google; rely on crawlable links and self‑canonicals
 - Dynamic rendering is deprecated; avoid prerender middlewares
 - INP replaces FID; prioritize interaction latency

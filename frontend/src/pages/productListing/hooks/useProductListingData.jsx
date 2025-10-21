@@ -96,16 +96,13 @@ const useProductListingData = ({ pageType, category }) => {
       // Filter by category (only for offers page)
       if (pageType === "offers" && filters.category.length > 0) {
         filteredProducts = filteredProducts.filter((item) =>
-          filters.category.some(
-            (cat) => cat.toLowerCase() === (item.category || "").toLowerCase()
-          )
+          filters.category.some((cat) => cat.toLowerCase() === (item.category || "").toLowerCase())
         );
       }
 
       // Filter by price range
       // If max price is 0, ignore the upper limit by using Infinity
-      const effectiveMax =
-        filters.price.max === 0 ? Infinity : filters.price.max;
+      const effectiveMax = filters.price.max === 0 ? Infinity : filters.price.max;
       filteredProducts = filteredProducts.filter((item) => {
         const price = item.new_price > 0 ? item.new_price : item.old_price;
         return price >= filters.price.min && price <= effectiveMax;
@@ -129,17 +126,14 @@ const useProductListingData = ({ pageType, category }) => {
       // Filter by tags
       if (filters.tags.length > 0) {
         filteredProducts = filteredProducts.filter(
-          (item) =>
-            item.tags && filters.tags.some((tag) => item.tags.includes(tag))
+          (item) => item.tags && filters.tags.some((tag) => item.tags.includes(tag))
         );
       }
 
       // Filter by types
       if (filters.types.length > 0) {
         filteredProducts = filteredProducts.filter(
-          (item) =>
-            item.types &&
-            filters.types.some((type) => item.types.includes(type))
+          (item) => item.types && filters.types.some((type) => item.types.includes(type))
         );
       }
 
@@ -282,9 +276,7 @@ const useProductListingData = ({ pageType, category }) => {
 
         if (pageType === "category" && category) {
           // For category pages, fetch products by category
-          const response = await productsService.getProductsByCategory(
-            category
-          );
+          const response = await productsService.getProductsByCategory(category);
 
           if (Array.isArray(response)) {
             data = response;
@@ -297,11 +289,7 @@ const useProductListingData = ({ pageType, category }) => {
             offersLoadedRef.current = true; // Prevent infinite recursion
             const fetchedProducts = await fetchGlobalProducts(); // Call with await to get products right away
 
-            if (
-              fetchedProducts &&
-              Array.isArray(fetchedProducts) &&
-              fetchedProducts.length > 0
-            ) {
+            if (fetchedProducts && Array.isArray(fetchedProducts) && fetchedProducts.length > 0) {
               data = fetchedProducts; // Use the returned products
             } else {
               // If fetchGlobalProducts didn't return valid data, retry later when context updates
@@ -334,12 +322,8 @@ const useProductListingData = ({ pageType, category }) => {
         } else {
           if (isMounted.current) {
             setAllProducts(data);
-            setAvailableTags([
-              ...new Set(data.flatMap((item) => item.tags || [])),
-            ]);
-            setAvailableTypes([
-              ...new Set(data.flatMap((item) => item.types || [])),
-            ]);
+            setAvailableTags([...new Set(data.flatMap((item) => item.tags || []))]);
+            setAvailableTypes([...new Set(data.flatMap((item) => item.types || []))]);
             filterAndSortProducts(data);
             isRequestInProgress.current = false;
             setLoading(false);
@@ -356,14 +340,7 @@ const useProductListingData = ({ pageType, category }) => {
     };
 
     fetchPageProducts();
-  }, [
-    pageType,
-    category,
-    isInitialized,
-    all_product,
-    fetchGlobalProducts,
-    filterAndSortProducts,
-  ]);
+  }, [pageType, category, isInitialized, all_product, fetchGlobalProducts, filterAndSortProducts]);
 
   // Check if we need to update from context when it changes
   useEffect(() => {
@@ -385,38 +362,20 @@ const useProductListingData = ({ pageType, category }) => {
 
       if (isMounted.current) {
         setAllProducts(shopData);
-        setAvailableTags([
-          ...new Set(shopData.flatMap((item) => item.tags || [])),
-        ]);
-        setAvailableTypes([
-          ...new Set(shopData.flatMap((item) => item.types || [])),
-        ]);
+        setAvailableTags([...new Set(shopData.flatMap((item) => item.tags || []))]);
+        setAvailableTypes([...new Set(shopData.flatMap((item) => item.types || []))]);
         filterAndSortProducts(shopData);
         setLoading(false);
       }
     }
-  }, [
-    pageType,
-    isInitialized,
-    all_product,
-    filterAndSortProducts,
-    loading,
-    allProducts.length,
-  ]);
+  }, [pageType, isInitialized, all_product, filterAndSortProducts, loading, allProducts.length]);
 
   // Apply filters and sorting when filter states change
   useEffect(() => {
     if (allProducts.length > 0) {
       filterAndSortProducts(allProducts);
     }
-  }, [
-    filters,
-    sortBy,
-    currentPage,
-    itemsPerPage,
-    allProducts,
-    filterAndSortProducts,
-  ]);
+  }, [filters, sortBy, currentPage, itemsPerPage, allProducts, filterAndSortProducts]);
 
   // Handle filter changes
   const handleFilterChange = useCallback((filterType, value) => {
@@ -426,9 +385,7 @@ const useProductListingData = ({ pageType, category }) => {
       switch (filterType) {
         case "category":
           if (newFilters.category.includes(value)) {
-            newFilters.category = newFilters.category.filter(
-              (cat) => cat !== value
-            );
+            newFilters.category = newFilters.category.filter((cat) => cat !== value);
           } else {
             newFilters.category = [...newFilters.category, value];
           }
@@ -451,9 +408,7 @@ const useProductListingData = ({ pageType, category }) => {
           break;
         case "type":
           if (newFilters.types.includes(value)) {
-            newFilters.types = newFilters.types.filter(
-              (type) => type !== value
-            );
+            newFilters.types = newFilters.types.filter((type) => type !== value);
           } else {
             newFilters.types = [...newFilters.types, value];
           }
@@ -552,8 +507,7 @@ const useProductListingData = ({ pageType, category }) => {
 
   // Calculate display range
   const totalProducts = allProducts.length;
-  const startItem =
-    totalProducts > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0;
+  const startItem = totalProducts > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0;
   const endItem = Math.min(startItem + itemsPerPage - 1, totalProducts);
   const displayRange = totalProducts > 0 ? `${startItem}-${endItem}` : "0-0";
 
