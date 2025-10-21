@@ -66,6 +66,22 @@ const useProductListingData = ({ pageType, category }) => {
     };
   }, []);
 
+  // Initialize current page from URL (?page=) on mount
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const pageParam = parseInt(params.get("page"), 10);
+      if (!Number.isNaN(pageParam) && pageParam > 1) {
+        setCurrentPage(pageParam);
+      }
+    } catch (_) {
+      // no-op
+    }
+    // run once
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Function to filter and sort products
   const filterAndSortProducts = useCallback(
     (products) => {
@@ -470,6 +486,25 @@ const useProductListingData = ({ pageType, category }) => {
         behavior: "smooth",
         block: "start",
       });
+
+      // Update the URL query param (?page=) for crawlability and shareable links
+      if (typeof window !== "undefined") {
+        try {
+          const params = new URLSearchParams(window.location.search);
+          if (page === 1) {
+            params.delete("page");
+          } else {
+            params.set("page", String(page));
+          }
+          const newUrl = `${window.location.pathname}${
+            params.toString() ? `?${params.toString()}` : ""
+          }`;
+          // Use pushState to create a history entry when navigating pages
+          window.history.pushState({}, "", newUrl);
+        } catch (_) {
+          // ignore URL update errors
+        }
+      }
     },
     [totalPages]
   );

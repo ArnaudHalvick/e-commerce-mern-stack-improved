@@ -13,3 +13,4 @@ secrets
 *.cnf
 .cursorrules
 backups
+.cursor
